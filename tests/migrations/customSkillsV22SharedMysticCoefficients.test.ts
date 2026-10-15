@@ -9,11 +9,15 @@ import {
   recalibrateSharedMysticHits,
 } from "../../src/migrations/customSkills/V22__sharedMysticCoefficients"
 import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { atMysticLevelBeforeCap } from "./mysticLevelBeforeCap"
 import type { Skill } from "../../src/engine/skill"
 import storeV21File from "./testCustomSkills/v21/store.json"
 
 const CLASS = "bellstrikeUmbra"
+
+const builtinSkillsForClass = (classId: string): Skill[] =>
+  currentBuiltinSkillsForClass(classId).map(atMysticLevelBeforeCap)
 const DRAGON_HEAD_PLUS = "mystic-dragon-head-plus"
 const STORE = storeV21File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 

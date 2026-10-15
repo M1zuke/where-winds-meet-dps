@@ -23,16 +23,16 @@ export const soaring = defineSkill({
   hits: [
     hit(0, {
       frame: 48,
-      physMultiplier: 3.19609,
-      attributeMultiplier: 4.794135,
-      physFixed: 481.53,
+      physMultiplier: 3.196543,
+      attributeMultiplier: 4.794815,
+      physFixed: 504.027,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 122,
-      physMultiplier: 3.90633,
-      attributeMultiplier: 5.859495,
-      physFixed: 588.53,
+      physMultiplier: 3.906886,
+      attributeMultiplier: 5.860329,
+      physFixed: 616.033,
       attributeFixed: 0,
     }),
   ],

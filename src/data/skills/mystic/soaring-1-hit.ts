@@ -23,9 +23,9 @@ export const soaring1Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 48,
-      physMultiplier: 3.19609,
-      attributeMultiplier: 4.794135,
-      physFixed: 481.53,
+      physMultiplier: 3.196543,
+      attributeMultiplier: 4.794815,
+      physFixed: 504.027,
       attributeFixed: 0,
     }),
   ],

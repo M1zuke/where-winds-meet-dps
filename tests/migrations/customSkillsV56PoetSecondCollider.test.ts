@@ -8,11 +8,15 @@ import {
   V56__poetSecondCollider,
   healSkill,
 } from "../../src/migrations/customSkills/V56__poetSecondCollider"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { atMysticLevelBeforeCap } from "./mysticLevelBeforeCap"
 import type { Skill } from "../../src/engine/skill"
 import storeV55File from "./testCustomSkills/v55/store.json"
 
 const CLASS = "bellstrikeUmbra"
+
+const builtinSkillsForClass = (classId: string): Skill[] =>
+  currentBuiltinSkillsForClass(classId).map(atMysticLevelBeforeCap)
 const POET1 = "mystic-poet1"
 const POET2 = "mystic-poet2"
 const POET3 = "mystic-poet3"

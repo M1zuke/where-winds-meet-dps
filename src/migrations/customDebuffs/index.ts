@@ -14,6 +14,7 @@ import { V9__sharedDotRecalibration } from "./V9__sharedDotRecalibration"
 import { V10__droneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 import { V11__qiRateDefaults } from "./V11__qiRateDefaults"
 import { V12__bitterSeasonCadence } from "./V12__bitterSeasonCadence"
+import { V13__mysticArtLevelCap } from "./V13__mysticArtLevelCap"
 
 export type {
   CustomDebuffMigration,
@@ -30,6 +31,7 @@ export { recalibrateSharedDot } from "./V9__sharedDotRecalibration"
 export { healDroneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 export { healQiRateDefault } from "./V11__qiRateDefaults"
 export { healBitterSeasonCadence } from "./V12__bitterSeasonCadence"
+export { healMysticDotLevelCap } from "./V13__mysticArtLevelCap"
 
 export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V3__umbraBleedTick,
@@ -42,6 +44,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V10__droneIntervalAndOffset,
   V11__qiRateDefaults,
   V12__bitterSeasonCadence,
+  V13__mysticArtLevelCap,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

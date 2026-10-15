@@ -35,9 +35,9 @@ export const fluteOfTheTidesCancel = defineSkill({
     // In-game values as of 2026-09-24: the first melodic strike lands before the cancel.
     hit(1, {
       frame: 78,
-      physMultiplier: 1.47645,
-      attributeMultiplier: 2.214675,
-      physFixed: 320.97,
+      physMultiplier: 1.483296,
+      attributeMultiplier: 2.224944,
+      physFixed: 330.4793,
       attributeFixed: 0,
     }),
   ],

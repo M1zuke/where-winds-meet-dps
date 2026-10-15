@@ -26,17 +26,17 @@ export const fluteOfTheTidesFull = defineSkill({
   hits: [
     hit(0, {
       frame: 78,
-      physMultiplier: 1.47645,
-      attributeMultiplier: 2.214675,
-      physFixed: 320.97,
+      physMultiplier: 1.483296,
+      attributeMultiplier: 2.224944,
+      physFixed: 330.4793,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.fluteRipple })],
     }),
     hit(1, {
       frame: 192,
-      physMultiplier: 3.93721,
-      attributeMultiplier: 5.905815,
-      physFixed: 855.92,
+      physMultiplier: 3.955457,
+      attributeMultiplier: 5.933186,
+      physFixed: 881.2783,
       attributeFixed: 0,
     }),
   ],

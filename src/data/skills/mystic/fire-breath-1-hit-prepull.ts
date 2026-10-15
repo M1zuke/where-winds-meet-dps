@@ -21,9 +21,9 @@ export const fireBreath1HitPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.36064,
-      attributeMultiplier: 2.04096,
-      physFixed: 205.5,
+      physMultiplier: 1.360884,
+      attributeMultiplier: 2.041326,
+      physFixed: 215.2962,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),

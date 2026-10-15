@@ -318,8 +318,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(71254.54)
-    expect(round(result.totalDamage, 2)).toBe(4275272.44)
+    expect(round(result.dps, 2)).toBe(71293.14)
+    expect(round(result.totalDamage, 2)).toBe(4277588.56)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -334,8 +334,8 @@ describe("engine baseline — profile-v7 anchor", () => {
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(446680.65)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(75725.76)
+    expect(damageOf("Smolder (DoT)")).toBe(447533.2)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76176.44)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
@@ -350,8 +350,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(72579.61)
-    expect(round(result.totalDamage, 2)).toBe(4354776.35)
+    expect(round(result.dps, 2)).toBe(72618.44)
+    expect(round(result.totalDamage, 2)).toBe(4357106.52)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -359,8 +359,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2129642.01)
     expect(damageOf("Bleeding (DoT)")).toBe(282025.91)
-    expect(damageOf("Smolder (DoT)")).toBe(454795.37)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(77100.79)
+    expect(damageOf("Smolder (DoT)")).toBe(455651.57)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(77558.15)
     expect(damageOf("Yi River")).toBe(61394.52)
   })
 })

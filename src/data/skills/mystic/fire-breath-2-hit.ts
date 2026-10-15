@@ -20,21 +20,21 @@ export const fireBreath2Hit = defineSkill({
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
-  // In-game values as of 2026-10-05.
+  // In-game values as of 2026-10-15.
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.360639,
-      attributeMultiplier: 2.040959,
-      physFixed: 205.4962,
+      physMultiplier: 1.360884,
+      attributeMultiplier: 2.041326,
+      physFixed: 215.2962,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
     hit(1, {
       frame: 102,
-      physMultiplier: 1.360639,
-      attributeMultiplier: 2.040959,
-      physFixed: 205.4962,
+      physMultiplier: 1.360884,
+      attributeMultiplier: 2.041326,
+      physFixed: 215.2962,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -46,9 +46,9 @@ export const fireBreath2Hit = defineSkill({
     }),
     hit(2, {
       frame: 108,
-      physMultiplier: 1.49948,
-      attributeMultiplier: 2.24922,
-      physFixed: 226.4652,
+      physMultiplier: 1.49975,
+      attributeMultiplier: 2.249625,
+      physFixed: 237.2652,
       attributeFixed: 0,
       triggers: [
         applyDebuff({

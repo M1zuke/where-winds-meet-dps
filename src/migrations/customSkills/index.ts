@@ -68,6 +68,7 @@ import { V64__inGameTimingCorrections } from "./V64__inGameTimingCorrections"
 import { V65__threeWaveReleaseAndEnergySurgeInterval } from "./V65__threeWaveReleaseAndEnergySurgeInterval"
 import { V66__ghostlyAfterimagePerDodge } from "./V66__ghostlyAfterimagePerDodge"
 import { V67__bleedRefundLockoutAndSecondTrackSlashEndurance } from "./V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
+import { V68__mysticArtLevelCap } from "./V68__mysticArtLevelCap"
 
 export type {
   CustomSkillMigration,
@@ -204,6 +205,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V65__threeWaveReleaseAndEnergySurgeInterval,
   V66__ghostlyAfterimagePerDodge,
   V67__bleedRefundLockoutAndSecondTrackSlashEndurance,
+  V68__mysticArtLevelCap,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

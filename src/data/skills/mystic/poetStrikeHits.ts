@@ -4,23 +4,23 @@ import type { SkillHit } from "../../../engine/skill"
 import { DEBUFF } from "./ids"
 
 const STRIKE = {
-  physMultiplier: 1.02325,
-  attributeMultiplier: 1.534875,
-  physFixed: 153.82,
+  physMultiplier: 1.023353,
+  attributeMultiplier: 1.53503,
+  physFixed: 160.9104,
   attributeFixed: 0,
 }
 
 const COMBUSTION_EXPLOSION = {
-  physMultiplier: 0.70166,
-  attributeMultiplier: 1.05249,
-  physFixed: 105.48,
+  physMultiplier: 0.701728,
+  attributeMultiplier: 1.052592,
+  physFixed: 110.3386,
   attributeFixed: 0,
 }
 
 const SMOLDER_EXPLOSION = {
-  physMultiplier: 1.60796,
-  attributeMultiplier: 2.41194,
-  physFixed: 241.72,
+  physMultiplier: 1.608126,
+  attributeMultiplier: 2.412189,
+  physFixed: 252.8592,
   attributeFixed: 0,
 }
 

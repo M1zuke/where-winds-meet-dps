@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 71254.54,
-    "totalDamage": 4275272.44,
+    "dps": 71293.14,
+    "totalDamage": 4277588.56,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -37,7 +37,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36140.84,
+        "expectedDamage": 36212.97,
         "castCount": 1
       },
       {
@@ -45,7 +45,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 446680.65,
+        "expectedDamage": 447533.2,
         "castCount": 0
       },
       {
@@ -53,7 +53,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75725.76,
+        "expectedDamage": 76176.44,
         "castCount": 0
       },
       {
@@ -165,7 +165,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 554208.39,
+        "expectedDamage": 555149.14,
         "castCount": 1
       }
     ],
@@ -174,11 +174,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "816d42721745af16bbc1bed836d6d9a75ce83e45ca456d1d03b92e9a13b2e91e"
+    "digest": "51acd623d05ead93bd422982ce43fcf3090e9c96983b9606e10d8c0745eb22f3"
   },
   "anchor:noAttunement": {
-    "dps": 63979.41,
-    "totalDamage": 3838764.3,
+    "dps": 64018.01,
+    "totalDamage": 3841080.42,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -214,7 +214,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36140.84,
+        "expectedDamage": 36212.97,
         "castCount": 1
       },
       {
@@ -222,7 +222,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 446678.76,
+        "expectedDamage": 447531.31,
         "castCount": 0
       },
       {
@@ -230,7 +230,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75725.76,
+        "expectedDamage": 76176.44,
         "castCount": 0
       },
       {
@@ -342,7 +342,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 554208.39,
+        "expectedDamage": 555149.14,
         "castCount": 1
       }
     ],
@@ -351,11 +351,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "e3f3f316f53cb989deec39007dec1e4959578356f5b23118c139d9105c26c26c"
+    "digest": "7da8acea8b4f54fd897642750fd78dd5ca22e6f07ebbfa38ca0f589e37c32e06"
   },
   "anchor:dummyOff": {
-    "dps": 70990.4,
-    "totalDamage": 4259424.3,
+    "dps": 71022.78,
+    "totalDamage": 4261366.87,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -391,7 +391,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 40154.56,
+        "expectedDamage": 40234.71,
         "castCount": 1
       },
       {
@@ -399,7 +399,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 477528.49,
+        "expectedDamage": 478439.94,
         "castCount": 0
       },
       {
@@ -407,7 +407,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 83826.95,
+        "expectedDamage": 84325.85,
         "castCount": 0
       },
       {
@@ -519,7 +519,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 266313.58,
+        "expectedDamage": 266765.64,
         "castCount": 1
       }
     ],
@@ -528,11 +528,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "56a3d4ab5d7ed3a6d11c32ac0b7cce0c6f38e384b2b2f5fe85d5525da11b2781"
+    "digest": "7bd44ca54096637842c6fd7fc8e0c233151c7caa4af447c9fd820620dd667170"
   },
   "anchor:breakthrough17": {
-    "dps": 72579.61,
-    "totalDamage": 4354776.35,
+    "dps": 72618.44,
+    "totalDamage": 4357106.52,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -568,7 +568,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36820.94,
+        "expectedDamage": 36893.41,
         "castCount": 1
       },
       {
@@ -576,7 +576,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 454795.37,
+        "expectedDamage": 455651.57,
         "castCount": 0
       },
       {
@@ -584,7 +584,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 77100.79,
+        "expectedDamage": 77558.15,
         "castCount": 0
       },
       {
@@ -696,7 +696,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 563515.22,
+        "expectedDamage": 564459.35,
         "castCount": 1
       }
     ],
@@ -705,11 +705,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "aa86cce1d19648f710fcf54c4f7421839ea4a2b29c287a45ea46de79c8207b39"
+    "digest": "b4814c096d208e540d24700de08baa25e2ae4c9c8cc9735abd2fc3bae293e547"
   },
   "anchor:noQiBreak": {
-    "dps": 69779.59,
-    "totalDamage": 4186775.64,
+    "dps": 69812.93,
+    "totalDamage": 4188775.78,
     "rotationDuration": 60,
     "warnings": ["SwordSpecial 3-Hit at 8.70s would be illegal in the game: needs Endurance ≥ 50 (has 49.34)."],
     "perSkill": [
@@ -742,7 +742,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 11276.5,
+        "expectedDamage": 11299.59,
         "castCount": 1
       },
       {
@@ -750,7 +750,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 452049.09,
+        "expectedDamage": 452911.85,
         "castCount": 0
       },
       {
@@ -758,7 +758,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 170977.8,
+        "expectedDamage": 171993.85,
         "castCount": 0
       },
       {
@@ -886,7 +886,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 16526.63,
+        "expectedDamage": 16624.87,
         "castCount": 1
       }
     ],
@@ -895,11 +895,11 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "13290ba1eb9ac61cdaeb75ca65958d7ede4122cac6f442aa4f14fce08858d734"
+    "digest": "181636116119541aea5bb6a05a07568841e35f3638fc5ee6bab65c6748c7a943"
   },
   "anchor:healerBuff": {
-    "dps": 74620.68,
-    "totalDamage": 4477240.95,
+    "dps": 74661.16,
+    "totalDamage": 4479669.68,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -935,7 +935,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 38816.65,
+        "expectedDamage": 38894.13,
         "castCount": 1
       },
       {
@@ -943,7 +943,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 467243.98,
+        "expectedDamage": 468135.8,
         "castCount": 0
       },
       {
@@ -951,7 +951,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 81126.55,
+        "expectedDamage": 81609.38,
         "castCount": 0
       },
       {
@@ -1063,7 +1063,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 575329.38,
+        "expectedDamage": 576305.98,
         "castCount": 1
       }
     ],
@@ -1072,11 +1072,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d65995e23370b3214236ed9c65a9455c20ee3d84264608f102af202db21b56a8"
+    "digest": "59f1dc7bd859ad4250fdf60e20ab4e5a7848765420c9cc87f47001ff1a47fa91"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 71673.88,
-    "totalDamage": 4300432.56,
+    "dps": 71712.88,
+    "totalDamage": 4302772.66,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1112,7 +1112,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36140.84,
+        "expectedDamage": 36212.97,
         "castCount": 1
       },
       {
@@ -1120,7 +1120,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 449432.16,
+        "expectedDamage": 450291.01,
         "castCount": 0
       },
       {
@@ -1128,7 +1128,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75725.76,
+        "expectedDamage": 76176.44,
         "castCount": 0
       },
       {
@@ -1240,7 +1240,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 562584.69,
+        "expectedDamage": 563543.12,
         "castCount": 1
       }
     ],
@@ -1249,11 +1249,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1ef0c6da21be274deaec4e32210a619b6e76606a1f300f9c4ba2a4ef6dab9d2f"
+    "digest": "5b0555df77ca2182af1da316c2a28a6598626104403b5504210272666c50ddc9"
   },
   "anchor:voidrotScript": {
-    "dps": 72694.53,
-    "totalDamage": 4361671.69,
+    "dps": 72740.79,
+    "totalDamage": 4364447.26,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1289,7 +1289,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36140.84,
+        "expectedDamage": 36212.97,
         "castCount": 1
       },
       {
@@ -1297,7 +1297,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 452930.61,
+        "expectedDamage": 454210.97,
         "castCount": 0
       },
       {
@@ -1305,7 +1305,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75725.76,
+        "expectedDamage": 76176.44,
         "castCount": 0
       },
       {
@@ -1417,7 +1417,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 576426.25,
+        "expectedDamage": 577398.65,
         "castCount": 1
       }
     ],
@@ -1426,11 +1426,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "468d31f5694f788b4b7241843c4cc7d787ad7047b0d1a914dac06d752d959d7d"
+    "digest": "b427f2e72a8b0bba94fb582caa6e209c314adabd484cdd2bbee6d97bbdfb7295"
   },
   "anchor:breakExtension": {
-    "dps": 72593.21,
-    "totalDamage": 4355592.8,
+    "dps": 72632.11,
+    "totalDamage": 4357926.64,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1466,7 +1466,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36140.84,
+        "expectedDamage": 36212.97,
         "castCount": 1
       },
       {
@@ -1474,7 +1474,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 455961.87,
+        "expectedDamage": 456832.14,
         "castCount": 0
       },
       {
@@ -1482,7 +1482,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75725.76,
+        "expectedDamage": 76176.44,
         "castCount": 0
       },
       {
@@ -1594,7 +1594,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 554208.39,
+        "expectedDamage": 555149.14,
         "castCount": 1
       }
     ],
@@ -1603,11 +1603,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1c2f27859c9d839665a2c29081ed04c49c87c8f9a8270612909dddf5faf1bd4d"
+    "digest": "d2800d96f8061f214ea2e90dce348b692f0f528c6203513c5718a0f2ce3e2c29"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41539.34,
-    "totalDamage": 2492360.11,
+    "dps": 41561.68,
+    "totalDamage": 2493700.51,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1646,7 +1646,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34794.37,
+        "expectedDamage": 34865.74,
         "castCount": 1
       },
       {
@@ -1654,7 +1654,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 216683.23,
+        "expectedDamage": 217106.62,
         "castCount": 0
       },
       {
@@ -1662,7 +1662,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 73216.78,
+        "expectedDamage": 73654.92,
         "castCount": 0
       },
       {
@@ -1774,7 +1774,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 234735.44,
+        "expectedDamage": 235142.94,
         "castCount": 1
       }
     ],
@@ -1783,11 +1783,11 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "51c93609d8f88e887f4451de40c5f6fff819caafb861325abb1c477417c0321d"
+    "digest": "a799a2b125cde5afc972ab3088716ceb3b2f0ef1a315e5589b57e7302bf73377"
   },
   "anchor:noSwordHorizon": {
-    "dps": 35630,
-    "totalDamage": 2137799.85,
+    "dps": 35647.9,
+    "totalDamage": 2138874.2,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1840,7 +1840,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34794.37,
+        "expectedDamage": 34865.74,
         "castCount": 1
       },
       {
@@ -1848,7 +1848,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 80369.03,
+        "expectedDamage": 80526.38,
         "castCount": 0
       },
       {
@@ -1856,7 +1856,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 73216.78,
+        "expectedDamage": 73654.92,
         "castCount": 0
       },
       {
@@ -1968,7 +1968,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 234735.44,
+        "expectedDamage": 235142.94,
         "castCount": 1
       }
     ],
@@ -1977,11 +1977,11 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "646175614db27ac18b92a75ce6f23211dcc84a8ed9f738d7d9077340b3ab675c"
+    "digest": "03113c6bb0b6e8777231667e05b687f49e7e0aacf3ea86f2ae1a311e32cb83a3"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 63237.14,
-    "totalDamage": 3794228.52,
+    "dps": 63272.8,
+    "totalDamage": 3796368.26,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -2017,7 +2017,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34939.56,
+        "expectedDamage": 35009.82,
         "castCount": 1
       },
       {
@@ -2025,7 +2025,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 401362.15,
+        "expectedDamage": 402137.43,
         "castCount": 0
       },
       {
@@ -2033,7 +2033,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69565.02,
+        "expectedDamage": 69981.16,
         "castCount": 0
       },
       {
@@ -2145,7 +2145,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 505268.56,
+        "expectedDamage": 506146.6,
         "castCount": 1
       }
     ],
@@ -2154,11 +2154,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "b8b139e94b3f95f552a6e3df70a5e98b3d62f629bfb1c48782b4208b3251648b"
+    "digest": "d0a8f5ba484d76e0448408819f2d92025061a6138c52319033f19b0898ced7d7"
   },
   "anchor:noMoraleChant": {
-    "dps": 65185.99,
-    "totalDamage": 3911159.4,
+    "dps": 65221.91,
+    "totalDamage": 3913314.59,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -2194,7 +2194,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34351.49,
+        "expectedDamage": 34420.4,
         "castCount": 1
       },
       {
@@ -2202,7 +2202,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 414832.28,
+        "expectedDamage": 415624.58,
         "castCount": 0
       },
       {
@@ -2210,7 +2210,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 70273.12,
+        "expectedDamage": 70691.56,
         "castCount": 0
       },
       {
@@ -2314,7 +2314,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 515780.54,
+        "expectedDamage": 516656.07,
         "castCount": 1
       }
     ],
@@ -2323,11 +2323,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "ba1cce9ac736b14e6576334cec5009848c5335858f0df02cd739a34010c359f1"
+    "digest": "824d528ef77847b3e64c6d61eb237262d29262bf54897d1555fd7af6b6e77c02"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40726.52,
-    "totalDamage": 2443590.99,
+    "dps": 40751.45,
+    "totalDamage": 2445087.12,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.85s would be illegal in the game: needs Endurance ≥ 50 (has 20.64).",
@@ -2358,7 +2358,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 135690.93,
+        "expectedDamage": 136501.96,
         "castCount": 0
       },
       {
@@ -2382,7 +2382,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 11672.77,
+        "expectedDamage": 11696.27,
         "castCount": 1
       },
       {
@@ -2390,7 +2390,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 105,
-        "expectedDamage": 298374.3,
+        "expectedDamage": 298950.41,
         "castCount": 0
       },
       {
@@ -2518,7 +2518,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 14345.68,
+        "expectedDamage": 14431.18,
         "castCount": 1
       }
     ],
@@ -2527,11 +2527,11 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "374973427d3a9fa1c214e41bfe39b9bcb12ddcbbd95da6b62f501ea92ebfc29a"
+    "digest": "46a6539fbde15667a91286361f107506f8e5b4b9dfc8e82cb77f2b64de8b677b"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 44375.53,
-    "totalDamage": 2662531.63,
+    "dps": 44400.66,
+    "totalDamage": 2664039.36,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
@@ -2578,7 +2578,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35814.76,
+        "expectedDamage": 35887.29,
         "castCount": 1
       },
       {
@@ -2586,7 +2586,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 318098.96,
+        "expectedDamage": 318712.15,
         "castCount": 0
       },
       {
@@ -2594,7 +2594,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69826.25,
+        "expectedDamage": 70242.88,
         "castCount": 0
       },
       {
@@ -2706,7 +2706,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 235064.44,
+        "expectedDamage": 235469.82,
         "castCount": 1
       }
     ],
@@ -2715,11 +2715,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "e67f0d70312a5b8986c44b0a942f5458abb5bb0ed18761d48a3822bba4ca0d9e"
+    "digest": "1580687ba106fe2f535336e77489ec6dae84f8cc4116f1c1df571cc88c827cc7"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 43520.47,
-    "totalDamage": 2611227.92,
+    "dps": 43545.02,
+    "totalDamage": 2612700.93,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
@@ -2766,7 +2766,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35136.77,
+        "expectedDamage": 35207.58,
         "castCount": 1
       },
       {
@@ -2774,7 +2774,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 311995.63,
+        "expectedDamage": 312594.13,
         "castCount": 0
       },
       {
@@ -2782,7 +2782,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68485.06,
+        "expectedDamage": 68893.2,
         "castCount": 0
       },
       {
@@ -2894,7 +2894,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 230546.43,
+        "expectedDamage": 230942,
         "castCount": 1
       }
     ],
@@ -2903,11 +2903,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "7c2b2fd1d8ad23a37cfa314b4b75567d588380e8f4bf83b7eb66e53f4f0ea9d8"
+    "digest": "11f3ebed5c301be3ff8891d982ce739734583b24b26497733f2569118e463d4d"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 43154.33,
-    "totalDamage": 2589259.59,
+    "dps": 43178.72,
+    "totalDamage": 2590723.17,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
@@ -2954,7 +2954,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34703.01,
+        "expectedDamage": 34773.41,
         "castCount": 1
       },
       {
@@ -2962,7 +2962,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 308501.73,
+        "expectedDamage": 309097.15,
         "castCount": 0
       },
       {
@@ -2970,7 +2970,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 67700.89,
+        "expectedDamage": 68104.97,
         "castCount": 0
       },
       {
@@ -3082,7 +3082,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 229655.76,
+        "expectedDamage": 230049.44,
         "castCount": 1
       }
     ],
@@ -3091,11 +3091,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "5ad49b81846943dc06f851430403939fc8093f2ab05b042ffbb9bc5bc086006b"
+    "digest": "f3647b93ecb6ba92f4602e2dec6cff87297b11992b4e34bbee1a8d6202de9355"
   },
   "anchor:noSet": {
-    "dps": 64561.23,
-    "totalDamage": 3873673.75,
+    "dps": 64598.87,
+    "totalDamage": 3875932.27,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3131,7 +3131,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33487.04,
+        "expectedDamage": 33558.22,
         "castCount": 1
       },
       {
@@ -3139,7 +3139,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 404532.51,
+        "expectedDamage": 405370.04,
         "castCount": 0
       },
       {
@@ -3147,7 +3147,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69114.96,
+        "expectedDamage": 69534.14,
         "castCount": 0
       },
       {
@@ -3259,7 +3259,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 504018.7,
+        "expectedDamage": 504949.34,
         "castCount": 1
       }
     ],
@@ -3268,11 +3268,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "769271ea6f2a7893b5cc40a2b97cc0161f8fdf103b8f5bb05cf450f188aef524"
+    "digest": "0f69ba798eff17ff0873e4341da239ca3df2785e6e4cd1450da3d3d45e4a0ca1"
   },
   "anchor:set-Jadeware": {
-    "dps": 69600.29,
-    "totalDamage": 4176017.66,
+    "dps": 69639.11,
+    "totalDamage": 4178346.79,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3308,7 +3308,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33970.45,
+        "expectedDamage": 34041.71,
         "castCount": 1
       },
       {
@@ -3316,7 +3316,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 438178.05,
+        "expectedDamage": 439053.26,
         "castCount": 0
       },
       {
@@ -3324,7 +3324,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75174.87,
+        "expectedDamage": 75626.45,
         "castCount": 0
       },
       {
@@ -3436,7 +3436,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 511538.33,
+        "expectedDamage": 512469.4,
         "castCount": 1
       }
     ],
@@ -3445,11 +3445,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d2fd0bce209c5bde7f2954829a2b7e7bd8f43cfb799f4d5edf05aed1a33b43ab"
+    "digest": "4122eb84a33e76517c74bb0aacdb96512ac2901a6b40f791a99b3ecbc96efc84"
   },
   "anchor:set-Mistwillow": {
-    "dps": 65278.9,
-    "totalDamage": 3916733.71,
+    "dps": 65316.79,
+    "totalDamage": 3919007.48,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3485,7 +3485,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33965.99,
+        "expectedDamage": 34037.62,
         "castCount": 1
       },
       {
@@ -3493,7 +3493,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 409787.8,
+        "expectedDamage": 410630.24,
         "castCount": 0
       },
       {
@@ -3501,7 +3501,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 70029.84,
+        "expectedDamage": 70453.81,
         "castCount": 0
       },
       {
@@ -3613,7 +3613,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 506244.64,
+        "expectedDamage": 507180.36,
         "castCount": 1
       }
     ],
@@ -3622,11 +3622,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "2354c339060992aaac88cb9e16e1ec1f2c42060f5dce277ea28e17f248d0c887"
+    "digest": "70a4220469936b0fdffde0c93d3b807cd9a16c5c0ebeb4e910f283d640a288ae"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 66111.78,
-    "totalDamage": 3966706.87,
+    "dps": 66150.4,
+    "totalDamage": 3969024.21,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3662,7 +3662,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34557.33,
+        "expectedDamage": 34630.43,
         "castCount": 1
       },
       {
@@ -3670,7 +3670,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 416272.99,
+        "expectedDamage": 417131.44,
         "castCount": 0
       },
       {
@@ -3678,7 +3678,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71202.85,
+        "expectedDamage": 71634.26,
         "castCount": 0
       },
       {
@@ -3790,7 +3790,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 514427.75,
+        "expectedDamage": 515382.13,
         "castCount": 1
       }
     ],
@@ -3799,11 +3799,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "4573b9cec7a9131a3057d4472fac390682bd0b3306d09e93011c9784170995a1"
+    "digest": "387345cf4148da23bdb0395b565c2ae7f94f25bb39170ac5053e86abed62c05c"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66543.8,
-    "totalDamage": 3992627.99,
+    "dps": 66582.4,
+    "totalDamage": 3994943.76,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3839,7 +3839,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34958.11,
+        "expectedDamage": 35031.96,
         "castCount": 1
       },
       {
@@ -3847,7 +3847,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 416366.78,
+        "expectedDamage": 417224.01,
         "castCount": 0
       },
       {
@@ -3855,7 +3855,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 72018.58,
+        "expectedDamage": 72454.75,
         "castCount": 0
       },
       {
@@ -3967,7 +3967,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 516302.09,
+        "expectedDamage": 517250.62,
         "castCount": 1
       }
     ],
@@ -3976,11 +3976,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "fff62f85e8e12f48bfa9c2d4d4035d5d35cc02c036de3c36660294885d7c83f1"
+    "digest": "18ea335b01102b3fcfbd70081f23a872556ce0a976e50885071d86985917b40c"
   },
   "defaults:umbra": {
-    "dps": 11783.04,
-    "totalDamage": 706982.11,
+    "dps": 11793.88,
+    "totalDamage": 707632.82,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -4038,7 +4038,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 5682.29,
+        "expectedDamage": 5701.9,
         "castCount": 1
       },
       {
@@ -4046,7 +4046,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 8,
-        "expectedDamage": 9578.01,
+        "expectedDamage": 9609.82,
         "castCount": 0
       },
       {
@@ -4054,7 +4054,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 78593.02,
+        "expectedDamage": 79138.07,
         "castCount": 0
       },
       {
@@ -4174,7 +4174,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 7821.64,
+        "expectedDamage": 7875.87,
         "castCount": 1
       }
     ],
@@ -4183,6 +4183,6 @@
       "buffWindows": 123,
       "casts": 92
     },
-    "digest": "14bdcbc957570ccf6a88fbce3f5fa9ee3ebde948a4e7c7282471160e2697784e"
+    "digest": "d4d8cc40ac8db27719d817cfa5c286808310047615c119576bcfd4269e4d932c"
   }
 }

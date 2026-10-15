@@ -24,16 +24,16 @@ export const toadCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 40,
-      physMultiplier: 0.54063,
-      attributeMultiplier: 0.810945,
-      physFixed: 81.23,
+      physMultiplier: 0.540669,
+      attributeMultiplier: 0.811004,
+      physFixed: 84.9328,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 68,
-      physMultiplier: 3.24377,
-      attributeMultiplier: 4.865655,
-      physFixed: 487.39,
+      physMultiplier: 3.244011,
+      attributeMultiplier: 4.866017,
+      physFixed: 509.5968,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.toadPoison })],
     }),

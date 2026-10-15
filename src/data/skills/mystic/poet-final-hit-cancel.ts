@@ -25,9 +25,9 @@ export const poetFinalHitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.70541,
-      attributeMultiplier: 2.558115,
-      physFixed: 256.37,
+      physMultiplier: 1.705588,
+      attributeMultiplier: 2.558382,
+      physFixed: 268.184,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
