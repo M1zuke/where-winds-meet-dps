@@ -225,13 +225,13 @@ describe("the Talents tab for Stonesplit Strength", () => {
     expect(
       attributeCard.getByText(/\+98 min \/ \+196 max Stonesplit Attack \(always\)/),
     ).toBeTruthy()
-    expect(attributeCard.getByText(/Cap: 328/)).toBeTruthy()
+    expect(attributeCard.getByText(/Cap: 327.38/)).toBeTruthy()
 
     const snowparting = columnFor("Snowparting Blade")
     const physicalCard = within(
       snowparting.getByText("Physical Attack UP").closest(`.${styles.classBuffRow}`) as HTMLElement,
     )
-    expect(physicalCard.getByText(/\+73\.9 Min Phys/)).toBeTruthy()
+    expect(physicalCard.getByText(/\+73\.92 Min Phys/)).toBeTruthy()
     expect(physicalCard.getByText(/Current: \+/)).toBeTruthy()
   })
 

@@ -79,6 +79,10 @@ function formatStatValue(stat: TalentStat, value: number): string {
   return `${sign}${Math.round(value * 100) / 100}`
 }
 
+function formatScaleCap(value: number): string {
+  return String(Number(value.toFixed(2)))
+}
+
 function talentCurrent(row: MartialArtsTalent, sources: Record<ScalingSource, number>): number {
   const attr = sources[row.scalesWith] ?? 0
   const scale = row.scaleMax > 0 ? Math.min(attr / row.scaleMax, 1) : 1
@@ -693,7 +697,9 @@ export function TalentsTab({ inputs }: Props) {
     const row = talentsByName.get(line.skill)
     if (!row) return null
     const current = talentCurrent(row, sources)
-    const capDisplay = RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax
+    const capDisplay = formatScaleCap(
+      RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax,
+    )
     return (
       <div className={styles.classBuffLine} key={`talent:${line.skill}`}>
         <div className={styles.classBuffHead}>
@@ -856,9 +862,9 @@ export function TalentsTab({ inputs }: Props) {
               <div className={styles.classBuffsList}>
                 {talents.map((row) => {
                   const current = talentCurrent(row, sources)
-                  const capDisplay = RATE_SOURCES.has(row.scalesWith)
-                    ? row.scaleMax * 100
-                    : row.scaleMax
+                  const capDisplay = formatScaleCap(
+                    RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax,
+                  )
                   return (
                     <div key={row.id} className={styles.classBuffRow}>
                       <div className={styles.classBuffHead}>
