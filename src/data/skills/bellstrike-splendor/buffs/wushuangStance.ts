@@ -8,4 +8,10 @@ export const WUSHUANG_STANCE_ACTIVE: TriggerCondition = {
   stacks: 1,
 }
 
+export const WUSHUANG_STANCE_ABSENT: TriggerCondition = {
+  buffId: BUFF.wushuangStance,
+  op: "lt",
+  stacks: 1,
+}
+
 export const wushuangStanceConsume = applyBuff({ target: BUFF.wushuangStance, stacks: -1 })

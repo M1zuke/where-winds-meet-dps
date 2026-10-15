@@ -76,6 +76,7 @@ import { V72__stonesplitHitFrameRetiming } from "./V72__stonesplitHitFrameRetimi
 import { V73__draughtGauntletRetimingAndReveldriftNerf } from "./V73__draughtGauntletRetimingAndReveldriftNerf"
 import { V74__springAwayBulletsExtendMarkPerHit } from "./V74__springAwayBulletsExtendMarkPerHit"
 import { V75__springAwayHoverCueTiming } from "./V75__springAwayHoverCueTiming"
+import { V76__vagrantSwordChargeTiming } from "./V76__vagrantSwordChargeTiming"
 
 export type {
   CustomSkillMigration,
@@ -220,6 +221,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V73__draughtGauntletRetimingAndReveldriftNerf,
   V74__springAwayBulletsExtendMarkPerHit,
   V75__springAwayHoverCueTiming,
+  V76__vagrantSwordChargeTiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

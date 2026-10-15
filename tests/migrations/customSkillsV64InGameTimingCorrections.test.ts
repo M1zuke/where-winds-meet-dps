@@ -9,6 +9,7 @@ import {
   V64__inGameTimingCorrections,
   healSkill,
 } from "../../src/migrations/customSkills/V64__inGameTimingCorrections"
+import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -109,7 +110,9 @@ describe("healSkill", () => {
 
   it("shortens the single-bolt Vagrant Sword to the built-in's cast length", () => {
     const id = "bellstrikeSplendor-swordheavycharged"
-    expect((healSkill(clone(skillIn(STORE, id))) as Skill).castFrames).toBe(builtin(id).castFrames)
+    expect(
+      (healVagrantSwordChargeTiming(healSkill(clone(skillIn(STORE, id)))) as Skill).castFrames,
+    ).toBe(builtin(id).castFrames)
   })
 
   it("leaves a Vagrant Sword copy the user edited alone", () => {

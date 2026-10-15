@@ -10,6 +10,8 @@ import {
   energySurgeEnduranceGain,
 } from "./buffs/energySurgeGrant"
 import { multiWaveWindowReleaseGrantLate } from "./buffs/multiWaveWindowGrant"
+import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
+import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import {
   VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
@@ -44,7 +46,10 @@ export const swordHeavyCharged2Hit = defineSkill({
   serverWaitsInCast: 1,
   // In-game values as of 2026-09-24: a Deflect-cancelled 2nd wave of a
   // three-wave release only exists while Sword Morph's multi-wave window holds.
-  castConditions: [{ buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 }],
+  castConditions: [
+    { buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 },
+    WUSHUANG_STANCE_ABSENT,
+  ],
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.swordSlashDamageBoost,
@@ -56,16 +61,17 @@ export const swordHeavyCharged2Hit = defineSkill({
     ...NAMELESS_SWORD_RECEIVES,
   ],
   // Cast length to the earliest next input: Deflect ends the release right
-  // after the second wave's own launch, after an ≥84 f hold to the level-2
-  // threshold (in-game values as of 2026-09-24).
-  castFrames: 101,
+  // after the second wave's own launch, after an ≥84.6 f hold to the level-2
+  // threshold (in-game values as of 2026-10-15).
+  castFrames: 102,
   meterDrains: DRAIN_WITH_CHARGE_RELEASE,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 90,
+      frame: 91,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
@@ -80,7 +86,8 @@ export const swordHeavyCharged2Hit = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 100,
+      frame: 101,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
@@ -91,5 +98,5 @@ export const swordHeavyCharged2Hit = defineSkill({
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

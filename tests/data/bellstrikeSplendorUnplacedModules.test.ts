@@ -24,7 +24,7 @@ const hitValues = (skillId: string) =>
 
 describe.each([
   [SKILL.swordSpecialDash, CAST.swordSpecialDash, "Sword - Dash", 46],
-  [SKILL.swordHeavyChargedTier1, CAST.swordHeavyChargedTier1, "Vagrant Sword", 82],
+  [SKILL.swordHeavyChargedTier1, CAST.swordHeavyChargedTier1, "Vagrant Sword", 83],
   [SKILL.swordLightAttack, CAST.splendorSwordLightChain, "Sword - Light Attack", 133],
   [SKILL.spearLightAttack, CAST.splendorSpearLightChain, "Spear - Light Attack", 153],
   [SKILL.swordHeavyAttack, CAST.splendorSwordHeavyChain, "Sword - Heavy Attack", 174],
@@ -121,8 +121,8 @@ describe("Sword - Dash after Shadow Step", () => {
 describe("Vagrant Sword - first charge tier", () => {
   const tier1 = splendorSkill(SKILL.swordHeavyChargedTier1)
 
-  it("launches one bolt at 57 at 36 m/s", () => {
-    expect(hitValues(SKILL.swordHeavyChargedTier1)).toEqual([[57, 1.51032, 2.26548, 419, 228]])
+  it("launches one bolt at 58 at 36 m/s", () => {
+    expect(hitValues(SKILL.swordHeavyChargedTier1)).toEqual([[58, 1.51032, 2.26548, 419, 228]])
     expect(tier1.hits[0]!.projectile).toEqual({ speedMetersPerSecond: 36, maxTravelFrames: 24 })
   })
 
@@ -151,9 +151,9 @@ describe("Vagrant Sword - first charge tier", () => {
     expect(cuts.map((trigger) => trigger.targetId)).toEqual(["energySurgeGrant"])
   })
 
-  it("drains 11 Endurance over its 45 f hold", () => {
+  it("drains 11 Endurance over its 45.6 f hold", () => {
     expect(tier1.meterDrains).toEqual([
-      { meterId: "endurance", perSecond: 20, fromFrame: 12, stopAfterSec: 0.55 },
+      { meterId: "endurance", perSecond: 20, fromFrame: 12.6, stopAfterSec: 0.55 },
     ])
   })
 })

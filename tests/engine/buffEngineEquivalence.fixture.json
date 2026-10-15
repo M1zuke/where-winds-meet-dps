@@ -185966,7 +185966,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 65,
+        "count": 66,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-cloudstep",
@@ -185998,6 +185998,7 @@
           "bellstrikeSplendor-sword-sprint-dash",
           "bellstrikeSplendor-swordheavycharged",
           "bellstrikeSplendor-swordheavycharged-2-hit",
+          "bellstrikeSplendor-swordheavycharged-2-hit-wushuang",
           "bellstrikeSplendor-swordheavycharged-prepull",
           "bellstrikeSplendor-swordheavycharged-tier-1",
           "bellstrikeSplendor-swordheavycharged-wushuang",
@@ -186034,7 +186035,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "e5d4a4c40eedc17ab936f79a93b37518fcac618c6dff4772b4f4aac0ed00b8d6"
+        "digest": "4a35d2a3cda267a05cef8704e65a8a930cd13201eb60b2fc4023767434e4cbbe"
       },
       "debuffs": {
         "count": 6,

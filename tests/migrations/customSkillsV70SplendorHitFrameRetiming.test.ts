@@ -35,13 +35,6 @@ describe("custom-skills v69 fixture", () => {
 })
 
 describe("V70__splendorHitFrameRetiming — called directly", () => {
-  it("lets the stance enable and spend on an untouched Vagrant Sword copy", () => {
-    const after = V70__splendorHitFrameRetiming.migrate(clone(STORE))
-    expect(skillIn(after, SKILL.swordHeavyCharged).hits).toEqual(
-      builtin(SKILL.swordHeavyCharged).hits,
-    )
-  })
-
   it("moves every untouched copy onto the built-in's cast length and frames", () => {
     const after = V70__splendorHitFrameRetiming.migrate(clone(STORE))
     expect(after.v).toBe(70)

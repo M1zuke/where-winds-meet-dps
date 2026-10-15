@@ -22,6 +22,7 @@ import { stormDanceStage2 } from "./stormdance-stage-2"
 import { stormDanceStage2Wushuang } from "./stormdance-stage-2-wushuang"
 import { swordHeavyCharged } from "./swordheavycharged"
 import { swordHeavyCharged2Hit } from "./swordheavycharged-2-hit"
+import { swordHeavyCharged2HitWushuang } from "./swordheavycharged-2-hit-wushuang"
 import { swordHeavyChargedPrepull } from "./swordheavycharged-prepull"
 import { swordq } from "./swordq"
 import { swordq2nd } from "./swordq-2nd"
@@ -36,6 +37,7 @@ export const SKILLS = [
   swordHeavyCharged,
   swordHeavyChargedPrepull,
   swordHeavyCharged2Hit,
+  swordHeavyCharged2HitWushuang,
   energySurge,
   swordq,
   swordq2nd,

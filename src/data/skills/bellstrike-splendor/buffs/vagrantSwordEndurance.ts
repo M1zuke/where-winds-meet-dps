@@ -25,10 +25,10 @@ export const VAGRANT_SWORD_DRAIN: MeterDrain[] = [
 export const VAGRANT_SWORD_WUSHUANG_DRAIN: MeterDrain[] = [
   { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 1.2 / 1.5 },
 ]
-// In-game values as of 2026-10-06: the 45 f hold of the first charge tier
+// In-game values as of 2026-10-15: the 45.6 f hold of the first charge tier
 // drains 0.55 s of the same 20 / s, 11 in all.
 export const VAGRANT_SWORD_TIER_1_DRAIN: MeterDrain[] = [
-  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12, stopAfterSec: 0.55 },
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 0.55 },
 ]
 export const VAGRANT_SWORD_FREEZE: MeterFreeze[] = [{ meterId: enduranceMeter.id, fromFrame: 12 }]
 
