@@ -151,6 +151,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.085,
       scalesWith: "agility",
       scaleMax: 280,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.0912, 19: 0.0988, 20: 0.111, 21: 0.1231 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Physical Attack UP",
@@ -158,6 +161,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.9,
       scalesWith: "agility",
       scaleMax: 280,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Mo Blade Stonesplit Attack Min",
@@ -193,6 +199,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "stonesplit.min",
       scaleMax: 328,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      scaleMaxByBreakthrough: { 18: 351.2, 19: 375.0, 20: 410.7, 21: 440.5 },
     },
     {
       skill: "Attribute Damage Scale",
@@ -200,6 +209,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "stonesplit.min",
       scaleMax: 328,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      scaleMaxByBreakthrough: { 18: 351.2, 19: 375.0, 20: 410.7, 21: 440.5 },
     },
   ]),
   silkbindJade: defineClassSkillBoosts([
@@ -279,6 +291,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.085,
       scalesWith: "agility",
       scaleMax: 280,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.0912, 19: 0.0988, 20: 0.111, 21: 0.1231 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Physical Attack UP",
@@ -286,6 +301,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.9,
       scalesWith: "agility",
       scaleMax: 280,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Gauntlets Bamboocut Attack Min",
@@ -321,6 +339,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "bamboocut.min",
       scaleMax: 328,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      scaleMaxByBreakthrough: { 18: 351.2, 19: 375.0, 20: 410.7, 21: 440.5 },
     },
     {
       skill: "Attribute Damage Scale",
@@ -328,6 +349,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "bamboocut.min",
       scaleMax: 328,
+      // In-game talent caps as of 2026-10-15.
+      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      scaleMaxByBreakthrough: { 18: 351.2, 19: 375.0, 20: 410.7, 21: 440.5 },
     },
   ]),
 }

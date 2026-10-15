@@ -141,15 +141,45 @@ describe("user-defined martial-arts talents", () => {
     // Sword and Spear each grant their own independent +98/+196 Bellstrike
     // Attack talent row — a deliberate double contribution, not a duplicate.
     it("Sword + Spear flat Bellstrike Attack bonuses stack (double contribution)", () => {
-      const contributions = userTalentContributions(getDefaultTalentsForClass("bellstrikeUmbra", 17), {
-        power: 280,
-        agility: 0,
-        momentum: 0,
-        "bellstrike.max": 655,
-      })
+      const contributions = userTalentContributions(
+        getDefaultTalentsForClass("bellstrikeUmbra", 17),
+        {
+          power: 280,
+          agility: 0,
+          momentum: 0,
+          "bellstrike.max": 655,
+        },
+      )
       expect(contributions["bellstrike.min"]).toBe(196)
       expect(contributions["bellstrike.max"]).toBe(392)
     })
+
+    it.each(["stonesplitStrength", "bamboocutDraught"])(
+      "%s raises its Agility caps and Min-attack clamps at breakthrough 18-21",
+      (classId) => {
+        const at = (breakthrough: number) =>
+          Object.fromEntries(
+            getDefaultTalentsForClass(classId, breakthrough).map((d) => [d.name, d]),
+          )
+        expect(at(17)["Physical Attack UP"].maxBonus).toBe(73.9)
+        expect(at(17)["Physical Attack UP"].scaleMax).toBe(280)
+        expect(at(18)["Physical Attack UP"].maxBonus).toBe(79.2)
+        expect(at(18)["Physical Attack UP"].scaleMax).toBe(300)
+        expect(at(21)["Physical Attack UP"].maxBonus).toBe(106.92)
+        expect(at(21)["Physical Attack UP"].scaleMax).toBe(405)
+        expect(at(18)["Critical Rate UP"].maxBonus).toBeCloseTo(0.0912, 6)
+        expect(at(21)["Critical Rate UP"].maxBonus).toBeCloseTo(0.1231, 6)
+        expect(at(17)["Attribute Damage Scale"].scaleMax).toBe(328)
+        expect(at(19)["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.126, 6)
+        expect(at(19)["Attribute Damage Scale"].scaleMax).toBe(375)
+        const penetrationName =
+          classId === "stonesplitStrength"
+            ? "Stonesplit Penetration Scale"
+            : "Bamboocut Penetration Scale"
+        expect(at(21)[penetrationName].maxBonus).toBeCloseTo(0.296, 6)
+        expect(at(21)[penetrationName].scaleMax).toBe(440.5)
+      },
+    )
 
     it("the stage attack rows follow the breakthrough, and nothing unrelated moves", () => {
       const at17 = getDefaultTalentsForClass("bellstrikeUmbra", 17)
