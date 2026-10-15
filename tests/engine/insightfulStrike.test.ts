@@ -1,8 +1,3 @@
-// Concentration's own effects are modeled on the timeline path
-// (`concentration.test.ts` / `engine/buffs/concentration.ts`) with a
-// game-accurate activation counter, so the panel must NOT bake a flat,
-// always-on directAffinityRate for this inner way — that would count the same
-// effect through two channels.
 import { describe, expect, it } from "vitest"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
@@ -101,6 +96,25 @@ describe("Insightful Strike — Concentration's all-damage bonus is counted once
     expect(allDamageEffects).toHaveLength(1)
     expect(allDamageEffects![0].amount).toBeGreaterThan(0)
     expect(allDamageEffects![0].amount).toBeLessThan(0.015)
+  })
+})
+
+describe("Insightful Strike — the target HP gate on the second direct affinity half", () => {
+  const FIRST_HIT_FRAME = 2 * FPS
+  const directAffinityAt = (frame: number) => {
+    const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])
+    const mechanic = insightfulStrikeMechanic()
+    const state = {
+      schedule: { firstEventSec: FIRST_HIT_FRAME / FPS, getActiveProbAtTime: () => 1 },
+      tier6: false,
+    }
+    const contribution = mechanic.contributeAt?.(state, frame, makeSkill(CLASS_ID), setup)
+    return contribution?.effects?.find((effect) => effect.statKey === "directAffinityRate")?.amount
+  }
+
+  it("is off on the first hit and on after the target has taken damage", () => {
+    expect(directAffinityAt(FIRST_HIT_FRAME)).toBeCloseTo(0.015, 9)
+    expect(directAffinityAt(FIRST_HIT_FRAME + 1)).toBeCloseTo(0.03, 9)
   })
 })
 

@@ -1,77 +1,127 @@
-// Deliberate divergence from the site's `concentration` def
-// (`.tmp/site/deobfuscated.js` ~L5570-5590): the site treats Concentration as
-// always-on once the inner way is selected — its `counterMechanic` is present
-// in the def's data but never actually evaluated at runtime in the extracted
-// bundle. Here it's modeled as a game-accurate 4-hit ramp/10s window.
 import { mulberry32 } from "../rng"
 
-const STEP_SEC = 0.05
 const WINDOW_SEC = 10
-const REQUIRED_HITS = 4
+const FOCUS_MAX = 50
+const FOCUS_DECAY_DELAY_SEC = 3
+const FOCUS_DECAY_STEP_SEC = 0.1
+const FOCUS_DECAY_PER_STEP = 0.5
 const SEED_OFFSET = 9173
 const SIM_RUNS = 500
+const TIME_EPSILON_SEC = 1e-6
+
+export interface ConcentrationRules {
+  eventTimesSec: readonly number[]
+  rollProbability: number
+  focusPerAffinity: number
+  rollBonusWhileActive: number
+  rollBonusWhileActiveAfterFirstDamage: number
+}
 
 export interface ConcentrationSchedule {
+  readonly firstEventSec: number
   getActiveProbAtTime(tSec: number): number
 }
 
-const INACTIVE_SCHEDULE: ConcentrationSchedule = { getActiveProbAtTime: () => 0 }
+const INACTIVE_SCHEDULE: ConcentrationSchedule = {
+  firstEventSec: Infinity,
+  getActiveProbAtTime: () => 0,
+}
 
-export function concentrationActiveProbSchedule(
-  weaponHitTimesSec: readonly number[],
-  p: number,
-  rotationDurationSec: number,
-  runRng?: () => number,
-): ConcentrationSchedule {
-  if (weaponHitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return INACTIVE_SCHEDULE
+function countBelow(sorted: Float64Array, value: number): number {
+  let low = 0
+  let high = sorted.length
+  while (low < high) {
+    const middle = (low + high) >>> 1
+    if (sorted[middle] < value) low = middle + 1
+    else high = middle
+  }
+  return low
+}
 
-  // The grid starts at the first weapon hit, not the DPS timer's own start —
-  // Concentration reacts to weapon hits, so relabelling where the timer opens
-  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
-  const originSec = weaponHitTimesSec[0]
-  const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
-  const accum = new Float64Array(steps)
-  const simRuns = runRng ? 1 : SIM_RUNS
+function countAtMost(sorted: Float64Array, value: number): number {
+  let low = 0
+  let high = sorted.length
+  while (low < high) {
+    const middle = (low + high) >>> 1
+    if (sorted[middle] <= value) low = middle + 1
+    else high = middle
+  }
+  return low
+}
 
-  for (let sim = 0; sim < simRuns; sim++) {
-    const rng = runRng ?? mulberry32(SEED_OFFSET + sim)
-    let counter = 0
-    let active = false
-    let lastAffinityHitTime = -Infinity
-    let hitIdx = 0
-    for (let step = 0; step < steps; step++) {
-      const now = originSec + step * STEP_SEC
-      while (hitIdx < weaponHitTimesSec.length && weaponHitTimesSec[hitIdx] <= now) {
-        const hitTime = weaponHitTimesSec[hitIdx]
-        if (active && hitTime - lastAffinityHitTime > WINDOW_SEC) {
-          active = false
-          counter = 0
-        }
-        if (rng() < p) {
-          lastAffinityHitTime = hitTime
-          if (!active) {
-            counter += 1
-            if (counter >= REQUIRED_HITS) active = true
-          }
-        }
-        hitIdx++
-      }
-      if (active && now - lastAffinityHitTime > WINDOW_SEC) {
-        active = false
-        counter = 0
-      }
-      accum[step] += active ? 1 : 0
-    }
+function focusAt(focusAtDecayStart: number, decayStartSec: number, timeSec: number): number {
+  if (timeSec <= decayStartSec) return focusAtDecayStart
+  const steps = Math.floor((timeSec - decayStartSec) / FOCUS_DECAY_STEP_SEC + TIME_EPSILON_SEC)
+  return Math.max(0, focusAtDecayStart - FOCUS_DECAY_PER_STEP * steps)
+}
+
+function simulateRun(
+  rules: ConcentrationRules,
+  rng: () => number,
+  segmentStarts: number[],
+  segmentEnds: number[],
+): void {
+  let focusAtDecayStart = 0
+  let decayStartSec = -Infinity
+  let segmentStartSec = Infinity
+  let concentrationEndSec = -Infinity
+  const closeSegment = () => {
+    segmentStarts.push(segmentStartSec)
+    segmentEnds.push(concentrationEndSec)
+    concentrationEndSec = -Infinity
   }
 
-  const activeProb = new Float64Array(steps)
-  for (let step = 0; step < steps; step++) activeProb[step] = accum[step] / simRuns
+  rules.eventTimesSec.forEach((timeSec, eventIndex) => {
+    if (concentrationEndSec > -Infinity && timeSec >= concentrationEndSec - TIME_EPSILON_SEC) {
+      closeSegment()
+    }
+    const concentrationUp =
+      concentrationEndSec > -Infinity && timeSec > segmentStartSec + TIME_EPSILON_SEC
+    const targetHasTakenDamage = eventIndex > 0
+    const probability = Math.min(
+      1,
+      rules.rollProbability +
+        (concentrationUp
+          ? rules.rollBonusWhileActive +
+            (targetHasTakenDamage ? rules.rollBonusWhileActiveAfterFirstDamage : 0)
+          : 0),
+    )
+    if (!(rng() < probability)) return
+
+    const focus = focusAt(focusAtDecayStart, decayStartSec, timeSec)
+    const raisedFocus = Math.min(FOCUS_MAX, focus + rules.focusPerAffinity)
+    if (raisedFocus <= focus) return
+    focusAtDecayStart = raisedFocus
+    decayStartSec = timeSec + FOCUS_DECAY_DELAY_SEC
+    if (raisedFocus < FOCUS_MAX) return
+
+    if (concentrationEndSec === -Infinity) segmentStartSec = timeSec
+    concentrationEndSec = timeSec + WINDOW_SEC
+  })
+  if (concentrationEndSec > -Infinity) closeSegment()
+}
+
+export function concentrationActiveProbSchedule(
+  rules: ConcentrationRules,
+  runRng?: () => number,
+): ConcentrationSchedule {
+  if (rules.eventTimesSec.length === 0 || rules.rollProbability <= 0) return INACTIVE_SCHEDULE
+
+  const simRuns = runRng ? 1 : SIM_RUNS
+  const segmentStarts: number[] = []
+  const segmentEnds: number[] = []
+  for (let sim = 0; sim < simRuns; sim++) {
+    simulateRun(rules, runRng ?? mulberry32(SEED_OFFSET + sim), segmentStarts, segmentEnds)
+  }
+  const sortedStarts = Float64Array.from(segmentStarts).sort()
+  const sortedEnds = Float64Array.from(segmentEnds).sort()
 
   return {
+    firstEventSec: rules.eventTimesSec[0],
     getActiveProbAtTime(tSec: number): number {
-      if (tSec <= originSec) return activeProb[0]
-      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
-      return activeProb[idx]
+      const started = countBelow(sortedStarts, tSec - TIME_EPSILON_SEC)
+      const ended = countAtMost(sortedEnds, tSec + TIME_EPSILON_SEC)
+      return (started - ended) / simRuns
     },
   }
 }
