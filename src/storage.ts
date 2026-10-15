@@ -1338,7 +1338,7 @@ function hydrateSkill(s: Skill): Skill {
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
     castConditions: Array.isArray(s.castConditions)
-      ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      ? s.castConditions.filter(isTriggerCondition).map(migrateTriggerCondition)
       : s.castConditions,
     ...healSkillReach(id, s, reachTags),
   }
@@ -1794,7 +1794,7 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
       : undefined,
     triggersBuffsAtFrame: sanitizedFrameRecord(c.triggersBuffsAtFrame),
     castConditions: Array.isArray(c.castConditions)
-      ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      ? c.castConditions.filter(isTriggerCondition).map(migrateTriggerCondition)
       : undefined,
     meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
     meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,

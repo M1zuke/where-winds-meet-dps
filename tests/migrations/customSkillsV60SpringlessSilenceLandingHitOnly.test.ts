@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V60__springlessSilenceLandingHitOnly"
 import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
+import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV59File from "./testCustomSkills/v59/store.json"
@@ -32,8 +33,8 @@ describe("custom-skills v59 fixture", () => {
     expect(skillIn(STORE, SPRINGLESS_ID).hits).toHaveLength(2)
   })
 
-  it("the built-in carries the landing hit alone", () => {
-    expect(builtinSpringless().hits).toHaveLength(1)
+  it("the built-in carries the landing hit as its only damaging hit", () => {
+    expect(builtinSpringless().hits.filter((hit) => hit.physMultiplier > 0)).toHaveLength(1)
   })
 })
 
@@ -42,9 +43,10 @@ describe("healSkill", () => {
     const original = clone(skillIn(STORE, SPRINGLESS_ID))
     const healed = healSkill(clone(original)) as Skill
     expect(healed.hits).toEqual([{ ...original.hits[1], id: "hit-0" }])
-    expect((healJadeHitLandingsGrantsAndClipTimings(healed) as Skill).hits[0]).toEqual(
-      builtinSpringless().hits[0],
-    )
+    expect(
+      (healJadeAvailabilityAndRecharge(healJadeHitLandingsGrantsAndClipTimings(healed)) as Skill)
+        .hits[0],
+    ).toEqual(builtinSpringless().hits[0])
   })
 
   it("keeps every other field of the copy", () => {
@@ -103,7 +105,11 @@ describe("V60__springlessSilenceLandingHitOnly — through the chain", () => {
     expect(result.applied).toEqual(["V60__springlessSilenceLandingHitOnly"])
     expect(result.blob.v).toBe(60)
     expect(
-      (healJadeHitLandingsGrantsAndClipTimings(skillIn(result.blob, SPRINGLESS_ID)) as Skill).hits,
+      (
+        healJadeAvailabilityAndRecharge(
+          healJadeHitLandingsGrantsAndClipTimings(skillIn(result.blob, SPRINGLESS_ID)),
+        ) as Skill
+      ).hits,
     ).toEqual(builtinSpringless().hits)
     expect(skillIn(result.blob, USER_AUTHORED_ID)).toEqual(skillIn(STORE, USER_AUTHORED_ID))
   })

@@ -6,6 +6,7 @@ import { makeStep } from "../../src/engine/rotation"
 import { testRotation } from "../builtins"
 import { fanlightcharged } from "../../src/data/skills/silkbind-jade/fanlightcharged"
 import { fanspecial } from "../../src/data/skills/silkbind-jade/fanspecial"
+import { fanspecialReturn } from "../../src/data/skills/silkbind-jade/fanspecial-return"
 import { umbq } from "../../src/data/skills/silkbind-jade/umbq"
 import type { Inputs } from "../../src/engine/types"
 
@@ -27,7 +28,11 @@ function forsakenFameInputs(distanceMeters: number, gourdTossTier: number | null
   const steps =
     gourdTossTier === null
       ? [makeStep({ skillId: fanlightcharged.id })]
-      : [makeStep({ skillId: fanspecial.id }), makeStep({ skillId: fanlightcharged.id })]
+      : [
+          makeStep({ skillId: fanspecial.id }),
+          makeStep({ skillId: fanspecialReturn.id }),
+          makeStep({ skillId: fanlightcharged.id }),
+        ]
   return {
     ...defaultInputs,
     classId: CLASS,
@@ -79,7 +84,10 @@ describe("Forsaken Fame's whirlwind", () => {
       fanlightcharged.name,
     )
     const closingMeters = FAR_METERS - 1.75 - 1.75
-    expectWithinAFrame(frame!, fanspecial.castFrames + 60 + (closingMeters / 30) * 60)
+    expectWithinAFrame(
+      frame!,
+      fanspecial.castFrames + fanspecialReturn.castFrames + 60 + (closingMeters / 30) * 60,
+    )
   })
 })
 

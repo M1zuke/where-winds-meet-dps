@@ -71,6 +71,8 @@ export const CAST = {
   fanQCancel: "cast:fanQCancel",
   fanQPrepull: "cast:fanQPrepull",
   fanSpecial: "cast:fanSpecial",
+  fanSpecialReturn: "cast:fanSpecialReturn",
+  fanSpecialWindriderGrant: "cast:fanSpecialWindriderGrant",
   fluteOfTheTidesCancel: "cast:fluteOfTheTidesCancel",
   fluteOfTheTidesFull: "cast:fluteOfTheTidesFull",
   fluteOfTheTidesPrepull: "cast:fluteOfTheTidesPrepull",

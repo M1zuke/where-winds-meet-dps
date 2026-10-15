@@ -365,8 +365,9 @@ export function isTriggerCondition(value: unknown): value is TriggerCondition {
 }
 
 // `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
-// condition — a hit's or a variant's condition never gates a generated cast.
-function hasBuffEngineSource(value: unknown): boolean {
+// condition and on a `castConditions` entry — a hit's or a variant's condition
+// never reads the buff engine.
+export function hasBuffEngineSource(value: unknown): boolean {
   if (!value || typeof value !== "object") return false
   const record = value as Record<string, unknown>
   if (record.source === "buffEngine") return true
@@ -721,7 +722,7 @@ export function isSkill(x: unknown): x is Skill {
   if (s.castConditions !== undefined) {
     if (!Array.isArray(s.castConditions)) return false
     for (const condition of s.castConditions) {
-      if (!isHitOrVariantCondition(condition)) return false
+      if (!isTriggerCondition(condition)) return false
     }
   }
   if (s.meterCosts !== undefined) {

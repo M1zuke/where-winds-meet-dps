@@ -3,6 +3,11 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import {
+  chargeAvailable,
+  springSorrowChargeCost,
+  springSorrowChargesMeter,
+} from "../../classes/silkbind-jade/chargeMeters"
 
 // In-game values as of 2026-10-15: 50 m/s with no ramp, a 1 m collision box,
 // lives 5 s.
@@ -46,6 +51,8 @@ export const umbq = defineSkill({
     BUFF.comboSpringAwayBonus,
     BUFF.springThunder,
   ],
+  meterCosts: [springSorrowChargeCost],
+  castConditions: [chargeAvailable(springSorrowChargesMeter)],
   // Cast length to the earliest next input and the bullet's launch frame: the
   // slow clip below Blossom Barrage rank 3, the fast one from it (in-game
   // values as of 2026-10-15).

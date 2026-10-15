@@ -16,11 +16,13 @@ import type {
   MeterCost,
   Skill,
   SkillHit,
+  StatusCondition,
   TriggerCondition,
 } from "./skill"
 import {
   breakdownNameOf,
   conditionSatisfiedByStacks,
+  hasBuffEngineSource,
   isAnyOfCondition,
   isParamCondition,
   isPrePullSkill,
@@ -123,6 +125,7 @@ import {
 import { resolveAverageFps, resolvePingMs, resolveServerProcessingMs } from "./pingFps"
 
 export const FPS = 60
+const ENGINE_READ_LEAD_SEC = 1e-9
 
 // In-game values as of 2026-09-28: every art's own swap-in cast shares one
 // 3 s cooldown, gating every class's Dual-Weapon Skill alike.
@@ -148,6 +151,11 @@ const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affi
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
+
+interface ConditionReader {
+  stacksOf(condition: StatusCondition, frame: number): number
+  nameOf?(buffId: string): string | undefined
+}
 
 type Ctx = ReturnType<typeof buildContext>
 type EchoFeed = DamageEffectsResult["echoFeeds"][number]
@@ -737,6 +745,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       discoveredFightStartFrame: number | null
       discoveredFightEndFrame: number | null
       castCursorFrames: number
+      describeConditionFailure: (
+        condition: TriggerCondition,
+        frame: number,
+        reader?: ConditionReader,
+      ) => ConditionFailureReason
     }
 
     // Lays out every step, its hits and its trigger cascade once, truncating
@@ -818,11 +831,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       function describeConditionFailure(
         condition: TriggerCondition,
         frame: number,
+        reader: ConditionReader = {
+          stacksOf: (status, atFrame) => layoutLedger.conditionStacksAt(status.buffId, atFrame),
+        },
       ): ConditionFailureReason {
         if (isAnyOfCondition(condition))
           return {
             kind: "anyOf",
-            reasons: condition.anyOf.map((clause) => describeConditionFailure(clause, frame)),
+            reasons: condition.anyOf.map((clause) =>
+              describeConditionFailure(clause, frame, reader),
+            ),
           }
         if (isParamCondition(condition)) {
           const on = paramOnOf(buffParams, condition.param)
@@ -851,7 +869,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             actualName: actualWeapon,
           }
         }
-        const actual = layoutLedger.conditionStacksAt(condition.buffId, frame)
+        const actual = reader.stacksOf(condition, frame)
         const meter = meters.find((candidate) => candidate.statusId === condition.buffId)
         if (meter)
           return {
@@ -866,7 +884,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         return {
           kind: status && isDebuffStatus(status) ? "debuff" : "buff",
           id: condition.buffId,
-          name: status?.name ?? condition.buffId,
+          name: status?.name ?? reader.nameOf?.(condition.buffId) ?? condition.buffId,
           op: condition.op,
           required: condition.stacks,
           actual,
@@ -1399,7 +1417,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const meterMarkAtStart = layoutLedger.mark()
         const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
         const failedCastConditions = (resolvedStep.skill.castConditions ?? []).filter(
-          (condition) => !holdsHere(condition),
+          (condition) => !hasBuffEngineSource(condition) && !holdsHere(condition),
         )
         if (failedCastConditions.length > 0) {
           const reasons = failedCastConditions.map((condition) =>
@@ -1531,6 +1549,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         discoveredFightStartFrame,
         discoveredFightEndFrame,
         castCursorFrames,
+        describeConditionFailure,
       }
     }
 
@@ -1577,7 +1596,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       timedWarnings.push({ frame, build })
     }
     const recordInvalidStep = (stepId: string, reasons: ConditionFailureReason[]): void => {
-      invalidStepIds.push(stepId)
+      if (!invalidStepIds.includes(stepId)) invalidStepIds.push(stepId)
       invalidStepReasons[stepId] = reasons
     }
 
@@ -1875,6 +1894,37 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     })()
 
     const castSkillFiresInPass1 = triggerGate(castConditionHoldsFor(buffEngine)).fires
+
+    // docs/TIMELINE.md § "Cast legality": a `castConditions` entry that reads the
+    // buff engine can only be decided once the engine's history exists, and reads
+    // it just before the step's own start so the step's own grants never count.
+    if (buffEngine) {
+      const engineStacks = (status: StatusCondition, atFrame: number): number =>
+        status.source === "buffEngine"
+          ? buffEngine.getHistoricalBuffStacks(status.buffId, atFrame / FPS - ENGINE_READ_LEAD_SEC)
+          : layoutLedger.conditionStacksAt(status.buffId, atFrame)
+      for (const laidStep of laidSteps) {
+        const failed = (laidStep.resolved.skill.castConditions ?? []).filter(
+          (condition) =>
+            hasBuffEngineSource(condition) &&
+            !unionConditionHolds(condition, laidStep.startFrame, buffParams, (status, atFrame) =>
+              conditionSatisfiedByStacks(status, engineStacks(status, atFrame)),
+            ),
+        )
+        if (failed.length === 0) continue
+        const reasons = failed.map((condition) =>
+          layout.describeConditionFailure(condition, laidStep.startFrame, {
+            stacksOf: engineStacks,
+            nameOf: (buffId) => buffEngine.moduleName(buffId),
+          }),
+        )
+        const stepId = laidStep.resolved.step.id
+        recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+        warnings.push(
+          `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+        )
+      }
+    }
 
     const resources = (classDefinition(inputs.classId)?.resources ?? [])
       .filter((definition) =>

@@ -146,6 +146,12 @@ export const BUFF = {
   fluteArrival: "fluteArrival",
   gourdTossThunder: "gourdTossThunder",
   gourdTossFlyingTornado: "gourdTossFlyingTornado",
+  gourdTossMoonShatterReset: "gourdTossMoonShatterReset",
+  gourdTossPursuitCutWindow: "gourdTossPursuitCutWindow",
+  gourdTossSpecialRecharge: "gourdTossSpecialRecharge",
+  moonShatterSpringLockout: "moonShatterSpringLockout",
+  waterClone: "waterClone",
+  windrider: "windrider",
   fluteDistanceBonus: "fluteDistanceBonus",
   cleftpeakDeflectGrant: "cleftpeakDeflectGrant",
 } as const

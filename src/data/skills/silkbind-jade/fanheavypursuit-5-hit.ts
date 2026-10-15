@@ -3,6 +3,7 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS, PURSUIT_RECHARGE_CUT } from "./moonShatterSpring"
 
 // In-game values as of 2026-10-05.
 const CAST_TOTAL = {
@@ -19,6 +20,7 @@ const coefficientsFor = (share: number) => ({
   physFixed: CAST_TOTAL.physFixed * share,
   attributeFixed: CAST_TOTAL.attributeFixed * share,
   extraCritDamage: 1,
+  triggers: [PURSUIT_RECHARGE_CUT],
 })
 
 export const fanheavypursuit5Hit = defineSkill({
@@ -49,7 +51,8 @@ export const fanheavypursuit5Hit = defineSkill({
     BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
-  triggersBuffs: [BUFF.pursuitChargedBoost],
+  triggersBuffs: [BUFF.pursuitChargedBoost, BUFF.moonShatterSpringLockout],
+  castConditions: FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS,
   // Cast length to the earliest next input and the strike frames (in-game
   // animation, 2026-10-15).
   castFrames: 145.98,

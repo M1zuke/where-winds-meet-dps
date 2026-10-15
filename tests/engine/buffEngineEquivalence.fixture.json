@@ -187687,7 +187687,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 81,
+        "count": 83,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187732,6 +187732,8 @@
           "silkbindJade-fanq-prepull",
           "silkbindJade-fanqcancel",
           "silkbindJade-fanspecial",
+          "silkbindJade-fanspecial-return",
+          "silkbindJade-fanspecial-windrider-grant",
           "silkbindJade-ghostly-steps",
           "silkbindJade-ghostly-steps-umbra",
           "silkbindJade-glow-and-flow-stage-1",
@@ -187771,7 +187773,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "3904b642a84fe8bb8f3b31d5f0150ed7d1fe9a5e9981ba1b1edc67a2afe8abb6"
+        "digest": "f2aeac39b9a24671da155bb396d946b95d8bf995c77b91c8d805b008389d715f"
       },
       "debuffs": {
         "count": 12,
@@ -187823,6 +187825,32 @@
             }
           ],
           "summary": "allDamageBoost +30% on the next Peak's Springless Silence"
+        },
+        {
+          "id": "gourdTossMoonShatterReset",
+          "name": "Moon Shatter Spring Reset",
+          "classBuff": false,
+          "requires": {
+            "param": "gourdToss",
+            "minTier": 6
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 1,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
         },
         {
           "id": "combo",
@@ -189387,6 +189415,52 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+        },
+        {
+          "id": "windrider",
+          "name": "Windrider",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 3,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
+        },
+        {
+          "id": "moonShatterSpringLockout",
+          "name": "Moon Shatter Spring Cooldown",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
         }
       ],
       "group": [
@@ -189416,7 +189490,7 @@
       ]
     },
     "dynamic": {
-      "digest": "93b08691ca4f6d2435d4e0e8afa0b70737a5d79b32faf0cd58649622835863ff"
+      "digest": "8c3703a15cdd399456d10d8bea0f09584551135eae7ac2ebcc37601612675df1"
     }
   },
   "bamboocutDraught": {

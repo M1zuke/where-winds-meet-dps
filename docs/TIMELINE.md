@@ -154,9 +154,10 @@ built ledger state as a conditional hit. A step whose conditions fail is
 flagged and reported, never removed or reshaped: it still lays out, lands
 every hit its skill has and fires every trigger, exactly as it would if the
 conditions had held — the flag changes nothing about the simulation, only
-what gets reported alongside it. A `castConditions` entry never carries
-`source: "buffEngine"` — the same restriction as a hit's or a variant's own
-conditions. This flags a rotation step only — a `castSkill`-generated cast
+what gets reported alongside it. A `castConditions` entry may carry
+`source: "buffEngine"`: it reads the class-buff engine's history at the step's
+own start, so it is decided once that history exists rather than at layout; a
+hit's or a variant's own conditions never carry it. This flags a rotation step only — a `castSkill`-generated cast
 skips straight to its own hits, unflagged. The flag also carries which of the
 step's own conditions failed and the ledger's actual value for each, decided
 once at that same layout-time check — never re-evaluated by a display. A
@@ -307,9 +308,9 @@ Rules:
   `requiresParam` or a condition exactly like an inner way's own param — the
   class-buff engine's own set gate reaches a module only, never a hit-level
   trigger or condition, which is what this exists for.
-- **Only a `castSkill` trigger's condition may read the class-buff engine
-  instead of the status ledger** (`source: "buffEngine"` on a
-  `TriggerCondition`): the two are separate stores (see § "Procedural
+- **Only a `castSkill` trigger's condition and a `castConditions` entry may read
+  the class-buff engine instead of the status ledger** (`source: "buffEngine"` on
+  a `TriggerCondition`): the two are separate stores (see § "Procedural
   behaviour"), and gating a generated cast on a class-buff module's active
   window — something the ledger never records — sets this on its condition
   rather than duplicating that module as a ledger status. Every other

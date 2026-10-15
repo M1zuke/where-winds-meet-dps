@@ -613,6 +613,10 @@ export class BuffEngine {
     this.buffHistory.push({ time, buffType: id, action: "refresh", expiresAt: time + duration })
   }
 
+  moduleName(id: string): string | undefined {
+    return this.definitions.get(id)?.name
+  }
+
   isBuffActive(id: string, time: number): boolean {
     const active = this.activeBuffs.get(id)
     return !!active && time >= active.appliedAt && time < active.expiresAt

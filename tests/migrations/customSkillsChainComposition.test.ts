@@ -78,6 +78,7 @@ import { healSkill as healStartWithoutServerWait } from "../../src/migrations/cu
 import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
 import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
+import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -169,6 +170,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [82, healUmbraCastLengthsAndSweepAllBurstStacks],
   [83, healSplendorQiImbalanceOnHitAndEndlessGaleWindow],
   [84, healJadeHitLandingsGrantsAndClipTimings],
+  [85, healJadeAvailabilityAndRecharge],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

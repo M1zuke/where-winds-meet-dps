@@ -24,9 +24,10 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 function grantsThunder(skill: Skill): boolean {
-  const lastHit = skill.hits[skill.hits.length - 1]!
-  return lastHit.triggers.some(
-    (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "gourdTossThunder",
+  return skill.hits.some((hit) =>
+    hit.triggers.some(
+      (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "gourdTossThunder",
+    ),
   )
 }
 

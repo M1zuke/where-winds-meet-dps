@@ -7,6 +7,8 @@ import { fanqPrepull } from "./fanq-prepull"
 import { fanq } from "./fanq"
 import { fanqcancel } from "./fanqcancel"
 import { fanspecial } from "./fanspecial"
+import { fanspecialReturn } from "./fanspecial-return"
+import { fanspecialWindriderGrant } from "./fanspecial-windrider-grant"
 import { umbHeavylight } from "./umb-heavylight"
 import { umbHeavylightHeavyShare } from "./umb-heavylight-heavyshare"
 import { umbdrone12HitTick } from "./umbdrone-12hit"
@@ -58,6 +60,8 @@ export const SKILLS: Skill[] = [
   fanq,
   fanqcancel,
   fanspecial,
+  fanspecialReturn,
+  fanspecialWindriderGrant,
   umbHeavylight,
   umbHeavylightHeavyShare,
   umbdrone12HitTick,
