@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 71686.96,
-    "totalDamage": 4301217.35,
+    "dps": 71686.94,
+    "totalDamage": 4301216.47,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -149,7 +149,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38925.36,
+        "expectedDamage": 38924.47,
         "castCount": 4
       },
       {
@@ -174,11 +174,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "8c12bd0a5f68795ac1cd7047f3232a89136c17191069009758e41123f9585f6b"
+    "digest": "85558ec75317330e859c58c2dcea459b8e31a73755ca8b9b2164ff514c754bac"
   },
   "anchor:noAttunement": {
-    "dps": 64362.28,
-    "totalDamage": 3861736.76,
+    "dps": 64362.26,
+    "totalDamage": 3861735.87,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -326,7 +326,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38925.36,
+        "expectedDamage": 38924.47,
         "castCount": 4
       },
       {
@@ -351,11 +351,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "57a7397fa30378e11476932d0cc3dcc8bba7bcc57aecbc906d9db43559191093"
+    "digest": "5aaabb4d3dfc2bc2ebba831e8b3357266bb07b3f7b84c3be5e8e86fb6b7ae812"
   },
   "anchor:dummyOff": {
-    "dps": 71463.32,
-    "totalDamage": 4287799.21,
+    "dps": 71463.31,
+    "totalDamage": 4287798.33,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -503,7 +503,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 41343.47,
+        "expectedDamage": 41342.59,
         "castCount": 4
       },
       {
@@ -528,11 +528,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "4fd9ab3262023711d53d80a83bd07f026c390be6b685dcbfa168629c886dee9b"
+    "digest": "c429559ef51cdf5efa5922b32625990309cce93e65377a5ab8eefed27a9e73de"
   },
   "anchor:breakthrough17": {
-    "dps": 73009.9,
-    "totalDamage": 4380594.21,
+    "dps": 73009.89,
+    "totalDamage": 4380593.4,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -680,7 +680,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39080.34,
+        "expectedDamage": 39079.52,
         "castCount": 4
       },
       {
@@ -705,7 +705,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "494ae4defcebf7e0b874d8eb855854a429865454594c8e430913b0514c39c75c"
+    "digest": "4c013c14b6729be9775785362d9b83fb077fad337e3a5ce60b5aa270c546902e"
   },
   "anchor:noQiBreak": {
     "dps": 67561.23,
@@ -898,11 +898,11 @@
       "buffWindows": 163,
       "casts": 92
     },
-    "digest": "c8c30a77c73426309009513f625b0454f097feda153e3eb158839ea676856974"
+    "digest": "b64f839e23632595e8465ea22adae3b15623478d40cf34d7bcd565744826ce6e"
   },
   "anchor:healerBuff": {
-    "dps": 75054.65,
-    "totalDamage": 4503278.95,
+    "dps": 75054.63,
+    "totalDamage": 4503278.09,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1050,7 +1050,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 40221.23,
+        "expectedDamage": 40220.37,
         "castCount": 4
       },
       {
@@ -1075,11 +1075,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "01bd8e65d508565f866c808c850f4da4962ff116ae2727b69a01286adddc3516"
+    "digest": "2250629982bbbe8181b3fd7bd4b71458a63dd2918a292670589c51f7fdeb13be"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 72105.3,
-    "totalDamage": 4326317.81,
+    "dps": 72105.28,
+    "totalDamage": 4326316.91,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1227,7 +1227,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39231.54,
+        "expectedDamage": 39230.63,
         "castCount": 4
       },
       {
@@ -1252,11 +1252,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "13f78547e284eb2b99f5ce6f34efd8c927501b1298b3ee9e0b973de03b510da2"
+    "digest": "0a4d875276b5d50ac0b5e9b25175947214905172e2c8b71e11026e8950bdfd9f"
   },
   "anchor:voidrotScript": {
-    "dps": 73128.02,
-    "totalDamage": 4387681.36,
+    "dps": 73128.01,
+    "totalDamage": 4387680.55,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1404,7 +1404,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38922.98,
+        "expectedDamage": 38922.18,
         "castCount": 4
       },
       {
@@ -1429,11 +1429,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "2c2e32e363c19c2063afb408cae4ec5bc9a1b921aef405d0e23c51e09b7beee1"
+    "digest": "90709a7917e229e159437b986fdf1b9d7f2e394cbe13ef35136ca7f8ea23d55c"
   },
   "anchor:breakExtension": {
-    "dps": 73078.16,
-    "totalDamage": 4384689.43,
+    "dps": 73078.14,
+    "totalDamage": 4384688.54,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1581,7 +1581,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38925.36,
+        "expectedDamage": 38924.47,
         "castCount": 4
       },
       {
@@ -1606,11 +1606,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "c46c36c3fdbefb3205f207db4251b97699ddcfc1390480c63688e5ca865bb2d2"
+    "digest": "b67ba56f8254a945b49e126ffaca611899a4ed89d42ce711247b44135936f461"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41579.14,
-    "totalDamage": 2494748.43,
+    "dps": 41556.14,
+    "totalDamage": 2493368.57,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1641,7 +1641,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 43,
-        "expectedDamage": 204020.65,
+        "expectedDamage": 202637.15,
         "castCount": 0
       },
       {
@@ -1761,7 +1761,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35929.06,
+        "expectedDamage": 35932.7,
         "castCount": 4
       },
       {
@@ -1783,14 +1783,14 @@
     ],
     "counts": {
       "timeline": 357,
-      "buffWindows": 127,
+      "buffWindows": 125,
       "casts": 90
     },
-    "digest": "60c96945ec813ad411d6af2f02bbdf292e21427df60d84462ae0068532327ad9"
+    "digest": "f65e142ccc0f61206255e3704704386d58f8c5fe41e448fe7b769a22d3b35df5"
   },
   "anchor:noSwordHorizon": {
-    "dps": 36632,
-    "totalDamage": 2197919.83,
+    "dps": 36604.5,
+    "totalDamage": 2196269.87,
     "rotationDuration": 60,
     "warnings": [
       "Zenith Sword [cancel] at 6.70s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1828,7 +1828,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 68222.15,
+        "expectedDamage": 68333.97,
         "castCount": 0
       },
       {
@@ -1836,7 +1836,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 46,
-        "expectedDamage": 206691.57,
+        "expectedDamage": 205308.07,
         "castCount": 0
       },
       {
@@ -1876,7 +1876,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100839.15,
+        "expectedDamage": 100460.87,
         "castCount": 4
       },
       {
@@ -1978,14 +1978,14 @@
     ],
     "counts": {
       "timeline": 325,
-      "buffWindows": 123,
+      "buffWindows": 121,
       "casts": 90
     },
-    "digest": "7a88ebc8321dc7f6e2b08f748d62629fcc5a60d524dd3dc6ecfcdb7b66e35f2e"
+    "digest": "7430cb850a54a97e2e68f383288ae64924d839e100f1936f024876074df7503c"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 63193.46,
-    "totalDamage": 3791607.45,
+    "dps": 63193.44,
+    "totalDamage": 3791606.64,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2133,7 +2133,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35229.24,
+        "expectedDamage": 35228.43,
         "castCount": 4
       },
       {
@@ -2158,11 +2158,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1ba92352ed766e99c54cc2f377a7a17decc1dc74391680bf3642d62f86f70e80"
+    "digest": "e77e1e27571232e230a02a72d31ce79ca8961b2d27c25d4543cdd453120c369e"
   },
   "anchor:noMoraleChant": {
-    "dps": 65787.76,
-    "totalDamage": 3947265.58,
+    "dps": 65787.75,
+    "totalDamage": 3947264.76,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2302,7 +2302,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35855.08,
+        "expectedDamage": 35854.26,
         "castCount": 4
       },
       {
@@ -2327,20 +2327,20 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "320645c1048f2e1bd921512b1244089a169fe3123aec24abcb3ba21f4549df30"
+    "digest": "e1aa8a8100dd5f126d02b7c3ee41f9cf5e3bf3061cd5c882b6cc7105a1bfa4e3"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 42644.01,
-    "totalDamage": 2558640.32,
+    "dps": 42360.61,
+    "totalDamage": 2541636.67,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.32s would be illegal in the game: needs Endurance ≥ 50 (has 16.64).",
-      "SwordSpecial 4-Hit at 21.93s would be illegal in the game: needs Endurance ≥ 50 (has 32.17).",
-      "SwordSpecial 4-Hit at 35.72s would be illegal in the game: needs Endurance ≥ 50 (has 41.66).",
-      "SwordSpecial 4-Hit at 47.85s would be illegal in the game: needs Endurance ≥ 50 (has 30.81).",
-      "SwordSpecial 3-Hit at 55.73s would be illegal in the game: needs Endurance ≥ 50 (has 45.84).",
-      "Spear Special (1 Hit Cancel) at 57.40s would be illegal in the game: needs Endurance ≥ 40 (has 38.51).",
-      "SwordSpecial 4-Hit at 57.98s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
+      "SwordSpecial 3-Hit at 12.27s would be illegal in the game: needs Endurance ≥ 50 (has 16.64).",
+      "SwordSpecial 4-Hit at 22.88s would be illegal in the game: needs Endurance ≥ 50 (has 32.17).",
+      "SwordSpecial 4-Hit at 36.67s would be illegal in the game: needs Endurance ≥ 50 (has 41.66).",
+      "SwordSpecial 4-Hit at 48.80s would be illegal in the game: needs Endurance ≥ 50 (has 30.81).",
+      "SwordSpecial 3-Hit at 56.67s would be illegal in the game: needs Endurance ≥ 50 (has 45.67).",
+      "Spear Special (1 Hit Cancel) at 58.33s would be illegal in the game: needs Endurance ≥ 40 (has 38.34).",
+      "SwordSpecial 4-Hit at 58.92s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
     "perSkill": [
       {
@@ -2356,7 +2356,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 64170.76,
+        "expectedDamage": 64015.77,
         "castCount": 0
       },
       {
@@ -2364,7 +2364,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 135622.19,
+        "expectedDamage": 135406.62,
         "castCount": 0
       },
       {
@@ -2372,15 +2372,15 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 24120.09,
+        "expectedDamage": 24238.25,
         "castCount": 2
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 179970.62,
+        "count": 55,
+        "expectedDamage": 177193.29,
         "castCount": 0
       },
       {
@@ -2388,15 +2388,15 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 11603.64,
+        "expectedDamage": 11736.38,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 106,
-        "expectedDamage": 311648.09,
+        "count": 104,
+        "expectedDamage": 305454.56,
         "castCount": 0
       },
       {
@@ -2404,7 +2404,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 12960.48,
+        "expectedDamage": 12978.82,
         "castCount": 0
       },
       {
@@ -2412,7 +2412,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 14968.66,
+        "expectedDamage": 15090.37,
         "castCount": 1
       },
       {
@@ -2420,7 +2420,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 50774.04,
+        "expectedDamage": 48599.45,
         "castCount": 0
       },
       {
@@ -2428,7 +2428,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 86931.09,
+        "expectedDamage": 86871.58,
         "castCount": 10
       },
       {
@@ -2436,7 +2436,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 28,
-        "expectedDamage": 1211656.62,
+        "expectedDamage": 1210361.54,
         "castCount": 0
       },
       {
@@ -2444,7 +2444,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 61482.12,
+        "expectedDamage": 61311.16,
         "castCount": 10
       },
       {
@@ -2460,15 +2460,15 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 43999.23,
+        "expectedDamage": 43999.43,
         "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit (Hit 4)",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 22000.16,
+        "count": 4,
+        "expectedDamage": 17644.62,
         "castCount": 0
       },
       {
@@ -2508,7 +2508,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 40346.56,
+        "expectedDamage": 40346.42,
         "castCount": 3
       },
       {
@@ -2524,16 +2524,16 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 14294.68,
+        "expectedDamage": 14297.09,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 446,
+      "timeline": 443,
       "buffWindows": 135,
       "casts": 94
     },
-    "digest": "b055f411d7014819495916db2c6e184e616b23f4d5c668af0f85219efa561507"
+    "digest": "d335a8cbfaac5f6aa4c25b9e12eed2caf921d01cc050c629a3f802f23bc0f753"
   },
   "anchor:bitterSeasonT6": {
     "dps": 44432.64,
@@ -2722,7 +2722,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "b59fd856220c8bcfd1e05a030d2cc26d84f940446fd81f3925bbc07ada45a6cb"
+    "digest": "27621f5e04369e78647aa0abdef2a1b445e4efa5e15c6e4a305250def0f5e42b"
   },
   "anchor:bitterSeasonT4": {
     "dps": 43597.34,
@@ -2911,7 +2911,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "67c8eedc08dec62754a071611536beea392011e99a30867fa136b87c5bc6f1bb"
+    "digest": "fa8ceb153f616bebc9d3e64ba6b8e18538dc177ca880d3d3833614e1ce245ac5"
   },
   "anchor:bitterSeasonT1": {
     "dps": 43234.82,
@@ -3100,7 +3100,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "c764ee94da0f0f5accef82e5685f4549e49538814c87e143fa6099400cf4b101"
+    "digest": "1d014b3254beca2ac7e1dfee1f63e42dce6667f93897e8259b12aae59103fa6f"
   },
   "anchor:noSet": {
     "dps": 64350.19,
@@ -3277,7 +3277,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "cbebfb7d5c8e4ef0b583f7f871ee34dc9c30dcd68c635f43248f69dd7ee3ab6a"
+    "digest": "44c8dc5a43127236bbab69683a395d9f81cb6824b3419e7579a7d439d270cf45"
   },
   "anchor:set-Jadeware": {
     "dps": 69534.83,
@@ -3454,7 +3454,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "98caf951f278712d6de536b3d6b86ed1b9707f95f1142fe1b4b644fff1e35c25"
+    "digest": "6cb6facf08119a09e4b107d6eb29d2afaede988342583031f7c145d179344118"
   },
   "anchor:set-Mistwillow": {
     "dps": 64939.46,
@@ -3631,7 +3631,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "7ac909be97c76d7cc158a896c39dca4d28ff939ded903432329d6bc38e7df9f8"
+    "digest": "c4de6440444e551db000b5d4e997cf02dc1c972a28a3a57f08a488bcebc70f37"
   },
   "anchor:set-Rainwhisper": {
     "dps": 65878.79,
@@ -3808,7 +3808,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "54b59057b0c21a0ac18ef0f38c8b75d2d66d2bb9921f49963cbc9be87a16b464"
+    "digest": "46fe894a6635cd8a81ebb8168e5ef1ecdaf7e3d64e9efc2ed1ebc6c2653d2f4d"
   },
   "anchor:set-Cleftpeak": {
     "dps": 66316.08,
@@ -3985,11 +3985,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "53a41ea153d4add15874a01645780934dd41585c7686d3dfdd1ffb0a36fad470"
+    "digest": "3984adf5c4dac50927559bf5e76296bd2a0263e235116b7ef839a9bcb1e323ba"
   },
   "defaults:umbra": {
-    "dps": 12155.18,
-    "totalDamage": 729311.03,
+    "dps": 12155.21,
+    "totalDamage": 729312.36,
     "rotationDuration": 60,
     "warnings": [
       "Zenith Sword [cancel] at 4.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -4153,7 +4153,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 15592.47,
+        "expectedDamage": 15593.8,
         "castCount": 4
       },
       {
@@ -4194,6 +4194,6 @@
       "buffWindows": 128,
       "casts": 92
     },
-    "digest": "d65f1ac462a0a05694fc106d80fee64c0e5394cdefb24c38dd32796cf2e2625b"
+    "digest": "84c4cddc99aa2478866b7ab1de6c5dd0d9502c4762ca21486cbf78128f0583ba"
   }
 }

@@ -75,6 +75,7 @@ import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/
 import { healSkill as healSpringAwayReach } from "../../src/migrations/customSkills/V79__springAwayReach"
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
 import { healSkill as healStartWithoutServerWait } from "../../src/migrations/customSkills/V81__startWithoutServerWait"
+import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -163,6 +164,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [79, healSpringAwayReach],
   [80, healPrepullVagrantSwordWaveTiming],
   [81, healStartWithoutServerWait],
+  [82, healUmbraCastLengthsAndSweepAllBurstStacks],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

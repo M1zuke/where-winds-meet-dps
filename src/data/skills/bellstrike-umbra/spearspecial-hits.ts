@@ -1,7 +1,10 @@
 import { hit } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff, applyDot, castSkill, meterDelta } from "../../../definitions/skills/triggers"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
+import { requireInnerWayNodeTier } from "../../../definitions/innerWays/innerWayDef"
+import { INNER_WAY_NODE } from "../../innerWays/ids"
+import { swordHorizon } from "../../innerWays/swordHorizon"
 import {
   EMPOWERED_RIVER_FLOW_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
@@ -34,16 +37,26 @@ function wolfchasersArtEnduranceGain() {
   })
 }
 
-// In-game values as of 2026-09-24: one Bleeding stack per River Flow (or
+function swordHorizonBurstStacks() {
+  return applyDot({
+    target: DEBUFF.bleedTick,
+    condition: EMPOWERED_CONDITION,
+    conditions: [COOLDOWN_CONDITION],
+    requiresParam: PARAM.swordHorizon,
+    requiresMinTier: requireInnerWayNodeTier(swordHorizon, INNER_WAY_NODE.dotDetonationRetention),
+  })
+}
+
+// In-game values as of 2026-10-15: one Bleeding stack per River Flow (or
 // higher) hit on every cast, no cooldown; the non-clearing Blood Burst (plus
-// the 2 stacks Sword Horizon's retention would otherwise keep) and the
+// the 2 stacks Sword Horizon's tier 6 adds to every burst) and the
 // Wolfchaser's Art Endurance gain only under Empowered River Flow, on its
 // own 12 s cooldown.
 function payloadTriggers() {
   return [
     applyDot({ target: DEBUFF.bleedTick, condition: RIVER_FLOW_CONDITION }),
-    applyDot({ target: DEBUFF.bleedTick, condition: EMPOWERED_CONDITION, conditions: [COOLDOWN_CONDITION] }),
-    applyDot({ target: DEBUFF.bleedTick, condition: EMPOWERED_CONDITION, conditions: [COOLDOWN_CONDITION] }),
+    swordHorizonBurstStacks(),
+    swordHorizonBurstStacks(),
     castSkill({
       target: SKILL.bleedDetonation,
       stacks: 0,

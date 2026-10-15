@@ -31,7 +31,9 @@ export const spearheavyStage1 = defineSkill({
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
   meterDrains: DRIFTING_THRUST_STAGE_1_DRAIN,
   meterFreezes: DRIFTING_THRUST_FREEZE,
-  castFrames: 120,
+  // The 30 f minimum hold, then the finisher's own cast length after its
+  // start: in-game animation, 2026-10-15.
+  castFrames: 173,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
@@ -48,5 +50,5 @@ export const spearheavyStage1 = defineSkill({
     }),
   ],
   createdAt: "2026-09-24T00:00:00.000Z",
-  updatedAt: "2026-09-24T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -78,7 +78,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
   it("Class Buffs row reads point units, not the app's internal fraction", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.effect).toBe(
-      "physPen +15, bellstrikePen +15",
+      "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
     )
   })
 
@@ -89,7 +89,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
       inputsWithSwordHorizon("tier 6"),
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.effect).toBe(
-      "physPen +15, bellstrikePen +15",
+      "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
     )
   })
 })
@@ -114,7 +114,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
   it("Class Buffs row reads the pre-conversion key name and percent", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
-      "affinityDmg +18%",
+      "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
     )
   })
 
@@ -125,7 +125,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
       inputsWithSwordHorizon("tier 6"),
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
-      "affinityDmg +18%",
+      "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
     )
   })
 })
@@ -135,8 +135,8 @@ describe("Class Buffs column — class ownership and scope decide membership", (
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
       [
-        "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
-        "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
+        "bellstrikeUmbraBleedPen: physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
+        "bellstrikeUmbraBleedingDamage: affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
         "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough",
         "strategicSwordAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
         "heavenquakerSpearAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",

@@ -322,8 +322,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(71686.96)
-    expect(round(result.totalDamage, 2)).toBe(4301217.35)
+    expect(round(result.dps, 2)).toBe(71686.94)
+    expect(round(result.totalDamage, 2)).toBe(4301216.47)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -354,8 +354,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(73009.9)
-    expect(round(result.totalDamage, 2)).toBe(4380594.21)
+    expect(round(result.dps, 2)).toBe(73009.89)
+    expect(round(result.totalDamage, 2)).toBe(4380593.4)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })

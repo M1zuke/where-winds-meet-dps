@@ -90,7 +90,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "995907bfe440fb6e71a6d0f77c1c2b8d2146d787960b279f876bdd2016ab5593"
+        "digest": "4ccf1e8a1f78135e678e26ad1a97f473e874870f57026888d5939797142b20ba"
       },
       "debuffs": {
         "count": 8,
@@ -1450,7 +1450,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physPen +15, bellstrikePen +15"
+          "summary": "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)"
         },
         {
           "id": "bellstrikeUmbraBleedingDamage",
@@ -1473,7 +1473,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%"
+          "summary": "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)"
         },
         {
           "id": "bellstrikeUmbraBleedCoefficient",

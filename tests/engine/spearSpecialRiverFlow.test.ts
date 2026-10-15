@@ -240,6 +240,32 @@ describe("Spear Special — bleed stacks are not consumed by its own payload", (
   })
 })
 
+describe("Spear Special — the burst's two extra Bleeding stacks need Sword Horizon tier 6", () => {
+  const bleedingDamageWith = (swordHorizonStacks: string | null) => {
+    const seeder = bleedSeeder(EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST)
+    const filler = makeFiller(300)
+    const mindMethods = [
+      WOLFCHASERS_ART_SLOT,
+      swordHorizonStacks === null
+        ? { name: "", stacks: "" }
+        : { name: "swordHorizon", stacks: swordHorizonStacks },
+      ...defaultInputs.mindMethods.slice(2),
+    ] as Inputs["mindMethods"]
+    const r = runSteps(
+      [seeder.id, spearQId, spearSpecialId, filler.id],
+      [seeder, filler],
+      mindMethods,
+    )
+    return damageOf(r, dotRow(CLASS, DEBUFF.bleedTick))
+  }
+
+  it("leaves more Bleeding standing at tier 6 than at tier 5 or without the inner way", () => {
+    const tier6 = bleedingDamageWith("tier 6")
+    expect(tier6).toBeGreaterThan(bleedingDamageWith("tier 5"))
+    expect(bleedingDamageWith("tier 5")).toBeCloseTo(bleedingDamageWith(null), 6)
+  })
+})
+
 describe("Spear Special Cooldown — suppresses a second payload", () => {
   it("a second cast right after the first stays empowered but adds no extra detonation", () => {
     const seeder = bleedSeeder(EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST)
