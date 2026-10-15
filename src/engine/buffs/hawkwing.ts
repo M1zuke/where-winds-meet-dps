@@ -10,7 +10,7 @@ import { mulberry32 } from "../rng"
 const STEP_SEC = 0.05
 const DECAY_SEC = 5
 const MAX_STACKS = 5
-const BONUS_PER_STACK = 0.02
+const BONUS_PER_STACK = 0.018
 const SIM_RUNS = 500
 
 export const HAWKWING_STEP_SEC = STEP_SEC

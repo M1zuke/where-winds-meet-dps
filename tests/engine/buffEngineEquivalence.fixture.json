@@ -1323,7 +1323,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -1348,7 +1348,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -185677,7 +185677,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -185702,7 +185702,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -187255,7 +187255,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -187280,7 +187280,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -189028,7 +189028,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -189053,7 +189053,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -190665,7 +190665,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -190690,7 +190690,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",

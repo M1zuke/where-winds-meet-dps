@@ -2,6 +2,7 @@
 // `tests/migrations/testProfiles/profile-v4.json` through `-v7.json` all
 // store a slot by name alone, so both columns are pinned literally here.
 import { describe, expect, it } from "vitest"
+import { wineGuBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "../../src/data/innerWays/ids"
 import { innerWayHasNode, innerWayNodeTier } from "../../src/definitions/innerWays/innerWayDef"
 import {
@@ -313,5 +314,11 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
         }
       }
     }
+  })
+})
+
+describe("Wine Gu", () => {
+  it("raises damage-over-time ticks as well as attacks", () => {
+    expect(wineGuBuffDef().reachesDotTicks).toBe(true)
   })
 })

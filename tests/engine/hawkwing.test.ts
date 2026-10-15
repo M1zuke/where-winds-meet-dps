@@ -40,16 +40,16 @@ describe("hawkwingStacksSchedule", () => {
     expect(averageBonus(hitTrain(60.7), 0, 60.7)).toBe(0)
   })
 
-  it("lands near 0.096-0.099 at the parity build's roll probability (~0.3997)", () => {
+  it("lands near 0.087 at the parity build's roll probability (~0.3997)", () => {
     const bonus = averageBonus(hitTrain(60.7), 0.3997, 60.7)
-    expect(bonus).toBeGreaterThan(0.096)
-    expect(bonus).toBeLessThan(0.099)
+    expect(bonus).toBeGreaterThan(0.086)
+    expect(bonus).toBeLessThan(0.089)
   })
 
-  it("lands near 0.074 at a lower roll probability (0.15)", () => {
+  it("lands near 0.0665 at a lower roll probability (0.15)", () => {
     const bonus = averageBonus(hitTrain(60.7), 0.15, 60.7)
-    expect(bonus).toBeGreaterThan(0.072)
-    expect(bonus).toBeLessThan(0.076)
+    expect(bonus).toBeGreaterThan(0.065)
+    expect(bonus).toBeLessThan(0.068)
   })
 
   it("a lower affinity rate yields a correspondingly smaller bonus", () => {

@@ -49,6 +49,7 @@ export interface MechanicSetup {
 // formula calls it rather than for the mechanic that supplies it.
 export interface ContextPatch {
   hawkwingPhysBonus?: number
+  bellstrikeAttackPctBonus?: number
 }
 
 export interface MechanicContribution {

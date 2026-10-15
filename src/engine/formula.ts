@@ -125,6 +125,7 @@ export interface FormulaContext {
   critDamageReduction?: number
   affinityDamageReduction?: number
   hawkwingPhysBonus?: number
+  bellstrikeAttackPctBonus?: number
   attributeFlatMultiplier?: number
 }
 
@@ -361,7 +362,10 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const attackScale = 1 + numberOrZero(art.attributeAttackPctBonus)
+    const attackScale =
+      1 +
+      numberOrZero(art.attributeAttackPctBonus) +
+      (attribute === "Bellstrike" ? numberOrZero(ctx.bellstrikeAttackPctBonus) : 0)
     const minAttack = block.min * attackScale
     const maxAttack = Math.max(block.max * attackScale, minAttack)
     const avgAttack = (minAttack + maxAttack) / 2

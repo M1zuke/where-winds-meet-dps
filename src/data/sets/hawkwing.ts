@@ -12,7 +12,7 @@ export const hawkwing = defineSet({
   // The 4-piece ramp itself is time-averaged, not this flat value — see
   // `hawkwingMechanic.ts`. This is the fallback `formula.ts` uses when that
   // scheduler didn't run.
-  formulaBonus: { physBoost: 0.1 },
+  formulaBonus: { physBoost: 0.09 },
   // 2-piece BASH_PROB, gear-level ladder (in-game, 2026-09-07).
   panelBonus: {
     stat: "affinityRate",

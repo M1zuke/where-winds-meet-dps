@@ -1,7 +1,16 @@
 import type { GearLevel } from "../../engine/types"
 
 export type BreakthroughAttributeStat =
-  "precisionRate" | "power" | "agility" | "momentum" | "body" | "defense"
+  | "precisionRate"
+  | "power"
+  | "agility"
+  | "momentum"
+  | "body"
+  | "defense"
+  | "minPhys"
+  | "maxPhys"
+  | "maxHp"
+  | "physDef"
 
 export interface BreakthroughAttribute {
   id: number

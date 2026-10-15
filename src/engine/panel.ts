@@ -7,6 +7,7 @@ import type {
   GearLevelValues,
 } from "./types"
 import type { FormulaContext } from "./formula"
+import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
@@ -313,7 +314,7 @@ export interface TargetOverride {
 export function buildContext(
   inputs: Inputs,
   targetOverride?: TargetOverride,
-  hawkwingPhysBonus?: number,
+  contextPatch?: ContextPatch,
 ): FormulaContext {
   const school = getSchool(inputs.classId)
   const baseTarget = getBreakthrough(inputs.breakthrough)
@@ -437,7 +438,8 @@ export function buildContext(
     attrDamageBoostReduction: targetAttrDamageBoostReduction,
     critDamageReduction: targetCritDamageReduction,
     affinityDamageReduction: targetAffinityDamageReduction,
-    hawkwingPhysBonus,
+    hawkwingPhysBonus: contextPatch?.hawkwingPhysBonus,
+    bellstrikeAttackPctBonus: contextPatch?.bellstrikeAttackPctBonus,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

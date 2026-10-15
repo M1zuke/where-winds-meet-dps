@@ -104,15 +104,28 @@ describe("Insightful Strike — Concentration's all-damage bonus is counted once
   })
 })
 
-describe("Insightful Strike — attack-only effects do not reach damage-over-time ticks", () => {
-  it("gives a damage-over-time tick only the affinity-damage effect, below tier 6", () => {
+describe("Insightful Strike — damage-over-time ticks", () => {
+  it("builds Focus from damage-over-time ticks when no direct hit lands", () => {
+    const setup = {
+      ...setupFor([emptyMindMethod, NS_TIER_5, emptyMindMethod, emptyMindMethod]),
+      hitTimesSec: [],
+      dotTickTimesSec: weaponHitTrain(60),
+    }
+    const mechanic = insightfulStrikeMechanic()
+    const state = mechanic.prepare(setup)!
+    const hit = makeSkill(CLASS_ID)
+    const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, hit, setup)
+    expect(contribution?.effects?.length).toBeGreaterThan(0)
+  })
+
+  it("gives a damage-over-time tick all three effects, below tier 6", () => {
     const setup = setupFor([emptyMindMethod, NS_TIER_5, emptyMindMethod, emptyMindMethod])
     const mechanic = insightfulStrikeMechanic()
     const state = mechanic.prepare(setup)!
     const dotTick = makeSkill(CLASS_ID, { isDotTick: true, tags: [] })
     const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, dotTick, setup)
     const statKeys = contribution?.effects?.map((effect) => effect.statKey)
-    expect(statKeys).toEqual(["affinityDamageBoost"])
+    expect(statKeys).toEqual(["affinityDamageBoost", "directAffinityRate", "allDamageBoost"])
   })
 
   it("still gives an ordinary hit all three effects", () => {
@@ -194,13 +207,14 @@ describe("Insightful Strike — the tier-6 DoT bonus joins the additive pool, re
     expect(allDamageEffects).toHaveLength(1)
   })
 
-  it("does not add the DoT bonus to a damage-over-time row below tier 6", () => {
+  it("does not add the tier-6 DoT bonus to a damage-over-time row below tier 6", () => {
     const setup = setupFor([emptyMindMethod, NS_TIER_5, emptyMindMethod, emptyMindMethod])
     const mechanic = insightfulStrikeMechanic()
     const state = mechanic.prepare(setup)!
     const dotTick = makeSkill(CLASS_ID, { isDotTick: true, tags: [] })
     const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, dotTick, setup)
     const allDamageEffects = contribution?.effects?.filter((e) => e.statKey === "allDamageBoost")
-    expect(allDamageEffects ?? []).toHaveLength(0)
+    expect(allDamageEffects).toHaveLength(1)
+    expect(allDamageEffects![0].amount).toBeLessThanOrEqual(0.015)
   })
 })

@@ -64,13 +64,13 @@ describe("Swaying Heights — damage bonus scales with the target's own remainin
 describe("Etherwrath — physical/attribute attack stacks on any damaging hit", () => {
   const anySkill = makeSkill("test", { name: "Any Hit", receives: [BUFF.etherwrathAttackBoost] })
 
-  it("grants a stack per damaging hit, up to 5, worth 1% each on every attack term", () => {
+  it("grants a stack per damaging hit, up to 5, worth 1.2% each on every attack term", () => {
     const engine = engineWithSet("etherwrath")
     for (let hitIndex = 0; hitIndex < 6; hitIndex++) engine.processDamageHit(hitIndex, anySkill)
     const result = engine.calculateDamageEffects(anySkill, 5.5)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.05, 10)
-    expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.05, 10)
-    expect(result.artBonuses.attributeAttackPctBonus).toBeCloseTo(0.05, 10)
+    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
+    expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.06, 10)
+    expect(result.artBonuses.attributeAttackPctBonus).toBeCloseTo(0.06, 10)
   })
 
   it("reaches a skill that never declared it, since the bonus affects every attack", () => {
@@ -78,7 +78,7 @@ describe("Etherwrath — physical/attribute attack stacks on any damaging hit", 
     const bystander = makeSkill("test", { name: "Bystander" })
     engine.processDamageHit(0, bystander)
     expect(engine.calculateDamageEffects(bystander, 0.5).artBonuses.minPhysPctBonus).toBeCloseTo(
-      0.01,
+      0.012,
       10,
     )
   })
@@ -95,19 +95,20 @@ describe("Etherwrath — 5-stack attribute penetration, gated to the skills that
     for (let hitIndex = 0; hitIndex < 4; hitIndex++)
       engine.processDamageHit(hitIndex, penetrationReceiver)
     const result = engine.calculateDamageEffects(penetrationReceiver, 3.5)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.04, 10)
+    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.048, 10)
     expect(result.effects).toEqual([])
   })
 
-  it("adds +4% attribute penetration of all four types once 5 stacks are reached", () => {
+  it("adds +6% physical and attribute penetration of every type once 5 stacks are reached", () => {
     const engine = engineWithSet("etherwrath")
     for (let hitIndex = 0; hitIndex < 5; hitIndex++)
       engine.processDamageHit(hitIndex, penetrationReceiver)
     const result = engine.calculateDamageEffects(penetrationReceiver, 4.5)
-    expect(result.effects).toContainEqual({ statKey: "bellstrike.penetration", amount: 0.04 })
-    expect(result.effects).toContainEqual({ statKey: "stonesplit.penetration", amount: 0.04 })
-    expect(result.effects).toContainEqual({ statKey: "silkbind.penetration", amount: 0.04 })
-    expect(result.effects).toContainEqual({ statKey: "bamboocut.penetration", amount: 0.04 })
+    expect(result.effects).toContainEqual({ statKey: "phys.penetration", amount: 0.06 })
+    expect(result.effects).toContainEqual({ statKey: "bellstrike.penetration", amount: 0.06 })
+    expect(result.effects).toContainEqual({ statKey: "stonesplit.penetration", amount: 0.06 })
+    expect(result.effects).toContainEqual({ statKey: "silkbind.penetration", amount: 0.06 })
+    expect(result.effects).toContainEqual({ statKey: "bamboocut.penetration", amount: 0.06 })
   })
 
   it("contributes nothing to a skill outside its own receives list", () => {

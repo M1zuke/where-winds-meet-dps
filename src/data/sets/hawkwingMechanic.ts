@@ -40,7 +40,8 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
 
     contributeAt(state, frame, _skill, setup) {
       const stacks = Math.round(state.schedule.getExpectedStacksAtTime(frame / setup.fps))
-      return { context: { hawkwingPhysBonus: stacks * HAWKWING_BONUS_PER_STACK } }
+      const bonus = stacks * HAWKWING_BONUS_PER_STACK
+      return { context: { hawkwingPhysBonus: bonus, bellstrikeAttackPctBonus: bonus } }
     },
 
     display(state, timeSec, prePull) {
@@ -56,7 +57,7 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
           effects: [],
           requires: setName,
           description:
-            "expected stacks (avg of 500 sims, rounded) · +2% phys attack/stack, 5s decay",
+            "expected stacks (avg of 500 sims, rounded) · +1.8% phys and Bellstrike attack/stack, 5s decay",
         },
       ]
     },
