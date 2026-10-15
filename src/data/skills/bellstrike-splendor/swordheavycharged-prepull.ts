@@ -18,9 +18,12 @@ import {
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
 } from "./buffs/vagrantSwordEndurance"
+import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
+// In-game values as of 2026-10-15: the release lands the three waves 6, 16 and
+// 45 f later, each flying as a projectile.
 export const swordHeavyChargedPrepull = defineSkill({
   id: SKILL.swordHeavyChargedPrepull,
   classId: "bellstrikeSplendor",
@@ -53,16 +56,13 @@ export const swordHeavyChargedPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 12,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 3.2664,
       attributeMultiplier: 4.8996,
       physFixed: 904,
       attributeFixed: 493,
       triggers: [
-        energySurgeReleaseTrigger,
-        multiWaveWindowReleaseGrantTrigger,
-        SWORD_MORPH_ENDURANCE_SPEND,
         BATTLE_ANTHEM_ENDURANCE_GAIN,
-        energySurgeEnduranceGain,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
         energySurgeCooldownCut,
       ],
@@ -76,12 +76,13 @@ export const swordHeavyChargedPrepull = defineSkill({
           physFixed: 361.6,
           attributeFixed: 197.2,
           castFrames: 51,
-          frame: 0,
+          frame: 6,
         },
       ],
     }),
     hit(1, {
-      frame: 17,
+      frame: 16,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
@@ -90,15 +91,29 @@ export const swordHeavyChargedPrepull = defineSkill({
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 34,
+      frame: 45,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
       attributeFixed: 276.08,
       conditions: [SWORD_MORPH_EQUIPPED],
-      triggers: [energySurgeCooldownCut],
+      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+    }),
+    hit(3, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      conditions: [SWORD_MORPH_EQUIPPED],
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowReleaseGrantTrigger,
+        energySurgeEnduranceGain,
+      ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })
