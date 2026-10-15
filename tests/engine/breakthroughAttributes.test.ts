@@ -107,19 +107,19 @@ describe("Max HP", () => {
   })
 
   it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, without the average-level percentage", () => {
-    const attrs = playerAttributes(17)
+    const attrs = playerAttributes(18)
     const baseHp = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.maxHp
     const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
     const expected =
       baseHp +
       talentStatTotal("maxHp") +
-      arsenalHp(17) +
+      arsenalHp(18) +
       attrs.body * BODY_PER_POINT.hp +
       attrs.defense * DEFENSE_PER_POINT.hp +
       enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
       bonus.maxHp +
       oddityHpTotal({})
-    expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
+    expect(totalMaxHp(18, [])).toBeCloseTo(expected, 9)
   })
 
   it("applies the average-level percentage only to the effective figure, leaving the raw total alone", () => {
