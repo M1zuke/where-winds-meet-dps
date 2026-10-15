@@ -1,6 +1,10 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
-import { SKILL, STATUS } from "./ids"
+import { SKILL } from "./ids"
+import {
+  EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
+  empoweredLightAttackSpent,
+} from "./empowered-light-attack"
 import {
   INEBRIATE_ENHANCED_RECEIVES,
   MISTWILLOW_LIGHT_ATTACK_RECEIVES,
@@ -26,7 +30,7 @@ export const bladeAgainstWaves = defineSkill({
     ...RIVEN_TWINBLADES_RECEIVES,
     ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   ],
-  castConditions: [{ buffId: STATUS.bingePoints, op: "gt", stacks: 49 }],
+  castConditions: EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 54,
   reachMeters: 4,
@@ -64,6 +68,7 @@ export const bladeAgainstWaves = defineSkill({
       physFixed: 204.4,
       attributeFixed: 111.3,
     }),
+    empoweredLightAttackSpent(3),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",

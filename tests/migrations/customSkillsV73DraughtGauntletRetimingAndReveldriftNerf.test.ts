@@ -7,6 +7,7 @@ import {
 import { V73__draughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV72File from "./testCustomSkills/v72/store.json"
@@ -58,8 +59,10 @@ describe("V73__draughtGauntletRetimingAndReveldriftNerf — called directly", ()
   it("moves every untouched copy onto the built-in's frames, cast lengths and coefficients", () => {
     expect(after.v).toBe(73)
     for (const id of HEALED_IDS) {
-      const healed = healDraughtGrantTimingAndAbrasionTalent(
-        healReviewedTimingsGrantsAndNames(skillIn(after, id)),
+      const healed = healDraughtReveldriftChargesAndEmpoweredLightAttack(
+        healDraughtGrantTimingAndAbrasionTalent(
+          healReviewedTimingsGrantsAndNames(skillIn(after, id)),
+        ),
       ) as Skill
       expect(healed.castFrames, id).toBe(builtin(id).castFrames)
       if (id === GROUNDDRIFT) continue
@@ -69,7 +72,9 @@ describe("V73__draughtGauntletRetimingAndReveldriftNerf — called directly", ()
       ).toEqual(builtin(id).hits.map((hit) => hit.frame))
     }
     const [firstHit, ...otherHits] = coefficientsOf(skillIn(after, REVELDRIFT))
-    const [builtinFirstHit, ...builtinOtherHits] = coefficientsOf(builtin(REVELDRIFT))
+    const [builtinFirstHit, ...builtinOtherHits] = coefficientsOf(builtin(REVELDRIFT)).filter(
+      (row) => row.physMultiplier > 0,
+    )
     expect(otherHits).toEqual(builtinOtherHits)
     expect(firstHit!.attributeFixed).toBe(builtinFirstHit!.attributeFixed)
   })

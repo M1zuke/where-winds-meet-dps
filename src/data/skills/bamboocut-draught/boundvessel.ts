@@ -15,6 +15,11 @@ import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
 
+export const BOUNDVESSEL_CAST_CONDITIONS: TriggerCondition[] = [
+  ...INEBRIATE,
+  { buffId: STATUS.empoweredLightAttack, op: "eq", stacks: 0 },
+]
+
 const rapidSlash = (index: number, frame: number) =>
   hit(index, {
     frame,
@@ -107,6 +112,7 @@ export const boundvessel = defineSkill({
     BUFF.nonPlayerBaseDamage50,
     ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
+  castConditions: BOUNDVESSEL_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 208,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

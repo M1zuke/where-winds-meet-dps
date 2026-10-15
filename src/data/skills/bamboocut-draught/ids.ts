@@ -69,4 +69,6 @@ export const STATUS = {
   peakfallCooldown: "buff-bamboocutDraught-peakfall-cooldown",
   castlinkCooldown: "buff-bamboocutDraught-castlink-cooldown",
   herosBloodCooldown: "buff-bamboocutDraught-heros-blood-cooldown",
+  reveldriftSpacing: "buff-bamboocutDraught-reveldrift-spacing",
+  empoweredLightAttack: "buff-bamboocutDraught-empowered-light-attack",
 } as const

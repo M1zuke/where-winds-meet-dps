@@ -1,8 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { DEBUFF, SKILL } from "./ids"
+import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 // The airborne follow-up of Reveldrift. Coefficients: the in-game level-100
@@ -42,6 +42,14 @@ export const realmplay = defineSkill({
       physFixed: 111.5,
       attributeFixed: 61,
       triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
+    }),
+    hit(2, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [applyBuff({ target: STATUS.empoweredLightAttack, stacks: 1 })],
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",

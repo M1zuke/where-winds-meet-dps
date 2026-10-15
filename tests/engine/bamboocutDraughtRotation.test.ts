@@ -110,7 +110,7 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
 
 describe("a 1-hit cancel form", () => {
   it("Twinblade Q lands only the first Reveldrift hit over a shorter cast", () => {
-    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0]])
+    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0], reveldrift.hits[2]])
     expect(reveldriftCancel.castFrames).toBeLessThan(reveldrift.castFrames)
     expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
   })

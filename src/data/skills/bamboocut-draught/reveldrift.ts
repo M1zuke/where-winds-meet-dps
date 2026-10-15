@@ -1,8 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
+import type { TriggerCondition } from "../../../engine/skill"
+import {
+  reveldriftChargeAvailable,
+  reveldriftChargeCost,
+} from "../../classes/bamboocut-draught/chargeMeters"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { DEBUFF, SKILL } from "./ids"
+import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 // In-game values as of 2026-10-15.
@@ -24,6 +29,20 @@ export const reveldriftHits = [
   }),
 ]
 
+export const reveldriftSpacingHit = hit(2, {
+  frame: 0,
+  physMultiplier: 0,
+  attributeMultiplier: 0,
+  physFixed: 0,
+  attributeFixed: 0,
+  triggers: [applyBuff({ target: STATUS.reveldriftSpacing, stacks: 1 })],
+})
+
+export const REVELDRIFT_CAST_CONDITIONS: TriggerCondition[] = [
+  reveldriftChargeAvailable,
+  { buffId: STATUS.reveldriftSpacing, op: "eq", stacks: 0 },
+]
+
 // Cast length: in-game animation, 2026-09-05.
 export const reveldrift = defineSkill({
   id: SKILL.reveldrift,
@@ -37,13 +56,15 @@ export const reveldrift = defineSkill({
   castTag: CAST.reveldrift,
   receives: [BUFF.starweaveMartialBoost, ...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
+  castConditions: REVELDRIFT_CAST_CONDITIONS,
+  meterCosts: [reveldriftChargeCost],
   triggerable: false,
   castFrames: 66,
   // In-game values as of 2026-09-28: 18 m approach reach, plus a further
   // 1.75 m shrink-only pull once in range.
   reachMeters: 18,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
-  hits: reveldriftHits,
+  hits: [...reveldriftHits, reveldriftSpacingHit],
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -7,7 +7,7 @@ import {
   MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   RIVEN_TWINBLADES_RECEIVES,
 } from "./receives"
-import { boundvesselHits } from "./boundvessel"
+import { BOUNDVESSEL_CAST_CONDITIONS, boundvesselHits } from "./boundvessel"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 // Ends at the first frame the drink may interrupt the finish, which is the
@@ -29,6 +29,7 @@ export const boundvesselDrinkCancel = defineSkill({
     BUFF.nonPlayerBaseDamage50,
     ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
+  castConditions: BOUNDVESSEL_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 175,
   reachMeters: 4,

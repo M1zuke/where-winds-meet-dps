@@ -56,6 +56,7 @@ const CASES: ModuleCase[] = [
       { frame: 11, row: [0.315462, 0.473193, 87.6, 47.7] },
       { frame: 38, row: [0.736078, 1.104117, 204.4, 111.3] },
       { frame: 38, row: [0.736078, 1.104117, 204.4, 111.3] },
+      { frame: 0, row: [0, 0, 0, 0] },
     ],
   },
   {
@@ -65,6 +66,7 @@ const CASES: ModuleCase[] = [
     hits: [
       { frame: 10, row: [0.36636, 0.54954, 102, 55.5] },
       { frame: 24, row: [0.36636, 0.54954, 102, 55.5] },
+      { frame: 0, row: [0, 0, 0, 0] },
     ],
   },
   {
@@ -183,7 +185,7 @@ describe("Boundvessel with Skyspeak tier 4", () => {
 describe("Tidepour", () => {
   it("lands both bolts inside its cast on the dummy", () => {
     const tidepour = builtinSkill(CLASS, SKILL.tidepour)
-    for (const bolt of tidepour.hits) {
+    for (const bolt of tidepour.hits.filter((hit) => hit.physMultiplier > 0)) {
       expect(bolt.projectile).toEqual({ speedMetersPerSecond: 32, maxTravelFrames: 24 })
       expect(resolvedHitFrame(bolt, () => false, 4)).toBeLessThanOrEqual(tidepour.castFrames)
     }
@@ -202,11 +204,22 @@ describe("the Tipsy dash", () => {
   })
 })
 
-describe("Blade Against Waves", () => {
-  it("needs Binge Points of 50 or more", () => {
-    const skill = builtinSkill(CLASS, SKILL.bladeAgainstWaves)
-    expect(skill.castConditions).toEqual([{ buffId: STATUS.bingePoints, op: "gt", stacks: 49 }])
-  })
+describe("Blade Against Waves and Tidepour", () => {
+  it.each([SKILL.bladeAgainstWaves, SKILL.tidepour])(
+    "%s needs Binge Points of 50 or more and Empowered Light Attack, and spends it",
+    (skillId) => {
+      const skill = builtinSkill(CLASS, skillId)
+      expect(skill.castConditions).toEqual([
+        { buffId: STATUS.bingePoints, op: "gt", stacks: 49 },
+        { buffId: STATUS.empoweredLightAttack, op: "gte", stacks: 1 },
+      ])
+      const spendingHit = skill.hits.at(-1)!
+      expect(spendingHit.frame).toBe(0)
+      expect(spendingHit.triggers).toEqual([
+        expect.objectContaining({ targetId: STATUS.empoweredLightAttack, stacks: -1 }),
+      ])
+    },
+  )
 })
 
 describe("the Twin Blades dual-weapon skill", () => {

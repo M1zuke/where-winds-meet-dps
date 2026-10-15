@@ -82,6 +82,7 @@ import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migratio
 import { healSkill as healStonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "../../src/migrations/customSkills/V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
 import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
 import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -177,6 +178,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [86, healStonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming],
   [87, healDraughtGrantTimingAndAbrasionTalent],
   [88, healDraughtMistwillowReach],
+  [89, healDraughtReveldriftChargesAndEmpoweredLightAttack],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

@@ -20,6 +20,8 @@ import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations
 import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
+import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -88,7 +90,9 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withPerDodge = healGhostlyAfterimagePerDodge(withDrink) as Skill
   const withGauntletRetiming = healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge)
   const withReviewedTimings = healReviewedTimingsGrantsAndNames(withGauntletRetiming)
-  return healDraughtGrantTimingAndAbrasionTalent(withReviewedTimings) as Skill
+  const withGrantTiming = healDraughtGrantTimingAndAbrasionTalent(withReviewedTimings)
+  const withMistwillow = healDraughtMistwillowReach(withGrantTiming)
+  return healDraughtReveldriftChargesAndEmpoweredLightAttack(withMistwillow) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
