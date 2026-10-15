@@ -147,7 +147,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "tiltrimInebriateBonus",
       "inebriateCritDamage",
       "cloudvault",
-      "herosBloodInebriateNoAbrasion",
+      "bingePointGainNoAbrasion",
       "clashToastDamage",
       "nonPlayerBaseDamage10",
       "nonPlayerBaseDamage40",

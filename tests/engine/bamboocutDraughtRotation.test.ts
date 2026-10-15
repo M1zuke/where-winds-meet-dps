@@ -14,6 +14,7 @@ import { quickDrink } from "../../src/data/skills/bamboocut-draught/quick-drink"
 import { quickDrinkCancel } from "../../src/data/skills/bamboocut-draught/quick-drink-cancel"
 import { reveldrift } from "../../src/data/skills/bamboocut-draught/reveldrift"
 import { reveldriftCancel } from "../../src/data/skills/bamboocut-draught/reveldrift-cancel"
+import { nightwickPrimepick } from "../../src/data/skills/bamboocut-draught/nightwick-primepick"
 import { nightwickPrimepickFollowUp } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up"
 import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
@@ -115,8 +116,8 @@ describe("a 1-hit cancel form", () => {
   })
 
   it("Primepick Follow-up lands only the thrust over the same cast, ended by the next skill", () => {
-    expect(nightwickPrimepickFollowUp.hits).toHaveLength(1)
-    expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
+    expect(nightwickPrimepickFollowUp.hits.filter((hit) => hit.physMultiplier > 0)).toHaveLength(1)
+    expect(nightwickPrimepickFollowUpCancel.hits).toEqual(nightwickPrimepickFollowUp.hits)
     expect(nightwickPrimepickFollowUpCancel.castFrames).toBe(nightwickPrimepickFollowUp.castFrames)
     expect(nightwickPrimepickFollowUpCancel.cancelledBy).toBe("nextSkill")
     expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(
@@ -185,13 +186,25 @@ describe("the Primepick follow-up", () => {
   })
 
   it("pins the hit's coefficients and frame", () => {
-    expect(nightwickPrimepickFollowUp.hits).toHaveLength(1)
     const [hit] = nightwickPrimepickFollowUp.hits
     expect(hit.frame).toBe(20)
     expect(hit.physMultiplier).toBe(0.64565)
     expect(hit.physFixed).toBe(180)
     expect(hit.attributeMultiplier).toBe(0.968475)
     expect(hit.attributeFixed).toBe(98)
+  })
+
+  it("banks the drink's Binge Points on frame 27 and Tipsylay banks none", () => {
+    const bankingHit = nightwickPrimepickFollowUp.hits[1]
+    expect(bankingHit.frame).toBe(27)
+    expect(bankingHit.physMultiplier).toBe(0)
+    expect(bankingHit.triggers.map((trigger) => trigger.targetId)).toEqual([
+      STATUS.skillBingePointAccumulation,
+      STATUS.skillBingePointAccumulation,
+    ])
+    expect(
+      nightwickPrimepick.hits.flatMap((hit) => hit.triggers.map((trigger) => trigger.targetId)),
+    ).not.toContain(STATUS.skillBingePointAccumulation)
   })
 })
 

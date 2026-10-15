@@ -5,6 +5,8 @@ import { SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
+export const DRINK_CONVERSION_FRAME = 19
+
 // Converts whatever the preceding skill accumulated, not a flat amount — a
 // drink after a skill that grants no accumulation converts nothing. "Perfect"
 // only adds the falcon and Tenacity. The transfers run before the Deepdaze
@@ -15,8 +17,8 @@ export const drinkGrants = [
   ...deepdazeEntryTriggers(),
 ]
 
-// The drink deals nothing; its grants fire on the first frame and the cast
-// runs to the earliest next input (in-game animation, 2026-09-05).
+// The drink deals nothing; its grants land on frame 19 and the cast runs to
+// the earliest next input (in-game animation, 2026-10-15).
 export const whaledraft = defineSkill({
   id: SKILL.whaledraft,
   classId: "bamboocutDraught",
@@ -36,7 +38,7 @@ export const whaledraft = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 1,
+      frame: DRINK_CONVERSION_FRAME,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,

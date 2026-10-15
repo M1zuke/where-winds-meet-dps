@@ -53,12 +53,12 @@ export const DRAGONQUENCH_RECEIVES = [
   ...INEBRIATE_ENHANCED_RECEIVES,
   ...SKYSTRIKE_GAUNTLETS_RECEIVES,
   BUFF.nonPlayerBaseDamage40,
+  BUFF.bingePointGainNoAbrasion,
 ]
 
 export const dragonquenchStages = dragonquenchStagesAt([18, 41, 69, 91, 98, 105])
 
-// Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
-// length (the four stages to their earliest next input) and hit frames:
+// Cast length (the four stages to their earliest next input) and hit frames:
 // in-game animation, 2026-09-05.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
@@ -69,7 +69,6 @@ export const dragonquenchInebriate = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriate,
-  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 143,

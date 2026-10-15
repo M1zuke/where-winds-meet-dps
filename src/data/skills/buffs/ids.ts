@@ -43,7 +43,7 @@ export const BUFF = {
   frostCladSnowbreakIPConsume: "frostCladSnowbreakIPConsume",
   frostCladSnowbreakT6: "frostCladSnowbreakT6",
   heavenquakerSpearAdditionalAttack: "heavenquakerSpearAdditionalAttack",
-  herosBloodInebriateNoAbrasion: "herosBloodInebriateNoAbrasion",
+  bingePointGainNoAbrasion: "bingePointGainNoAbrasion",
   innerPassion: "innerPassion",
   ironGuards: "ironGuards",
   mountainSplitter: "mountainSplitter",

@@ -19,6 +19,7 @@ import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrati
 import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
 import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
+import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -86,7 +87,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withDrink = healBoundvesselDrinkAccumulation(withTiming) as Skill
   const withPerDodge = healGhostlyAfterimagePerDodge(withDrink) as Skill
   const withGauntletRetiming = healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge)
-  return healReviewedTimingsGrantsAndNames(withGauntletRetiming) as Skill
+  const withReviewedTimings = healReviewedTimingsGrantsAndNames(withGauntletRetiming)
+  return healDraughtGrantTimingAndAbrasionTalent(withReviewedTimings) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
@@ -104,7 +106,7 @@ describe("custom-skills v24 fixture", () => {
 
   it("stores rows the built-ins no longer carry", () => {
     expect(builtinOf("bamboocutDraught-light-attack").hits).toHaveLength(8)
-    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(15)
+    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(16)
   })
 })
 

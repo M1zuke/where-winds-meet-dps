@@ -40,13 +40,13 @@ const CASES: ModuleCase[] = [
     id: SKILL.twinbladeQuickDrink,
     castTag: CAST.twinbladeQuickDrink,
     castFrames: 41,
-    hits: [{ frame: 18, row: [0, 0, 0, 0] }],
+    hits: [{ frame: 19, row: [0, 0, 0, 0] }],
   },
   {
     id: SKILL.twinbladeQuickDrinkCancel,
     castTag: CAST.twinbladeQuickDrinkCancel,
     castFrames: 24,
-    hits: [{ frame: 18, row: [0, 0, 0, 0] }],
+    hits: [{ frame: 19, row: [0, 0, 0, 0] }],
   },
   {
     id: SKILL.bladeAgainstWaves,
@@ -156,15 +156,18 @@ describe("Boundvessel with Skyspeak tier 4", () => {
   const boundvessel = builtinSkill(CLASS, SKILL.boundvessel)
   const cancel = builtinSkill(CLASS, SKILL.boundvesselDrinkCancel)
 
-  it("banks Binge Points on the first finishing slash, 25 and a further 25 in Carouse", () => {
+  it("banks Binge Points on the finish's own frame, 25 and a further 25 in Carouse", () => {
     const finishingSlash = boundvessel.hits.find((hit) => hit.id === "hit-12")!
-    expect(finishingSlash.frame).toBe(144)
-    expect(finishingSlash.triggers.map((trigger) => trigger.targetId)).toEqual([
+    expect(finishingSlash.triggers).toEqual([])
+    const bankingHit = boundvessel.hits.find((hit) => hit.id === "hit-15")!
+    expect(bankingHit.frame).toBe(159)
+    expect(bankingHit.physMultiplier).toBe(0)
+    expect(bankingHit.triggers.map((trigger) => trigger.targetId)).toEqual([
       STATUS.skillBingePointAccumulation,
       STATUS.skillBingePointAccumulation,
     ])
-    expect(finishingSlash.triggers.map((trigger) => trigger.stacks)).toEqual([25, 25])
-    for (const trigger of finishingSlash.triggers) {
+    expect(bankingHit.triggers.map((trigger) => trigger.stacks)).toEqual([25, 25])
+    for (const trigger of bankingHit.triggers) {
       expect(trigger.conditions).toContainEqual({ param: PARAM.skyspeak, minTier: 4 })
     }
   })

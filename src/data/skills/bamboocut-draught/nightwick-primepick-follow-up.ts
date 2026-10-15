@@ -4,10 +4,13 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
 
 // On a PvE target the follow-up out of Tipsylay is always Nightwick -
 // Primepick's single hit — the 3-hit Tri-strike form needs the arena-only
-// Tri-Strike Mark, never held on a dummy. In-game values as of 2026-09-16.
+// Tri-Strike Mark, never held on a dummy. The Binge Points the chained drink
+// converts are banked by this skill on frame 27, not by Tipsylay. In-game
+// values as of 2026-10-15.
 export const primepickFollowUpHits = [
   hit(0, {
     frame: 20,
@@ -16,6 +19,14 @@ export const primepickFollowUpHits = [
     physFixed: 180,
     attributeFixed: 98,
     triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
+  }),
+  hit(1, {
+    frame: 27,
+    physMultiplier: 0,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
+    triggers: skillBingePointAccumulationTriggers,
   }),
 ]
 

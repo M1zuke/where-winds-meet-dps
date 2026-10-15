@@ -28,9 +28,9 @@ const rapidSlash = (index: number, frame: number) =>
 // slashes, spread evenly across the loop window (in-game values as of
 // 2026-10-06). The completed hold grants Cloudvault (in-game skill text,
 // 2026-09-04); cast length and the finishing hit frames to the full hold's own
-// finish: in-game animation, 2026-09-24. With Skyspeak tier 4 the first
-// finishing slash also banks Binge Points for the drink that follows
-// (in-game values as of 2026-10-06).
+// finish: in-game animation, 2026-09-24. With Skyspeak tier 4 the finish
+// banks Binge Points on frame 159 for the drink that follows (in-game values
+// as of 2026-10-15).
 export const boundvesselHits = [
   hit(0, {
     frame: 24,
@@ -65,6 +65,14 @@ export const boundvesselHits = [
     attributeMultiplier: 0.17316,
     physFixed: 32.2,
     attributeFixed: 17.4,
+    conditions: INEBRIATE,
+  }),
+  hit(15, {
+    frame: 159,
+    physMultiplier: 0,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
     conditions: INEBRIATE,
     triggers: skillBingePointAccumulationTriggersWhen(SKYSPEAK_TIER_4_CONDITION),
   }),

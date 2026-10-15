@@ -23,7 +23,6 @@ export const dragonquenchInebriateCancel = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateCancel,
   cancelledBy: "deflectCancel",
-  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 116,

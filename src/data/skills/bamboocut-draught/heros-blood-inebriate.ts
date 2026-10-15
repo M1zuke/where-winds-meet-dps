@@ -59,7 +59,7 @@ export const herosBloodInebriate = defineSkill({
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.cloudvault,
     BUFF.nonPlayerBaseDamage50,
-    BUFF.herosBloodInebriateNoAbrasion,
+    BUFF.bingePointGainNoAbrasion,
   ],
   triggerable: false,
   castFrames: 177,

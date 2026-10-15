@@ -24,7 +24,6 @@ export const dragonquenchInebriateThird = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateThird,
-  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 110,

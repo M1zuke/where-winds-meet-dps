@@ -3,7 +3,6 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
-import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
 
 // In-game values as of 2026-09-16.
 const REQUIRES_BINGE_100 = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
@@ -39,7 +38,6 @@ export const nightwickPrimepick = defineSkill({
       physFixed: 262,
       attributeFixed: 143,
       conditions: REQUIRES_BINGE_100,
-      triggers: skillBingePointAccumulationTriggers,
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",

@@ -30,7 +30,7 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
   // 1.75 m shrink-only pull once in range.
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
-  hits: [primepickFollowUpHits[0]],
+  hits: primepickFollowUpHits,
   createdAt: "2026-09-05T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",
 })
