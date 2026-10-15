@@ -10,6 +10,8 @@ import { PROP } from "../../src/data/skills/ids"
 import { dotTickSkill, tickSourceSkillId } from "../../src/engine/dot"
 import { warmStartQiSchedule } from "../../src/engine/qiBar"
 import type { Skill } from "../../src/engine/skill"
+import { CombatResource } from "../../src/engine/resources"
+import { blossomResource } from "../../src/data/classes/silkbind-jade/blossoms"
 
 const FPS = 60
 
@@ -118,25 +120,16 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
     })
   }
 
-  it("lets a 6-bullet Spring Away extend Combo on bullets 1 and 5 only", () => {
-    expect(bulletsThatExtend(SIX_BULLET_CAST, 6)).toEqual([true, false, false, false, true, false])
+  it("lets a 6-bullet Spring Away extend Combo on bullets 1 and 4 on the exact cue grid", () => {
+    expect(bulletsThatExtend(SIX_BULLET_CAST, 6)).toEqual([true, false, false, true, false, false])
   })
 
-  it("lets a 12-bullet Spring Away extend Combo on bullets 1, 5 and 9 only", () => {
-    expect(bulletsThatExtend(TWELVE_BULLET_CAST, 6)).toEqual([
-      true,
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-      false,
-    ])
+  it("lets a 12-bullet Spring Away extend Combo on bullets 1, 4, 7 and 10 on the exact cue grid", () => {
+    expect(
+      bulletsThatExtend(TWELVE_BULLET_CAST, 6).flatMap((extends_, index) =>
+        extends_ ? [index + 1] : [],
+      ),
+    ).toEqual([1, 4, 7, 10])
   })
 
   it("adds 1 s to every Combo window while the target is Exhausted", () => {
@@ -242,5 +235,109 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
     const fraction = buffs.liveFraction(BUFF.combo, partialTime!)
     const scored = buffs.calculateDamageEffects(droneTickSkill, partialTime!)
     expect(scored.breakdown[BUFF.combo]).toBeCloseTo(0.2 * fraction, 10)
+  })
+})
+
+describe("Blossoms across Combo - Extend Mark outcomes", () => {
+  const SPRING_SORROW = SKILLS.find((skill) => skill.id === SKILL.umbq)!
+  const OPENING = 10
+  const SPRING_SORROW_BASE_GAIN = 20
+  const TIER_SIX_GAIN = 25
+
+  function extendedByDroneRuns() {
+    const buffs = new BuffEngine(
+      { blossomBarrage: true, blossomBarrageTier: 4, qiBreakTime: 5, bossBreakDuration: 30 },
+      blossomBarrage.buffDefs ?? [],
+    )
+    buffs.processSkillCast("setup", 0, { castTime: 0 }, false, [
+      BUFF.combo,
+      BUFF.comboUmbLightBonus,
+      BUFF.comboSpringAwayBonus,
+    ])
+    const droneDebuff = DEBUFFS.find((candidate) => candidate.id === DEBUFF.umbdrone)!
+    const droneSkill = dotTickSkill(
+      droneDebuff,
+      SKILLS.find((skill) => skill.id === tickSourceSkillId(droneDebuff)),
+    )
+    for (let run = 0; run < 10; run++)
+      buffs.processDamagingEvent({
+        skill: droneSkill,
+        timeSec: 12 + run * 0.5,
+        runKey: `run-${run}`,
+      })
+    return buffs
+  }
+
+  function partiallyLiveFrame(buffs: BuffEngine): number {
+    for (let frame = 15 * FPS; frame < 35 * FPS; frame++)
+      if (
+        buffs.liveFraction(BUFF.combo, (frame - 1) / FPS) > 0.2 &&
+        buffs.liveFraction(BUFF.combo, (frame - 1) / FPS) < 0.8
+      )
+        return frame
+    throw new Error("no frame with a partial Combo share")
+  }
+
+  function resourceReading(buffs: BuffEngine) {
+    return new CombatResource(
+      blossomResource,
+      { opening: OPENING },
+      {
+        fps: FPS,
+        startFrame: 0,
+        collect: true,
+        particleCount: buffs.extensionParticleCount,
+        buffLive: (id, frame) => buffs.liveParticles(id, frame / FPS),
+        exhausted: () => false,
+        paramTier: () => 6,
+      },
+    )
+  }
+
+  it("credits the Tier 6 gain in exactly the trajectories where Combo is live", () => {
+    const buffs = extendedByDroneRuns()
+    const springSorrowFrame = partiallyLiveFrame(buffs)
+    const share = buffs.liveFraction(BUFF.combo, (springSorrowFrame - 1) / FPS)
+    const resource = resourceReading(buffs)
+    resource.hit(SPRING_SORROW, springSorrowFrame)
+    const regenerated =
+      OPENING + SPRING_SORROW_BASE_GAIN + (blossomResource.regenPerSecond * springSorrowFrame) / FPS
+    expect(resource.result.samples.at(-1)!.amount).toBeCloseTo(
+      regenerated + TIER_SIX_GAIN * share,
+      6,
+    )
+  })
+
+  it("launches the drone only where the credited balance reaches the minimum, and scales its ticks by that share", () => {
+    const buffs = extendedByDroneRuns()
+    const springSorrowFrame = partiallyLiveFrame(buffs)
+    const share = buffs.liveFraction(BUFF.combo, (springSorrowFrame - 1) / FPS)
+    const resource = resourceReading(buffs)
+    resource.hit(SPRING_SORROW, springSorrowFrame)
+    const launchFrame = springSorrowFrame + 10
+    expect(resource.launch(launchFrame)).toBeCloseTo(share, 10)
+    const tick = resource.tick(launchFrame + 30, launchFrame)
+    expect(tick.share).toBeCloseTo(share, 10)
+    expect([...tick.particles!]).toEqual([
+      ...(buffs.liveParticles(BUFF.combo, (springSorrowFrame - 1) / FPS) as Uint8Array),
+    ])
+  })
+
+  it("keeps the extension trajectories of the inactive drone out of the cooldown", () => {
+    const buffs = extendedByDroneRuns()
+    const mask = new Uint8Array(buffs.extensionParticleCount)
+    const droneDebuff = DEBUFFS.find((candidate) => candidate.id === DEBUFF.umbdrone)!
+    const droneSkill = dotTickSkill(
+      droneDebuff,
+      SKILLS.find((skill) => skill.id === tickSourceSkillId(droneDebuff)),
+    )
+    const before = buffs.liveFraction(BUFF.combo, 40)
+    buffs.processDamagingEvent({
+      skill: droneSkill,
+      timeSec: 14,
+      runKey: "masked",
+      particles: mask,
+    })
+    expect(buffs.liveFraction(BUFF.combo, 40)).toBe(before)
   })
 })

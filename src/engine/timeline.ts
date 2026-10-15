@@ -1880,7 +1880,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             fps: FPS,
             startFrame: 0,
             collect: collectDetail,
-            buffUptime: (id, frame) => buffEngine?.liveFraction(id, frame / FPS) ?? 0,
+            particleCount: buffEngine?.extensionParticleCount ?? 1,
+            buffLive: (id, frame) => buffEngine?.liveParticles(id, frame / FPS) ?? false,
             exhausted: (frame) => qiSchedule.isBroken(frame / FPS),
             paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
           }),
@@ -2770,6 +2771,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       entry: DotTickEntry,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      share = 1,
     ): ScoredEvent {
       return withQiReadAtFrame(entry.frame, readQiAtFrame, () => {
         const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
@@ -2784,7 +2786,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
         // `damageFactor` is post-formula, so a tick takes it on its finished
         // number the way a regular hit takes it on its art `correction`.
-        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
+        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * share * st.damageFactor
         return { damage, rolled: tick.rolled, st }
       })
     }
@@ -2847,13 +2849,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (event.kind === "recall") {
         event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
       } else if (event.kind === "hit") {
-        const { frame, skill, hit, castFrame } = event
+        const { frame, skill, hit } = event
         const launchResource = resourceByLaunch.get(skill.id)
-        if (launchResource && inWindow(frame) && !launchResource.launch(frame)) {
-          continue
-        }
+        const launchShare = launchResource && inWindow(frame) ? launchResource.launch(frame) : 1
+        if (launchShare <= 0) continue
         if (hitDealsDamage(hit)) buffEngine?.processDamagingEvent({ skill, timeSec: frame / FPS })
-        const { damage, rolled, st } = scoreHit(event, hitRng, null)
+        const scored = scoreHit(event, hitRng, null)
+        const { rolled, st } = scored
+        const damage = scored.damage * launchShare
         const landsInFight = inWindow(frame)
         if (landsInFight && hitDealsDamage(hit))
           recordQiEdgeDependence(frame, skill.name, (readQiAtFrame) =>
@@ -2876,8 +2879,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             "direct",
           )
         if (landsInFight) {
-          if (hitDealsDamage(hit))
-            for (const resource of resources) resource.hit(skill, frame, castFrame)
+          if (hitDealsDamage(hit)) for (const resource of resources) resource.hit(skill, frame)
           totalDamage += damage
           if (rolled) tallyRoll(rolled, damage)
           // A hit that carries no coefficient exists to fire its triggers, and
@@ -2914,17 +2916,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           )
         )
           continue
-        if (resource && !resource.tick(entry.frame, entry.resourceOwner!)) continue
+        const resourceTick = resource?.tick(entry.frame, entry.resourceOwner!)
+        if (resourceTick && resourceTick.share <= 0) continue
+        const tickShare = resourceTick?.share ?? 1
         if (
           resource &&
           entry.enhancedBy &&
           buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.frame / FPS)
         )
-          resource.chargeEnhancedRun(entry.frame)
+          resource.chargeEnhancedRun(entry.frame, entry.resourceOwner!)
         buffEngine?.processDamagingEvent({
           skill: entry.dotSkill,
           timeSec: entry.frame / FPS,
           runKey: `${entry.debuff.id}|${entry.requiresBuffAtFrame ?? entry.frame}`,
+          particles: resourceTick?.particles ?? null,
         })
         if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
           buffEngine?.triggerDeclaredBuffs(
@@ -2936,10 +2941,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             skillTagsOf(entry.dotSkill),
           )
         }
-        const { damage, rolled: tickRolled, st } = scoreTick(entry, hitRng, null)
+        const { damage, rolled: tickRolled, st } = scoreTick(entry, hitRng, null, tickShare)
         if (inWindow(entry.frame))
           recordQiEdgeDependence(entry.frame, entry.dotName, (readQiAtFrame) =>
-            scoreTick(entry, undefined, readQiAtFrame),
+            scoreTick(entry, undefined, readQiAtFrame, tickShare),
           )
         // The target takes this tick whether or not it falls inside the DPS
         // window, so its Qi bar accrues and a debuff it declares reaches
@@ -3063,14 +3068,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     const resourceResults = resources.map((resource) => resource.finish(windowFrames))
     for (const resource of resources) {
+      const latestEndByStart = new Map<number, number>()
+      for (const launch of resource.result.launches) {
+        if (launch.reason === "insufficient") continue
+        const start = Math.round(launch.timeSec * FPS)
+        latestEndByStart.set(
+          start,
+          Math.max(latestEndByStart.get(start) ?? 0, Math.round(launch.endSec * FPS)),
+        )
+      }
       ledger.constrainWindows(
         resource.definition.debuffId,
-        resource.result.launches
-          .filter((launch) => launch.reason !== "insufficient")
-          .map((launch) => ({
-            start: Math.round(launch.timeSec * FPS),
-            end: Math.round(launch.endSec * FPS),
-          })),
+        [...latestEndByStart].map(([start, end]) => ({ start, end })),
       )
     }
 

@@ -158,6 +158,8 @@ export interface SkillHit {
 
 export interface ProjectileSpec {
   speedMetersPerSecond: number
+  acceleration?: { initialSpeedMetersPerSecond: number; metersPerSecondSquared: number }
+  collisionDelayFrames?: number
   // A hard ceiling on travel time, in frames from the throw — the projectile's
   // own lifetime, independent of the skill's reach.
   maxTravelFrames: number
@@ -559,8 +561,52 @@ export function isSkillHit(x: unknown): x is SkillHit {
       !Number.isFinite(projectile.maxTravelFrames)
     )
       return false
+    if (!isProjectileExtrasValid(projectile)) return false
   }
   return true
+}
+
+export function isProjectileExtrasValid(projectile: Record<string, unknown>): boolean {
+  const { acceleration, collisionDelayFrames, speedMetersPerSecond } = projectile
+  if (
+    collisionDelayFrames !== undefined &&
+    (typeof collisionDelayFrames !== "number" ||
+      !Number.isFinite(collisionDelayFrames) ||
+      collisionDelayFrames < 0)
+  )
+    return false
+  if (acceleration === undefined) return true
+  if (!acceleration || typeof acceleration !== "object") return false
+  const { initialSpeedMetersPerSecond, metersPerSecondSquared } = acceleration as Record<
+    string,
+    unknown
+  >
+  return (
+    typeof initialSpeedMetersPerSecond === "number" &&
+    typeof metersPerSecondSquared === "number" &&
+    typeof speedMetersPerSecond === "number" &&
+    initialSpeedMetersPerSecond >= 0 &&
+    initialSpeedMetersPerSecond < speedMetersPerSecond &&
+    metersPerSecondSquared > 0 &&
+    Number.isFinite(metersPerSecondSquared)
+  )
+}
+
+export function projectileTravelFrames(projectile: ProjectileSpec, distanceMeters: number): number {
+  const { speedMetersPerSecond: cappedSpeed, acceleration } = projectile
+  let travelSeconds: number
+  if (!acceleration) {
+    travelSeconds = distanceMeters / cappedSpeed
+  } else {
+    const { initialSpeedMetersPerSecond: initialSpeed, metersPerSecondSquared: rate } = acceleration
+    const rampMeters = (cappedSpeed ** 2 - initialSpeed ** 2) / (2 * rate)
+    travelSeconds =
+      distanceMeters <= rampMeters
+        ? (Math.sqrt(initialSpeed ** 2 + 2 * rate * distanceMeters) - initialSpeed) / rate
+        : (cappedSpeed - initialSpeed) / rate + (distanceMeters - rampMeters) / cappedSpeed
+  }
+  const travelFrames = Math.max(travelSeconds * NOMINAL_FPS, projectile.collisionDelayFrames ?? 0)
+  return Math.min(travelFrames, projectile.maxTravelFrames)
 }
 
 export function triggerConditions(tr: HitTrigger): TriggerCondition[] {
@@ -594,8 +640,7 @@ export function resolvedHitFrame(
 ): number {
   const base = selectHitVariant(hit, test)?.frame ?? hit.frame
   if (!hit.projectile || distanceMeters === undefined) return base
-  const travelFrames = (distanceMeters / hit.projectile.speedMetersPerSecond) * NOMINAL_FPS
-  return base + Math.min(travelFrames, hit.projectile.maxTravelFrames)
+  return base + projectileTravelFrames(hit.projectile, distanceMeters)
 }
 
 // The one place `SkillHit.conditions` is checked — every path that turns a

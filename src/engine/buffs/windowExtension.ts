@@ -2,6 +2,7 @@ import { mulberry32 } from "../rng"
 
 export const EXTENSION_PARTICLES = 500
 const EXTENSION_SEED = 7351
+const COOLDOWN_EPSILON_SEC = 1e-9
 
 export interface WindowExtensionSpec {
   buffIds: readonly string[]
@@ -24,6 +25,7 @@ export interface ExtensionTrigger {
   conditionsHold: boolean
   cooldownSec: number
   requiredWindowId: string | null
+  particles?: Uint8Array | null
 }
 
 const windowKey = (buffId: string, window: BaseWindow): string => `${buffId}|${window.start}`
@@ -69,8 +71,9 @@ export class WindowExtensionEnsemble {
         : undefined
 
     for (let particle = 0; particle < this.particleCount; particle++) {
+      if (event.particles && !event.particles[particle]) continue
       const now = event.timeSec + (lateness ? lateness[particle] : 0)
-      if (this.cooldownEnd[particle] > now) continue
+      if (this.cooldownEnd[particle] - now > COOLDOWN_EPSILON_SEC) continue
       if (required) {
         const requiredExpiry = requiredExpiries?.[particle] ?? required.expiresAt
         if (now >= requiredExpiry) continue
@@ -90,6 +93,23 @@ export class WindowExtensionEnsemble {
     for (let particle = 0; particle < this.particleCount; particle++)
       if (timeSec < expiries[particle]) live++
     return live / this.particleCount
+  }
+
+  liveMask(buffId: string, timeSec: number, baseWindowOf: BaseWindowOf): boolean | Uint8Array {
+    const window = baseWindowOf(buffId, timeSec)
+    if (!window) return false
+    if (timeSec < window.expiresAt) return true
+    const expiries = this.expiries.get(windowKey(buffId, window))
+    if (!expiries) return false
+    const mask = new Uint8Array(this.particleCount)
+    let live = 0
+    for (let particle = 0; particle < this.particleCount; particle++)
+      if (timeSec < expiries[particle]) {
+        mask[particle] = 1
+        live++
+      }
+    if (live === 0) return false
+    return live === this.particleCount ? true : mask
   }
 
   expectedRemainingSec(buffId: string, timeSec: number, baseWindowOf: BaseWindowOf): number {

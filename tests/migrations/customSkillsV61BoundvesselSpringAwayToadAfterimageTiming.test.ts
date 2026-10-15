@@ -113,8 +113,10 @@ describe("healSkill — Spring Away", () => {
     expect(frames(healed)).toEqual([58, 68, 78, 88, 98, 108])
     expect(healed.hits.map(rowOf)).toEqual(live.hits.map(rowOf))
     expect(healed.hits.map((hit) => hit.triggers)).toEqual(live.hits.map((hit) => hit.triggers))
-    expect(healed.castFrames).toBe(live.castFrames)
-    expect(healed.meterDrains).toEqual(live.meterDrains)
+    expect(healed.castFrames).toBe(140)
+    expect(healed.meterDrains).toEqual(
+      live.meterDrains!.map((drain) => ({ ...drain, fromFrame: 44, stopAfterSec: 1 })),
+    )
   })
 
   it("keeps every other field of the copy", () => {

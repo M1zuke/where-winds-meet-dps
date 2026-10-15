@@ -118,7 +118,7 @@ export const blossomResource = defineResource({
       name: "Blossom Barrage T6",
       defaultAmount: 25,
       skillIds: [SKILL.umbq],
-      oncePerCast: true,
+      cooldownSeconds: 1,
       requiresParam: PARAM.blossomBarrage,
       minTier: 6,
       requiresBuff: BUFF.combo,

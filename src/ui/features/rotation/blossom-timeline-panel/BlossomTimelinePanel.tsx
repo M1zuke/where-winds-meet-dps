@@ -70,6 +70,7 @@ export function BlossomTimelinePanel({ result }: { result: Result }) {
               <div key={index}>
                 <strong>
                   {launch.timeSec.toFixed(2)} s · {t(REASON_KEYS[launch.reason])}
+                  {launch.share < 1 && ` · ${(launch.share * 100).toFixed(0)} %`}
                 </strong>
                 <div>
                   {launch.opening.toFixed(1)} → {launch.endAmount.toFixed(1)} ·{" "}

@@ -68,6 +68,7 @@ import {
   isHitOrVariantCondition,
   isAnyOfCondition,
   isParamCondition,
+  isProjectileExtrasValid,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, cancelledByOf, seedSkillFromBuiltin } from "./engine/skill"
@@ -1400,7 +1401,8 @@ function isProjectileSpec(value: unknown): value is SkillHit["projectile"] {
     typeof projectile.speedMetersPerSecond === "number" &&
     projectile.speedMetersPerSecond > 0 &&
     typeof projectile.maxTravelFrames === "number" &&
-    Number.isFinite(projectile.maxTravelFrames)
+    Number.isFinite(projectile.maxTravelFrames) &&
+    isProjectileExtrasValid(projectile)
   )
 }
 

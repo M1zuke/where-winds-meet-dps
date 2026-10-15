@@ -97,7 +97,11 @@ A hit may declare itself a projectile: its own `frame` is when it launches,
 and its actual landing frame is that launch frame plus the live target
 distance divided by a constant travel speed, converted to frames — never a
 fixed offset, since a farther or already-closer target lands later or
-sooner. The distance read is the one target-distance simulation every other
+sooner. A projectile that accelerates declares its initial speed and a
+constant acceleration; the declared speed is then its cap, and the travel time
+integrates the ramp and the capped remainder exactly. A projectile whose
+collision arms late declares `collisionDelayFrames`, the earliest travel time
+it can land after. The distance read is the one target-distance simulation every other
 reader of it uses, resolved at the same point a hit variant's own override
 is. A ceiling on travel time bounds it independently of the target's
 distance, for a projectile with its own limited lifetime. Every reader of a
@@ -485,7 +489,7 @@ for applying, `receives` for boosting — never by the module itself.
   never as a grant of the owning cast. A trigger adds a fixed number of seconds
   to every listed module whose window is live, leaving at most a declared
   remaining span, and does nothing for a window already lapsed. Its own
-  `cooldown` (compared inclusively), trigger phase and
+  `cooldown` (compared inclusively, within float tolerance), trigger phase and
   `requiresActiveBuffOnTrigger` gate it like any other module; the phase is
   read before the event's own Qi, and only a trigger that passed every gate
   arms the cooldown, even when the extension changes nothing. The module opens
@@ -498,7 +502,12 @@ for applying, `receives` for boosting — never by the module itself.
   extension then evolves as a seeded ensemble of trajectories and a listed
   module's bonus is scaled by the share of trajectories in which its window is
   live; a run that supplies a generator realises one trajectory instead. A
-  resource gate that requires a listed module scales its gain by the same share.
+  resource gate that requires a listed module splits the resource into one
+  state per subset of trajectories in which that window differs, merging subsets
+  whose state becomes identical: balance, launch, refund clock and gain
+  cooldowns evolve per subset. A launch scales its hit, and every tick of its
+  debuff, by the share of trajectories in which it is active, and a tick may
+  extend only those trajectories.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this
@@ -850,7 +859,9 @@ a refactor.
 - Gate resource-controlled ticks before their damage or buff triggers. A depleted
   launch must not revive from later refunds. Each new launch starts its own cadence.
 - Distribute declared whole-skill resource gains over authored hits; credit only
-  executed damaging hits, and keep once-per-cast bonuses independent.
+  executed damaging hits, and keep repeat-limited bonuses independent. A gain
+  limits its repeats with a cooldown that only a gain whose every gate passed
+  arms.
 - Decide a pulse's conditional additional impacts once, on the status as it stands
   at the pulse's own start; a status that lands between the pulse and its
   additional impact does not enhance that pulse.

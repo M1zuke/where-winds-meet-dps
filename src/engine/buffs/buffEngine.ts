@@ -38,7 +38,7 @@ import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
 import { fixedQiSchedule, type QiReading, type QiSchedule } from "../qiBar"
-import { WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
+import { EXTENSION_PARTICLES, WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
 
 export type BuffParams = Record<string, unknown>
 
@@ -610,6 +610,16 @@ export class BuffEngine {
     return this.isBuffActiveAtTime(id, time) ? 1 : 0
   }
 
+  get extensionParticleCount(): number {
+    return this.extensionGenerator ? 1 : EXTENSION_PARTICLES
+  }
+
+  liveParticles(id: string, time: number): boolean | Uint8Array {
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.liveMask(id, time, this.baseWindowOf)
+    return this.isBuffActiveAtTime(id, time)
+  }
+
   private extensionCovering(id: string): WindowExtensionEnsemble | undefined {
     for (const ensemble of this.extensions.values()) if (ensemble.covers(id)) return ensemble
     return undefined
@@ -620,7 +630,12 @@ export class BuffEngine {
     return latest ? { start: latest.time, expiresAt: latest.expiresAt } : null
   }
 
-  processDamagingEvent(event: { skill: Skill; timeSec: number; runKey?: string }): void {
+  processDamagingEvent(event: {
+    skill: Skill
+    timeSec: number
+    runKey?: string
+    particles?: Uint8Array | null
+  }): void {
     const tagSet = skillTagsOf(event.skill)
     for (const [id, module] of this.definitions) {
       const spec = module.extendsBuffs
@@ -641,6 +656,7 @@ export class BuffEngine {
             this.qiPhase(event.timeSec, "beforeHit") === module.triggerPhase,
           cooldownSec: this.resolveCooldown(module, event.timeSec),
           requiredWindowId: module.requiresActiveBuffOnTrigger ?? null,
+          particles: event.particles ?? null,
         },
         this.baseWindowOf,
       )

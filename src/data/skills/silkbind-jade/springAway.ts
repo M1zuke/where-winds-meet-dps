@@ -12,12 +12,41 @@ export const SPRING_AWAY_BULLET = {
   extraCritDamage: 1,
 }
 
-// In-game timings as of 2026-10-08: bullets 1-9 as measured, 10-12 on their
-// 9.75 f mean cadence. Four bullets always span under 30 f, which decides
-// which bullets Combo - Extend Mark's 0.5 s cooldown lets through.
-export const SPRING_AWAY_BULLET_FRAMES = [58, 66, 77, 87, 98, 107, 117, 126, 136, 146, 156, 165]
+const HOVER_STATE_FRAMES = 120
+const RELEASE_CAST_FRAMES = 35.45
+const SPRING_AWAY_CUE_FRACTIONS = [
+  0.025, 0.105, 0.185, 0.275, 0.355, 0.435, 0.525, 0.605, 0.685, 0.775, 0.855, 0.935,
+]
 
-export const SPRING_AWAY_HOVER_START_FRAME = 44
+const hundredthsOf = (frames: number) => Math.round(frames * 100) / 100
+
+// In-game values as of 2026-10-15: the hover starts after a 0.24 s hold and a
+// 0.5 s lift keyframe.
+export const SPRING_AWAY_HOVER_START_FRAME = hundredthsOf(0.74 * 60)
+
+// In-game values as of 2026-10-15: each bullet spawns on a cue of the 2 s hover
+// state, 3.0 to 112.2 f into it.
+export const SPRING_AWAY_BULLET_LAUNCH_FRAMES = SPRING_AWAY_CUE_FRACTIONS.map((fraction) =>
+  hundredthsOf(SPRING_AWAY_HOVER_START_FRAME + fraction * HOVER_STATE_FRAMES),
+)
+
+// In-game values as of 2026-10-15: 10 m/s, +700 m/s per second up to 80 m/s,
+// collision armed 0.04 s after the spawn, 5 s lifetime.
+export const SPRING_AWAY_BULLET_PROJECTILE = {
+  speedMetersPerSecond: 80,
+  acceleration: { initialSpeedMetersPerSecond: 10, metersPerSecondSquared: 700 },
+  collisionDelayFrames: 2.4,
+  maxTravelFrames: 300,
+}
+
+export const springAwayReleaseFrames = (bulletCount: number) =>
+  hundredthsOf(SPRING_AWAY_BULLET_LAUNCH_FRAMES[bulletCount - 1] + RELEASE_CAST_FRAMES)
+
+export const springAwayHoverSeconds = (bulletCount: number) =>
+  Math.round(
+    ((SPRING_AWAY_BULLET_LAUNCH_FRAMES[bulletCount - 1] - SPRING_AWAY_HOVER_START_FRAME) / 60) *
+      10000,
+  ) / 10000
 
 export const springAwayHoverDrain = (stopAfterSec: number) => [
   {
