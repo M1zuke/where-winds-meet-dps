@@ -1,8 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 
 const COEFFICIENTS = {
   physMultiplier: 0.254095,
@@ -18,7 +22,7 @@ export const dualBladesLightAttack4 = defineSkill({
   classId: "bamboocutDraught",
   name: "Dual Blades - Light Attack (4th Stage)",
   breakdownName: "Dual Blades - Light Attack",
-  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack],
+  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -28,6 +32,7 @@ export const dualBladesLightAttack4 = defineSkill({
     BUFF.swallowcallLightAttackBoost,
     ...CLASS_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   ],
   castFrames: 32,
   triggerable: true,

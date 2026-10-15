@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
@@ -14,7 +14,7 @@ export const nightwickPrimepick = defineSkill({
   classId: "bamboocutDraught",
   name: "Gauntlet Special - Tipsylay",
   breakdownName: "Nightwick - Tipsylay",
-  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial],
+  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial, ROLE.inebriateEnhanced],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",

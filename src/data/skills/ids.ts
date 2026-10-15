@@ -262,6 +262,7 @@ export const ROLE = {
   falconsPursuit: "role:falconsPursuit",
   fanHeavyPursuit: "role:fanHeavyPursuit",
   fanLightCharged: "role:fanLightCharged",
+  inebriateEnhanced: "role:inebriateEnhanced",
   phalanxCharged: "role:phalanxCharged",
   phalanxQ: "role:phalanxQ",
   snowpartingQStab: "role:snowpartingQStab",

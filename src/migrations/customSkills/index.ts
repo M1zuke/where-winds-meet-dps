@@ -88,6 +88,7 @@ import { V84__jadeHitLandingsGrantsAndClipTimings } from "./V84__jadeHitLandings
 import { V85__jadeAvailabilityAndRecharge } from "./V85__jadeAvailabilityAndRecharge"
 import { V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "./V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
 import { V87__draughtGrantTimingAndAbrasionTalent } from "./V87__draughtGrantTimingAndAbrasionTalent"
+import { V88__draughtMistwillowReach } from "./V88__draughtMistwillowReach"
 
 export type {
   CustomSkillMigration,
@@ -244,6 +245,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V85__jadeAvailabilityAndRecharge,
   V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming,
   V87__draughtGrantTimingAndAbrasionTalent,
+  V88__draughtMistwillowReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

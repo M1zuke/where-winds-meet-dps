@@ -189578,7 +189578,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "9456f4b7202256fbdc75d85ccf50a8408d354784bce8b16a39937d3263372de5"
+        "digest": "2e7a261875c4b433bacf15486ac63019bcde7e728d2acdb8c939672f9c13a952"
       },
       "debuffs": {
         "count": 9,
@@ -189593,7 +189593,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "8f626c16ca0c1325836d3fcfe068b516591311ae273311534fbee9b3ce0c5fda"
+        "digest": "46324b052c4a7ba69b943a6c2a500631469fcb455d3a0122051cd207a8ed9824"
       },
       "buffs": [
         {
@@ -191024,7 +191024,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "critDamageBoost up to +30% on Inebriate-enhanced skills while Inebriate, full at 750 Min Phys"
+          "summary": "critDamageBoost up to +30% on Inebriate-enhanced hits, full at 750 Min Phys"
         },
         {
           "id": "inebriateDamageScaling",

@@ -1,8 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const RAPID_SLASH = {
@@ -25,12 +29,17 @@ export const bladeVessel = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack (outside Tipsy)",
   breakdownName: "Blade Vessel",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.bladeVessel,
-  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES, BUFF.nonPlayerBaseDamage50],
+  receives: [
+    ...CLASS_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    BUFF.nonPlayerBaseDamage50,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  ],
   triggerable: false,
   castFrames: 205,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

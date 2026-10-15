@@ -17,7 +17,6 @@ const UNTOUCHED_ID = "bamboocutDraught-peakfall"
 const STORED_IDS = (STORE.skills as Skill[]).map((skill) => skill.id)
 const DRAGONQUENCH_IDS = STORED_IDS.filter((id) => id.includes("dragonquench"))
 const HEALED_IDS = STORED_IDS.filter((id) => id !== UNTOUCHED_ID)
-const CHECKED_FIELDS = ["hits", "receives", "neverAbrades"] as const
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
@@ -27,8 +26,14 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === id)!
 
-const fieldsOf = (skill: Skill) =>
-  Object.fromEntries(CHECKED_FIELDS.map((field) => [field, skill[field]]))
+const withoutLaterReach = (receives: string[] | undefined) =>
+  receives?.filter((buffId) => !buffId.startsWith("mistwillow"))
+
+const fieldsOf = (skill: Skill) => ({
+  hits: skill.hits,
+  receives: withoutLaterReach(skill.receives),
+  neverAbrades: skill.neverAbrades,
+})
 
 const hitById = (skill: Skill, id: string) => skill.hits.find((hit) => hit.id === id)!
 
@@ -36,10 +41,8 @@ describe("custom-skills v86 fixture", () => {
   it("is v86 and still stores the old shape for every healed skill", () => {
     expect(STORE.v).toBe(V87__draughtGrantTimingAndAbrasionTalent.to - 1)
     for (const id of HEALED_IDS) {
-      const diverges = CHECKED_FIELDS.some(
-        (field) =>
-          JSON.stringify(skillIn(STORE, id)[field]) !== JSON.stringify(builtinOf(id)[field]),
-      )
+      const diverges =
+        JSON.stringify(fieldsOf(skillIn(STORE, id))) !== JSON.stringify(fieldsOf(builtinOf(id)))
       expect(diverges, id).toBe(true)
     }
     expect(skillIn(STORE, UNTOUCHED_ID)).toBeDefined()

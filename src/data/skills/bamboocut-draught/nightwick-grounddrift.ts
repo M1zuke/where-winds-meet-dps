@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
@@ -15,14 +15,14 @@ const pursuit = (index: number, frame: number) =>
   })
 
 // In-game level-100 row (2.28792 / 633 / 345, 2026-09-04) at the tooltip's
-// 0.25 per hit; four hits is a provisional count. Attribute side × 1.5. Cast
+// 0.25 per hit, one hit per collider. Attribute side × 1.5. Cast
 // length: in-game animation, 2026-09-05. Hit frames and the Binge Points grant:
 // in-game values as of 2026-10-15.
 export const nightwickGrounddrift = defineSkill({
   id: SKILL.nightwickGrounddrift,
   classId: "bamboocutDraught",
   name: "Nightwick - Grounddrift",
-  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial],
+  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial, ROLE.inebriateEnhanced],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",

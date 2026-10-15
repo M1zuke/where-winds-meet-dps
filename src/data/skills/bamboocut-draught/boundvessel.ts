@@ -1,10 +1,14 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
 import { applyBuff } from "../../../definitions/skills/triggers"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 import { SKYSPEAK_TIER_4_CONDITION } from "./skyspeak-tier-4"
 import { skillBingePointAccumulationTriggersWhen } from "./buffs/skillBingePointAccumulation"
 import { enduranceMeter } from "../../resources/enduranceMeter"
@@ -92,7 +96,7 @@ export const boundvessel = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack",
   breakdownName: "Boundvessel",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ROLE.inebriateEnhanced, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -101,6 +105,7 @@ export const boundvessel = defineSkill({
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.nonPlayerBaseDamage50,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
   triggerable: false,
   castFrames: 208,

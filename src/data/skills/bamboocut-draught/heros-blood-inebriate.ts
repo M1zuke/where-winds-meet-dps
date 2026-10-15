@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
@@ -49,7 +49,7 @@ export const herosBloodInebriate = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Special - Inebriate",
   breakdownName: "Hero's Blood - Inebriate",
-  tags: [WEAPON.twinBlades, ATTUNE.driftcleaveDeepdaze],
+  tags: [WEAPON.twinBlades, ATTUNE.driftcleaveDeepdaze, ROLE.inebriateEnhanced],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",

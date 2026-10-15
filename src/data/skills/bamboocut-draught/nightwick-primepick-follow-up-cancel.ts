@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
@@ -13,7 +13,7 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
   classId: "bamboocutDraught",
   name: "Gauntlet Special - Primepick Follow-up [1-hit cancel]",
   breakdownName: "Nightwick - Primepick",
-  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial],
+  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial, ROLE.inebriateEnhanced],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",

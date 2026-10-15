@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  SKYSTRIKE_GAUNTLETS_RECEIVES,
+} from "./receives"
 import { lightAttackMarkTriggers } from "./buffs/lightAttackMarks"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
@@ -34,12 +38,17 @@ export const bloombreak = defineSkill({
   classId: "bamboocutDraught",
   name: "Gauntlet Light Attack - Inebriate",
   breakdownName: "Bloombreak",
-  tags: [WEAPON.gauntlets],
+  tags: [WEAPON.gauntlets, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.bloombreak,
-  receives: [BUFF.swallowcallLightAttackBoost, ...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
+  receives: [
+    BUFF.swallowcallLightAttackBoost,
+    ...CLASS_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  ],
   triggerable: false,
   castFrames: 154,
   hits: [
