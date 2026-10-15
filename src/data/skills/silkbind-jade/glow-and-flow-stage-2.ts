@@ -30,15 +30,15 @@ export const glowAndFlowStage2 = defineSkill({
   meterDrains: GLOW_AND_FLOW_CHARGE_DRAIN,
   castFrames: 108,
   triggerable: true,
-  // In-game values as of 2026-09-28: 3 m approach reach (the cast is Heavy
-  // Attack 20301005).
+  // In-game values as of 2026-09-28: 3 m approach reach (the cast is its
+  // Heavy Attack).
   reachMeters: 3,
   // In-game values as of 2026-09-24: a 9 m forward dash, set at the release.
   displacement: { kind: "selfForward", meters: 9 },
   hits: [
     hit(0, {
-      // Hit frames with only a window: authored at the release clip's own
-      // floor, both strikes landing together (this class's own evidence).
+      // Hit frames with only a window: authored at the start of the release
+      // window, both strikes landing together (this class's own evidence).
       frame: 56,
       physMultiplier: 1.22479,
       attributeMultiplier: 1.837185,

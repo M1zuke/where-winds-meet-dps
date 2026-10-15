@@ -29,8 +29,8 @@ export const apricotHeavenEnhanced = defineSkill({
   meterDrains: APRICOT_HEAVEN_AIR_DRAIN,
   castFrames: 304,
   triggerable: true,
-  // In-game values as of 2026-09-28: 3 m approach reach (the cast is Heavy
-  // Attack 20601005); the rise is a vertical AoE with no further scripted
+  // In-game values as of 2026-09-28: 3 m approach reach (the cast is its
+  // Heavy Attack); the rise is a vertical AoE with no further scripted
   // displacement.
   reachMeters: 3,
   hits: [

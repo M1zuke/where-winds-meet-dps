@@ -4,8 +4,8 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// The un-combo-linked light form (skill 20601205): its own 0.7 s cooldown
-// replaces the combo chain's own re-entry. In-game values as of 2026-09-24.
+// The un-combo-linked light form: its own 0.7 s cooldown replaces the
+// combo chain's own re-entry. In-game values as of 2026-09-24.
 export const hiddenSwordLight5 = defineSkill({
   id: SKILL.hiddenSwordLight5,
   classId: "silkbindJade",

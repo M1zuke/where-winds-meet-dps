@@ -11,7 +11,7 @@ import type { LadderLevels } from "./enhancementLadderDef"
 
 export const DEFAULT_ENHANCEMENT_LEVEL = 65
 
-// The ladder has no rows past this level in any container — see the season
+// The ladder has no rows past this level — see the season
 // ceiling table below, which can technically exceed it.
 const LADDER_CEILING = 75
 
