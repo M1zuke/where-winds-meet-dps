@@ -126,6 +126,7 @@ export interface FormulaContext {
   affinityDamageReduction?: number
   hawkwingPhysBonus?: number
   bellstrikeAttackPctBonus?: number
+  formlessAttack?: { min: number; max: number }
   attributeFlatMultiplier?: number
 }
 
@@ -227,17 +228,17 @@ export function computeSkillDamage(
       ) + ctx.directAffinityPanel
 
   const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
+  const setBellstrikeAttackPct =
+    ctx.bellstrikeAttackPctBonus ?? setFormulaBonus(ctx.set, "bellstrikeAttackPct")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
   const physMin =
-    (effectivePhys.min + numberOrZero(art.minPhysFlatBonus)) *
-      (1 + numberOrZero(art.minPhysPctBonus)) *
-      (1 + setPhysBoost) -
+    effectivePhys.min * (1 + numberOrZero(art.minPhysPctBonus) + setPhysBoost) +
+    numberOrZero(art.minPhysFlatBonus) -
     ctx.effectiveDefense
 
   const physMaxRaw =
-    (effectivePhys.max + numberOrZero(art.maxPhysFlatBonus)) *
-      (1 + numberOrZero(art.maxPhysPctBonus)) *
-      (1 + setPhysBoost) -
+    effectivePhys.max * (1 + numberOrZero(art.maxPhysPctBonus) + setPhysBoost) +
+    numberOrZero(art.maxPhysFlatBonus) -
     ctx.effectiveDefense
   const physMax = Math.max(physMaxRaw, physMin)
 
@@ -362,12 +363,17 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const attackScale =
-      1 +
-      numberOrZero(art.attributeAttackPctBonus) +
-      (attribute === "Bellstrike" ? numberOrZero(ctx.bellstrikeAttackPctBonus) : 0)
-    const minAttack = block.min * attackScale
-    const maxAttack = Math.max(block.max * attackScale, minAttack)
+    const sharedRate = numberOrZero(art.attributeAttackPctBonus)
+    const steadyScale = 1 + sharedRate + (attribute === "Bellstrike" ? setBellstrikeAttackPct : 0)
+    const formlessScale = 1 + sharedRate
+    const formless =
+      attribute === ctx.primaryAttribute ? (ctx.formlessAttack ?? { min: 0, max: 0 }) : null
+    const minAttack =
+      (block.min - (formless?.min ?? 0)) * steadyScale + (formless?.min ?? 0) * formlessScale
+    const maxAttack = Math.max(
+      (block.max - (formless?.max ?? 0)) * steadyScale + (formless?.max ?? 0) * formlessScale,
+      minAttack,
+    )
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0

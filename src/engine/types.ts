@@ -94,6 +94,10 @@ export interface Inputs {
   // stake (docs/TIMELINE.md § "Qi bar").
   qiTarget?: QiTargetId
 
+  // The Formless share inside the primary attribute block. Derived with the
+  // stat paths below and never persisted.
+  formlessAttack?: { min: number; max: number }
+
   phys: AttackBlock
   bellstrike: AttackBlock
   stonesplit: AttackBlock

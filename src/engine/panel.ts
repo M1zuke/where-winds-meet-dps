@@ -440,6 +440,7 @@ export function buildContext(
     affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus: contextPatch?.hawkwingPhysBonus,
     bellstrikeAttackPctBonus: contextPatch?.bellstrikeAttackPctBonus,
+    formlessAttack: inputs.formlessAttack,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

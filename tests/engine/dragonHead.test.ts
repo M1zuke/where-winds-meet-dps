@@ -224,9 +224,9 @@ describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
   })
 
   it("Surging Waves does not leak onto other skills", () => {
-    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const alone = skillDamage(simulate([SKILL.swordq], { set: null }), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq]),
+      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], { set: null }),
       SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)
@@ -275,9 +275,9 @@ describe("40 Stacks (Dragon Head) teammate buff", () => {
   })
 
   it("leaves other skills untouched", () => {
-    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const alone = skillDamage(simulate([SKILL.swordq], { set: null }), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], withFullStacks()),
+      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], { ...withFullStacks(), set: null }),
       SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)

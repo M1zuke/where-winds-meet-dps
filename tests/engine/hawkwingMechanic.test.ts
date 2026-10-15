@@ -79,11 +79,12 @@ describe("Hawkwing procs off a DoT tick, not only a cast hit", () => {
 
 describe("Hawkwing's per-stack bonus", () => {
   it("grants 1.8% to Physical and Bellstrike attack per stack", () => {
-    const setup = setupWith([0.1, 0.2, 0.3, 0.4, 0.5], [])
+    const setup = { ...setupWith([0.1, 0.2, 0.3, 0.4, 0.5], []), rng: undefined }
     const mechanic = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing")
     const state = mechanic.prepare(setup)!
-    const stacks = Math.round(state.schedule.getExpectedStacksAtTime(0.5))
+    const stacks = state.schedule.getExpectedStacksAtTime(0.5)
     expect(stacks).toBeGreaterThan(0)
+    expect(stacks).not.toBe(Math.round(stacks))
     const contribution = mechanic.contributeAt?.(state, 30, undefined as never, setup)
     expect(contribution?.context?.hawkwingPhysBonus).toBeCloseTo(stacks * 0.018, 12)
     expect(contribution?.context?.bellstrikeAttackPctBonus).toBeCloseTo(stacks * 0.018, 12)

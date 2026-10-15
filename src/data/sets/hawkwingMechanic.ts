@@ -39,8 +39,8 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
     },
 
     contributeAt(state, frame, _skill, setup) {
-      const stacks = Math.round(state.schedule.getExpectedStacksAtTime(frame / setup.fps))
-      const bonus = stacks * HAWKWING_BONUS_PER_STACK
+      const bonus =
+        state.schedule.getExpectedStacksAtTime(frame / setup.fps) * HAWKWING_BONUS_PER_STACK
       return { context: { hawkwingPhysBonus: bonus, bellstrikeAttackPctBonus: bonus } }
     },
 

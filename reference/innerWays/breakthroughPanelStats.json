@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Every inner way the game offers, with the panel line each Inner Way Breakthrough rank (the app's tier) unlocks and the value that line has at each character breakthrough. DEV-ONLY reference data: never import this from src/ or tests/ (see docs/REFERENCE-DATA.md). Copy values into src/data/innerWays/ by hand.",
-    "source": "In-game values and English names as of 2026-09-03; the inner ways the app models were re-checked on 2026-10-15.",
+    "source": "In-game values and English names as of 2026-09-03; the inner ways the app models, including the four Bamboocut Draught ones, were re-checked on 2026-10-15.",
     "updating": "Nothing in this repo regenerates this file. Update it by hand from the in-game inner-way panels.",
     "howToRead": [
       "id is the game's inner way id, the same number the dashboard passive ids in src/data/innerWays/passiveIds.ts use.",
@@ -2865,6 +2865,230 @@
           "requiresWorldLevel": 10,
           "fixed": {
             "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 701,
+      "name": "Eonpour",
+      "star": 5,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 702,
+      "name": "Skyspeak",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.049
+            },
+            "13": {
+              "critRate": 0.057
+            },
+            "14": {
+              "critRate": 0.066
+            },
+            "15": {
+              "critRate": 0.073
+            },
+            "16": {
+              "critRate": 0.077
+            },
+            "17": {
+              "critRate": 0.081
+            },
+            "18": {
+              "critRate": 0.087
+            },
+            "19": {
+              "critRate": 0.094
+            },
+            "20": {
+              "critRate": 0.101
+            },
+            "21": {
+              "critRate": 0.109
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 703,
+      "name": "Mistwing",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 704,
+      "name": "Volutefit",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "MAX_ACTIVE_PRO_ATK": 17.7,
+              "MIN_ACTIVE_PRO_ATK": 8.9
+            },
+            "13": {
+              "MAX_ACTIVE_PRO_ATK": 20.7,
+              "MIN_ACTIVE_PRO_ATK": 10.3
+            },
+            "14": {
+              "MAX_ACTIVE_PRO_ATK": 24.1,
+              "MIN_ACTIVE_PRO_ATK": 12.1
+            },
+            "15": {
+              "MAX_ACTIVE_PRO_ATK": 26.8,
+              "MIN_ACTIVE_PRO_ATK": 13.4
+            },
+            "16": {
+              "MAX_ACTIVE_PRO_ATK": 28.1,
+              "MIN_ACTIVE_PRO_ATK": 14.1
+            },
+            "17": {
+              "MAX_ACTIVE_PRO_ATK": 29.5,
+              "MIN_ACTIVE_PRO_ATK": 14.7
+            },
+            "18": {
+              "MAX_ACTIVE_PRO_ATK": 31.7,
+              "MIN_ACTIVE_PRO_ATK": 15.9
+            },
+            "19": {
+              "MAX_ACTIVE_PRO_ATK": 34.3,
+              "MIN_ACTIVE_PRO_ATK": 17.1
+            },
+            "20": {
+              "MAX_ACTIVE_PRO_ATK": 36.9,
+              "MIN_ACTIVE_PRO_ATK": 18.5
+            },
+            "21": {
+              "MAX_ACTIVE_PRO_ATK": 39.9,
+              "MIN_ACTIVE_PRO_ATK": 19.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "ACTIVE_PRO_PEN": 0.06
           }
         }
       ]
