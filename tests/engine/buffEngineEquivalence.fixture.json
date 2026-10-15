@@ -184322,7 +184322,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "5ea1b129662129ff1f6c4a5c58738304aba1bcb9eeb51273b0b7d1dc1c607649"
+        "digest": "f10b1fb559fb1bd04ea6b59cf4cb5ac965d0149daaee4467157be1753397c1f4"
       },
       "debuffs": {
         "count": 6,
@@ -184355,7 +184355,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": true,
-          "duration": 12,
+          "duration": 14,
           "maxStacks": 4,
           "effects": [],
           "summary": null
@@ -184487,7 +184487,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 70% final crit rate or higher, else +15% crit rate"
+          "summary": "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 75% final crit rate or higher, else +15% crit rate"
         },
         {
           "id": "chargeEnhancement",
@@ -185960,7 +185960,7 @@
       ]
     },
     "dynamic": {
-      "digest": "83eb6f00d83155ae3f11b3b4dfb3cb38c6235c6b325c6b699018961bdeef5180"
+      "digest": "ab1ea20a0bd4afd0eaf0ceab2c788056b267704bd736945b7e3af7dfb81fae04"
     }
   },
   "bellstrikeSplendor": {

@@ -70,7 +70,7 @@ describe("V71__comboExtendMarkReach — called directly", () => {
 describe("V71__comboExtendMarkReach — through the chain", () => {
   it("is registered and is exactly what the v70 → v71 hop applies", () => {
     expect(CUSTOM_SKILL_MIGRATIONS).toContain(V71__comboExtendMarkReach)
-    const result = runCustomSkillMigrations(clone(STORE))!
+    const result = runCustomSkillMigrations(clone(STORE), { toVersion: 71 })!
     expect(result.applied).toEqual(["V71__comboExtendMarkReach"])
     expect(result.blob.v).toBe(71)
     expect(skillIn(result.blob, SKILL.umblightcharge).triggersBuffs).toEqual(["comboExtendMark"])

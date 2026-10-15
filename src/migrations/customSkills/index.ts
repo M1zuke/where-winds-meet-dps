@@ -72,6 +72,7 @@ import { V68__mysticArtLevelCap } from "./V68__mysticArtLevelCap"
 import { V69__lightAttackThreeHitFrames } from "./V69__lightAttackThreeHitFrames"
 import { V70__splendorHitFrameRetiming } from "./V70__splendorHitFrameRetiming"
 import { V71__comboExtendMarkReach } from "./V71__comboExtendMarkReach"
+import { V72__stonesplitHitFrameRetiming } from "./V72__stonesplitHitFrameRetiming"
 
 export type {
   CustomSkillMigration,
@@ -212,6 +213,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V69__lightAttackThreeHitFrames,
   V70__splendorHitFrameRetiming,
   V71__comboExtendMarkReach,
+  V72__stonesplitHitFrameRetiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

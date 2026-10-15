@@ -16,8 +16,9 @@ const SHARE_HIT = {
   attributeFixed: 57,
 }
 
-const SHARE_HIT_FRAMES = [38, 60, 66, 72, 78, 96, 100, 104]
-const FINAL_HIT_FRAME = 108
+// In-game values as of 2026-10-15.
+const SHARE_HIT_FRAMES = [51, 73, 79, 85, 91, 109, 113, 117]
+const FINAL_HIT_FRAME = 121
 
 export const snowpartingspecial = defineSkill({
   id: SKILL.snowpartingspecial,

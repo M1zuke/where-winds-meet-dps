@@ -12,16 +12,16 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(59364.23044265936)
-    expect(result.totalDamage).toBe(3561853.826559562)
+    expect(result.dps).toBe(59373.61228840987)
+    expect(result.totalDamage).toBe(3562416.7373045925)
   })
 
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const raised = { ...profile.inputs, breakthrough: 17 }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
-    expect(result.dps).toBe(60378.5653801221)
-    expect(result.totalDamage).toBe(3622713.922807326)
+    expect(result.dps).toBe(60388.118405393005)
+    expect(result.totalDamage).toBe(3623287.1043235804)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

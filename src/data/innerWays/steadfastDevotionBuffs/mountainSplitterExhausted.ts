@@ -9,11 +9,11 @@ export const mountainSplitterExhausted = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary:
-    "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 70% final crit rate or higher, else +15% crit rate",
+    "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 75% final crit rate or higher, else +15% crit rate",
   effects: (ctx) =>
     ctx.self.reachesEvent &&
     ctx.phase === "exhausted" &&
     !ctx.status.isActive(BUFF.mountainSplitter)
-      ? [stat("critDamageBoost", 0.1), finalCritAtLeast(0.7, 0.15)]
+      ? [stat("critDamageBoost", 0.1), finalCritAtLeast(0.75, 0.15)]
       : [],
 })

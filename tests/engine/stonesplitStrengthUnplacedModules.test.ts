@@ -42,11 +42,11 @@ describe.each([
   [SKILL.hengHeavyAttack2, CAST.hengHeavyAttack2, 43, [11, 28]],
   [SKILL.hengHeavyAttack3, CAST.hengHeavyAttack3, 26, [18]],
   [SKILL.hengHeavyAttack4, CAST.hengHeavyAttack4, 54, [28]],
-  [SKILL.hengDash, CAST.hengDash, 40, [22]],
+  [SKILL.hengDash, CAST.hengDash, 40, [24]],
   [SKILL.moLightAttack1, CAST.moLightAttack1, 38, [17]],
   [SKILL.moLightAttack2, CAST.moLightAttack2, 65, [43]],
   [SKILL.moLightAttack3, CAST.moLightAttack3, 142, [44, 87]],
-  [SKILL.moDash, CAST.moDash, 52, [25]],
+  [SKILL.moDash, CAST.moDash, 52, [24]],
 ])("%s", (skillId, castTag, castFrames, hitFrames) => {
   it("is a triggerable Stonesplit weapon skill with its own cast tag, length and hit frames", () => {
     const skill = stonesplitSkill(skillId)
@@ -319,8 +319,8 @@ describe("the basic attack and dash modules", () => {
   })
 
   it("the dashes hit once and shrink or dash by distance", () => {
-    expect(hitValues(SKILL.hengDash)).toEqual([[22, 0.43723, 0.655845, 122, 66]])
-    expect(hitValues(SKILL.moDash)).toEqual([[25, 1.01266, 1.51899, 281, 153]])
+    expect(hitValues(SKILL.hengDash)).toEqual([[24, 0.43723, 0.655845, 122, 66]])
+    expect(hitValues(SKILL.moDash)).toEqual([[24, 1.01266, 1.51899, 281, 153]])
     expect(stonesplitSkill(SKILL.hengDash).displacement).toEqual({
       kind: "byDistance",
       bands: [{ minMeters: 7, maxMeters: 100, then: { kind: "selfForward", meters: 6 } }],
