@@ -13,7 +13,6 @@ import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
@@ -21,7 +20,7 @@ import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { SET_ID } from "../../src/data/sets/ids"
 import { spearheavy } from "../../src/data/skills/bellstrike-umbra/spearheavy"
 import type { Skill } from "../../src/engine/skill"
-import type { Inputs, QiBreakWindow, Result } from "../../src/engine/types"
+import type { Inputs, Result } from "../../src/engine/types"
 import anchorProfileFile from "../migrations/testProfiles/v7/bellstrikeUmbra.json"
 
 // `import.meta.url` is an http URL under the jsdom environment, so the fixture
@@ -63,14 +62,6 @@ function anchorInputs(): Inputs {
 
 function toEngineInputs(raw: Inputs): Inputs {
   return applyBowSet(applyArmorSet(withDerivedStats(raw)))
-}
-
-// Forces the resolved rotation's own seed window, for a case that needs a
-// specific Qi break shape rather than whatever the build naturally converges
-// to (docs/TIMELINE.md § "Qi bar").
-function withRotationQiBreak(raw: Inputs, qiBreak: QiBreakWindow): Inputs {
-  const rotation = raw.activeCustomRotation ?? defaultRotationForClass(raw.classId)!
-  return { ...raw, activeCustomRotation: { ...rotation, qiBreak } }
 }
 
 function withInnerWay(
@@ -132,13 +123,6 @@ const CASES: { name: string; build: () => Inputs }[] = [
   {
     name: "anchor:breakthrough17",
     build: () => toEngineInputs({ ...anchorInputs(), breakthrough: 17 }),
-  },
-  {
-    name: "anchor:noQiBreak",
-    build: () =>
-      toEngineInputs(
-        withRotationQiBreak(anchorInputs(), { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 }),
-      ),
   },
   {
     name: "anchor:healerBuff",

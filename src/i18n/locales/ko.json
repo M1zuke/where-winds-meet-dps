@@ -2189,7 +2189,6 @@
   "rotation.editor.prePullExcludedFromDuration": "전투 전(지속 시간 제외)",
   "rotation.editor.preferredDistanceHint": "",
   "rotation.editor.preferredDistanceM": "",
-  "rotation.editor.qiBreakReadonly": "탈진 구간을 변경하려면 커스텀 로테이션으로 복제하세요",
   "rotation.editor.qiLedgerBroken": "",
   "rotation.editor.qiLedgerDelta": "",
   "rotation.editor.qiLedgerDeltaHint": "",

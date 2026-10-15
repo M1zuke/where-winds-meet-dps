@@ -126,7 +126,6 @@ import {
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
-  readQiBreakWindow,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -242,11 +241,6 @@ function migrateRotationIds<T>(rotation: T): T {
     )
   }
   if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
-  if (r.qiBreak !== undefined) {
-    const window = readQiBreakWindow(r.qiBreak)
-    if (window) next.qiBreak = window
-    else delete next.qiBreak
-  }
   if (r.fixedWindowSec !== undefined) {
     const windowSec = readFixedWindowSec(r.fixedWindowSec)
     if (windowSec === undefined) delete next.fixedWindowSec
@@ -901,8 +895,6 @@ export function importCustomRotation(text: string): Rotation {
     createdAt: now,
     updatedAt: now,
   }
-  const importedQiBreak = readQiBreakWindow(candidate.qiBreak)
-  if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
   }

@@ -67,7 +67,7 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
       },
       // Pinned to the break the measured build's simulated Qi bar reaches, so
       // the frame assertions below stay on a known second.
-      { fixedQiBreaks: [{ ...rotation.qiBreak!, startSec: 30.35, durationSec: 10 }] },
+      { fixedQiBreaks: [{ startSec: 30.35, durationSec: 10, lowQiLeadSec: 5 }] },
     )
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
     expect(echoRow.count).toBe(3)

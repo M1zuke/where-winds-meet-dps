@@ -9,13 +9,6 @@ import { ENDLESS_GALE_GATE } from "../../src/data/classes/bellstrike-splendor/ga
 import { endlessGaleMountainsMightExtend } from "../../src/data/skills/bellstrike-splendor/buffs/endlessGaleCostReductionGrant"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { defaultInputs } from "../../src/engine/defaults"
-import type { QiBreakWindow } from "../../src/engine/types"
-
-const rotationQiBreak = (lowQiLeadSec: number, startSec = 25): QiBreakWindow => ({
-  startSec,
-  durationSec: 10,
-  lowQiLeadSec,
-})
 
 describe("the low-Qi lead window", () => {
   it("precedes the break window and ends where it begins", () => {
@@ -34,13 +27,8 @@ describe("the low-Qi lead window", () => {
     expect(engine.lowQiWindow()).toBeNull()
   })
 
-  it("is derived from the lead setting", () => {
-    expect(paramsFromInputs(defaultInputs, rotationQiBreak(5)).belowQiTime).toBe(20)
-    expect(paramsFromInputs(defaultInputs, rotationQiBreak(0)).belowQiTime).toBeUndefined()
-  })
-
-  it("clamps to the start of the fight rather than going negative", () => {
-    expect(paramsFromInputs(defaultInputs, rotationQiBreak(30, 25)).belowQiTime).toBe(0)
+  it("is derived from the default window's lead", () => {
+    expect(paramsFromInputs(defaultInputs).belowQiTime).toBe(20)
   })
 
   it("reports its own span for the rotation timeline", () => {

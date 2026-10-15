@@ -288,24 +288,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
   const qiTargetHpMaxValue = qiTargetHpMax(qiTargetId, inputs.breakthrough)
 
-  // The fixed-point iteration below seeds from the rotation's own authored
-  // window (or a prior run's own converged breaks) and re-runs until the
-  // break frames stop moving (docs/TIMELINE.md § "Qi bar").
-  const qiSeedWindow = rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
   const qiWarmStartBreaks = options?.qiScheduleSeedBreaks
   const fixedQiBreaks = options?.fixedQiBreaks
   let qiSchedule: QiSchedule = fixedQiBreaks
     ? fixedQiScheduleFromWindows(fixedQiBreaks, FPS)
     : qiWarmStartBreaks
       ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
-      : fixedQiSchedule(qiSeedWindow, FPS)
-  // Every built-in rotation settles within 5 runs; 6 leaves one run of margin.
+      : fixedQiSchedule(DEFAULT_QI_BREAK_WINDOW, FPS)
   const QI_MAX_ITERATIONS = 6
   // A warm-started seed is a prior run's own converged schedule, so if this
   // build's first pass reproduces it exactly, that pass already is the fixed
-  // point — docs/UI.md § "The rules", "one verifying run". The rotation's own
-  // authored window seeding a cold run carries no such guarantee, and keeps
-  // requiring a real second pass to confirm.
+  // point — docs/UI.md § "The rules", "one verifying run". The default window
+  // seeding a cold run carries no such guarantee, and keeps requiring a real
+  // second pass to confirm.
   let qiPreviousBreaksFrames: readonly QiBreak[] | null = qiWarmStartBreaks ?? null
 
   for (let qiIteration = 1; ; qiIteration++) {
@@ -315,7 +310,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
     for (const s of inputs.customSkills ?? []) skillsMap.set(s.id, s)
     const skills = [...skillsMap.values()]
-    const buffParams = paramsFromInputs(inputs, rotation.qiBreak)
+    const buffParams = paramsFromInputs(inputs)
     const buffsMap = new Map<string, Buff>()
     for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
     for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)

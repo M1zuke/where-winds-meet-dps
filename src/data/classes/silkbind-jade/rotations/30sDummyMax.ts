@@ -64,9 +64,8 @@ export default defineRotation({
   ],
   permanentBuffIds: [],
   fixedWindowSec: 30,
-  qiBreak: { startSec: 20, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-09-13T18:00:00.000Z",
   updatedAt: "2026-09-13T18:00:00.000Z",
   description:
-    "Source: ryvn, https://www.youtube.com/watch?v=UslxY4_kzjM (2026-08-30). Video description supplies the action order; visual review also shows a third drone launch after Q/Heavy Light, around 19 s, omitted from that description. The boss is exhausted around 20 s; that sampled timing is used for the Qi Break window. Cast/cancel durations and transition gaps remain approximate. Dragon Head lands within the 30-second window. Pre-pull actions use existing pre-pull skills. Author loadout: Rainwhisper, Wraithstrike Script; Morale Chant, Blossom Barrage, Star Reacher, Breaking Point; enhanced Dragon Breath and Dragon Head. Selecting this preset does not replace gear, Inner Ways, resource settings or Dummy mode. Blossom gains remain configurable assumptions; the video's reported 76 projectile hits are a comparison target, not a forced hit count. This preset is not DPS-validated.",
+    "Source: ryvn, https://www.youtube.com/watch?v=UslxY4_kzjM (2026-08-30). Video description supplies the action order; visual review also shows a third drone launch after Q/Heavy Light, around 19 s, omitted from that description. The boss is exhausted around 20 s in the video. Cast/cancel durations and transition gaps remain approximate. Dragon Head lands within the 30-second window. Pre-pull actions use existing pre-pull skills. Author loadout: Rainwhisper, Wraithstrike Script; Morale Chant, Blossom Barrage, Star Reacher, Breaking Point; enhanced Dragon Breath and Dragon Head. Selecting this preset does not replace gear, Inner Ways, resource settings or Dummy mode. Blossom gains remain configurable assumptions; the video's reported 76 projectile hits are a comparison target, not a forced hit count. This preset is not DPS-validated.",
 })

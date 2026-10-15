@@ -1,4 +1,4 @@
-import type { Inputs, QiBreakWindow } from "../types"
+import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
 import type { QiPhase } from "../effects/context"
 import { activeRotationForInputs } from "../activeRotation"
@@ -8,7 +8,7 @@ import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
-import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
+import { DEFAULT_QI_BREAK_WINDOW } from "../qiBreak"
 import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
 import {
   FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM,
@@ -32,8 +32,7 @@ export function clockQiPhase(params: BuffParams, timeSec: number): QiPhase {
   return "normal"
 }
 
-export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow): BuffParams {
-  const qiBreak = resolveQiBreakWindow(rotationQiBreak)
+export function paramsFromInputs(inputs: Inputs): BuffParams {
   const params: BuffParams = {
     isTrainingDummy: !!inputs.dummyMode,
     classId: inputs.classId,
@@ -59,13 +58,11 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   }
 
   const breakExtensionBonus = inputs.combatSettings?.breakExtension ? 12 : 0
-  if (!sameQiBreakWindow(qiBreak, DEFAULT_QI_BREAK_WINDOW) || breakExtensionBonus !== 0) {
-    params.qiBreakTime = qiBreak.startSec
-    params.bossBreakDuration = qiBreak.durationSec + breakExtensionBonus
+  if (breakExtensionBonus !== 0) {
+    params.qiBreakTime = DEFAULT_QI_BREAK_WINDOW.startSec
+    params.bossBreakDuration = DEFAULT_QI_BREAK_WINDOW.durationSec + breakExtensionBonus
   }
-  if (qiBreak.lowQiLeadSec > 0 && qiBreak.durationSec > 0) {
-    params.belowQiTime = Math.max(0, qiBreak.startSec - qiBreak.lowQiLeadSec)
-  }
+  params.belowQiTime = DEFAULT_QI_BREAK_WINDOW.startSec - DEFAULT_QI_BREAK_WINDOW.lowQiLeadSec
 
   if (inputs.combatSettings?.script) params[inputs.combatSettings.script] = true
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true

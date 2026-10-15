@@ -825,8 +825,9 @@ itself exists; instead it is computed in pass 2, in time order, alongside
 - **The circularity resolves by a fixed-point iteration**: the whole run
   simulates with one schedule, the bar it produces becomes the next schedule,
   and the run repeats until the break frames stop moving or a small iteration
-  cap is reached — seeded from the rotation's own authored break, which
-  already sits close in every validated case. A run that reaches the cap
+  cap is reached — seeded from one fixed default break. A rotation carries no
+  break of its own, and the converged schedule must not depend on the seed.
+  A run that reaches the cap
   without converging keeps the last schedule and reports a warning, never an
   error. A test-harness-only run option may pin the schedule to an exact set
   of windows for one pass with no iteration; it is never read from `Inputs`,

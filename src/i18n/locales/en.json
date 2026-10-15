@@ -2189,7 +2189,6 @@
   "rotation.editor.prePullExcludedFromDuration": "Pre-pull (sets up buffs; counts no damage or duration)",
   "rotation.editor.preferredDistanceHint": "The distance the fight starts at, and the one each cast returns to, up to the skill's own reach; it matters only for a distance-dependent effect.",
   "rotation.editor.preferredDistanceM": "Preferred distance to target (m)",
-  "rotation.editor.qiBreakReadonly": "Fork to Custom to change the break window",
   "rotation.editor.qiLedgerBroken": "Broken",
   "rotation.editor.qiLedgerDelta": "Δ Qi",
   "rotation.editor.qiLedgerDeltaHint": "Qi the target lost from this row until the next one",

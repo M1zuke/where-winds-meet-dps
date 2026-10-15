@@ -184,7 +184,7 @@ export function fixedQiScheduleFromWindows(
 // Absent means no run to seed from yet; an empty array is itself a real seed
 // — "this build's own last run never broke" — and warm-starts a nearby
 // candidate straight to a one-pass confirmation instead of falling back to
-// the rotation's authored window.
+// the default window.
 export function qiScheduleSeedBreaksFrom(
   qiBreaks: readonly { startSec: number; endSec: number }[] | undefined,
   fps: number,
