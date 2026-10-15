@@ -48,7 +48,7 @@ export const toadPoisonFury = defineDebuff({
     // In-game values as of 2026-10-15 (level 176).
     physMultiplier: 1.530217,
     physFixed: 242.4702,
-    attributeMultiplier: 2.295326,
+    attributeMultiplier: 2.295325,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "mystic",
@@ -145,9 +145,10 @@ export const fluteRipple = defineDebuff({
     // Pulses on its own schedule rather than re-arming a tick timer — in-game
     // tick counts as of 2026-09-10.
     reschedulesPerTick: false,
+    // In-game values as of 2026-10-15, level 76.
     physMultiplier: 1.483296,
     physFixed: 330.4793,
-    attributeMultiplier: 2.224944,
+    attributeMultiplier: 2.224945,
     attributeFixed: 0,
     attributeAttack: "",
     // In-game hit type as of 2026-09-24: a direct hit, not a DoT tick.

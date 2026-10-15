@@ -78,7 +78,7 @@ describe("Dragon Fire (Smolder) skills", () => {
 
     expect(two.hits.length).toBe(3)
     expect(sum(two, "physMultiplier")).toBeCloseTo(3.982708, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974063, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974062, 10)
     expect(sum(two, "physFixed")).toBeCloseTo(635.7902, 10)
   })
 

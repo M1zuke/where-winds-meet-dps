@@ -37,12 +37,12 @@ const LEVEL_CAP_SWAPS: readonly CoefficientSwap[] = [
   {
     idSuffix: "-toad-poison-fury",
     from: { physMultiplier: 1.530103, attributeMultiplier: 2.295155, physFixed: 231.9985 },
-    to: { physMultiplier: 1.530217, attributeMultiplier: 2.295326, physFixed: 242.4702 },
+    to: { physMultiplier: 1.530217, attributeMultiplier: 2.295325, physFixed: 242.4702 },
   },
   {
     idSuffix: "-flute-ripple",
     from: { physMultiplier: 1.47645, attributeMultiplier: 2.214675, physFixed: 320.97 },
-    to: { physMultiplier: 1.483296, attributeMultiplier: 2.224944, physFixed: 330.4793 },
+    to: { physMultiplier: 1.483296, attributeMultiplier: 2.224945, physFixed: 330.4793 },
   },
 ]
 

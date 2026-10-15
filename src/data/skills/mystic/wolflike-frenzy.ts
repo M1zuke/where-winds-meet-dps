@@ -29,7 +29,9 @@ export const wolflikeFrenzy = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.wolflikeFrenzy,
-  castFrames: 167,
+  // Cast length to the earliest next input and hit frames: in-game
+  // animation, 2026-10-15.
+  castFrames: 218,
   triggerable: true,
   // In-game values as of 2026-09-24: a stationary cast, 8 m engagement range.
   reachMeters: 8,
@@ -43,5 +45,5 @@ export const wolflikeFrenzy = defineSkill({
     hit(5, { frame: 155, ...row(FINISH_RATIO) }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

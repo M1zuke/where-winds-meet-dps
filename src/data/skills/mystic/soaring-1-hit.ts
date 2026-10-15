@@ -20,6 +20,7 @@ export const soaring1Hit = defineSkill({
   // range — confirmed no scripted displacement despite the visible dash-in.
   reachMeters: 15,
   approach: "stationary",
+  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 48,
@@ -30,5 +31,5 @@ export const soaring1Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

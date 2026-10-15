@@ -3,16 +3,17 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import type { SkillHit } from "../../../engine/skill"
 import { DEBUFF } from "./ids"
 
+// In-game values as of 2026-10-15, level 76.
 const STRIKE = {
   physMultiplier: 1.023353,
-  attributeMultiplier: 1.53503,
+  attributeMultiplier: 1.535029,
   physFixed: 160.9104,
   attributeFixed: 0,
 }
 
 const COMBUSTION_EXPLOSION = {
   physMultiplier: 0.701728,
-  attributeMultiplier: 1.052592,
+  attributeMultiplier: 1.052591,
   physFixed: 110.3386,
   attributeFixed: 0,
 }

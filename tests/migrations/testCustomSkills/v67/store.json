@@ -2088,7 +2088,7 @@
       "hits": [
         {
           "id": "hit-0",
-          "frame": 24,
+          "frame": 25,
           "physMultiplier": 1.4340840000000001,
           "attributeMultiplier": 2.151126,
           "physFixed": 215.90800000000002,
@@ -2098,7 +2098,7 @@
         },
         {
           "id": "hit-1",
-          "frame": 58,
+          "frame": 59,
           "physMultiplier": 0.8604504,
           "attributeMultiplier": 1.2906756,
           "physFixed": 129.54479999999998,
@@ -2108,7 +2108,7 @@
         },
         {
           "id": "hit-2",
-          "frame": 79,
+          "frame": 80,
           "physMultiplier": 0.8604504,
           "attributeMultiplier": 1.2906756,
           "physFixed": 129.54479999999998,
@@ -2118,7 +2118,7 @@
         },
         {
           "id": "hit-3",
-          "frame": 100,
+          "frame": 101,
           "physMultiplier": 0.8604504,
           "attributeMultiplier": 1.2906756,
           "physFixed": 129.54479999999998,
@@ -2148,7 +2148,7 @@
         },
         {
           "id": "hit-6",
-          "frame": 170,
+          "frame": 171,
           "physMultiplier": 1.4340840000000001,
           "attributeMultiplier": 2.151126,
           "physFixed": 215.90800000000002,
@@ -3048,7 +3048,7 @@
         },
         {
           "id": "hit-5",
-          "frame": 155,
+          "frame": 167,
           "physMultiplier": 1.360112,
           "attributeMultiplier": 2.040168,
           "physFixed": 204.79200000000003,

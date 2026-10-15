@@ -34,5 +34,5 @@ export const dragonFireSmolder1Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

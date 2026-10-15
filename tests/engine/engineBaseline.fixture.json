@@ -1,7 +1,7 @@
 {
   "anchor": {
     "dps": 71578.42,
-    "totalDamage": 4294705.17,
+    "totalDamage": 4294705.18,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -53,7 +53,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 76256.82,
+        "expectedDamage": 76256.83,
         "castCount": 0
       },
       {
@@ -174,11 +174,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "5f2ac6ac7676bc999e5ac8c50e81ae32c2529fd1e1040bd96057426d93ec2099"
+    "digest": "ac3c844a960e7cfa39ac6e1c376cb7bd12c96f236afb43bf4cc7e2e2830c61ba"
   },
   "anchor:noAttunement": {
     "dps": 64212.23,
-    "totalDamage": 3852734.04,
+    "totalDamage": 3852734.05,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -230,7 +230,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 76256.82,
+        "expectedDamage": 76256.83,
         "castCount": 0
       },
       {
@@ -351,11 +351,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "98b9da537a2920172b02775f68c72cd60f882333eb531e28cb58e550c0bfa5e4"
+    "digest": "f5a268f20b81ec70a0c64b2c791013fb4409bc5b03d80d9dc3abc5f975d52760"
   },
   "anchor:dummyOff": {
     "dps": 71253.29,
-    "totalDamage": 4275197.31,
+    "totalDamage": 4275197.32,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -407,7 +407,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 84411.4,
+        "expectedDamage": 84411.41,
         "castCount": 0
       },
       {
@@ -528,11 +528,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "a71ae67205e9dd4090576f3419f4e2e8684aa9e59567c6be5a95e415cf4c2d4b"
+    "digest": "7408475695e3af674e8960478850fc99de1cf9c2386b0131acc8cc5e140d7c9e"
   },
   "anchor:breakthrough17": {
     "dps": 72750.19,
-    "totalDamage": 4365011.52,
+    "totalDamage": 4365011.53,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -568,7 +568,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 38056.59,
+        "expectedDamage": 38056.58,
         "castCount": 1
       },
       {
@@ -584,7 +584,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 77667.44,
+        "expectedDamage": 77667.45,
         "castCount": 0
       },
       {
@@ -705,11 +705,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "798603d9e4c590049aa2b0c73e23bbc0e6320f9dd87e2fe736c96e4190165dfd"
+    "digest": "279ff8cb9d78eecb7b7a802b68bb6ff471588fd05a4b2cc30c1ff819c013ed5d"
   },
   "anchor:noQiBreak": {
     "dps": 70136.41,
-    "totalDamage": 4208184.54,
+    "totalDamage": 4208184.56,
     "rotationDuration": 60,
     "warnings": ["SwordSpecial 3-Hit at 8.70s would be illegal in the game: needs Endurance ≥ 50 (has 49.34)."],
     "perSkill": [
@@ -758,7 +758,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 171316.61,
+        "expectedDamage": 171316.63,
         "castCount": 0
       },
       {
@@ -895,11 +895,11 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "aed9dad7636d3b1a4696c8a3f34ff2d27177820d86c8d8b7dc898c6e8d6b6dd9"
+    "digest": "6f2cf10dac8b5a5ed3d5413161795e6b7a758f5ab1480e619ace75ea464b185a"
   },
   "anchor:healerBuff": {
     "dps": 74832.29,
-    "totalDamage": 4489937.39,
+    "totalDamage": 4489937.4,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1072,11 +1072,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "e0f53d2f37f00aa38c8a9f73c3059a5f846565071d7c035137691045f83f2e62"
+    "digest": "1d2c4baa20cd56b49d0e78020de7f1b03061dbb8bd0ea1d5c2d8ea5795c9a3db"
   },
   "anchor:wraithstrikeScript": {
     "dps": 71995.43,
-    "totalDamage": 4319725.85,
+    "totalDamage": 4319725.86,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1128,7 +1128,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 76256.82,
+        "expectedDamage": 76256.83,
         "castCount": 0
       },
       {
@@ -1249,11 +1249,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "859332771533c5cee2ec9ea14db1e4f96f54c5bab437dbdaaf8477a87d3ce52d"
+    "digest": "84dc17789ae0126ef581637baba7facafaa9ee5aea382bbc1aae68951b591f34"
   },
   "anchor:voidrotScript": {
     "dps": 72808.63,
-    "totalDamage": 4368518.03,
+    "totalDamage": 4368518.04,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1305,7 +1305,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 76256.82,
+        "expectedDamage": 76256.83,
         "castCount": 0
       },
       {
@@ -1426,11 +1426,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "86c6924411743f1062787691ef3c590eed580e797204faa5f03fce41c8e918f0"
+    "digest": "46f4f476742eacd5e507542cb11819421a70516ddbe0ad7f186366bc9cb08733"
   },
   "anchor:breakExtension": {
     "dps": 72920.65,
-    "totalDamage": 4375238.91,
+    "totalDamage": 4375238.92,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -1482,7 +1482,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 76256.82,
+        "expectedDamage": 76256.83,
         "castCount": 0
       },
       {
@@ -1603,7 +1603,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "00b538c6405766ba1a9c7538f0a91f39e78aba859daef70d6a9f8ccea90b6176"
+    "digest": "598eaf045942b93feb19062b29be772d0668129c8c7cddcc55bd6a6c4ebe7a77"
   },
   "anchor:swordHorizonT1": {
     "dps": 41690.2,
@@ -1787,7 +1787,7 @@
   },
   "anchor:noSwordHorizon": {
     "dps": 35673.24,
-    "totalDamage": 2140394.35,
+    "totalDamage": 2140394.36,
     "rotationDuration": 60,
     "warnings": [
       "Zenith Sword [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1977,11 +1977,11 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "cd2e8cd7e5764c0caeadd1da164dc42ec8135b4565739e0efb47e7aa2c02adb4"
+    "digest": "240f3e439d9de697cef455839edaa5c716c69e3f7730d43f5fa05746b1da952a"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63013.67,
-    "totalDamage": 3780820.27,
+    "totalDamage": 3780820.28,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -2033,7 +2033,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69430.65,
+        "expectedDamage": 69430.66,
         "castCount": 0
       },
       {
@@ -2154,11 +2154,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "ba1ce447befd793beb36a8db65303538d9f30bceb026eba22fc2b9bd0b795ba8"
+    "digest": "f37a760377dfdcac680215eb0b207795369776430e66686315a09866f0418a85"
   },
   "anchor:noMoraleChant": {
     "dps": 65606.05,
-    "totalDamage": 3936362.95,
+    "totalDamage": 3936362.96,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -2210,7 +2210,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 70830.49,
+        "expectedDamage": 70830.5,
         "castCount": 0
       },
       {
@@ -2323,11 +2323,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "876a057b294f45c2e081a16b9bf14df00850338de2942d14a3cf2f799d10c777"
+    "digest": "1b11aaa5ef59be0e11859bb56276473e5c32bcfd8a7c2d03bf4187c032ad5eb2"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 40760.77,
-    "totalDamage": 2445646.24,
+    "totalDamage": 2445646.26,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.85s would be illegal in the game: needs Endurance ≥ 50 (has 20.64).",
@@ -2358,7 +2358,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 135608.34,
+        "expectedDamage": 135608.35,
         "castCount": 0
       },
       {
@@ -2527,7 +2527,7 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "dc3cfd1f5d35720e968ede0d9e9a3a341a539f499ea36a29f8ffe00788fa5fec"
+    "digest": "6492dd73afa284a8a19cd74b0e8d0aaee55b78affd7f75324167726f52a2aaa3"
   },
   "anchor:bitterSeasonT6": {
     "dps": 44390.75,
@@ -2715,11 +2715,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "266589c6f657b1391394092ddb1fd21c8b8ef34bde3dffdfdd11a25fb4c0a79c"
+    "digest": "bc56d9d810f06f98bc2658f9a33326d307b8fcc9da0dc51e658fee5f6fa62912"
   },
   "anchor:bitterSeasonT4": {
     "dps": 43557.29,
-    "totalDamage": 2613437.52,
+    "totalDamage": 2613437.53,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
@@ -2782,7 +2782,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68998.14,
+        "expectedDamage": 68998.15,
         "castCount": 0
       },
       {
@@ -2903,11 +2903,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "229d32f3faccf9451df278397d40c19c69582e72c89e57218b6114e19ad4026a"
+    "digest": "cef93afceafd2f533db549d0d8d1e18fab4f703f871140c76d43cba48bfcaa4a"
   },
   "anchor:bitterSeasonT1": {
     "dps": 43195.23,
-    "totalDamage": 2591713.72,
+    "totalDamage": 2591713.73,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
@@ -2954,7 +2954,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35753.39,
+        "expectedDamage": 35753.38,
         "castCount": 1
       },
       {
@@ -2970,7 +2970,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68216.42,
+        "expectedDamage": 68216.43,
         "castCount": 0
       },
       {
@@ -3091,7 +3091,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "c0ec16312ee79a6ac3084007222307c1b522989fdeb6f73d221dbc68ff827c3a"
+    "digest": "b52fe19e075a64b802c549c79bdc1d3ce1afaf7725ff73b8c996d5d30a3353b1"
   },
   "anchor:noSet": {
     "dps": 64048.09,
@@ -3147,7 +3147,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68856.9,
+        "expectedDamage": 68856.91,
         "castCount": 0
       },
       {
@@ -3268,11 +3268,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "6ae2ca278527a41d8b2071783351266a11b1d9d486140a6cb5be9c01fc38eafe"
+    "digest": "b7583d0e8fcafc6a1f54300cf624a25e15f809893b0db0bd70dbe33d3fb50a7f"
   },
   "anchor:set-Jadeware": {
     "dps": 69076.67,
-    "totalDamage": 4144600.01,
+    "totalDamage": 4144600.02,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3445,11 +3445,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "210b22c0bd4db42a31e35518331304b1f0067ecb15050b2c05cabade9545320e"
+    "digest": "050a0b100c9ee5591255f4ad607e10b279504f27ae28bac1f351904c43820f3a"
   },
   "anchor:set-Mistwillow": {
     "dps": 64633.53,
-    "totalDamage": 3878011.95,
+    "totalDamage": 3878011.96,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3501,7 +3501,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69760.47,
+        "expectedDamage": 69760.48,
         "castCount": 0
       },
       {
@@ -3622,7 +3622,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "3e56098d810eb02b4bf7e3d44f63b28e588070cc5b8867989eef4e295aac7e02"
+    "digest": "0de5b63b5bd3a52841b7a587f74812fddca684d4d3dc7d161a481f055bffce1d"
   },
   "anchor:set-Rainwhisper": {
     "dps": 65574.63,
@@ -3678,7 +3678,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 70918.22,
+        "expectedDamage": 70918.23,
         "castCount": 0
       },
       {
@@ -3799,11 +3799,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "3f476d439ad19789aebb732476341b1947ce08e77c018207f5683456302044c6"
+    "digest": "8c4ccd9d7af70cb9f0f0c99eb01d52df970891f4140845dc48e8bdf9767149b9"
   },
   "anchor:set-Cleftpeak": {
     "dps": 66007.47,
-    "totalDamage": 3960447.99,
+    "totalDamage": 3960448,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
@@ -3855,7 +3855,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71750.46,
+        "expectedDamage": 71750.47,
         "castCount": 0
       },
       {
@@ -3976,7 +3976,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "331ddc79a4fb4f507de4677c20dbf2e361105e3279b270ecdc378ea2abf9040a"
+    "digest": "9999da29c051b96004b334e5e1113cd1a468ba802b51f1593ec2863d4b3c1cfd"
   },
   "defaults:umbra": {
     "dps": 11748.97,

@@ -323,7 +323,7 @@ describe("engine baseline — profile-v7 anchor", () => {
 
   it("still reports the rotation figures", () => {
     expect(round(result.dps, 2)).toBe(71578.42)
-    expect(round(result.totalDamage, 2)).toBe(4294705.17)
+    expect(round(result.totalDamage, 2)).toBe(4294705.18)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -339,7 +339,7 @@ describe("engine baseline — profile-v7 anchor", () => {
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
     expect(damageOf("Smolder (DoT)")).toBe(470505.55)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(76256.82)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76256.83)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
@@ -355,7 +355,7 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
 
   it("reports the rotation figures with the whole board taken", () => {
     expect(round(result.dps, 2)).toBe(72750.19)
-    expect(round(result.totalDamage, 2)).toBe(4365011.52)
+    expect(round(result.totalDamage, 2)).toBe(4365011.53)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -364,7 +364,7 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     expect(damageOf("Blood Burst")).toBe(2110213.55)
     expect(damageOf("Bleeding (DoT)")).toBe(297447.79)
     expect(damageOf("Smolder (DoT)")).toBe(479118.52)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(77667.44)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(77667.45)
     expect(damageOf("Yi River")).toBe(60461.98)
   })
 })
