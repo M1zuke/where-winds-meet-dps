@@ -89,7 +89,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -174,7 +174,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "8f769f790397adf860be4c5422f69e62284691e11fffbe456e001b01806ac9ce"
+    "digest": "b872ea298edeeb110042ff49525ea598eb7a8d44dd470e2cadc3e0c1114fff89"
   },
   "anchor:noAttunement": {
     "dps": 64773.25,
@@ -266,7 +266,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -351,7 +351,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "60ef354e9e0e926a0b193ab44f124cd1daca0cfcbec775627c10dc64ea39490b"
+    "digest": "a989b0573a5df982dd20e3881cea3a22dd2eb11cad7ded749bb86a3ff4ac0cc1"
   },
   "anchor:dummyOff": {
     "dps": 71876.41,
@@ -443,7 +443,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -528,7 +528,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1718b09c1e4a005d18cb07fa3575b312b76baf05165807b60800f0a711628565"
+    "digest": "08cb694659073c45c00eed04b9e704e707bf309d5f0128bd58c7779e99ee97b2"
   },
   "anchor:breakthrough17": {
     "dps": 73375.58,
@@ -620,7 +620,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -705,7 +705,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "821a99d270d990247e790239f29d8b89846a6dbfc78a2d54851071162efb6071"
+    "digest": "b916dcd5c09289e6c5460c3a6b590487c82b67f46509012cc556aa010d5df48f"
   },
   "anchor:noQiBreak": {
     "dps": 70761.83,
@@ -794,7 +794,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -895,7 +895,7 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "cd93ceae6c0d52886b571c7c8b90ff8fe63cf6a9031cb01162b729c53d5f9eb8"
+    "digest": "f0bf64ea42c0f9fb3b2dce86eac2c5c21f9f386ff7fb4e31268ac09199e6adc8"
   },
   "anchor:healerBuff": {
     "dps": 70249.63,
@@ -987,7 +987,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -1072,7 +1072,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "28a90e06595ede7f0aaf1de15eec52b9c01647e332a395f15144bfced5653dc6"
+    "digest": "33c4bc0f2f6c86b4cea655075ff03e53995a04f4b819a0c355590b1d1cb1f8ca"
   },
   "anchor:wraithstrikeScript": {
     "dps": 72538.45,
@@ -1164,7 +1164,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -1249,7 +1249,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "84adf73654a238e65fc32da15e151eb70cf80af7e3064563c9c0e0c63b733f79"
+    "digest": "17ea614ec3039d8ed7489eb28eaccf2754e2801addcc0071a31bb2b1318692df"
   },
   "anchor:voidrotScript": {
     "dps": 73471.19,
@@ -1341,7 +1341,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -1426,7 +1426,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "a00b9e5447b5c3d7a4663b0968e4c8739c0f1a600d3466087d64029d04cb84ce"
+    "digest": "eaa7cc8a06f0bc4ab2383e944aa56bec8e0f367f32a0ccb2d10cc4032ef63d51"
   },
   "anchor:breakExtension": {
     "dps": 73557.55,
@@ -1518,7 +1518,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -1603,7 +1603,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "a2b02638b58560119c234eda53af557fbaac89a120ce520fec9367fa00fd28b8"
+    "digest": "8797ab8d0d65accef7fcd39d4b4ab70f5311b9bbd0f9ec38a5739e9cb809fa60"
   },
   "anchor:swordHorizonT1": {
     "dps": 41986.72,
@@ -1698,7 +1698,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -1783,32 +1783,32 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "eed835abde77db239ad0000aa315e14a13c4bfc8bfd6a28e6f769283cc94e88a"
+    "digest": "48e5006f73a985c09852f2f1866d691bb13fdac4d11a08f776936c524596d881"
   },
   "anchor:noSwordHorizon": {
     "dps": 35997.91,
     "totalDamage": 2159874.77,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 12.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 12.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 14.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 17.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 21.70s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 17.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 21.70s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 23.08s would be illegal in the game: needs Endurance ≥ 50 (has 39.67).",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 26.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 28.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 31.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 35.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 31.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 35.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 36.48s would be illegal in the game: needs Endurance ≥ 50 (has 26.66).",
       "Sword Martial QQQ at 43.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 46.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 50.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 46.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 50.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 51.75s would be illegal in the game: needs Endurance ≥ 50 (has 48).",
       "SwordSpecial 3-Hit at 54.80s would be illegal in the game: needs Endurance ≥ 50 (has 14.51).",
-      "Crosswind Blade [cancel] at 56.03s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 56.03s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 58.35s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 61.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
+      "Zenith Sword [cancel] at 61.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
     ],
     "perSkill": [
       {
@@ -1892,7 +1892,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
@@ -1977,7 +1977,7 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "02c98fe31f2e6acba3828552bc66cad21d877dac30a24bd1285fc837322e2519"
+    "digest": "e36c571a99fd0fe9f97ac14a664887f0c2367e83e82d5c92068344ea3b787140"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63584.92,
@@ -2069,7 +2069,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -2154,7 +2154,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d0e54c94465145a273e6bb380f2ce947d73ebfdf8505d1254d1075a6907c6c63"
+    "digest": "682f47146e68b663c63be6f7488258644e78cd8c42fdc8f4857bd27714f936f2"
   },
   "anchor:noMoraleChant": {
     "dps": 66176.42,
@@ -2246,7 +2246,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -2323,7 +2323,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "efc4b8857e26c226357cad08d3d4bf5fd891f45a480b693e5737aebb7fd204e1"
+    "digest": "02988a7267ba886d1a888ea5780c376da33555cdece4d033f2856d13da412414"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 41120.87,
@@ -2434,7 +2434,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
@@ -2527,7 +2527,7 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "5e08682b3a4d1275caef37fcfd41f7e0ca55db68993c3255d8da360eee7bc100"
+    "digest": "bc27acf61f00d69fabd4ec4a917ab2346a2068eaa64ef55ff39647db149aa96e"
   },
   "anchor:bitterSeasonT6": {
     "dps": 44783.79,
@@ -2630,7 +2630,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -2715,7 +2715,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "4e755bc0314b2a71ca6734d474239e1edb201d9adcaf6b2d692016f066bf2c12"
+    "digest": "4118cacbd3f627a5b5356248d4c1529e3f1592ac86f1231549a021b320cb27de"
   },
   "anchor:bitterSeasonT4": {
     "dps": 43940.69,
@@ -2818,7 +2818,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -2903,7 +2903,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "1e34a23ddcd2dc94bf5081c47c06b94b14013f637d319b04972c86b1aeaf6a88"
+    "digest": "94b25fa09c69b6abebca356c4abc607cc0f7870e2990d6bfdec6b51be50a9c69"
   },
   "anchor:bitterSeasonT1": {
     "dps": 43576.41,
@@ -3006,7 +3006,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3091,7 +3091,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "4ca8d76e5a49ac35f671673d9a15129d29754e0c311be8573287e90eed8cb2fb"
+    "digest": "6995889d003af54b0404659e322c2a0ce09f54c877c39c41f93b4969aa2aa93b"
   },
   "anchor:noSet": {
     "dps": 64613.08,
@@ -3183,7 +3183,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3268,7 +3268,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "c3808a2bc1c20cdbeaef9187c3f6c04e8bd6e9a69817753ef30971a34457e9df"
+    "digest": "842747153f27d76039851210705ef6fc1f4d6b5d53109ea2d33edef650068199"
   },
   "anchor:set-Jadeware": {
     "dps": 69670.09,
@@ -3360,7 +3360,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3445,7 +3445,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "b2eb65819f4a414285d2bd202a75276d849b894b2ebd455b2f58d2657eacab8b"
+    "digest": "5ca466ac7282820537cc454aaec81697d91dc49f39ea817be444df13099014c9"
   },
   "anchor:set-Mistwillow": {
     "dps": 65313.65,
@@ -3537,7 +3537,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3622,7 +3622,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "233246fe25a5cbd6b1c6af061ef8edc79805b58b7e7000d41f087d7f8ff96e4d"
+    "digest": "08216750a7657be40d6dca781358cf8747f68bdcff6e43a261f0430019d1fba3"
   },
   "anchor:set-Rainwhisper": {
     "dps": 66152.5,
@@ -3714,7 +3714,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3799,7 +3799,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "e11f2f8108837efe5f32672f832143a2fb24406b3b85dfbc5b5d89d4f2be8a51"
+    "digest": "6f1706b0fd008af819c57ea8fad1aa84c5d90567ebfa2b6cd6be7268cb5b78b9"
   },
   "anchor:set-Cleftpeak": {
     "dps": 66586.73,
@@ -3891,7 +3891,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -3976,35 +3976,35 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "0986ca7dd86de5a32d03e2834b47f5b03cc65a80f4d8cd6f918c93cc35ab386c"
+    "digest": "6bf936fb5b77938f92f099c8ce2afd904d39002d960f1b12f2c8a2ea09ac59a0"
   },
   "defaults:umbra": {
     "dps": 11748.97,
     "totalDamage": 704938.09,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 4.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 4.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 3-Hit at 8.90s would be illegal in the game: needs Endurance ≥ 50 (has 31.51).",
-      "Crosswind Blade [cancel] at 10.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 10.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 12.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 15.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 17.12s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 15.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 17.12s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 20.62s would be illegal in the game: needs Endurance ≥ 50 (has 23.17).",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 23.55s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 25.82s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 30.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 32.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 30.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 32.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 35.58s would be illegal in the game: needs Endurance ≥ 50 (has 33.49).",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 38.53s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 40.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 43.50s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 45.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 43.50s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 45.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Spear Special (1 Hit Cancel) at 46.10s would be illegal in the game: needs Endurance ≥ 40 (has 32.99).",
       "SwordSpecial 4-Hit at 48.82s would be illegal in the game: needs Endurance ≥ 50 (has 15.17).",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 51.77s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Sword Martial QQQ at 54.03s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 56.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 58.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 56.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 58.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Spear Special (1 Hit Cancel) at 59.33s would be illegal in the game: needs Endurance ≥ 40 (has 28.17).",
       "SwordSpecial 4-Hit at 60.02s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
@@ -4090,7 +4090,7 @@
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
@@ -4183,6 +4183,6 @@
       "buffWindows": 123,
       "casts": 92
     },
-    "digest": "145b4267fd07630612229930653dcb7608c893815ace0ed3b878168bb1dda8c8"
+    "digest": "9a80623a16655f74cd7902381ad575ba0ddf4656b6b63efd32b1b9d5f98a7a16"
   }
 }

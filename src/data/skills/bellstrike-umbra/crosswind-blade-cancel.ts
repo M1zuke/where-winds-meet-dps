@@ -8,7 +8,7 @@ import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 export const crosswindBladeCancel = defineSkill({
   id: SKILL.crosswindBladeCancel,
   classId: "bellstrikeUmbra",
-  name: "Crosswind Blade [cancel]",
+  name: "Zenith Sword [cancel]",
   breakdownName: "Crisscross - Inner Balance III",
   tags: [WEAPON.sword, ATTUNE.swordSpecial],
   skillType: "weapon",

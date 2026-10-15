@@ -28,7 +28,7 @@ export const swordLight3EndsChain = defineSkill({
       attributeFixed: 48.75,
     }),
     hit(1, {
-      frame: 21,
+      frame: 20,
       physMultiplier: 0.161418,
       attributeMultiplier: 0.242127,
       physFixed: 44.7,

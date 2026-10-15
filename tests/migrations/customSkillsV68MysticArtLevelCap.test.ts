@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest"
 import { runChain } from "../../src/migrations/chain"
 import {
   CUSTOM_SKILL_MIGRATIONS,
-  runCustomSkillMigrations,
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import {
@@ -97,7 +96,8 @@ describe("V68__mysticArtLevelCap — called directly", () => {
 describe("V68__mysticArtLevelCap — through the chain", () => {
   it("is registered and is exactly what the v67 → v68 hop applies", () => {
     expect(CUSTOM_SKILL_MIGRATIONS).toContain(V68__mysticArtLevelCap)
-    const result = runCustomSkillMigrations(clone(STORE))!
+    const throughV68 = CUSTOM_SKILL_MIGRATIONS.filter((step) => step.to <= 68)
+    const result = runChain(throughV68, 68, clone(STORE))!
     expect(result.applied).toEqual(["V68__mysticArtLevelCap"])
     expect(result.blob.v).toBe(68)
     expect(skillIn(result.blob, DRAGON_HEAD).hits).toEqual(builtinOf(DRAGON_HEAD).hits)

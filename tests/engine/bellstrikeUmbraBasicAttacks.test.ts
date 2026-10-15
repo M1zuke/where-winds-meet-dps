@@ -118,7 +118,7 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
     }
     expect(
       [swordLight1, swordLight2, swordLight3, swordLight3EndsChain, swordLight4].map(frames),
-    ).toEqual([[22], [12, 32], [8, 21], [8, 21, 34], [13]])
+    ).toEqual([[22], [12, 32], [8, 20], [8, 20, 34], [13]])
     expect(
       [swordLight1, swordLight2, swordLight3, swordLight3EndsChain, swordLight4].map(
         (skill) => skill.castFrames,
@@ -155,7 +155,7 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
       expect(skill.receives, skill.id).toContain(BUFF.swallowcallLightAttackBoost)
       expect(skill.reachMeters, skill.id).toBe(4.5)
     }
-    expect(chain.map(frames)).toEqual([[20], [14], [14, 31], [12, 23, 40]])
+    expect(chain.map(frames)).toEqual([[20], [14], [18, 35], [12, 23, 40]])
     expect(chain.map((skill) => skill.castFrames)).toEqual([27, 24, 42, 59])
   })
 

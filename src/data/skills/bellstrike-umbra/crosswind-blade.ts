@@ -8,7 +8,7 @@ import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 export const crosswindBlade = defineSkill({
   id: SKILL.crosswindBlade,
   classId: "bellstrikeUmbra",
-  name: "Crosswind Blade",
+  name: "Zenith Sword",
   breakdownName: "Crisscross - Inner Balance III",
   // In-game values as of 2026-09-24: the Special attunement reaches
   // Crisscross - Inner Balance III too.
