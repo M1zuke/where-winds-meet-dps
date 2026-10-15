@@ -105,7 +105,16 @@ export function EnhancementTab({ inputs, onChange }: Props) {
           const unlock = unlockBySlot[slot]
           return (
             <div className={`panel ${styles.slotCard}`} key={slot}>
-              <h2>{t(gearSlotLabelKey(slot, inputs.classId))}</h2>
+              <div className="panel-head">
+                <h2>{t(gearSlotLabelKey(slot, inputs.classId))}</h2>
+                {unlock && (
+                  <p className={styles.gearHint}>
+                    {t("talents.enhancement.unlockableWithGearLevel")
+                      .replace("{level}", String(unlock.level))
+                      .replace("{gearLevel}", String(unlock.gearLevel))}
+                  </p>
+                )}
+              </div>
               <div className={styles.levelControl}>
                 <button
                   type="button"
@@ -129,13 +138,6 @@ export function EnhancementTab({ inputs, onChange }: Props) {
                   +
                 </button>
               </div>
-              {unlock && (
-                <p className={styles.gearHint}>
-                  {t("talents.enhancement.unlockableWithGearLevel")
-                    .replace("{level}", String(unlock.level))
-                    .replace("{gearLevel}", String(unlock.gearLevel))}
-                </p>
-              )}
               {STAT_ORDER.filter((stat) => stats[stat] !== undefined).map((stat) => (
                 <div className={styles.statRow} key={stat}>
                   <span>{t(ENHANCEMENT_STAT_KEYS[stat])}</span>

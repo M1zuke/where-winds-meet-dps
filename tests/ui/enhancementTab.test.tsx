@@ -49,6 +49,10 @@ function renderTab(inputs: Inputs = defaultInputs, onChange: (next: Inputs) => v
 }
 
 function cardFor(heading: string): HTMLElement {
+  return screen.getByRole("heading", { level: 2, name: heading }).closest<HTMLElement>(".panel")!
+}
+
+function headerFor(heading: string): HTMLElement {
   return screen.getByRole("heading", { level: 2, name: heading }).parentElement!
 }
 
@@ -168,7 +172,7 @@ describe("the Enhancement tab", () => {
 
   it("hints at the level a higher gear level unlocks on a gear-limited card", () => {
     renderTab(inputsWithDiscAtGearLevel(96))
-    expect(cardFor("Disc")).toHaveTextContent("Up to 70 at gear level 100")
+    expect(headerFor("Disc")).toHaveTextContent("Up to 70 at gear level 100")
   })
 
   it("shows no gear level hint on a card already at the breakthrough maximum", () => {

@@ -65,10 +65,10 @@
 }
 
 .gearHint {
-  margin: 0;
-  padding-bottom: 4px;
+  min-width: 0;
+  margin: 0 0 0 auto;
   font-size: 0.8em;
-  text-align: center;
+  text-align: right;
   color: var(--color-text-faint);
 }
 
