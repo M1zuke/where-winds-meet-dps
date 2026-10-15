@@ -18,6 +18,7 @@ import {
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
 } from "./buffs/vagrantSwordEndurance"
+import { wushuangStanceConsume } from "./buffs/wushuangStance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
@@ -114,9 +115,10 @@ export const swordHeavyCharged = defineSkill({
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
         energySurgeEnduranceGain,
+        wushuangStanceConsume,
       ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

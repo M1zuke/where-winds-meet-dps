@@ -26,6 +26,7 @@ export const swordMorph = defineInnerWay({
     SKILL.swordHeavyCharged,
     SKILL.swordHeavyChargedPrepull,
     SKILL.swordHeavyCharged2Hit,
+    SKILL.swordHeavyChargedWushuang,
     SKILL.energySurge,
   ].map((skillId) => ({ skillId, factory: swordMorphExhaustedBehavior })),
 })

@@ -42,7 +42,7 @@ export const swordq3rd = defineSkill({
       triggers: [relentlessChaseWindowConsume],
     }),
     hit(1, {
-      frame: 19,
+      frame: 18,
       physMultiplier: 0.768985,
       attributeMultiplier: 1.153478,
       physFixed: 212.7,
@@ -75,5 +75,5 @@ export const swordq3rd = defineSkill({
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -2,6 +2,7 @@ import type { TriggerCondition } from "../../../../engine/skill"
 import { IN_COMBAT_STATUS } from "../../../../engine/combatState"
 import { applyBuff } from "../../../../definitions/skills/triggers"
 import { BUFF, PARAM } from "../../buffs/ids"
+import { WUSHUANG_STANCE_ACTIVE } from "./wushuangStance"
 import { MULTI_WAVE_WINDOW_DURATION_FRAMES } from "../../../classes/bellstrike-splendor/gates"
 
 // In-game values as of 2026-10-06: the window opens at the cast's own start; the
@@ -31,14 +32,15 @@ export const multiWaveWindowReleaseGrantLate = (lateFrames: number) =>
 
 export const SWORD_MORPH_EQUIPPED: TriggerCondition = { param: PARAM.swordMorph }
 
-// In-game values as of 2026-10-06: read once at the press — the window or the
-// Qi Shield held, or the player not yet in combat.
+// In-game values as of 2026-10-15: read once at the press — the window, the
+// Qi Shield or Wushuang Stance held, or the player not yet in combat.
 export const THREE_WAVE_RELEASE_CONDITIONS: TriggerCondition[] = [
   SWORD_MORPH_EQUIPPED,
   {
     anyOf: [
       { buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 },
       { buffId: BUFF.qiShield, op: "gte", stacks: 1 },
+      WUSHUANG_STANCE_ACTIVE,
       { buffId: IN_COMBAT_STATUS, op: "lt", stacks: 1 },
     ],
   },

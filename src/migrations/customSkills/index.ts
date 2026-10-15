@@ -70,6 +70,7 @@ import { V66__ghostlyAfterimagePerDodge } from "./V66__ghostlyAfterimagePerDodge
 import { V67__bleedRefundLockoutAndSecondTrackSlashEndurance } from "./V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import { V68__mysticArtLevelCap } from "./V68__mysticArtLevelCap"
 import { V69__lightAttackThreeHitFrames } from "./V69__lightAttackThreeHitFrames"
+import { V70__splendorHitFrameRetiming } from "./V70__splendorHitFrameRetiming"
 
 export type {
   CustomSkillMigration,
@@ -208,6 +209,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V67__bleedRefundLockoutAndSecondTrackSlashEndurance,
   V68__mysticArtLevelCap,
   V69__lightAttackThreeHitFrames,
+  V70__splendorHitFrameRetiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -25,7 +25,7 @@ const LIGHT_ATTACK_DISPLACEMENT: Displacement = {
   otherwise: { kind: "towardTarget", referenceMeters: 1 },
 }
 
-// In-game values as of 2026-10-06: the four stages pressed in a row, six hits;
+// In-game values as of 2026-10-15: the four stages pressed in a row, six hits;
 // the third stage's last collider lands after the fourth stage cuts in.
 export const swordLightAttack = defineSkill({
   id: SKILL.swordLightAttack,
@@ -53,7 +53,7 @@ export const swordLightAttack = defineSkill({
     hit(2, { frame: 63, ...FIFTEEN_PERCENT_OF_ROW }),
     hit(3, { frame: 75, ...FIFTEEN_PERCENT_OF_ROW }),
     hit(4, {
-      frame: 88,
+      frame: 87,
       physMultiplier: 0.161418,
       attributeMultiplier: 0.242127,
       physFixed: 44.7,
@@ -68,5 +68,5 @@ export const swordLightAttack = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

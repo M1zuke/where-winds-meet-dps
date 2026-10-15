@@ -68,7 +68,7 @@ describe("V69__lightAttackThreeHitFrames — called directly", () => {
 describe("V69__lightAttackThreeHitFrames — through the chain", () => {
   it("is registered and is exactly what the v68 → v69 hop applies", () => {
     expect(CUSTOM_SKILL_MIGRATIONS).toContain(V69__lightAttackThreeHitFrames)
-    const result = runCustomSkillMigrations(clone(STORE))!
+    const result = runCustomSkillMigrations(clone(STORE), { toVersion: 69 })!
     expect(result.applied).toEqual(["V69__lightAttackThreeHitFrames"])
     expect(result.blob.v).toBe(69)
     expect(framesOf(skillIn(result.blob, SPEAR_LIGHT_3))).toEqual([18, 35])

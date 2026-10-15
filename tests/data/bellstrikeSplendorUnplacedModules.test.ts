@@ -29,7 +29,7 @@ describe.each([
   [SKILL.spearLightAttack, CAST.splendorSpearLightChain, "Spear - Light Attack", 153],
   [SKILL.swordHeavyAttack, CAST.splendorSwordHeavyChain, "Sword - Heavy Attack", 174],
   [SKILL.swordSprintDash, CAST.splendorSwordSprintDash, "Sword - Dash (sprint)", 41],
-  [SKILL.cloudstep, CAST.splendorCloudstep, "Cloudstep", 43],
+  [SKILL.cloudstep, CAST.splendorCloudstep, "Cloudstep", 36],
 ])("%s", (skillId, castTag, breakdownName, castFrames) => {
   it("is a triggerable Splendor weapon skill with its own cast tag", () => {
     expect(splendorSkill(skillId)).toMatchObject({
@@ -161,7 +161,7 @@ describe("Vagrant Sword - first charge tier", () => {
 describe("light-attack chains", () => {
   it("Sword - Light Attack lands six hits totalling 0.925 of the row", () => {
     expect(hitValues(SKILL.swordLightAttack).map((row) => row[0])).toEqual([
-      22, 43, 63, 75, 88, 112,
+      22, 43, 63, 75, 87, 112,
     ])
     const physTotal = hitValues(SKILL.swordLightAttack).reduce((sum, row) => sum + row[1]!, 0)
     expect(physTotal).toBeCloseTo(0.925 * 2.15224, 5)
@@ -205,8 +205,8 @@ describe("sprint attacks", () => {
     ])
   })
 
-  it("Cloudstep hits once at 29", () => {
-    expect(hitValues(SKILL.cloudstep)).toEqual([[29, 0.591504, 0.887256, 164.4, 89.4]])
+  it("Cloudstep hits once at 25", () => {
+    expect(hitValues(SKILL.cloudstep)).toEqual([[25, 0.591504, 0.887256, 164.4, 89.4]])
   })
 
   it("carry no cast condition", () => {

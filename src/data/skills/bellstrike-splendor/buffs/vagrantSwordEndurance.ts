@@ -20,6 +20,11 @@ export const VAGRANT_SWORD_DISPLACEMENT: Displacement = {
 export const VAGRANT_SWORD_DRAIN: MeterDrain[] = [
   { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 1.2 },
 ]
+// In-game values as of 2026-10-15: under Wushuang Stance the charge plays at
+// ×1.5, so the same drain point is reached after 0.8 s of real hold.
+export const VAGRANT_SWORD_WUSHUANG_DRAIN: MeterDrain[] = [
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 1.2 / 1.5 },
+]
 // In-game values as of 2026-10-06: the 45 f hold of the first charge tier
 // drains 0.55 s of the same 20 / s, 11 in all.
 export const VAGRANT_SWORD_TIER_1_DRAIN: MeterDrain[] = [

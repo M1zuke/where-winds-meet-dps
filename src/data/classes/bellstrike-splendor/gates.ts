@@ -222,13 +222,14 @@ export const QI_SHIELD_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-29T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-29: granted by a Legion Crusher hit; read by
-// the Wushuang-Stance-accelerated Storm Dance forms' own `castConditions`.
+// In-game values as of 2026-10-15: granted by a Legion Crusher hit; read by
+// the Wushuang-Stance-accelerated forms' own `castConditions` and by Vagrant
+// Sword's three-wave conditions.
 export const WUSHUANG_STANCE_GATE: Buff = defineGateBuff({
   id: BUFF.wushuangStance,
   classId: CLASS_ID,
   name: "Wushuang Stance",
-  description: "Granted by a Legion Crusher hit; speeds up the next Storm Dance.",
+  description: "Granted by a Legion Crusher hit; speeds up the next Storm Dance and Vagrant Sword.",
   scope: "player",
   activation: "triggered",
   durationFrames: 180,
