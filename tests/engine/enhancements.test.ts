@@ -130,11 +130,21 @@ describe("enhancementCap", () => {
     expect(enhancementCap(96, 17)).toBe(65)
   })
 
-  it("never offers a level above 65, since the ladder has no rows past it", () => {
-    expect(enhancementCap(100, 18)).toBe(65)
-    expect(enhancementCap(100, 19)).toBe(65)
-    expect(enhancementCap(105, 20)).toBe(65)
-    expect(enhancementCap(105, 21)).toBe(65)
+  it("reaches 70 at world level 18 and 75 at world level 19", () => {
+    expect(enhancementCap(100, 18)).toBe(70)
+    expect(enhancementCap(100, 19)).toBe(75)
+  })
+
+  it("never offers a level above 75, since the ladder has no rows past it", () => {
+    expect(enhancementCap(105, 20)).toBe(75)
+    expect(enhancementCap(105, 21)).toBe(75)
+  })
+
+  it("grants the level-70 and level-75 figures the ladder authors", () => {
+    expect(enhancementStatsAtLevel("leftWeapon", 70)).toEqual({ minPhys: 129, maxPhys: 86 })
+    expect(enhancementStatsAtLevel("disc", 75)).toEqual({ maxPhys: 184 })
+    expect(enhancementStatsAtLevel("helm", 75)).toEqual({ maxHp: 10276 })
+    expect(enhancementStatsAtLevel("armor", 75)).toEqual({ maxHp: 7096, physDef: 69 })
   })
 
   it("bounds the cap by the equipped piece's own gear level, not the breakthrough's", () => {

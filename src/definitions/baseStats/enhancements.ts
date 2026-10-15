@@ -13,7 +13,7 @@ export const DEFAULT_ENHANCEMENT_LEVEL = 65
 
 // The ladder has no rows past this level in any container — see the season
 // ceiling table below, which can technically exceed it.
-const LADDER_CEILING = 65
+const LADDER_CEILING = 75
 
 type EnhancementProfile = "weapon" | "discPendant" | "helmBracer" | "chestGreaves"
 
