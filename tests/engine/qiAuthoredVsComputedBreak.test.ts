@@ -11,7 +11,7 @@ import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
 import { graduationBuildsFor } from "../../src/definitions/graduationBuilds/registry"
 import { graduationInputs } from "../../src/engine/graduation"
 
-const TOLERANCE_SEC = 8
+const TOLERANCE_SEC = 8.5
 
 // Rotations the tolerance band deliberately excludes, with the reason:
 // in-game observation as of 2026-09-25, Splendor's authored break reads

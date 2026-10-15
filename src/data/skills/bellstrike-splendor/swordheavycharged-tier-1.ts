@@ -26,7 +26,6 @@ export const swordHeavyChargedTier1 = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyChargedTier1,
-  startLatency: "noWaitOnDummy",
   serverWaitsInCast: 1,
   castConditions: [WUSHUANG_STANCE_ABSENT],
   triggersBuffs: [BUFF.swordSlashDamageBoost],

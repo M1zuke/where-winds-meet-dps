@@ -34,7 +34,6 @@ export const swordHeavyChargedPrepull = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyChargedPrepull,
-  startLatency: "noWaitOnDummy",
   // In-game values as of 2026-09-30: this press locks onto its target online,
   // a second server wait beyond the input's own before the release plays.
   serverWaitsInCast: 1,

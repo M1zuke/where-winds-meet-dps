@@ -24,7 +24,6 @@ export const swordq2nd = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ2nd,
-  startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
   receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SWORD_RECEIVES],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).

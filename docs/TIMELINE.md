@@ -32,15 +32,14 @@ on the 60 fps grid. Rules:
   can trigger none of crit, affinity or abrasion and always deals the normal
   row.
 - Every authored `frame` and `castFrames` is the nominal 60 fps value,
-  regardless of `startLatency`. A skill's `startLatency` states how its start
-  relates to the server: waiting for the round trip plus the server
-  processing time plus one input-frame-rate frame (the default), skipping the
-  round trip and the server processing time only in dummy mode while still
-  paying the one frame, or never waiting because the step is not a real skill
-  request. A zero-length round trip is the app's own no-latency baseline, not
-  a real connection, so it waives the server processing time and the one
-  frame too — every added wait here is a true no-op at it, not only the round
-  trip itself. **A skill may separately declare how many further server round
+  regardless of `startLatency`. A skill starts in the input's own frame, with
+  no wait, by default — in dummy mode and outside it alike. Only a skill that
+  declares `startLatency: "serverRoundTrip"` waits for the round trip plus the
+  server processing time plus one input-frame-rate frame; declare it only for
+  a skill the game keeps server-authoritative at its start. A zero-length
+  round trip is the app's own no-latency baseline, not a real connection, so
+  it waives the server processing time and the one frame too — every added
+  wait here is a true no-op at it, not only the round trip itself. **A skill may separately declare how many further server round
   trips its own timeline waits for, beyond the start wait** — each one adds
   the same round-trip-plus-server-processing delay, at the cast's own start,
   and lengthens the cast by that amount; absent means none, and the same

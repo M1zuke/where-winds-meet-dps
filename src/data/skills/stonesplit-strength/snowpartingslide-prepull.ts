@@ -12,6 +12,7 @@ export const snowpartingslidePrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSlidePrepull,
+  startLatency: "serverRoundTrip",
   receives: SNOWPARTING_BLADE_RECEIVES,
   castFrames: 0,
   triggerable: true,

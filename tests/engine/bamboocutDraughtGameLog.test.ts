@@ -77,8 +77,8 @@ describe("the dummy rotation against the in-game damage log", () => {
     },
   )
 
-  it("runs the whole rotation in about a minute, as the log did", () => {
-    expect(result.rotationDuration).toBeGreaterThan(62)
-    expect(result.rotationDuration).toBeLessThan(62.6)
+  it("runs the whole rotation without start waits, about 2.5 s shorter than the pre-update log", () => {
+    expect(result.rotationDuration).toBeGreaterThan(59.6)
+    expect(result.rotationDuration).toBeLessThan(59.8)
   })
 })

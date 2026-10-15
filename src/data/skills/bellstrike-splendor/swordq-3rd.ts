@@ -21,7 +21,6 @@ export const swordq3rd = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ3rd,
-  startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
   receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SWORD_RECEIVES],
   // Only offered while Relentless Chase's first strike opened this window

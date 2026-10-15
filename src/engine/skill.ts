@@ -19,7 +19,7 @@ export type TriggerKind =
   | "cooldownCut"
 export type TriggerOp = "gte" | "gt" | "eq" | "lte" | "lt"
 
-export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
+export type StartLatency = "serverRoundTrip"
 
 export interface StatusCondition {
   buffId: string

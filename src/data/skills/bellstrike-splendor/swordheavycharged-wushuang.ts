@@ -38,7 +38,6 @@ export const swordHeavyChargedWushuang = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyCharged,
   castConditions: [WUSHUANG_STANCE_ACTIVE],
-  startLatency: "noWaitOnDummy",
   serverWaitsInCast: 1,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [

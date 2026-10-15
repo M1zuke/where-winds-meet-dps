@@ -32,7 +32,6 @@ export const dualBladesLightAttack3 = defineSkill({
   castFrames: 36,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — no approach field found.
-  startLatency: "noWaitOnDummy",
   hits: [hit(0, { frame: 15, ...COEFFICIENTS }), hit(1, { frame: 25, ...COEFFICIENTS })],
   createdAt: "2026-09-29T00:00:00.000Z",
   updatedAt: "2026-09-29T00:00:00.000Z",

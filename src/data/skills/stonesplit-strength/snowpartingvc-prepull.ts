@@ -25,7 +25,6 @@ export const snowpartingvcPrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
-  startLatency: "noWaitOnDummy",
   castConditions: [
     { buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 },
     bladeMomentumRequires("gte", 25),

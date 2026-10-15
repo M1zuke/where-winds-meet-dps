@@ -643,20 +643,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           renderPeriodFrames,
         )
       : 0
-    const renderFrameOnlyFrames = hasPing
-      ? quantiseToRenderFrame(oneRenderFrameFrames, renderPeriodFrames)
-      : 0
     // A skill's own further in-cast server wait lands mid-graph, not at a
     // fresh input, so it skips the extra render frame `roundTripFrames` pays.
     const midCastWaitFrames = hasPing
       ? quantiseToRenderFrame(pingRoundTripFrames + serverProcessingFrames, renderPeriodFrames)
       : 0
-    const startLatencyFrames = (skill: Skill): number => {
-      const latency = skill.startLatency ?? "serverRoundTrip"
-      if (latency === "none") return 0
-      if (latency === "noWaitOnDummy" && inputs.dummyMode) return renderFrameOnlyFrames
-      return roundTripFrames
-    }
+    const startLatencyFrames = (skill: Skill): number =>
+      skill.startLatency === "serverRoundTrip" ? roundTripFrames : 0
     const exactHitLandingFrame = (stepStart: number, hitFrame: number): number =>
       stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames)
     const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
@@ -678,16 +671,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return bound
     }
 
-    // The largest start-wait plus in-cast-wait a step could pay — the worst
-    // case a dummy-mode skip could still be waived, so every reader of this
-    // bound stays a true upper bound regardless of `inputs.dummyMode`. Rounded
-    // up to a whole frame: this bound also sizes the meter engine's own
-    // starting frame, and a render-quantised fraction there would desync its
-    // internal cursor from every (already-rounded) hit-derived frame it is
+    // Rounded up to a whole frame: this bound also sizes the meter engine's
+    // own starting frame, and a render-quantised fraction there would desync
+    // its internal cursor from every (already-rounded) hit-derived frame it is
     // later compared against.
     function upperBoundLatencyFrames(rs: ResolvedStep): number {
-      const start = (rs.skill.startLatency ?? "serverRoundTrip") === "none" ? 0 : roundTripFrames
-      return Math.ceil(start + (rs.skill.serverWaitsInCast ?? 0) * midCastWaitFrames)
+      return Math.ceil(
+        startLatencyFrames(rs.skill) + (rs.skill.serverWaitsInCast ?? 0) * midCastWaitFrames,
+      )
     }
 
     // A cast's length can't be resolved from the live status ledger, because

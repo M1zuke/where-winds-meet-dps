@@ -81,6 +81,7 @@ import { V77__mysticFreeMorphWolflikeFrenzyTiming } from "./V77__mysticFreeMorph
 import { V78__reviewedTimingsGrantsAndNames } from "./V78__reviewedTimingsGrantsAndNames"
 import { V79__springAwayReach } from "./V79__springAwayReach"
 import { V80__prepullVagrantSwordWaveTiming } from "./V80__prepullVagrantSwordWaveTiming"
+import { V81__startWithoutServerWait } from "./V81__startWithoutServerWait"
 
 export type {
   CustomSkillMigration,
@@ -230,6 +231,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V78__reviewedTimingsGrantsAndNames,
   V79__springAwayReach,
   V80__prepullVagrantSwordWaveTiming,
+  V81__startWithoutServerWait,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
