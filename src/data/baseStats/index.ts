@@ -7,7 +7,9 @@ export { CLASS_SKILL_BOOSTS } from "./classSkillBoosts"
 export {
   ODDITIES,
   ODDITY_CHAPTERS,
+  ODDITY_REGION_LABELS,
   ODDITY_REGIONS,
+  ODDITY_REGION_RELEASED,
   ODDITY_RESOURCE_CAPS,
   type OddityRegionKey,
 } from "./oddities"

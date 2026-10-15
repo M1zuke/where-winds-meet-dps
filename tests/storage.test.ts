@@ -39,7 +39,11 @@ import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
 import { CLASS_IDS } from "../src/definitions/classes/registry"
-import { getDefaultTalentsForClass, getMindMethodContributions } from "../src/definitions/baseStats"
+import {
+  closeUnclaimedOddityNodes,
+  getDefaultTalentsForClass,
+  getMindMethodContributions,
+} from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
 import { allowedInnerWaysForClass, applyArmorSet, applyBowSet } from "../src/engine/panel"
 
@@ -140,6 +144,14 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(persistedInputs.martialArtsTalents).toEqual(defaultInputs.martialArtsTalents)
     expect(persistedInputs.unclaimedOddityNodes).toEqual(defaultInputs.unclaimedOddityNodes)
     expect(persistedInputs.combatSettings).toEqual(defaultInputs.combatSettings)
+  })
+
+  it("keeps a stored entry for an unreleased oddity region through a save and load", () => {
+    const stored = { ...defaultInputs, unclaimedOddityNodes: { Jiangnan: [712], Hexi: [305] } }
+    saveProfiles({ profiles: [makeProfile("p1", withDerivedStats(stored))], activeId: "p1" })
+    const reloaded = loadProfiles().profiles[0].inputs.unclaimedOddityNodes
+    expect(reloaded.Jiangnan).toEqual(closeUnclaimedOddityNodes("Jiangnan", [712]))
+    expect(reloaded.Hexi).toEqual(closeUnclaimedOddityNodes("Hexi", [305]))
   })
 
   it("exportProfile output parses to a wrapper whose profile.inputs has none of the derived keys", () => {

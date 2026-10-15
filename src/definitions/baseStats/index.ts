@@ -28,7 +28,7 @@ import {
 } from "../../data/baseStats"
 import { resolvedMaxBonus, resolvedScaleMax } from "./classSkillBoostDef"
 import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
-import { ODDITY_BOARD, isOddityNodeClaimed, oddityBoardTotals } from "./oddityBoardGraph"
+import { RELEASED_ODDITY_BOARD, isOddityNodeClaimed, oddityBoardTotals } from "./oddityBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
@@ -453,7 +453,7 @@ export function userTalentContributions(
 
 export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const region of ODDITY_BOARD) {
+  for (const region of RELEASED_ODDITY_BOARD) {
     for (const node of region.nodes) {
       if (!node.value || node.stat === undefined) continue
       if (

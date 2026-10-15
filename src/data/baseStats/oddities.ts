@@ -2900,7 +2900,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 605,
     icon: "dmgElite",
     name: "The Music of Laiyi II",
-    description: "DMG vs Qingzhou Elite Monsters +5%",
+    description: "Increases damage dealt to Qingzhou Elite Monsters by 5%",
   },
   {
     id: 608,
@@ -2912,7 +2912,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 605,
     icon: "rdcElite",
     name: "The Music of Laiyi III",
-    description: "DMG reduction vs Qingzhou Elite Monsters +5%",
+    description: "Increases damage reduction against Qingzhou Elite Monsters by 5%",
   },
   {
     id: 609,
@@ -2938,7 +2938,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 606,
     icon: "dmgNormal",
     name: "The Music of Zhaode II",
-    description: "DMG vs Qingzhou Normal Monsters +5%",
+    description: "Increases damage dealt to Qingzhou Normal Monsters by 5%",
   },
   {
     id: 611,
@@ -2950,7 +2950,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 606,
     icon: "rdcNormal",
     name: "The Music of Zhaode III",
-    description: "DMG reduction vs Qingzhou Normal Monsters +5%",
+    description: "Increases damage reduction against Qingzhou Normal Monsters by 5%",
   },
   {
     id: 612,
@@ -2976,7 +2976,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 609,
     icon: "dmgBoss",
     name: "The Music of Qingping II",
-    description: "DMG vs Qingzhou Bosses +5%",
+    description: "Increases damage dealt to Qingzhou Bosses by 5%",
   },
   {
     id: 614,
@@ -2988,7 +2988,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 609,
     icon: "rdcBoss",
     name: "The Music of Qingping III",
-    description: "DMG reduction vs Qingzhou Bosses +5%",
+    description: "Increases damage reduction against Qingzhou Bosses by 5%",
   },
   {
     id: 615,
@@ -3014,7 +3014,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 615,
     icon: "coinCampaign",
     name: "Melody of Grace II",
-    description: "Coins from Qingzhou Solo Mode Campaign +20%",
+    description: "Increases coins obtained from challenging Qingzhou Solo Mode Campaign by 20%",
   },
   {
     id: 617,
@@ -3026,7 +3026,8 @@ const QINGZHOU = defineOddityRegion([
     requires: 615,
     icon: "gearCampaign",
     name: "Melody of Grace III",
-    description: "20% chance of extra gear, Qingzhou Solo Mode Campaign",
+    description:
+      "A 20% chance of obtaining an extra piece of gear when challenging Qingzhou Solo Mode Campaign (takes effect once per 20 energy consumed).",
   },
   {
     id: 618,
@@ -3052,7 +3053,7 @@ const QINGZHOU = defineOddityRegion([
     requires: 618,
     icon: "coinOutpost",
     name: "Melody of Valor II",
-    description: "Coins from Qingzhou Outpost +20%",
+    description: "Increases coins obtained from challenging Qingzhou Outpost by 20%",
   },
   {
     id: 620,
@@ -3064,7 +3065,8 @@ const QINGZHOU = defineOddityRegion([
     requires: 618,
     icon: "gearOutpost",
     name: "Melody of Benevolence I",
-    description: "20% chance of extra gear, Qingzhou Outpost",
+    description:
+      "A 20% chance of obtaining an extra piece of gear when challenging Qingzhou Outpost (takes effect once per 20 energy consumed).",
   },
   {
     id: 621,
@@ -3128,7 +3130,7 @@ const JIANGNAN = defineOddityRegion([
     x: 849,
     y: 834,
     cost: 2,
-    kind: "reward",
+    kind: "opener",
     requires: 701,
     icon: "atkMax",
     name: "Melody of Pacification III",
@@ -3156,11 +3158,11 @@ const JIANGNAN = defineOddityRegion([
     x: 1105,
     y: 1418,
     cost: 2,
-    kind: "reward",
+    kind: "opener",
     requires: 703,
     icon: "coinDrop",
     name: "Melody of Pacification V",
-    description: "Coins dropped by Jiangnan Monsters +20%",
+    description: "Increases Coins dropped by Jiangnan Monsters by 20%",
   },
   {
     id: 705,
@@ -3183,7 +3185,7 @@ const JIANGNAN = defineOddityRegion([
     x: 2754,
     y: 2075,
     cost: 3,
-    kind: "reward",
+    kind: "opener",
     requires: 705,
     icon: "gearDrop",
     name: "Melody of Harmony II",
@@ -3199,7 +3201,7 @@ const JIANGNAN = defineOddityRegion([
     requires: 706,
     icon: "coinOutpost",
     name: "Melody of Harmony III",
-    description: "Coins from Jiangnan Outpost +20%",
+    description: "Increases Coins obtained from challenging Jiangnan Outpost by 20%",
   },
   {
     id: 708,
@@ -3211,7 +3213,8 @@ const JIANGNAN = defineOddityRegion([
     requires: 707,
     icon: "gearOutpost",
     name: "Melody of Harmony IV",
-    description: "20% chance of extra gear, Jiangnan Outpost",
+    description:
+      "A 20% chance of obtaining an extra piece of gear when challenging Jiangnan Outpost (takes effect once per 20 energy consumed).",
   },
   {
     id: 709,
@@ -3233,7 +3236,7 @@ const JIANGNAN = defineOddityRegion([
     x: 3978,
     y: 1320,
     cost: 3,
-    kind: "reward",
+    kind: "opener",
     requires: 709,
     icon: "vitality",
     name: "Melody of Merit II",
@@ -3276,7 +3279,7 @@ const JIANGNAN = defineOddityRegion([
     x: 5851,
     y: 2061,
     cost: 4,
-    kind: "reward",
+    kind: "opener",
     requires: 712,
     icon: "hp",
     name: "Melody of Merit V",
@@ -3294,7 +3297,7 @@ const JIANGNAN = defineOddityRegion([
     requires: 713,
     icon: "coinCampaign",
     name: "Melody of Merit VI",
-    description: "Coins from Jiangnan Solo Mode Campaign +20%",
+    description: "Increases Coins obtained from challenging Jiangnan Solo Mode Campaign by 20%",
   },
   {
     id: 715,
@@ -3306,7 +3309,8 @@ const JIANGNAN = defineOddityRegion([
     requires: 714,
     icon: "gearCampaign",
     name: "Melody of Auspice I",
-    description: "20% chance of extra gear, Jiangnan Solo Mode Campaign",
+    description:
+      "A 20% chance of obtaining an extra piece of gear when challenging Jiangnan Solo Mode Campaign (takes effect once per 20 energy consumed).",
   },
   {
     id: 716,
@@ -3328,7 +3332,7 @@ const JIANGNAN = defineOddityRegion([
     x: 7805,
     y: 1522,
     cost: 4,
-    kind: "reward",
+    kind: "opener",
     requires: 716,
     icon: "def",
     name: "Melody of Auspice III",
@@ -3356,7 +3360,7 @@ const JIANGNAN = defineOddityRegion([
     x: 9412,
     y: 1073,
     cost: 5,
-    kind: "reward",
+    kind: "opener",
     requires: 718,
     icon: "endurance",
     name: "Melody of Virtue I",
@@ -3366,6 +3370,26 @@ const JIANGNAN = defineOddityRegion([
     fallbackMaxHp: 300,
   },
 ])
+
+export const ODDITY_REGION_LABELS: Readonly<Record<OddityRegionKey, string>> = {
+  Qinghe: "Qinghe",
+  Kaifeng: "Kaifeng",
+  Hexi: "Hexi",
+  "Kaifeng Palace": "Kaifeng Palace",
+  "Hidden Mountain: Suixiang": "Hidden Mountain",
+  Qingzhou: "Qingzhou",
+  Jiangnan: "Jiangnan",
+}
+
+export const ODDITY_REGION_RELEASED: Readonly<Record<OddityRegionKey, boolean>> = {
+  Qinghe: true,
+  Kaifeng: true,
+  Hexi: true,
+  "Kaifeng Palace": true,
+  "Hidden Mountain: Suixiang": true,
+  Qingzhou: true,
+  Jiangnan: false,
+}
 
 export const ODDITY_RESOURCE_CAPS: Readonly<Record<"endurance" | "vitality", number>> = {
   endurance: 40,
@@ -3461,9 +3485,9 @@ export const ODDITY_CHAPTERS: Readonly<Record<OddityRegionKey, readonly string[]
     "Melody of Pacification",
     "Melody of Harmony",
     "Melody of Merit",
+    "Melody of Merit",
     "Melody of Auspice",
-    "Melody of Virtue",
-    "Melody of Peace",
+    "Melody of Auspice",
   ],
 }
 
