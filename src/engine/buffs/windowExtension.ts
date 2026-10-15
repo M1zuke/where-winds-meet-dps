@@ -20,6 +20,7 @@ export type BaseWindowOf = (buffId: string, timeSec: number) => BaseWindow | nul
 
 export interface ExtensionTrigger {
   timeSec: number
+  stampSec?: number | null
   runKey: string | null
   latenessMaxSec: number
   conditionsHold: boolean
@@ -72,7 +73,7 @@ export class WindowExtensionEnsemble {
 
     for (let particle = 0; particle < this.particleCount; particle++) {
       if (event.particles && !event.particles[particle]) continue
-      const now = event.timeSec + (lateness ? lateness[particle] : 0)
+      const now = (event.stampSec ?? event.timeSec) + (lateness ? lateness[particle] : 0)
       if (this.cooldownEnd[particle] - now > COOLDOWN_EPSILON_SEC) continue
       if (required) {
         const requiredExpiry = requiredExpiries?.[particle] ?? required.expiresAt

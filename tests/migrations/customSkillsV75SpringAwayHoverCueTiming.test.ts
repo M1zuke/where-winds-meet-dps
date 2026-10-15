@@ -8,6 +8,7 @@ import {
   V75__springAwayHoverCueTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V75__springAwayHoverCueTiming"
+import { healSkill as healSpringAwayReach } from "../../src/migrations/customSkills/V79__springAwayReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/silkbind-jade/ids"
@@ -52,7 +53,9 @@ describe("custom-skills v74 fixture", () => {
 
 describe("healSkill - Spring Away", () => {
   it("lands a seeded 6-bullet copy on the live module's frames, projectile, cast length and drain", () => {
-    const healed = healSkill(clone(skillIn(STORE, SKILL.umblightcharge))) as Skill
+    const healed = healSpringAwayReach(
+      healSkill(clone(skillIn(STORE, SKILL.umblightcharge))),
+    ) as Skill
     const live = builtin(SKILL.umblightcharge)
     expect(healed.hits.map((hit) => hit.frame)).toEqual(live.hits.map((hit) => hit.frame))
     expect(healed.hits.map((hit) => hit.projectile)).toEqual(live.hits.map((hit) => hit.projectile))

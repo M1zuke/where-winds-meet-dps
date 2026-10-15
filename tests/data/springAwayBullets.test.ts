@@ -16,6 +16,7 @@ const BULLET_PROJECTILE = {
   speedMetersPerSecond: 80,
   acceleration: { initialSpeedMetersPerSecond: 10, metersPerSecondSquared: 700 },
   collisionDelayFrames: 2.4,
+  contactAdvanceMeters: 0.5,
   maxTravelFrames: 300,
 }
 
@@ -45,6 +46,10 @@ describe.each([
 
   it("flies every bullet as the accelerating projectile, 10 m/s to an 80 m/s cap", () => {
     for (const bullet of skill.hits) expect(bullet.projectile).toEqual(BULLET_PROJECTILE)
+  })
+
+  it("reaches 13 m, the Light Attack's approach range", () => {
+    expect(skill.reachMeters).toBe(13)
   })
 
   it("carries the same per-bullet row and non-player factor", () => {

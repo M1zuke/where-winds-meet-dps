@@ -20,6 +20,10 @@ export interface DebuffDotSpec {
   // that pulses on a fixed schedule instead. Absent means it has not been
   // established for this DoT yet, and the interval is left alone.
   reschedulesPerTick?: boolean | null
+  // Whether each run re-arms its timer toward the next absolute deadline of the
+  // original grid, so the lateness of one run does not carry into the next
+  // deadline but shifts the delay requested for it (see `dot.ts`).
+  rearmsToAbsoluteDeadline?: boolean | null
   physMultiplier: number
   physFixed: number
   attributeMultiplier: number
@@ -71,6 +75,11 @@ export interface DebuffEchoSpec {
   releaseAdjustment?: DebuffEchoReleaseAdjustment | null
 }
 
+export interface DebuffRecallSpec {
+  tag: string
+  exemptSkillIds?: readonly string[]
+}
+
 export interface Debuff {
   id: string
   classId: string
@@ -90,6 +99,9 @@ export interface Debuff {
   stackScaling: StackScaling
   detonation?: DotDetonationSpec | null
   echo?: DebuffEchoSpec | null
+  // A rotation step whose skill carries the tag ends the running window at its
+  // own start — the summoned source is recalled — unless its skill is exempt.
+  recall?: DebuffRecallSpec | null
   createdAt: string
   updatedAt: string
 }

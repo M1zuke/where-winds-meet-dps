@@ -101,7 +101,8 @@ sooner. A projectile that accelerates declares its initial speed and a
 constant acceleration; the declared speed is then its cap, and the travel time
 integrates the ramp and the capped remainder exactly. A projectile whose
 collision arms late declares `collisionDelayFrames`, the earliest travel time
-it can land after. The distance read is the one target-distance simulation every other
+it can land after, and `contactAdvanceMeters`, the distance by which its
+collision touches the target before its origin does. The distance read is the one target-distance simulation every other
 reader of it uses, resolved at the same point a hit variant's own override
 is. A ceiling on travel time bounds it independently of the target's
 distance, for a projectile with its own limited lifetime. Every reader of a
@@ -367,6 +368,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 
 - A buff helps the player and applies onto the same `Inputs` fields the panel
   uses. A debuff is enemy-facing: target-scope reductions and/or a DoT.
+- **A debuff whose source is a summon declares `recall`** (a tag and the
+  exempt skill ids): a rotation step whose skill carries the tag ends the
+  running window at its own start, ticks included, unless its skill is exempt
+  or a DoT tick.
 - **A buff with no stat effects is legitimate.** A pure state marker that a hit
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
@@ -495,6 +500,11 @@ for applying, `receives` for boosting — never by the module itself.
   arms the cooldown, even when the extension changes nothing. The module opens
   no window and carries no stat effect; every listed module may carry
   additive damage-boost stat effects only.
+- **An extension trigger carries the timestamp of the event that fired it**
+  (`stampSec`): a damage hit its unrounded landing time, a timer-driven tick
+  its nominal time plus the timer's own lateness. A DoT that re-arms to an
+  absolute deadline (`dot.rearmsToAbsoluteDeadline`) derives that lateness
+  deterministically from its run index; no random draw stands in for it.
 - **A trigger source that fires off a timer may declare its lateness**
   (`extendsBuffs.lateness`): events whose source carries the declared property
   are stamped up to a maximum number of seconds after their nominal time, one
@@ -673,6 +683,9 @@ works unchanged.
   reaches its frame, so every step's cast-start cost is applied at its own,
   earlier frame first — meter events across the whole layout pass apply in
   one global frame order, never in the rotation's per-step processing order.
+- **A drain's bounds are fractional frames.** A frame drains in proportion
+  to the part of it the drain interval covers; the bounds are never rounded
+  to whole frames.
 - **A meter never rewinds its own cursor.** A cost, drain or freeze requested
   at a frame earlier than the meter has already advanced to is processed at
   the cursor's own frame instead and surfaces a warning, rather than

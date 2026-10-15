@@ -79,6 +79,7 @@ import { V75__springAwayHoverCueTiming } from "./V75__springAwayHoverCueTiming"
 import { V76__vagrantSwordChargeTiming } from "./V76__vagrantSwordChargeTiming"
 import { V77__mysticFreeMorphWolflikeFrenzyTiming } from "./V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { V78__reviewedTimingsGrantsAndNames } from "./V78__reviewedTimingsGrantsAndNames"
+import { V79__springAwayReach } from "./V79__springAwayReach"
 
 export type {
   CustomSkillMigration,
@@ -226,6 +227,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V76__vagrantSwordChargeTiming,
   V77__mysticFreeMorphWolflikeFrenzyTiming,
   V78__reviewedTimingsGrantsAndNames,
+  V79__springAwayReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

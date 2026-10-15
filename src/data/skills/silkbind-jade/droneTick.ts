@@ -1,8 +1,24 @@
-import { ATTUNE } from "../ids"
+import { ATTUNE, WEAPON } from "../ids"
+import { SKILL } from "./ids"
 import { BUFF } from "../buffs/ids"
 import type { DebuffDotSpec } from "../../../engine/debuff"
 
 // In-game values as of 2026-09-24.
+export const DRONE_RECALL = {
+  tag: WEAPON.umbrella,
+  exemptSkillIds: [
+    SKILL.hiddenSwordLight1,
+    SKILL.hiddenSwordLight2,
+    SKILL.hiddenSwordLight3,
+    SKILL.hiddenSwordLight4,
+    SKILL.hiddenSwordLight5,
+    SKILL.hiddenSwordHeavy1,
+    SKILL.hiddenSwordHeavy2,
+    SKILL.hiddenSwordHeavy3,
+    SKILL.hiddenSwordHeavyAlt,
+  ],
+}
+
 export const DRONE_INTERVAL_FRAMES = 30
 export const DRONE_FIRST_TICK_OFFSET_FRAMES = 33
 
@@ -37,6 +53,8 @@ export function droneDotSpec(withLingeringBoneBullet: boolean): DebuffDotSpec {
   return {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
     firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
+    // In-game timer values as of 2026-10-15.
+    rearmsToAbsoluteDeadline: true,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",

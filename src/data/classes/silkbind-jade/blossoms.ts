@@ -1,5 +1,6 @@
 import { defineResource } from "../../../definitions/resources/resourceDef"
 import { SKILL, DEBUFF } from "../../skills/silkbind-jade/ids"
+import { DRONE_RECALL } from "../../skills/silkbind-jade/droneTick"
 import { WEAPON } from "../../skills/ids"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 
@@ -26,18 +27,8 @@ export const blossomResource = defineResource({
   debuffId: DEBUFF.umbdrone,
   drainPerSecond: BLOSSOMS.drainPerSecond,
   enhancedRunCost: BLOSSOMS.lingeringBoneRunCost,
-  recallTag: WEAPON.umbrella,
-  recallExemptSkillIds: [
-    SKILL.hiddenSwordLight1,
-    SKILL.hiddenSwordLight2,
-    SKILL.hiddenSwordLight3,
-    SKILL.hiddenSwordLight4,
-    SKILL.hiddenSwordLight5,
-    SKILL.hiddenSwordHeavy1,
-    SKILL.hiddenSwordHeavy2,
-    SKILL.hiddenSwordHeavy3,
-    SKILL.hiddenSwordHeavyAlt,
-  ],
+  recallTag: DRONE_RECALL.tag,
+  recallExemptSkillIds: DRONE_RECALL.exemptSkillIds,
   endRefund: BLOSSOMS.endRefund,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,
   gains: [

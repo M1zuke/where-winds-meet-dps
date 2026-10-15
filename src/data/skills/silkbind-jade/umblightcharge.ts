@@ -6,6 +6,7 @@ import {
   SPRING_AWAY_BULLET,
   SPRING_AWAY_BULLET_LAUNCH_FRAMES,
   SPRING_AWAY_BULLET_PROJECTILE,
+  SPRING_AWAY_REACH_METERS,
   SPRING_AWAY_RECEIVES,
   SPRING_AWAY_TAGS,
   springAwayHoverDrain,
@@ -27,6 +28,7 @@ export const umblightcharge = defineSkill({
   receives: SPRING_AWAY_RECEIVES,
   castFrames: springAwayReleaseFrames(BULLET_COUNT),
   triggerable: true,
+  reachMeters: SPRING_AWAY_REACH_METERS,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },

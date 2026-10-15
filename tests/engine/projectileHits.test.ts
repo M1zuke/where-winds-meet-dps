@@ -93,6 +93,16 @@ describe("a projectile hit inside the full timeline", () => {
   })
 })
 
+describe("projectileTravelFrames - contact advance", () => {
+  it("shortens the flown distance by the advance and never below zero", () => {
+    const base = { speedMetersPerSecond: 30, maxTravelFrames: 300 }
+    const advanced = { ...base, contactAdvanceMeters: 0.5 }
+    expect(projectileTravelFrames(advanced, 10)).toBeCloseTo((9.5 / 30) * 60, 9)
+    expect(projectileTravelFrames(base, 9.5)).toBeCloseTo(projectileTravelFrames(advanced, 10), 9)
+    expect(projectileTravelFrames(advanced, 0.2)).toBe(0)
+  })
+})
+
 describe("projectileTravelFrames - an accelerating projectile", () => {
   const projectile = {
     speedMetersPerSecond: 80,

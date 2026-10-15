@@ -31,13 +31,20 @@ export const SPRING_AWAY_BULLET_LAUNCH_FRAMES = SPRING_AWAY_CUE_FRACTIONS.map((f
 )
 
 // In-game values as of 2026-10-15: 10 m/s, +700 m/s per second up to 80 m/s,
-// collision armed 0.04 s after the spawn, 5 s lifetime.
+// collision armed 0.04 s after the spawn, 5 s lifetime, a 1 m long collision
+// box whose leading edge touches the target 0.5 m before the bullet's origin
+// does.
 export const SPRING_AWAY_BULLET_PROJECTILE = {
   speedMetersPerSecond: 80,
   acceleration: { initialSpeedMetersPerSecond: 10, metersPerSecondSquared: 700 },
   collisionDelayFrames: 2.4,
+  contactAdvanceMeters: 0.5,
   maxTravelFrames: 300,
 }
+
+// In-game values as of 2026-10-15: the cast runs on the Light Attack, whose
+// approach range is 13 m.
+export const SPRING_AWAY_REACH_METERS = 13
 
 export const springAwayReleaseFrames = (bulletCount: number) =>
   hundredthsOf(SPRING_AWAY_BULLET_LAUNCH_FRAMES[bulletCount - 1] + RELEASE_CAST_FRAMES)

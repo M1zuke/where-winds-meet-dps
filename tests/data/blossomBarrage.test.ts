@@ -15,6 +15,18 @@ import { blossomResource } from "../../src/data/classes/silkbind-jade/blossoms"
 
 const FPS = 60
 
+const JITTERED_EXTENSION_DEFS = (blossomBarrage.buffDefs ?? []).map((def) =>
+  def.id === BUFF.comboExtendMark && def.extendsBuffs
+    ? {
+        ...def,
+        extendsBuffs: {
+          ...def.extendsBuffs,
+          lateness: { property: PROP.isDrone, maxSec: 0.005 },
+        },
+      }
+    : def,
+)
+
 describe("Blossom Barrage Global 2.0 PvE", () => {
   const charged = SKILLS.find((skill) => skill.id === "silkbindJade-umblightcharge")!
   const drone = SKILLS.find((skill) => skill.id === "silkbindJade-umbdrone-20hit")!
@@ -88,7 +100,7 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
     return dotTickSkill(debuff, source)
   })()
 
-  function engine(tier: number, comboAppliedAt = 0, breakDurationSec = 5) {
+  function engine(tier: number, comboAppliedAt = 0, breakDurationSec = 5, jittered = false) {
     const result = new BuffEngine(
       {
         blossomBarrage: true,
@@ -96,7 +108,7 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
         qiBreakTime: 5,
         bossBreakDuration: breakDurationSec,
       },
-      blossomBarrage.buffDefs ?? [],
+      jittered ? JITTERED_EXTENSION_DEFS : (blossomBarrage.buffDefs ?? []),
     )
     result.processSkillCast("setup", comboAppliedAt, { castTime: 0 }, false, EXTENSION_BUFF_IDS)
     return result
@@ -224,7 +236,7 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
   })
 
   it("scores a window that is live only in some outcomes at its live share", () => {
-    const buffs = engine(4, 0, 30)
+    const buffs = engine(4, 0, 30, true)
     for (let run = 0; run < 10; run++) strike(buffs, droneTickSkill, 12 + run * 0.5, `run-${run}`)
     let partialTime: number | null = null
     for (let time = COMBO_LIFETIME_SEC; time < COMBO_LIFETIME_SEC + 20; time += 0.05) {
@@ -247,7 +259,7 @@ describe("Blossoms across Combo - Extend Mark outcomes", () => {
   function extendedByDroneRuns() {
     const buffs = new BuffEngine(
       { blossomBarrage: true, blossomBarrageTier: 4, qiBreakTime: 5, bossBreakDuration: 30 },
-      blossomBarrage.buffDefs ?? [],
+      JITTERED_EXTENSION_DEFS,
     )
     buffs.processSkillCast("setup", 0, { castTime: 0 }, false, [
       BUFF.combo,

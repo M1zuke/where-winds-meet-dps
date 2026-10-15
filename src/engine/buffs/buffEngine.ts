@@ -633,6 +633,7 @@ export class BuffEngine {
   processDamagingEvent(event: {
     skill: Skill
     timeSec: number
+    stampSec?: number
     runKey?: string
     particles?: Uint8Array | null
   }): void {
@@ -648,6 +649,7 @@ export class BuffEngine {
       ensemble.trigger(
         {
           timeSec: event.timeSec,
+          stampSec: event.stampSec ?? null,
           runKey: event.runKey ?? null,
           latenessMaxSec:
             spec.lateness && tagSet.has(spec.lateness.property) ? spec.lateness.maxSec : 0,

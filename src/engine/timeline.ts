@@ -139,7 +139,7 @@ const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
 
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.
-function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
+export function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
   if (renderPeriodFrames <= 0) return value
   return Math.ceil(value / renderPeriodFrames - 1e-9) * renderPeriodFrames
 }
@@ -182,6 +182,9 @@ function castEndFrame(
 
 interface HitEvent {
   frame: number
+  // The landing time before it is rounded to a whole 60 fps frame, for the one
+  // reader that compares two hits' wall-clock stamps.
+  exactFrame?: number
   seq: number
   skill: Skill
   hit: SkillHit
@@ -654,8 +657,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (latency === "noWaitOnDummy" && inputs.dummyMode) return renderFrameOnlyFrames
       return roundTripFrames
     }
+    const exactHitLandingFrame = (stepStart: number, hitFrame: number): number =>
+      stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames)
     const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
-      Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
+      Math.round(exactHitLandingFrame(stepStart, hitFrame))
 
     // The largest cast length any of a step's hit variants could select.
     function upperBoundCastFrames(rs: ResolvedStep): number {
@@ -1020,15 +1025,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         for (const drain of skill.meterDrains ?? []) {
           const meter = meterById.get(drain.meterId)
           if (!meter) continue
-          const fromFrame = hitLandingFrame(startFrame, drain.fromFrame)
+          const fromFrame = exactHitLandingFrame(startFrame, drain.fromFrame)
           // Never outlives its own cast — the graph node driving it is torn down
           // the moment the cast ends, however long its own stop timer still had.
           const toFrame =
             drain.stopAfterSec !== undefined
-              ? Math.min(fromFrame + Math.round(drain.stopAfterSec * FPS), castEndFrame)
+              ? Math.min(fromFrame + drain.stopAfterSec * FPS, castEndFrame)
               : castEndFrame
           starts.push({
-            frame: fromFrame,
+            frame: Math.round(fromFrame),
             register: () =>
               meter.startDrain(fromFrame, toFrame, drain.perSecond, (frame) =>
                 meterModifierMultiplier("chargeCost", drain.meterId, frame, skill),
@@ -1893,6 +1898,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       resources.map((resource) => [resource.definition.launchSkillId, resource]),
     )
 
+    const recallDebuffs = (target: StatusLedger): void => {
+      for (const status of statusById.values()) {
+        if (!isDebuffStatus(status) || !status.recall || resourceByDebuff.has(status.id)) continue
+        const { tag, exemptSkillIds } = status.recall
+        for (const laidStep of laidSteps) {
+          const { skill } = laidStep.resolved
+          if (skill.isDotTick || !skill.tags?.includes(tag) || exemptSkillIds?.includes(skill.id))
+            continue
+          target.cutWindowsAt(status.id, laidStep.startFrame, UNOWNED)
+        }
+      }
+    }
+    recallDebuffs(layoutLedger)
+
     const qiBreakWindow = buffEngine
       ? (() => {
           const w = buffEngine.qiBreakWindow()
@@ -2184,6 +2203,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       | {
           kind: "hit"
           frame: number
+          exactFrame: number
           seq: number
           skill: Skill
           hit: SkillHit
@@ -2236,15 +2256,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const ls of laidSteps) {
       const stepDistanceMeters = targetDistanceAt(ls.startFrame)
       for (const hit of ls.performedHits) {
+        const resolvedFrame =
+          resolvedHitFrame(
+            hit,
+            (condition) => layoutHolds(condition, ls.startFrame),
+            stepDistanceMeters,
+          ) + ls.midCastExtraFrames
         queue.push({
-          frame: hitLandingFrame(
-            ls.startFrame,
-            resolvedHitFrame(
-              hit,
-              (condition) => layoutHolds(condition, ls.startFrame),
-              stepDistanceMeters,
-            ) + ls.midCastExtraFrames,
-          ),
+          frame: hitLandingFrame(ls.startFrame, resolvedFrame),
+          exactFrame: exactHitLandingFrame(ls.startFrame, resolvedFrame),
           seq: seq++,
           skill: ls.resolved.skill,
           hit,
@@ -2314,7 +2334,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       const ev = queue.pop()!
       processed++
-      const { frame, skill, hit, castFrame, stepStart } = ev
+      const { frame, exactFrame, skill, hit, castFrame, stepStart } = ev
       chainEndFrameByStepStart.set(
         stepStart,
         Math.max(frame, chainEndFrameByStepStart.get(stepStart) ?? frame),
@@ -2362,6 +2382,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       mergedEvents.push({
         kind: "hit",
         frame,
+        exactFrame: exactFrame ?? frame,
         seq: mergedSeq++,
         skill,
         hit,
@@ -2475,6 +2496,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
 
     liveWriter.processExpiries(windowFrames)
+    recallDebuffs(ledger)
 
     // Zenith extension events only exist for a Sword Horizon build (the only
     // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
@@ -2849,11 +2871,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (event.kind === "recall") {
         event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
       } else if (event.kind === "hit") {
-        const { frame, skill, hit } = event
+        const { frame, exactFrame, skill, hit } = event
         const launchResource = resourceByLaunch.get(skill.id)
         const launchShare = launchResource && inWindow(frame) ? launchResource.launch(frame) : 1
         if (launchShare <= 0) continue
-        if (hitDealsDamage(hit)) buffEngine?.processDamagingEvent({ skill, timeSec: frame / FPS })
+        if (hitDealsDamage(hit))
+          buffEngine?.processDamagingEvent({
+            skill,
+            timeSec: frame / FPS,
+            stampSec: exactFrame / FPS,
+          })
         const scored = scoreHit(event, hitRng, null)
         const { rolled, st } = scored
         const damage = scored.damage * launchShare
@@ -2928,6 +2955,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         buffEngine?.processDamagingEvent({
           skill: entry.dotSkill,
           timeSec: entry.frame / FPS,
+          stampSec: (entry.frame + (entry.stampLatenessFrames ?? 0)) / FPS,
           runKey: `${entry.debuff.id}|${entry.requiresBuffAtFrame ?? entry.frame}`,
           particles: resourceTick?.particles ?? null,
         })

@@ -28,6 +28,34 @@ function tickTimerDelayFrames(requestedFrames: number): number {
   return (firedMs * FPS) / 1000
 }
 
+const absoluteDeadlineLatenessCache = new Map<string, number[]>()
+
+// How late, in frames, the run `runIndex` of a timer that re-arms toward the
+// absolute deadline `first + runIndex × interval` fires. Each run requests the
+// delay left to its deadline from the moment the previous run actually fired,
+// and the tick timer rounds that request the way `tickTimerDelayFrames` does.
+export function absoluteDeadlineLatenessFrames(
+  runIndex: number,
+  firstDelayFrames: number,
+  intervalFrames: number,
+): number {
+  const key = `${firstDelayFrames}|${intervalFrames}`
+  let latenesses = absoluteDeadlineLatenessCache.get(key)
+  if (!latenesses) {
+    latenesses = [tickTimerDelayFrames(firstDelayFrames) - firstDelayFrames]
+    absoluteDeadlineLatenessCache.set(key, latenesses)
+  }
+  while (latenesses.length <= runIndex) {
+    const previousFire =
+      firstDelayFrames +
+      (latenesses.length - 1) * intervalFrames +
+      latenesses[latenesses.length - 1]
+    const deadline = firstDelayFrames + latenesses.length * intervalFrames
+    latenesses.push(previousFire + tickTimerDelayFrames(deadline - previousFire) - deadline)
+  }
+  return latenesses[runIndex]
+}
+
 export function effectiveTickIntervalFrames(dot: DebuffDotSpec): number {
   const base = dot.tickIntervalFrames
   return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
@@ -181,6 +209,7 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
 export interface DotTickPlan {
   frame: number
   weight: number
+  stampLatenessFrames?: number
   requiresBuff?: string
   requiresBuffAtFrame?: number
   enhancedBy?: string
@@ -213,12 +242,24 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
   for (const episode of mergeEpisodes(query.windows)) {
     // The accumulator stays exact while the frame it lands on is rounded, so a
     // fractional interval cannot compound its own rounding error.
+    let runIndex = -1
     for (let pulse = episode.start + firstOffset; pulse < episode.end; pulse += interval) {
+      runIndex++
       for (const offset of [0, ...(dot.additionalTicks?.offsetsFrames ?? [])]) {
         if (offset < 0 || offset >= interval) continue
         const at = pulse + offset
         if (at >= episode.end) continue
         const frame = Math.round(at)
+        const stampLateness =
+          dot.rearmsToAbsoluteDeadline === true
+            ? {
+                stampLatenessFrames: absoluteDeadlineLatenessFrames(
+                  runIndex,
+                  firstOffset,
+                  interval,
+                ),
+              }
+            : {}
         const enhancingBuff = dot.additionalTicks?.requiresBuff
         const requirement =
           offset > 0
@@ -235,6 +276,7 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
           plans.push({
             frame,
             weight,
+            ...stampLateness,
             ...requirement,
             shape: shapes[Math.min(live, shapes.length) - 1],
           })
@@ -244,13 +286,14 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
           plans.push({
             frame,
             weight,
+            ...stampLateness,
             ...requirement,
             scale: ladder[Math.min(live, ladder.length) - 1],
           })
         } else {
           const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
           if (perStack && count === 0) continue
-          plans.push({ frame, weight, ...requirement, scale: count })
+          plans.push({ frame, weight, ...stampLateness, ...requirement, scale: count })
         }
       }
     }
