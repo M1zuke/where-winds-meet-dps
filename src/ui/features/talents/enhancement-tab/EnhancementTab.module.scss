@@ -64,6 +64,14 @@
   color: var(--color-accent-bright);
 }
 
+.gearHint {
+  margin: 0;
+  padding-bottom: 4px;
+  font-size: 0.8em;
+  text-align: center;
+  color: var(--color-text-faint);
+}
+
 .statRow {
   display: flex;
   align-items: center;

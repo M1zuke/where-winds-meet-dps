@@ -2432,6 +2432,7 @@
   "talents.enhancement.enhancement": "강화",
   "talents.enhancement.increaseLevel": "",
   "talents.enhancement.resetAllEnhancementsToDefault": "모든 강화를 기본값으로 초기화할까요?",
+  "talents.enhancement.unlockableWithGearLevel": "",
   "talents.line.silkbindDmgBonus": "견사 피해 보너스",
   "talents.line.stonesplitDmgBonus": "",
   "talents.noStatBuffsForThis": "아직 이 유파의 속성 버프가 없습니다.",

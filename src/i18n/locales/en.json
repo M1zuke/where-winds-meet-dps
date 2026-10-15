@@ -2432,6 +2432,7 @@
   "talents.enhancement.enhancement": "Enhancement",
   "talents.enhancement.increaseLevel": "Increase level",
   "talents.enhancement.resetAllEnhancementsToDefault": "Reset all enhancements to default?",
+  "talents.enhancement.unlockableWithGearLevel": "Up to {level} at gear level {gearLevel}",
   "talents.line.silkbindDmgBonus": "Silkbind DMG Bonus",
   "talents.line.stonesplitDmgBonus": "Stonesplit DMG Bonus",
   "talents.noStatBuffsForThis": "No stat buffs for this class yet.",

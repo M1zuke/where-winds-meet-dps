@@ -6,12 +6,36 @@ import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakt
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmContext } from "../../src/ui/components/confirm-dialog/confirmContext"
 import { EnhancementTab } from "../../src/ui/features/talents/enhancement-tab/EnhancementTab"
-import type { Inputs } from "../../src/engine/types"
+import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
 
 const inputsAtBreakthrough17: Inputs = {
   ...defaultInputs,
   breakthrough: 17,
   enhancements: defaultEnhancementLevels(17),
+}
+
+function inputsWithDiscAtGearLevel(gearLevel: GearLevel): Inputs {
+  const disc = {
+    id: "disc-under-test",
+    slot: "disc",
+    level: gearLevel,
+    rarity: "legendary",
+    minPhys: 0,
+    maxPhys: 0,
+    hp: 0,
+    physDef: 0,
+    words: Array.from({ length: 5 }, () => ({ word: "", value: 0, retuned: false })),
+    attunement: "",
+    attunementValue: 0,
+    relayed: false,
+  } as unknown as GearPiece
+  return {
+    ...defaultInputs,
+    breakthrough: 18,
+    enhancements: defaultEnhancementLevels(18),
+    inventory: [disc],
+    equipped: { ...defaultInputs.equipped, disc: disc.id },
+  }
 }
 
 function renderTab(inputs: Inputs = defaultInputs, onChange: (next: Inputs) => void = () => {}) {
@@ -140,5 +164,15 @@ describe("the Enhancement tab", () => {
       (9864).toLocaleString(),
     )
     expect(screen.getByText("Average-Level Max HP %").parentElement).toHaveTextContent("20.00%")
+  })
+
+  it("hints at the level a higher gear level unlocks on a gear-limited card", () => {
+    renderTab(inputsWithDiscAtGearLevel(96))
+    expect(cardFor("Disc")).toHaveTextContent("Up to 70 at gear level 100")
+  })
+
+  it("shows no gear level hint on a card already at the breakthrough maximum", () => {
+    renderTab(inputsWithDiscAtGearLevel(100))
+    expect(cardFor("Disc")).not.toHaveTextContent("at gear level")
   })
 })

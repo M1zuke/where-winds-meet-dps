@@ -7,6 +7,8 @@ import {
   defaultEnhancementLevels,
   enhancementCap,
   enhancementStatsAtLevel,
+  gearLevelUnlock,
+  type GearLevelUnlock,
 } from "../../../../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -42,16 +44,19 @@ export function EnhancementTab({ inputs, onChange }: Props) {
   const confirm = useConfirm()
   const levels = inputs.enhancements
 
-  const capBySlot = useMemo(() => {
+  const { capBySlot, unlockBySlot } = useMemo(() => {
     const byId = new Map(inputs.inventory.map((piece) => [piece.id, piece]))
     const fallbackGearLevel = gearLevelForBreakthrough(inputs.breakthrough)
-    const out = {} as Record<GearSlot, number>
+    const caps = {} as Record<GearSlot, number>
+    const unlocks = {} as Record<GearSlot, GearLevelUnlock | undefined>
     for (const slot of GEAR_SLOTS) {
       const equippedId = inputs.equipped[slot]
       const piece = equippedId ? byId.get(equippedId) : undefined
-      out[slot] = enhancementCap(piece?.level ?? fallbackGearLevel, inputs.breakthrough)
+      const pieceGearLevel = piece?.level ?? fallbackGearLevel
+      caps[slot] = enhancementCap(pieceGearLevel, inputs.breakthrough)
+      unlocks[slot] = gearLevelUnlock(pieceGearLevel, inputs.breakthrough)
     }
-    return out
+    return { capBySlot: caps, unlockBySlot: unlocks }
   }, [inputs.inventory, inputs.equipped, inputs.breakthrough])
 
   function step(slot: GearSlot, delta: number) {
@@ -97,6 +102,7 @@ export function EnhancementTab({ inputs, onChange }: Props) {
           const level = levels[slot] ?? 0
           const cap = capBySlot[slot]
           const stats = enhancementStatsAtLevel(slot, level)
+          const unlock = unlockBySlot[slot]
           return (
             <div className={`panel ${styles.slotCard}`} key={slot}>
               <h2>{t(gearSlotLabelKey(slot, inputs.classId))}</h2>
@@ -123,6 +129,13 @@ export function EnhancementTab({ inputs, onChange }: Props) {
                   +
                 </button>
               </div>
+              {unlock && (
+                <p className={styles.gearHint}>
+                  {t("talents.enhancement.unlockableWithGearLevel")
+                    .replace("{level}", String(unlock.level))
+                    .replace("{gearLevel}", String(unlock.gearLevel))}
+                </p>
+              )}
               {STAT_ORDER.filter((stat) => stats[stat] !== undefined).map((stat) => (
                 <div className={styles.statRow} key={stat}>
                   <span>{t(ENHANCEMENT_STAT_KEYS[stat])}</span>

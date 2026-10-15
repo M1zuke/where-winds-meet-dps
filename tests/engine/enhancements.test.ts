@@ -8,6 +8,7 @@ import {
   enhancementHpTotal,
   enhancementPhysDefTotal,
   enhancementStatsAtLevel,
+  gearLevelUnlock,
   getConfiguredBase,
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -179,5 +180,31 @@ describe("enhancementCap", () => {
 
   it("floors at zero for an unreachable combination", () => {
     expect(enhancementCap(0, 0)).toBe(0)
+  })
+})
+
+describe("the gear level that would unlock a higher enhancement cap", () => {
+  it("offers level 70 at gear level 100 to a gear level 96 piece at breakthrough 18", () => {
+    expect(gearLevelUnlock(96, 18)).toEqual({ level: 70, gearLevel: 100 })
+  })
+
+  it("offers nothing to a gear level 100 piece at breakthrough 18", () => {
+    expect(gearLevelUnlock(100, 18)).toBeUndefined()
+  })
+
+  it("offers the season ceiling, not the next tier, at breakthrough 21", () => {
+    expect(gearLevelUnlock(100, 21)).toEqual({ level: 80, gearLevel: 105 })
+  })
+
+  it("offers nothing to a piece already at the season ceiling at breakthrough 21", () => {
+    expect(gearLevelUnlock(105, 21)).toBeUndefined()
+  })
+
+  it("names the lowest gear level that reaches the full level, not the next tier step", () => {
+    expect(gearLevelUnlock(86, 18)).toEqual({ level: 70, gearLevel: 100 })
+  })
+
+  it("offers nothing when the world level, not the gear level, is the limit", () => {
+    expect(gearLevelUnlock(96, 17)).toBeUndefined()
   })
 })

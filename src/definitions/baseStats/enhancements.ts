@@ -192,3 +192,22 @@ export function enhancementCap(pieceGearLevel: number, breakthrough: number): nu
   }
   return Math.min(raw, seasonCeilingFor(breakthrough), LADDER_CEILING)
 }
+
+export interface GearLevelUnlock {
+  level: number
+  gearLevel: number
+}
+
+export function gearLevelUnlock(
+  pieceGearLevel: number,
+  breakthrough: number,
+): GearLevelUnlock | undefined {
+  const reachableLevel = enhancementCap(Infinity, breakthrough)
+  if (enhancementCap(pieceGearLevel, breakthrough) >= reachableLevel) return undefined
+  const gearLevel = Math.min(
+    ...CAP_TIERS.filter(
+      (tier) => enhancementCap(tier.reqGearLevel, breakthrough) >= reachableLevel,
+    ).map((tier) => tier.reqGearLevel),
+  )
+  return { level: reachableLevel, gearLevel }
+}
