@@ -29,7 +29,7 @@ export interface ResourceContext {
   fps: number
   startFrame: number
   collect: boolean
-  buffActive(id: string, frame: number): boolean
+  buffUptime(id: string, frame: number): number
   exhausted(frame: number): boolean
   paramTier(id: string): number
 }
@@ -144,13 +144,14 @@ export class CombatResource {
       if (rule.skillIds && !rule.skillIds.includes(skill.id)) continue
       if (rule.requiresParam && this.context.paramTier(rule.requiresParam) < (rule.minTier ?? 1))
         continue
-      if (rule.requiresBuff && !this.context.buffActive(rule.requiresBuff, frame - 1)) continue
+      const uptime = rule.requiresBuff ? this.context.buffUptime(rule.requiresBuff, frame - 1) : 1
+      if (uptime <= 0) continue
       const casts = this.procCasts.get(rule.id) ?? new Set<number>()
       if (rule.oncePerCast && casts.has(castFrame)) continue
       casts.add(castFrame)
       this.procCasts.set(rule.id, casts)
       const divisor = rule.divideAcrossSkillHits ? Math.max(1, skill.hits.length) : 1
-      this.credit((this.settings.gains[rule.id] ?? 0) / divisor)
+      this.credit(((this.settings.gains[rule.id] ?? 0) / divisor) * uptime)
     }
     this.sample()
   }

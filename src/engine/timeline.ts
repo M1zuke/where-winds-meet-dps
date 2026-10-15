@@ -73,7 +73,7 @@ import { MeterEngine } from "./meter"
 import { meterMaxParamKey, type MeterMaxContext } from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
-import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
+import { EXTENSION_STREAM_OFFSET, MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
@@ -244,6 +244,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     options?.seed === undefined
       ? undefined
       : mulberry32((options.seed ^ MECHANIC_STREAM_OFFSET) | 0)
+  const extensionRng =
+    options?.seed === undefined
+      ? undefined
+      : mulberry32((options.seed ^ EXTENSION_STREAM_OFFSET) | 0)
   const rotation = inputs.activeCustomRotation
   if (!rotation || rotation.classId !== inputs.classId) {
     return emptyResult(["Timeline rotation not available for this class."])
@@ -1784,6 +1788,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
         engine.attachStatuses({ view: ledger, fps: FPS })
         engine.attachQiSchedule(qiSchedule)
+        if (extensionRng) engine.attachExtensionGenerator(extensionRng)
         const castTriggerFires = triggerGate(castConditionHoldsFor(engine)).fires
         let sequence = 0
         const pending: PendingCast[] = laidSteps.map((ls) => ({
@@ -1875,7 +1880,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             fps: FPS,
             startFrame: 0,
             collect: collectDetail,
-            buffActive: (id, frame) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+            buffUptime: (id, frame) => buffEngine?.liveFraction(id, frame / FPS) ?? 0,
             exhausted: (frame) => qiSchedule.isBroken(frame / FPS),
             paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
           }),
@@ -2847,6 +2852,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (launchResource && inWindow(frame) && !launchResource.launch(frame)) {
           continue
         }
+        if (hitDealsDamage(hit)) buffEngine?.processDamagingEvent({ skill, timeSec: frame / FPS })
         const { damage, rolled, st } = scoreHit(event, hitRng, null)
         const landsInFight = inWindow(frame)
         if (landsInFight && hitDealsDamage(hit))
@@ -2915,6 +2921,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.frame / FPS)
         )
           resource.chargeEnhancedRun(entry.frame)
+        buffEngine?.processDamagingEvent({
+          skill: entry.dotSkill,
+          timeSec: entry.frame / FPS,
+          runKey: `${entry.debuff.id}|${entry.requiresBuffAtFrame ?? entry.frame}`,
+        })
         if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
           buffEngine?.triggerDeclaredBuffs(
             entry.debuff.triggersBuffs,

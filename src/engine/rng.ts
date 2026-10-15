@@ -10,3 +10,4 @@ export function mulberry32(seed: number): () => number {
 
 export const RUN_SEED_STRIDE = 0x9e3779b1
 export const MECHANIC_STREAM_OFFSET = 0x5bf03635
+export const EXTENSION_STREAM_OFFSET = 0x2c1b3c6d

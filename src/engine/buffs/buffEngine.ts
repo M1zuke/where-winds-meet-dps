@@ -38,6 +38,7 @@ import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
 import { fixedQiSchedule, type QiReading, type QiSchedule } from "../qiBar"
+import { WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
 
 export type BuffParams = Record<string, unknown>
 
@@ -104,6 +105,12 @@ function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
 }
 
+function weightedEffect(effect: Effect, weight: number, buffId: string): Effect {
+  if (effect.kind !== "stat" || effect.statKey !== "allDamageBoost")
+    throw new Error(`${buffId} is live only part of the time, so it may carry allDamageBoost only`)
+  return { ...effect, amount: effect.amount * weight }
+}
+
 export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffModule>()
@@ -115,6 +122,12 @@ export class BuffEngine {
   private statuses: TimelineStatuses | null = null
   private qiSchedule: QiSchedule | null = null
   private defaultQiSchedule: QiSchedule | null = null
+  private readonly extensions = new Map<string, WindowExtensionEnsemble>()
+  private extensionGenerator: (() => number) | undefined
+
+  attachExtensionGenerator(generator: () => number): void {
+    this.extensionGenerator = generator
+  }
 
   attachStatuses(statuses: TimelineStatuses): void {
     this.statuses = statuses
@@ -376,6 +389,8 @@ export class BuffEngine {
   // rather than a countdown, so it reports none at all.
   private displayRemainingSec(module: BuffModule | undefined, id: string, time: number) {
     if (module?.alwaysActive) return undefined
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.expectedRemainingSec(id, time, this.baseWindowOf)
     const window = this.historicalApplyAt(id, time)
     return window ? window.expiresAt - time : undefined
   }
@@ -459,7 +474,7 @@ export class BuffEngine {
       const module = this.definitions.get(id)
       if (module?.activeAfterBuffEnds) continue
       if (module && !this.gateOk(module)) continue
-      if (!this.isBuffActiveAtTime(id, time)) continue
+      if (this.liveFraction(id, time) <= 0) continue
       const stacks =
         module && this.maxStacksOf(module.id) !== undefined
           ? this.getHistoricalBuffStacks(id, time)
@@ -588,6 +603,50 @@ export class BuffEngine {
   isBuffActiveAtTime(id: string, time: number): boolean {
     return this.historicalApplyAt(id, time) !== null
   }
+
+  liveFraction(id: string, time: number): number {
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.liveFraction(id, time, this.baseWindowOf)
+    return this.isBuffActiveAtTime(id, time) ? 1 : 0
+  }
+
+  private extensionCovering(id: string): WindowExtensionEnsemble | undefined {
+    for (const ensemble of this.extensions.values()) if (ensemble.covers(id)) return ensemble
+    return undefined
+  }
+
+  private readonly baseWindowOf = (id: string, time: number): BaseWindow | null => {
+    const latest = this.latestApplyAt(id, time)
+    return latest ? { start: latest.time, expiresAt: latest.expiresAt } : null
+  }
+
+  processDamagingEvent(event: { skill: Skill; timeSec: number; runKey?: string }): void {
+    const tagSet = skillTagsOf(event.skill)
+    for (const [id, module] of this.definitions) {
+      const spec = module.extendsBuffs
+      if (!spec || !this.gateOk(module) || !reaches(tagSet, module)) continue
+      let ensemble = this.extensions.get(id)
+      if (!ensemble) {
+        ensemble = new WindowExtensionEnsemble(spec, this.extensionGenerator)
+        this.extensions.set(id, ensemble)
+      }
+      ensemble.trigger(
+        {
+          timeSec: event.timeSec,
+          runKey: event.runKey ?? null,
+          latenessMaxSec:
+            spec.lateness && tagSet.has(spec.lateness.property) ? spec.lateness.maxSec : 0,
+          conditionsHold:
+            !module.triggerPhase ||
+            this.qiPhase(event.timeSec, "beforeHit") === module.triggerPhase,
+          cooldownSec: this.resolveCooldown(module, event.timeSec),
+          requiredWindowId: module.requiresActiveBuffOnTrigger ?? null,
+        },
+        this.baseWindowOf,
+      )
+    }
+  }
+
   // The latest apply at or before `time`, chosen by timestamp and NOT by array
   // position: `buffHistory` is not in chronological order. The DoT-tick pass
   // runs after the cast walk and appends applies stamped earlier than entries
@@ -718,6 +777,7 @@ export class BuffEngine {
     tagSet?: ReadonlySet<string>,
     grantAtSec?: number,
   ): void {
+    if (module.extendsBuffs) return
     if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
     if (module.triggerPhase && this.qiPhase(time, "afterHit") !== module.triggerPhase) return
@@ -739,12 +799,6 @@ export class BuffEngine {
           : time + (module.buffAppliesAfterSec ?? 0)
 
     if (!this.canGrantTrigger(module, applyTime)) return
-
-    if (module.extendsBuffs) {
-      this.extendLiveWindows(module.extendsBuffs, applyTime)
-      this.applyBuff(module.id, applyTime, null, 1)
-      return
-    }
 
     if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
       const hitCount = props.hitCount ?? 1
@@ -863,30 +917,6 @@ export class BuffEngine {
     if (this.isBuffActiveAtTime(module.id, time)) return
     if (!this.spendStackInWindow(module.perHitConsume!.from, time)) return
     this.applyBuff(module.id, time, null, 1)
-  }
-
-  private extendLiveWindows(
-    extension: NonNullable<BuffModule["extendsBuffs"]>,
-    time: number,
-  ): void {
-    for (const id of extension.buffIds) {
-      const window = this.latestApplyAt(id, time)
-      if (!window || time >= window.expiresAt) continue
-      const extendedExpiry = Math.min(
-        window.expiresAt + extension.bySec,
-        Math.max(window.expiresAt, time + extension.maxRemainingSec),
-      )
-      if (extendedExpiry <= window.expiresAt) continue
-      this.buffHistory.push({
-        time,
-        buffType: id,
-        action: "apply",
-        expiresAt: extendedExpiry,
-        ...(window.stacks !== undefined && { stacks: window.stacks }),
-      })
-      const live = this.activeBuffs.get(id)
-      if (live) this.activeBuffs.set(id, { ...live, expiresAt: extendedExpiry })
-    }
   }
 
   private spendStackInWindow(id: string, time: number): boolean {
@@ -1059,6 +1089,9 @@ export class BuffEngine {
     }
 
     for (const [id, module] of this.definitions) {
+      const windowDriven =
+        !scopedBuffIds.has(id) && !module.perCastConsume && !module.activeAfterBuffEnds
+      const windowWeight = windowDriven ? this.liveFraction(id, time) : 1
       // A cast-scoped id counts as active for this cast alone: a def whose
       // window never opens (a per-cast consume) and one another def attached to
       // this cast both arrive here, and neither is live on the clock.
@@ -1069,7 +1102,7 @@ export class BuffEngine {
             this.phaseAlternativeHolds(module, time)
           : module.activeAfterBuffEnds
             ? this.isActiveAfterBuffEndsActive(module, time)
-            : this.isBuffActiveAtTime(id, time))
+            : windowWeight > 0)
       if (!active) continue
       if (!this.gateOk(module)) continue
       if (
@@ -1097,7 +1130,8 @@ export class BuffEngine {
       // module returns — genuinely scoped, unlike the whole-module field —
       // always wins if a module somehow carried both.
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
-      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+      for (const effect of resolveEffects(module, ctx))
+        applyEffect(sink, windowWeight < 1 ? weightedEffect(effect, windowWeight, id) : effect)
     }
 
     return {

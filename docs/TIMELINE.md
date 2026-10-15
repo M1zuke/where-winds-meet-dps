@@ -480,11 +480,25 @@ for applying, `receives` for boosting — never by the module itself.
   the event itself. The share, the row and any release-time adjustment are
   the debuff's — never author them on the def.
 - **A module may extend other modules' live windows instead of opening one**
-  (`extendsBuffs`): each trigger adds a fixed number of seconds to every listed
-  module whose window is live, leaving at most a declared remaining span, and
-  does nothing for a window already lapsed. Its own `cooldown`, trigger phase
-  and `requiresActiveBuffOnTrigger` gate it like any other module; it carries
-  no stat effect.
+  (`extendsBuffs`): every damaging hit or tick of a skill or debuff that lists
+  the module in `receives` is a trigger, evaluated at that event in time order,
+  never as a grant of the owning cast. A trigger adds a fixed number of seconds
+  to every listed module whose window is live, leaving at most a declared
+  remaining span, and does nothing for a window already lapsed. Its own
+  `cooldown` (compared inclusively), trigger phase and
+  `requiresActiveBuffOnTrigger` gate it like any other module; the phase is
+  read before the event's own Qi, and only a trigger that passed every gate
+  arms the cooldown, even when the extension changes nothing. The module opens
+  no window and carries no stat effect; every listed module may carry
+  additive damage-boost stat effects only.
+- **A trigger source that fires off a timer may declare its lateness**
+  (`extendsBuffs.lateness`): events whose source carries the declared property
+  are stamped up to a maximum number of seconds after their nominal time, one
+  draw per run, and every bullet sharing a run key shares its draw. The
+  extension then evolves as a seeded ensemble of trajectories and a listed
+  module's bonus is scaled by the share of trajectories in which its window is
+  live; a run that supplies a generator realises one trajectory instead. A
+  resource gate that requires a listed module scales its gain by the same share.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this

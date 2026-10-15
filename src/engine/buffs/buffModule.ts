@@ -1,6 +1,7 @@
 import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
 import type { BuffParams } from "./buffEngine"
+import type { WindowExtensionSpec } from "./windowExtension"
 
 // A phase, or a genuine target-Qi-fraction threshold — for a gate the game
 // keys to a real percentage rather than to the compatibility phase window
@@ -110,10 +111,7 @@ export type BuffMeta = BuffGate & {
   // window, never open one. A trigger without the property is unaffected, so
   // one def can have both an opening source and an extending source.
   extendedOnlyByProperty?: string
-  // A trigger of this def adds `bySec` to each listed window that is live,
-  // leaving no more than `maxRemainingSec` of it (a window already longer is
-  // left alone).
-  extendsBuffs?: { buffIds: readonly string[]; bySec: number; maxRemainingSec: number }
+  extendsBuffs?: WindowExtensionSpec
   activeAfterBuffEnds?: ActiveAfterBuffEnds
   conditionalFinalCrit?: ConditionalFinalCrit
   perCastConsume?: PerCastConsume

@@ -187742,7 +187742,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "dda365b72ae0265994179042e8730c539d55463320149ac6de058e0e8229ec60"
+        "digest": "33be52dd6e3ffcba255a3507c588d2ea63ece95f4f92f3ebed70c6f67d0d226f"
       },
       "debuffs": {
         "count": 12,
@@ -187760,7 +187760,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "ec0f4ebc356f861a47f04c80df9ab37a77646a53b1aafd915b0cef802ae71290"
+        "digest": "91a4ba5ea1c56547a2c694e21a5d63b8978e406801c3e9079908de36666d7660"
       },
       "buffs": [
         {
@@ -187899,10 +187899,10 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 0.5,
+          "duration": 0,
           "maxStacks": null,
           "effects": [],
-          "summary": null
+          "summary": "Spring Away bullets and floating umbrella bullets extend your Combo by 1 s (up to 15 s) while the target is Exhausted, at most once per 0.5 s"
         },
         {
           "id": "starReacher",

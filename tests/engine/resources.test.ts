@@ -32,7 +32,7 @@ function resource(opening = 60) {
       fps: 60,
       startFrame: 0,
       collect: true,
-      buffActive: () => false,
+      buffUptime: () => 0,
       exhausted: (frame) => frame >= 60 && frame < 180,
       paramTier: () => 0,
     },
@@ -63,7 +63,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        buffUptime: () => 0,
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -104,7 +104,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: (_id, frame) => frame >= 60,
+        buffUptime: (_id, frame) => (frame >= 60 ? 1 : 0),
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -149,7 +149,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => marked,
+        buffUptime: () => (marked ? 1 : 0),
         exhausted: () => false,
         paramTier: () => tier,
       },
@@ -171,6 +171,33 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(amount(simulation)).toBe(25)
     simulation.hit(skill, 180, 180)
     expect(amount(simulation)).toBe(50)
+  })
+  it("scales a cast gain by the share of outcomes in which its required mark is live", () => {
+    const simulation = new CombatResource(
+      {
+        ...definition,
+        gains: [
+          {
+            id: "cast",
+            name: "Cast",
+            defaultAmount: 25,
+            skillIds: ["fictional-hit"],
+            requiresBuff: "test-mark",
+          },
+        ],
+      },
+      { opening: 0 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffUptime: () => 0.4,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.hit(makeSkill("fictional", { id: "fictional-hit" }), 0, 0)
+    expect(amount(simulation)).toBeCloseTo(10)
   })
   it("credits only accepted projectile ticks within the half-open exhausted phase", () => {
     const simulation = resource()
@@ -249,7 +276,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        buffUptime: () => 0,
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -268,7 +295,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        buffUptime: () => 0,
         exhausted: () => false,
         paramTier: () => 0,
       },

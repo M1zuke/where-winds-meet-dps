@@ -1,12 +1,10 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST } from "../ids"
-import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import {
   SPRING_AWAY_BULLET,
-  SPRING_AWAY_BULLET_SPACING_FRAMES,
-  SPRING_AWAY_FIRST_BULLET_FRAME,
+  SPRING_AWAY_BULLET_FRAMES,
   SPRING_AWAY_RECEIVES,
   SPRING_AWAY_TAGS,
   springAwayHoverDrain,
@@ -24,17 +22,15 @@ export const umblightcharge = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.umbLightCharge,
   receives: SPRING_AWAY_RECEIVES,
-  triggersBuffs: [BUFF.comboExtendMark],
-  triggersBuffsAtFrame: { [BUFF.comboExtendMark]: SPRING_AWAY_FIRST_BULLET_FRAME },
   castFrames: 140,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   meterDrains: springAwayHoverDrain(1),
-  hits: Array.from({ length: BULLET_COUNT }, (_, index) =>
+  hits: SPRING_AWAY_BULLET_FRAMES.slice(0, BULLET_COUNT).map((frame, index) =>
     hit(index, {
-      frame: SPRING_AWAY_FIRST_BULLET_FRAME + index * SPRING_AWAY_BULLET_SPACING_FRAMES,
+      frame,
       ...SPRING_AWAY_BULLET,
       ...(index === 0 ? { triggers: [castSkill({ target: SKILL.umblightchargeLift })] } : {}),
     }),

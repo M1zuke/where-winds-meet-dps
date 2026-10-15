@@ -39,8 +39,6 @@ function receivedBuffIds(): Set<string> {
 // class in this app models — authored for the set it belongs to, unreachable
 // until one exists. `totalAnnihilationSupremeShield` is a defensive marker
 // only, same as `rainwhisperShield`.
-// `comboExtendMark` only extends the windows of the Combo buffs it names and
-// has no stat effect for anything to receive.
 const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mirage",
   "rainwhisperShield",
@@ -49,7 +47,6 @@ const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "cleftpeakDeflectGrant",
   "swiftGaleAirborneHeavyBoost",
   "totalAnnihilationSupremeShield",
-  "comboExtendMark",
 ])
 
 describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {

@@ -1,5 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { PROP } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -85,14 +86,19 @@ export function comboExtendMarkBuffDef(): BuffModule {
     },
     requiresActiveBuffOnTrigger: BUFF.combo,
     triggerPhase: "exhausted",
-    triggersFromGeneratedSkills: true,
     cooldown: 0.5,
-    duration: 0.5,
+    duration: 0,
     extendsBuffs: {
       buffIds: [BUFF.combo, BUFF.comboUmbLightBonus, BUFF.comboSpringAwayBonus],
       bySec: 1,
       maxRemainingSec: 15,
+      // In-game values as of 2026-10-15: each floating umbrella run lands a few
+      // milliseconds after its 0.5 s grid point; the extension share does not
+      // depend on the size, so 5 ms stands in.
+      lateness: { property: PROP.isDrone, maxSec: 0.005 },
     },
+    summary:
+      "Spring Away bullets and floating umbrella bullets extend your Combo by 1 s (up to 15 s) while the target is Exhausted, at most once per 0.5 s",
     effects: [],
   })
 }

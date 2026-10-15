@@ -15,15 +15,17 @@ const BULLET_ROW = {
   extraCritDamage: 1,
 }
 
-const framesFrom = (first: number, count: number) =>
-  Array.from({ length: count }, (_, index) => first + index * 10)
+const MEASURED_BULLET_FRAMES = [58, 66, 77, 87, 98, 107, 117, 126, 136]
+const EXTRAPOLATED_BULLET_FRAMES = [146, 156, 165]
 
 describe.each([
   ["the 6-bullet cast", umblightcharge, 6, 140, 1],
   ["the 12-bullet cast", umblightcharge12, 12, 200, 2],
 ])("%s", (_name, skill, bulletCount, castFrames, hoverSeconds) => {
-  it("fires its bullets after the lift, one per 10 frames from frame 58", () => {
-    expect(skill.hits.map((hit) => hit.frame)).toEqual(framesFrom(58, bulletCount))
+  it("fires its bullets after the lift on the measured cue frames, then the mean cadence", () => {
+    expect(skill.hits.map((hit) => hit.frame)).toEqual(
+      [...MEASURED_BULLET_FRAMES, ...EXTRAPOLATED_BULLET_FRAMES].slice(0, bulletCount),
+    )
     expect(skill.castFrames).toBe(castFrames)
     expect(skill.hits.at(-1)!.frame).toBeLessThan(castFrames)
   })

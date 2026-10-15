@@ -5,7 +5,6 @@ import {
   type RawCustomDebuffsBlob,
 } from "../../src/migrations/customDebuffs"
 import { V14__droneComboExtendMarkReach } from "../../src/migrations/customDebuffs/V14__droneComboExtendMarkReach"
-import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import type { Debuff } from "../../src/engine/debuff"
 import { DEBUFF } from "../../src/data/skills/silkbind-jade/ids"
 import storeV13File from "./testCustomDebuffs/v13/store.json"
@@ -17,9 +16,6 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const debuffIn = (blob: RawCustomDebuffsBlob, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
 
-const builtin = (id: string): Debuff =>
-  builtinDebuffsForClass("silkbindJade").find((debuff) => debuff.id === id)!
-
 describe("custom-debuffs v13 fixture", () => {
   it("is v13 and stores the drone copies granting Lingering Bone alone", () => {
     expect(STORE.v).toBe(V14__droneComboExtendMarkReach.to - 1)
@@ -28,12 +24,13 @@ describe("custom-debuffs v13 fixture", () => {
 })
 
 describe("V14__droneComboExtendMarkReach — called directly", () => {
-  it("gives an untouched drone copy the built-in's grants", () => {
+  it("gives an untouched drone copy the Extend Mark grant", () => {
     const after = V14__droneComboExtendMarkReach.migrate(clone(STORE))
     expect(after.v).toBe(14)
-    expect(debuffIn(after, DEBUFF.umbdrone12Hit).triggersBuffs).toEqual(
-      builtin(DEBUFF.umbdrone12Hit).triggersBuffs,
-    )
+    expect(debuffIn(after, DEBUFF.umbdrone12Hit).triggersBuffs).toEqual([
+      "lingeringBone",
+      "comboExtendMark",
+    ])
   })
 
   it("leaves an edited copy and every other debuff alone", () => {
@@ -57,7 +54,7 @@ describe("V14__droneComboExtendMarkReach — called directly", () => {
 describe("V14__droneComboExtendMarkReach — through the chain", () => {
   it("is registered and is exactly what the v13 → v14 hop applies", () => {
     expect(CUSTOM_DEBUFF_MIGRATIONS).toContain(V14__droneComboExtendMarkReach)
-    const result = runCustomDebuffMigrations(clone(STORE))!
+    const result = runCustomDebuffMigrations(clone(STORE), { toVersion: 14 })!
     expect(result.applied).toEqual(["V14__droneComboExtendMarkReach"])
     expect(result.blob.v).toBe(14)
   })

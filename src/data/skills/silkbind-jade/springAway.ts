@@ -12,10 +12,10 @@ export const SPRING_AWAY_BULLET = {
   extraCritDamage: 1,
 }
 
-// Spaced evenly across the hover's 2 s window: the in-game cue times are not
-// readable.
-export const SPRING_AWAY_FIRST_BULLET_FRAME = 58
-export const SPRING_AWAY_BULLET_SPACING_FRAMES = 10
+// In-game timings as of 2026-10-08: bullets 1-9 as measured, 10-12 on their
+// 9.75 f mean cadence. Four bullets always span under 30 f, which decides
+// which bullets Combo - Extend Mark's 0.5 s cooldown lets through.
+export const SPRING_AWAY_BULLET_FRAMES = [58, 66, 77, 87, 98, 107, 117, 126, 136, 146, 156, 165]
 
 export const SPRING_AWAY_HOVER_START_FRAME = 44
 
@@ -42,6 +42,7 @@ export const SPRING_AWAY_RECEIVES = [
   BUFF.mistwillowBuff,
   BUFF.combo,
   BUFF.comboSpringAwayBonus,
+  BUFF.comboExtendMark,
   BUFF.windWall,
   BUFF.pursuitChargedBoost,
   BUFF.trajectorySkill,

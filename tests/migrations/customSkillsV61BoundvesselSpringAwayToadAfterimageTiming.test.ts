@@ -110,7 +110,7 @@ describe("healSkill — Spring Away", () => {
   it("re-times a seeded copy onto the built-in's bullets, lift trigger, cast length and drain", () => {
     const healed = healSkill(seeded()) as Skill
     const live = builtin("silkbindJade", SPRING_AWAY_ID)
-    expect(frames(healed)).toEqual(frames(live))
+    expect(frames(healed)).toEqual([58, 68, 78, 88, 98, 108])
     expect(healed.hits.map(rowOf)).toEqual(live.hits.map(rowOf))
     expect(healed.hits.map((hit) => hit.triggers)).toEqual(live.hits.map((hit) => hit.triggers))
     expect(healed.castFrames).toBe(live.castFrames)
