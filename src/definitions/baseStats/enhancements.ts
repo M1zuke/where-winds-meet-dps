@@ -7,13 +7,10 @@ import {
   HELM_BRACER_ENHANCEMENT_LEVELS,
   WEAPON_ENHANCEMENT_LEVELS,
 } from "../../data/baseStats"
+import { gearLevelForBreakthrough } from "./breakthroughs"
 import type { LadderLevels } from "./enhancementLadderDef"
 
-export const DEFAULT_ENHANCEMENT_LEVEL = 65
-
-// The ladder has no rows past this level — see the season
-// ceiling table below, which can technically exceed it.
-const LADDER_CEILING = 75
+const LADDER_CEILING = 85
 
 type EnhancementProfile = "weapon" | "discPendant" | "helmBracer" | "chestGreaves"
 
@@ -28,13 +25,12 @@ const PROFILE_BY_SLOT: Readonly<Record<GearSlot, EnhancementProfile>> = {
   greaves: "chestGreaves",
 }
 
-export function defaultEnhancementLevels(): EnhancementLevels {
+export function defaultEnhancementLevels(breakthrough: number): EnhancementLevels {
+  const level = enhancementCap(gearLevelForBreakthrough(breakthrough), breakthrough)
   const out = {} as EnhancementLevels
-  for (const slot of GEAR_SLOTS) out[slot] = DEFAULT_ENHANCEMENT_LEVEL
+  for (const slot of GEAR_SLOTS) out[slot] = level
   return out
 }
-
-export const DEFAULT_ENHANCEMENTS: EnhancementLevels = defaultEnhancementLevels()
 
 function rowAt<Row>(rows: LadderLevels<Row>, level: number): Row | undefined {
   return rows[Math.min(level, rows.length) - 1]
@@ -137,7 +133,7 @@ interface EnhancementCapTier {
   reqWorldLevel: number
 }
 
-// In-game values as of 2026-09-07: the gear level and world level each
+// In-game values as of 2026-10-15: the gear level and world level each
 // enhancement cap requires.
 const CAP_TIERS: readonly EnhancementCapTier[] = [
   { level: 2, reqGearLevel: 1, reqWorldLevel: 0 },
@@ -165,7 +161,7 @@ interface SeasonCeiling {
   ceiling: number
 }
 
-// In-game values as of 2026-09-07, keyed by the world level each season
+// In-game values as of 2026-10-15, keyed by the world level each season
 // introduces. A season's
 // ceiling governs every world level from the previous season's threshold up
 // to and including its own.

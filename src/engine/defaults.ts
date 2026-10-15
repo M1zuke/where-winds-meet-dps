@@ -1,6 +1,6 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ARSENAL_SCORES, DEFAULT_ENHANCEMENTS } from "../definitions/baseStats"
+import { DEFAULT_ARSENAL_SCORES, defaultEnhancementLevels } from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -9,9 +9,11 @@ import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
+const FIXTURE_BREAKTHROUGH = 13
+
 export const defaultInputs: Inputs = {
   classId: "bellstrikeUmbra",
-  breakthrough: 13,
+  breakthrough: FIXTURE_BREAKTHROUGH,
   followedBreakthroughRelease: newestBreakthroughRelease(),
 
   phys: { min: 1043.0, max: 2006.0, penetration: 0.292 },
@@ -90,7 +92,7 @@ export const defaultInputs: Inputs = {
 
   disabledTalentNodes: [],
 
-  enhancements: { ...DEFAULT_ENHANCEMENTS },
+  enhancements: defaultEnhancementLevels(FIXTURE_BREAKTHROUGH),
 
   combatSettings: defaultCombatSettings(),
 }
@@ -99,6 +101,7 @@ export const blankInputs: Inputs = {
   ...defaultInputs,
   classId: "bellstrikeUmbra",
   breakthrough: defaultBreakthrough(),
+  enhancements: defaultEnhancementLevels(defaultBreakthrough()),
   phys: { min: 0, max: 0, penetration: 0 },
   bellstrike: { min: 0, max: 0, penetration: 0 },
   stonesplit: { min: 0, max: 0, penetration: 0 },

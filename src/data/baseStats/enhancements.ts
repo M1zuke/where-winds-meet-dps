@@ -84,6 +84,16 @@ export const WEAPON_ENHANCEMENT_LEVELS = defineWeaponLevels([
   { minPhys: 134, maxPhys: 90 },
   { minPhys: 136, maxPhys: 91 },
   { minPhys: 138, maxPhys: 92 },
+  { minPhys: 140, maxPhys: 93 },
+  { minPhys: 142, maxPhys: 94 },
+  { minPhys: 143, maxPhys: 96 },
+  { minPhys: 145, maxPhys: 97 },
+  { minPhys: 147, maxPhys: 98 },
+  { minPhys: 149, maxPhys: 99 },
+  { minPhys: 151, maxPhys: 100 },
+  { minPhys: 152, maxPhys: 102 },
+  { minPhys: 154, maxPhys: 103 },
+  { minPhys: 156, maxPhys: 104 },
 ])
 
 export const DISC_PENDANT_ENHANCEMENT_LEVELS = defineDiscPendantLevels([
@@ -162,6 +172,16 @@ export const DISC_PENDANT_ENHANCEMENT_LEVELS = defineDiscPendantLevels([
   { maxPhys: 179 },
   { maxPhys: 181 },
   { maxPhys: 184 },
+  { maxPhys: 186 },
+  { maxPhys: 189 },
+  { maxPhys: 191 },
+  { maxPhys: 193 },
+  { maxPhys: 196 },
+  { maxPhys: 198 },
+  { maxPhys: 201 },
+  { maxPhys: 203 },
+  { maxPhys: 205 },
+  { maxPhys: 208 },
 ])
 
 export const HELM_BRACER_ENHANCEMENT_LEVELS = defineHelmBracerLevels([
@@ -240,6 +260,16 @@ export const HELM_BRACER_ENHANCEMENT_LEVELS = defineHelmBracerLevels([
   { maxHp: 10008 },
   { maxHp: 10142 },
   { maxHp: 10276 },
+  { maxHp: 10411 },
+  { maxHp: 10545 },
+  { maxHp: 10679 },
+  { maxHp: 10813 },
+  { maxHp: 10948 },
+  { maxHp: 11082 },
+  { maxHp: 11216 },
+  { maxHp: 11350 },
+  { maxHp: 11485 },
+  { maxHp: 11619 },
 ])
 
 export const CHEST_GREAVES_ENHANCEMENT_LEVELS = defineChestGreavesLevels([
@@ -318,9 +348,19 @@ export const CHEST_GREAVES_ENHANCEMENT_LEVELS = defineChestGreavesLevels([
   { maxHp: 6911, physDef: 68 },
   { maxHp: 7003, physDef: 68 },
   { maxHp: 7096, physDef: 69 },
+  { maxHp: 7189, physDef: 70 },
+  { maxHp: 7282, physDef: 71 },
+  { maxHp: 7374, physDef: 72 },
+  { maxHp: 7467, physDef: 73 },
+  { maxHp: 7560, physDef: 74 },
+  { maxHp: 7652, physDef: 75 },
+  { maxHp: 7745, physDef: 76 },
+  { maxHp: 7838, physDef: 77 },
+  { maxHp: 7930, physDef: 77 },
+  { maxHp: 8023, physDef: 78 },
 ])
 
-// In-game values as of 2026-09-07. Index 0 holds average enhancement level 5,
+// In-game values as of 2026-10-15. Index 0 holds average enhancement level 5,
 // stepping by 5 through 85.
 export const AVERAGE_ENHANCEMENT_BONUS_LEVELS = defineAverageEnhancementBonusLevels([
   { maxHp: 583, percent: 0 },

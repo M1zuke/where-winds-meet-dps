@@ -7,7 +7,7 @@ import {
 } from "../../src/definitions/baseStats/breakthroughs"
 import {
   averageEnhancementBonus,
-  DEFAULT_ENHANCEMENTS,
+  defaultEnhancementLevels,
   ODDITY_BOARD,
   effectiveMaxHp,
   enhancementHpTotal,
@@ -110,7 +110,7 @@ describe("Max HP", () => {
   it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, without the average-level percentage", () => {
     const attrs = playerAttributes(18)
     const baseHp = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.maxHp
-    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    const bonus = averageEnhancementBonus(defaultEnhancementLevels(18))
     const expected =
       baseHp +
       talentStatTotal("maxHp") +
@@ -118,14 +118,14 @@ describe("Max HP", () => {
       arsenalHp(18) +
       attrs.body * BODY_PER_POINT.hp +
       attrs.defense * DEFENSE_PER_POINT.hp +
-      enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
+      enhancementHpTotal(defaultEnhancementLevels(18)) +
       bonus.maxHp +
       oddityHpTotal({})
     expect(totalMaxHp(18, [])).toBeCloseTo(expected, 9)
   })
 
   it("applies the average-level percentage only to the effective figure, leaving the raw total alone", () => {
-    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    const bonus = averageEnhancementBonus(defaultEnhancementLevels(17))
     expect(bonus.percent).toBeGreaterThan(0)
     expect(effectiveMaxHp(17, [])).toBeCloseTo(totalMaxHp(17, []) * (1 + bonus.percent), 9)
   })
@@ -207,8 +207,8 @@ describe("the character-level row's Physical Defense column", () => {
 
   it("reaches totalPhysDef, moving it by exactly the row's own value", () => {
     const zeroEnhancements = Object.fromEntries(
-      Object.keys(DEFAULT_ENHANCEMENTS).map((slot) => [slot, 0]),
-    ) as typeof DEFAULT_ENHANCEMENTS
+      Object.keys(defaultInputs.enhancements).map((slot) => [slot, 0]),
+    ) as typeof defaultInputs.enhancements
     const disabledPhysDef = disableTalentGroup("physDef")
     const released = Object.fromEntries(
       ODDITY_BOARD.map((region) => [region.key, region.nodes.map((node) => node.id)]),

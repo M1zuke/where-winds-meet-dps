@@ -1,4 +1,4 @@
-import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
+import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
@@ -174,7 +174,7 @@ export function graduationInputs(
         }),
       ),
       unclaimedOddityNodes: {},
-      enhancements: { ...DEFAULT_ENHANCEMENTS },
+      enhancements: defaultEnhancementLevels(inputs.breakthrough),
     },
     build,
   )

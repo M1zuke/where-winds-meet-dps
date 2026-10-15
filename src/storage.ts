@@ -33,7 +33,7 @@ import {
   arsenalScoreCap,
   closeDisabledTalentNodes,
   closeUnclaimedOddityNodes,
-  DEFAULT_ENHANCEMENT_LEVEL,
+  defaultEnhancementLevels,
   resyncDefaultTalentsForBreakthrough,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
@@ -542,13 +542,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
       : stored && typeof stored === "object"
         ? (stored as Record<string, unknown>)
         : {}
+    const defaults = defaultEnhancementLevels(next.breakthrough as number)
     const healed = {} as EnhancementLevels
     for (const slot of GEAR_SLOTS) {
       const value = bySlot[slot]
       healed[slot] =
         typeof value === "number" && Number.isFinite(value) && value >= 0
           ? Math.round(value)
-          : DEFAULT_ENHANCEMENT_LEVEL
+          : defaults[slot]
     }
     next.enhancements = healed
   }

@@ -5,9 +5,15 @@ import {
   V24__enhancementLevelsPerSlot,
   enhancementLevelsFromLegacyNodes,
 } from "../../src/migrations/V24__enhancementLevelsPerSlot"
-import { DEFAULT_ENHANCEMENTS, levelForEnhancementValue } from "../../src/definitions/baseStats"
+import { defaultEnhancementLevels, levelForEnhancementValue } from "../../src/definitions/baseStats"
+import { GEAR_SLOTS } from "../../src/engine/types"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v23/bellstrikeUmbra.json"
+
+const LEGACY_DEFAULT_LEVEL = 65
+const LEGACY_DEFAULT_LEVELS = Object.fromEntries(
+  GEAR_SLOTS.map((slot) => [slot, LEGACY_DEFAULT_LEVEL]),
+) as Inputs["enhancements"]
 
 type LegacyFile = { v: number; profile: StoredProfile }
 const LEGACY = legacyProfileFile as unknown as LegacyFile
@@ -57,12 +63,12 @@ describe("enhancementLevelsFromLegacyNodes", () => {
   it("defaults the four armour slots the old model never tracked", () => {
     const levels = enhancementLevelsFromLegacyNodes(LEGACY_NODES)
     for (const slot of ["helm", "armor", "greaves", "bracer"] as const) {
-      expect(levels[slot]).toBe(DEFAULT_ENHANCEMENTS[slot])
+      expect(levels[slot]).toBe(LEGACY_DEFAULT_LEVEL)
     }
   })
 
   it("passes an already-migrated object straight through untouched", () => {
-    expect(enhancementLevelsFromLegacyNodes(DEFAULT_ENHANCEMENTS)).toEqual(DEFAULT_ENHANCEMENTS)
+    expect(enhancementLevelsFromLegacyNodes(LEGACY_DEFAULT_LEVELS)).toEqual(LEGACY_DEFAULT_LEVELS)
   })
 
   it("ignores a node naming an unknown slot or a non-numeric value", () => {
@@ -70,7 +76,7 @@ describe("enhancementLevelsFromLegacyNodes", () => {
       { id: 9, slot: "notASlot", stat: "maxPhys", value: 999 },
       { id: 10, slot: "disc", stat: "maxPhys", value: "not-a-number" },
     ])
-    expect(levels.disc).toBe(DEFAULT_ENHANCEMENTS.disc)
+    expect(levels.disc).toBe(LEGACY_DEFAULT_LEVEL)
   })
 })
 
@@ -144,16 +150,20 @@ describe("hydrator backstops — the paths that never walk the chain", () => {
     expect(imported.inputs.enhancements).toEqual(enhancementLevelsFromLegacyNodes(LEGACY_NODES))
   })
 
-  it("a profile with no enhancements field lands on level 65 everywhere after the full walk", () => {
+  it("a profile with no enhancements field lands on its breakthrough's default level everywhere after the full walk", () => {
     const wrapped = JSON.stringify({ v: LEGACY.v, profile: clone(LEGACY.profile) })
     const imported = importProfile(wrapped)
-    expect(imported.inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
+    expect(imported.inputs.enhancements).toEqual(
+      defaultEnhancementLevels(imported.inputs.breakthrough),
+    )
   })
 })
 
 describe("a default profile carries no stale enhancements shape", () => {
-  it("loadProfiles() on an empty store lands on level 65 everywhere", () => {
+  it("loadProfiles() on an empty store lands on its breakthrough's default level everywhere", () => {
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
+    expect(profiles[0].inputs.enhancements).toEqual(
+      defaultEnhancementLevels(profiles[0].inputs.breakthrough),
+    )
   })
 })

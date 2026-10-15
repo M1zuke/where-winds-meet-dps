@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest"
 import {
   averageEnhancementBonus,
   averageEnhancementLevel,
-  DEFAULT_ENHANCEMENT_LEVEL,
-  DEFAULT_ENHANCEMENTS,
   defaultEnhancementLevels,
   enhancementCap,
   enhancementContributions,
@@ -14,7 +12,11 @@ import {
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import { GEAR_SLOTS } from "../../src/engine/types"
-import type { Inputs } from "../../src/engine/types"
+import type { EnhancementLevels, Inputs } from "../../src/engine/types"
+
+const LEVEL_65: EnhancementLevels = Object.fromEntries(
+  GEAR_SLOTS.map((slot) => [slot, 65]),
+) as EnhancementLevels
 
 describe("the per-slot enhancement ladder", () => {
   it("grants the level-65 figures the ladder authors", () => {
@@ -45,14 +47,22 @@ describe("the per-slot enhancement ladder", () => {
 })
 
 describe("default enhancement levels", () => {
-  it("defaults every one of the eight slots to level 65, independent of breakthrough", () => {
-    for (const slot of GEAR_SLOTS) expect(DEFAULT_ENHANCEMENTS[slot]).toBe(65)
-    expect(DEFAULT_ENHANCEMENT_LEVEL).toBe(65)
+  it("defaults all eight slots to the highest level the breakthrough allows", () => {
+    for (const [breakthrough, level] of [
+      [13, 45],
+      [17, 65],
+      [19, 75],
+      [20, 80],
+      [21, 80],
+    ] as const) {
+      const levels = defaultEnhancementLevels(breakthrough)
+      for (const slot of GEAR_SLOTS) expect(levels[slot]).toBe(level)
+    }
   })
 
   it("defaultEnhancementLevels() returns a fresh object each call", () => {
-    const first = defaultEnhancementLevels()
-    const second = defaultEnhancementLevels()
+    const first = defaultEnhancementLevels(17)
+    const second = defaultEnhancementLevels(17)
     expect(first).toEqual(second)
     expect(first).not.toBe(second)
   })
@@ -60,17 +70,17 @@ describe("default enhancement levels", () => {
 
 describe("enhancementContributions — the attack stat feeding the damage base", () => {
   it("sums the four attack slots to the level-65 totals the anchors depend on", () => {
-    const out = enhancementContributions(DEFAULT_ENHANCEMENTS)
+    const out = enhancementContributions(LEVEL_65)
     expect(out["phys.min"]).toBeCloseTo(240, 6)
     expect(out["phys.max"]).toBeCloseTo(480, 6)
   })
 
-  it("getConfiguredBase seeds DEFAULT_ENHANCEMENTS when inputs.enhancements is absent", () => {
+  it("getConfiguredBase seeds the breakthrough default when inputs.enhancements is absent", () => {
     const legacy = { ...defaultInputs } as Partial<Inputs>
     delete legacy.enhancements
     const withoutField = getConfiguredBase(legacy as Inputs, [])
     const withField = getConfiguredBase(
-      { ...defaultInputs, enhancements: DEFAULT_ENHANCEMENTS },
+      { ...defaultInputs, enhancements: defaultEnhancementLevels(defaultInputs.breakthrough) },
       [],
     )
     expect(withoutField["phys.min"]).toBeCloseTo(withField["phys.min"], 6)
@@ -78,8 +88,8 @@ describe("enhancementContributions — the attack stat feeding the damage base",
   })
 
   it("lowering one slot's level lowers the base by exactly that level's grant", () => {
-    const inputs: Inputs = { ...defaultInputs, enhancements: DEFAULT_ENHANCEMENTS }
-    const lowered = { ...DEFAULT_ENHANCEMENTS, disc: 10 }
+    const inputs: Inputs = { ...defaultInputs, enhancements: LEVEL_65 }
+    const lowered = { ...LEVEL_65, disc: 10 }
     const before = getConfiguredBase(inputs, [])
     const after = getConfiguredBase({ ...inputs, enhancements: lowered }, [])
     const droppedMax =
@@ -88,26 +98,26 @@ describe("enhancementContributions — the attack stat feeding the damage base",
   })
 
   it("an empty (level zero) armour slot contributes nothing", () => {
-    const zeroed = { ...DEFAULT_ENHANCEMENTS, helm: 0 }
-    expect(enhancementHpTotal(zeroed)).toBeLessThan(enhancementHpTotal(DEFAULT_ENHANCEMENTS))
+    const zeroed = { ...LEVEL_65, helm: 0 }
+    expect(enhancementHpTotal(zeroed)).toBeLessThan(enhancementHpTotal(LEVEL_65))
   })
 })
 
 describe("the armour totals at the level-65 cap", () => {
   it("matches the in-game 30 206 Max HP and 120 Physical Defense", () => {
-    expect(enhancementHpTotal(DEFAULT_ENHANCEMENTS)).toBe(30206)
-    expect(enhancementPhysDefTotal(DEFAULT_ENHANCEMENTS)).toBe(120)
+    expect(enhancementHpTotal(LEVEL_65)).toBe(30206)
+    expect(enhancementPhysDefTotal(LEVEL_65)).toBe(120)
   })
 })
 
 describe("the average-level bonus layer", () => {
   it("floors the eight-slot average and reports the level-65 grant", () => {
-    expect(averageEnhancementLevel(DEFAULT_ENHANCEMENTS)).toBe(65)
-    expect(averageEnhancementBonus(DEFAULT_ENHANCEMENTS)).toEqual({ maxHp: 9864, percent: 0.2 })
+    expect(averageEnhancementLevel(LEVEL_65)).toBe(65)
+    expect(averageEnhancementBonus(LEVEL_65)).toEqual({ maxHp: 9864, percent: 0.2 })
   })
 
   it("takes the highest average_enhance_bonus row at or below the average", () => {
-    const levels = { ...defaultEnhancementLevels() }
+    const levels = { ...LEVEL_65 }
     for (const slot of GEAR_SLOTS) levels[slot] = 0
     levels.leftWeapon = 32 // average = 4, below the first (level 5) row
     expect(averageEnhancementLevel(levels)).toBe(4)
@@ -115,7 +125,7 @@ describe("the average-level bonus layer", () => {
   })
 
   it("grants no passive percentage below average level 30", () => {
-    const levels = { ...defaultEnhancementLevels() }
+    const levels = { ...LEVEL_65 }
     for (const slot of GEAR_SLOTS) levels[slot] = 25
     expect(averageEnhancementBonus(levels).percent).toBe(0)
   })
@@ -135,9 +145,25 @@ describe("enhancementCap", () => {
     expect(enhancementCap(100, 19)).toBe(75)
   })
 
-  it("never offers a level above 75, since the ladder has no rows past it", () => {
-    expect(enhancementCap(105, 20)).toBe(75)
-    expect(enhancementCap(105, 21)).toBe(75)
+  it("caps at the season ceiling of 80 from world level 20 on", () => {
+    expect(enhancementCap(105, 20)).toBe(80)
+    expect(enhancementCap(105, 21)).toBe(80)
+  })
+
+  it("grants the level-76 to level-85 figures the ladder authors", () => {
+    expect(enhancementStatsAtLevel("leftWeapon", 80)).toEqual({ minPhys: 147, maxPhys: 98 })
+    expect(enhancementStatsAtLevel("rightWeapon", 85)).toEqual({ minPhys: 156, maxPhys: 104 })
+    expect(enhancementStatsAtLevel("pendant", 85)).toEqual({ maxPhys: 208 })
+    expect(enhancementStatsAtLevel("bracer", 85)).toEqual({ maxHp: 11619 })
+    expect(enhancementStatsAtLevel("greaves", 84)).toEqual({ maxHp: 7930, physDef: 77 })
+    expect(enhancementStatsAtLevel("greaves", 85)).toEqual({ maxHp: 8023, physDef: 78 })
+  })
+
+  it("reads the average bonus at every 5-level threshold up to 85", () => {
+    const uniform = (level: number) =>
+      Object.fromEntries(GEAR_SLOTS.map((slot) => [slot, level])) as EnhancementLevels
+    expect(averageEnhancementBonus(uniform(80))).toEqual({ maxHp: 12421, percent: 0.2 })
+    expect(averageEnhancementBonus(uniform(85))).toEqual({ maxHp: 13364, percent: 0.2 })
   })
 
   it("grants the level-70 and level-75 figures the ladder authors", () => {

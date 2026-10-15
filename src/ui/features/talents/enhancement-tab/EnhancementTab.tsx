@@ -65,7 +65,7 @@ export function EnhancementTab({ inputs, onChange }: Props) {
 
   async function resetAll() {
     if (!(await confirm(t("talents.enhancement.resetAllEnhancementsToDefault")))) return
-    onChange({ ...inputs, enhancements: defaultEnhancementLevels() })
+    onChange({ ...inputs, enhancements: defaultEnhancementLevels(inputs.breakthrough) })
   }
 
   const average = averageEnhancementLevel(levels)

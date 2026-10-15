@@ -1,12 +1,18 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import { enhancementCap } from "../../src/definitions/baseStats"
+import { defaultEnhancementLevels, enhancementCap } from "../../src/definitions/baseStats"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmContext } from "../../src/ui/components/confirm-dialog/confirmContext"
 import { EnhancementTab } from "../../src/ui/features/talents/enhancement-tab/EnhancementTab"
 import type { Inputs } from "../../src/engine/types"
+
+const inputsAtBreakthrough17: Inputs = {
+  ...defaultInputs,
+  breakthrough: 17,
+  enhancements: defaultEnhancementLevels(17),
+}
 
 function renderTab(inputs: Inputs = defaultInputs, onChange: (next: Inputs) => void = () => {}) {
   return render(
@@ -38,8 +44,8 @@ describe("the Enhancement tab", () => {
     ])
   })
 
-  it("shows the level 65 default and its stats on every card", () => {
-    renderTab()
+  it("shows the breakthrough's default level and its stats on every card", () => {
+    renderTab(inputsAtBreakthrough17)
     const discCard = cardFor("Disc")
     expect(discCard).toHaveTextContent("65")
     expect(discCard).toHaveTextContent("Max Phys")
@@ -116,8 +122,19 @@ describe("the Enhancement tab", () => {
     expect(discCard.querySelector('[aria-label="Increase level"]')).toBeDisabled()
   })
 
+  it("resets every slot to the highest level the breakthrough allows", async () => {
+    const onChange = vi.fn()
+    renderTab(
+      { ...inputsAtBreakthrough17, enhancements: { ...defaultInputs.enhancements } },
+      onChange,
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalled())
+    expect(onChange.mock.lastCall![0].enhancements).toEqual(defaultEnhancementLevels(17))
+  })
+
   it("shows the average-level bonus", () => {
-    renderTab()
+    renderTab(inputsAtBreakthrough17)
     expect(screen.getByText("Average Enhancement Level").parentElement).toHaveTextContent("65")
     expect(screen.getByText("Average-Level Max HP").parentElement).toHaveTextContent(
       (9864).toLocaleString(),

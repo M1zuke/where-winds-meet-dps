@@ -39,7 +39,7 @@ import {
 } from "./attributeConversion"
 import {
   averageEnhancementBonus,
-  DEFAULT_ENHANCEMENTS,
+  defaultEnhancementLevels,
   enhancementContributions as enhancementAttackContributions,
   enhancementHpTotal,
   enhancementPhysDefTotal,
@@ -376,7 +376,7 @@ export function totalMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
-  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
@@ -398,7 +398,7 @@ export function effectiveMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
-  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
@@ -417,7 +417,7 @@ export function totalPhysDef(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
-  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   armorSetPhysDef = 0,
 ): number {
@@ -537,7 +537,7 @@ export function getConfiguredBase(
   )) {
     base[path] = (base[path] ?? 0) + amount
   }
-  const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS
+  const enhancements = inputs.enhancements ?? defaultEnhancementLevels(inputs.breakthrough)
   for (const [path, amount] of Object.entries(enhancementAttackContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }
