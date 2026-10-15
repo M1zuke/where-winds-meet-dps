@@ -2094,3 +2094,69 @@ describe("disabledTalentPoints hydration (additive, no version bump)", () => {
     )
   })
 })
+
+describe("enhancement level hydration (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => {
+    kvStore.remove(PROFILES_KEY)
+  })
+  afterEach(() => {
+    kvStore.remove(PROFILES_KEY)
+  })
+
+  function gearPieceAtLevel(id: string, level: number): GearPiece {
+    return {
+      id,
+      slot: "disc",
+      level,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: Array.from({ length: 5 }, () => ({ word: "", value: 0, retuned: false })),
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    } as unknown as GearPiece
+  }
+
+  function loadFirstWith(inputs: Record<string, unknown>): Inputs {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  it("heals a missing slot to its equipped piece's cap and an empty slot to the breakthrough cap", () => {
+    const disc = gearPieceAtLevel("disc-96", 96)
+    const stored = {
+      ...defaultInputs,
+      breakthrough: 18,
+      inventory: [disc],
+      equipped: { ...defaultInputs.equipped, disc: disc.id },
+      enhancements: { leftWeapon: 12 },
+    }
+    const healed = loadFirstWith(stored as unknown as Record<string, unknown>).enhancements
+    expect(healed.disc).toBe(65)
+    expect(healed.pendant).toBe(70)
+    expect(healed.leftWeapon).toBe(12)
+  })
+
+  it("leaves a stored level above the slot's cap untouched", () => {
+    const disc = gearPieceAtLevel("disc-96", 96)
+    const stored = {
+      ...defaultInputs,
+      breakthrough: 18,
+      inventory: [disc],
+      equipped: { ...defaultInputs.equipped, disc: disc.id },
+      enhancements: { ...defaultInputs.enhancements, disc: 70 },
+    }
+    expect(loadFirstWith(stored as unknown as Record<string, unknown>).enhancements.disc).toBe(70)
+  })
+})

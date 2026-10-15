@@ -1,4 +1,10 @@
-import type { EnhancementLevels, EnhancementStat, GearSlot } from "../../engine/types"
+import type {
+  EnhancementLevels,
+  EnhancementStat,
+  EquippedSlots,
+  GearPiece,
+  GearSlot,
+} from "../../engine/types"
 import { GEAR_SLOTS } from "../../engine/types"
 import {
   AVERAGE_ENHANCEMENT_BONUS_LEVELS,
@@ -7,7 +13,6 @@ import {
   HELM_BRACER_ENHANCEMENT_LEVELS,
   WEAPON_ENHANCEMENT_LEVELS,
 } from "../../data/baseStats"
-import { gearLevelForBreakthrough } from "./breakthroughs"
 import type { LadderLevels } from "./enhancementLadderDef"
 
 const LADDER_CEILING = 85
@@ -23,13 +28,6 @@ const PROFILE_BY_SLOT: Readonly<Record<GearSlot, EnhancementProfile>> = {
   bracer: "helmBracer",
   armor: "chestGreaves",
   greaves: "chestGreaves",
-}
-
-export function defaultEnhancementLevels(breakthrough: number): EnhancementLevels {
-  const level = enhancementCap(gearLevelForBreakthrough(breakthrough), breakthrough)
-  const out = {} as EnhancementLevels
-  for (const slot of GEAR_SLOTS) out[slot] = level
-  return out
 }
 
 function rowAt<Row>(rows: LadderLevels<Row>, level: number): Row | undefined {
@@ -210,4 +208,47 @@ export function gearLevelUnlock(
     ).map((tier) => tier.reqGearLevel),
   )
   return { level: reachableLevel, gearLevel }
+}
+
+export interface EnhancementGear {
+  inventory: readonly GearPiece[]
+  equipped: EquippedSlots
+}
+
+export function equippedPieceGearLevel(
+  slot: GearSlot,
+  gear: EnhancementGear | undefined,
+): number | undefined {
+  const equippedId = gear?.equipped[slot]
+  if (!equippedId) return undefined
+  return gear?.inventory.find((piece) => piece.id === equippedId)?.level
+}
+
+export function slotEnhancementCap(
+  slot: GearSlot,
+  breakthrough: number,
+  gear?: EnhancementGear,
+): number {
+  return enhancementCap(equippedPieceGearLevel(slot, gear) ?? Infinity, breakthrough)
+}
+
+export function defaultEnhancementLevels(
+  breakthrough: number,
+  gear?: EnhancementGear,
+): EnhancementLevels {
+  const levels = {} as EnhancementLevels
+  for (const slot of GEAR_SLOTS) levels[slot] = slotEnhancementCap(slot, breakthrough, gear)
+  return levels
+}
+
+export function effectiveEnhancementLevels(
+  levels: EnhancementLevels,
+  breakthrough: number,
+  gear?: EnhancementGear,
+): EnhancementLevels {
+  const effective = {} as EnhancementLevels
+  for (const slot of GEAR_SLOTS) {
+    effective[slot] = Math.min(levels[slot] ?? 0, slotEnhancementCap(slot, breakthrough, gear))
+  }
+  return effective
 }

@@ -3,6 +3,7 @@ import {
   averageEnhancementBonus,
   averageEnhancementLevel,
   defaultEnhancementLevels,
+  effectiveEnhancementLevels,
   enhancementCap,
   enhancementContributions,
   enhancementHpTotal,
@@ -13,7 +14,15 @@ import {
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import { GEAR_SLOTS } from "../../src/engine/types"
-import type { EnhancementLevels, Inputs } from "../../src/engine/types"
+import type { EnhancementLevels, GearPiece, GearSlot, Inputs } from "../../src/engine/types"
+
+function gearWith(slot: GearSlot, level: number) {
+  const piece = { id: `${slot}-${level}`, slot, level } as unknown as GearPiece
+  return {
+    inventory: [piece],
+    equipped: { ...defaultInputs.equipped, [slot]: piece.id },
+  }
+}
 
 const LEVEL_65: EnhancementLevels = Object.fromEntries(
   GEAR_SLOTS.map((slot) => [slot, 65]),
@@ -61,6 +70,25 @@ describe("default enhancement levels", () => {
     }
   })
 
+  it("defaults an equipped piece's slot to the cap its gear level allows", () => {
+    expect(defaultEnhancementLevels(18, gearWith("disc", 96)).disc).toBe(65)
+    expect(defaultEnhancementLevels(18, gearWith("disc", 100)).disc).toBe(70)
+  })
+
+  it("defaults an empty slot to the highest level the breakthrough allows with sufficient gear", () => {
+    expect(defaultEnhancementLevels(19).pendant).toBe(75)
+    expect(defaultEnhancementLevels(21).pendant).toBe(80)
+    expect(defaultEnhancementLevels(18, gearWith("disc", 96)).pendant).toBe(70)
+  })
+
+  it("clamps the effective level to the slot's cap without changing the stored levels", () => {
+    const stored: EnhancementLevels = { ...LEVEL_65, disc: 70 }
+    const effective = effectiveEnhancementLevels(stored, 18, gearWith("disc", 96))
+    expect(effective.disc).toBe(65)
+    expect(effective.pendant).toBe(65)
+    expect(stored.disc).toBe(70)
+  })
+
   it("defaultEnhancementLevels() returns a fresh object each call", () => {
     const first = defaultEnhancementLevels(17)
     const second = defaultEnhancementLevels(17)
@@ -89,7 +117,7 @@ describe("enhancementContributions — the attack stat feeding the damage base",
   })
 
   it("lowering one slot's level lowers the base by exactly that level's grant", () => {
-    const inputs: Inputs = { ...defaultInputs, enhancements: LEVEL_65 }
+    const inputs: Inputs = { ...defaultInputs, breakthrough: 17, enhancements: LEVEL_65 }
     const lowered = { ...LEVEL_65, disc: 10 }
     const before = getConfiguredBase(inputs, [])
     const after = getConfiguredBase({ ...inputs, enhancements: lowered }, [])

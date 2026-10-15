@@ -40,6 +40,7 @@ import {
 import {
   averageEnhancementBonus,
   defaultEnhancementLevels,
+  effectiveEnhancementLevels,
   enhancementContributions as enhancementAttackContributions,
   enhancementHpTotal,
   enhancementPhysDefTotal,
@@ -537,7 +538,9 @@ export function getConfiguredBase(
   )) {
     base[path] = (base[path] ?? 0) + amount
   }
-  const enhancements = inputs.enhancements ?? defaultEnhancementLevels(inputs.breakthrough)
+  const enhancements = inputs.enhancements
+    ? effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough, inputs)
+    : defaultEnhancementLevels(inputs.breakthrough, inputs)
   for (const [path, amount] of Object.entries(enhancementAttackContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }

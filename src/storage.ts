@@ -542,7 +542,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       : stored && typeof stored === "object"
         ? (stored as Record<string, unknown>)
         : {}
-    const defaults = defaultEnhancementLevels(next.breakthrough as number)
+    const defaults = defaultEnhancementLevels(next.breakthrough as number, next)
     const healed = {} as EnhancementLevels
     for (const slot of GEAR_SLOTS) {
       const value = bySlot[slot]

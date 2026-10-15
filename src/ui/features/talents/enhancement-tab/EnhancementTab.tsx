@@ -5,12 +5,13 @@ import {
   averageEnhancementBonus,
   averageEnhancementLevel,
   defaultEnhancementLevels,
-  enhancementCap,
+  effectiveEnhancementLevels,
+  equippedPieceGearLevel,
+  slotEnhancementCap,
   enhancementStatsAtLevel,
   gearLevelUnlock,
   type GearLevelUnlock,
 } from "../../../../definitions/baseStats"
-import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { fmt } from "../../../utils/statFormatting"
@@ -42,22 +43,27 @@ const SLOT_DISPLAY_ORDER: readonly GearSlot[] = [
 export function EnhancementTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
-  const levels = inputs.enhancements
+  const gear = useMemo(
+    () => ({ inventory: inputs.inventory, equipped: inputs.equipped }),
+    [inputs.inventory, inputs.equipped],
+  )
+  const levels = useMemo(
+    () => effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough, gear),
+    [inputs.enhancements, inputs.breakthrough, gear],
+  )
 
   const { capBySlot, unlockBySlot } = useMemo(() => {
-    const byId = new Map(inputs.inventory.map((piece) => [piece.id, piece]))
-    const fallbackGearLevel = gearLevelForBreakthrough(inputs.breakthrough)
     const caps = {} as Record<GearSlot, number>
     const unlocks = {} as Record<GearSlot, GearLevelUnlock | undefined>
     for (const slot of GEAR_SLOTS) {
-      const equippedId = inputs.equipped[slot]
-      const piece = equippedId ? byId.get(equippedId) : undefined
-      const pieceGearLevel = piece?.level ?? fallbackGearLevel
-      caps[slot] = enhancementCap(pieceGearLevel, inputs.breakthrough)
-      unlocks[slot] = gearLevelUnlock(pieceGearLevel, inputs.breakthrough)
+      caps[slot] = slotEnhancementCap(slot, inputs.breakthrough, gear)
+      unlocks[slot] = gearLevelUnlock(
+        equippedPieceGearLevel(slot, gear) ?? Infinity,
+        inputs.breakthrough,
+      )
     }
     return { capBySlot: caps, unlockBySlot: unlocks }
-  }, [inputs.inventory, inputs.equipped, inputs.breakthrough])
+  }, [gear, inputs.breakthrough])
 
   function step(slot: GearSlot, delta: number) {
     const current = levels[slot] ?? 0
@@ -70,7 +76,7 @@ export function EnhancementTab({ inputs, onChange }: Props) {
 
   async function resetAll() {
     if (!(await confirm(t("talents.enhancement.resetAllEnhancementsToDefault")))) return
-    onChange({ ...inputs, enhancements: defaultEnhancementLevels(inputs.breakthrough) })
+    onChange({ ...inputs, enhancements: defaultEnhancementLevels(inputs.breakthrough, gear) })
   }
 
   const average = averageEnhancementLevel(levels)

@@ -135,7 +135,7 @@ describe("the Enhancement tab", () => {
     expect(discCard.querySelector('[aria-label="Decrease level"]')).toBeDisabled()
   })
 
-  it("does not let a level stored above the current cap be incremented further", () => {
+  it("shows a level stored above the current cap as the cap and blocks incrementing", () => {
     const cap = enhancementCap(
       gearLevelForBreakthrough(defaultInputs.breakthrough),
       defaultInputs.breakthrough,
@@ -146,7 +146,8 @@ describe("the Enhancement tab", () => {
     }
     renderTab(inputs)
     const discCard = cardFor("Disc")
-    expect(discCard).toHaveTextContent(String(cap + 50))
+    expect(discCard).toHaveTextContent(`${cap} / ${cap}`)
+    expect(discCard).not.toHaveTextContent(String(cap + 50))
     expect(discCard.querySelector('[aria-label="Increase level"]')).toBeDisabled()
   })
 
@@ -159,6 +160,20 @@ describe("the Enhancement tab", () => {
     fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
     await vi.waitFor(() => expect(onChange).toHaveBeenCalled())
     expect(onChange.mock.lastCall![0].enhancements).toEqual(defaultEnhancementLevels(17))
+  })
+
+  it("resets an equipped low-gear slot to its piece's cap and an empty slot to the breakthrough cap", async () => {
+    const onChange = vi.fn()
+    const inputs = inputsWithDiscAtGearLevel(96)
+    renderTab(
+      { ...inputs, enhancements: { ...inputs.enhancements, disc: 10, pendant: 10 } },
+      onChange,
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalled())
+    const reset = onChange.mock.lastCall![0].enhancements
+    expect(reset.disc).toBe(65)
+    expect(reset.pendant).toBe(70)
   })
 
   it("shows the average-level bonus", () => {
