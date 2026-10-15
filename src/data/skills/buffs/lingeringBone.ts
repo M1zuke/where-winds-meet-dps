@@ -5,7 +5,7 @@ import { PROP } from "../ids"
 export const lingeringBone = defineBuff({
   id: BUFF.lingeringBone,
   name: "Lingering Bone",
-  duration: 2,
+  duration: 5,
   extendedOnlyByProperty: PROP.isDrone,
   effects: [],
 })

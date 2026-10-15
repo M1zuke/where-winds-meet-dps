@@ -83,7 +83,7 @@ describe("V13__mysticArtLevelCap — called directly", () => {
 describe("V13__mysticArtLevelCap — through the chain", () => {
   it("is registered and is exactly what the v12 → v13 hop applies", () => {
     expect(CUSTOM_DEBUFF_MIGRATIONS).toContain(V13__mysticArtLevelCap)
-    const result = runCustomDebuffMigrations(clone(STORE))!
+    const result = runCustomDebuffMigrations(clone(STORE), { toVersion: 13 })!
     expect(result.applied).toEqual(["V13__mysticArtLevelCap"])
     expect(result.blob.v).toBe(13)
     for (const id of MYSTIC_DEBUFFS) {

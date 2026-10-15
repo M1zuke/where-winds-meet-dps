@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import {
   SPRING_AWAY_BULLET,
@@ -23,6 +24,8 @@ export const umblightcharge = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.umbLightCharge,
   receives: SPRING_AWAY_RECEIVES,
+  triggersBuffs: [BUFF.comboExtendMark],
+  triggersBuffsAtFrame: { [BUFF.comboExtendMark]: SPRING_AWAY_FIRST_BULLET_FRAME },
   castFrames: 140,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m

@@ -86,7 +86,7 @@ describe("V70__splendorHitFrameRetiming — called directly", () => {
 describe("V70__splendorHitFrameRetiming — through the chain", () => {
   it("is registered and is exactly what the v69 → v70 hop applies", () => {
     expect(CUSTOM_SKILL_MIGRATIONS).toContain(V70__splendorHitFrameRetiming)
-    const result = runCustomSkillMigrations(clone(STORE))!
+    const result = runCustomSkillMigrations(clone(STORE), { toVersion: 70 })!
     expect(result.applied).toEqual(["V70__splendorHitFrameRetiming"])
     expect(result.blob.v).toBe(70)
     expect(skillIn(result.blob, SKILL.cloudstep).castFrames).toBe(36)

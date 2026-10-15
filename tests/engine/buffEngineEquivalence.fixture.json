@@ -648,7 +648,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -175806,6 +175806,13 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
+            "id": "lingeringBone",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
+            "requires": null
+          },
+          {
             "id": "mirage",
             "stacks": 1,
             "maxStacks": 1,
@@ -176255,6 +176262,13 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
+            "id": "lingeringBone",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
+            "requires": null
+          },
+          {
             "id": "mirage",
             "stacks": 1,
             "maxStacks": 1,
@@ -176400,6 +176414,13 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
+            "id": "lingeringBone",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
+            "requires": null
+          },
+          {
             "id": "mirage",
             "stacks": 1,
             "maxStacks": 1,
@@ -176543,6 +176564,13 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
+          },
+          {
+            "id": "lingeringBone",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
+            "requires": null
           },
           {
             "id": "mirage",
@@ -185002,7 +185030,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -185932,7 +185960,7 @@
       ]
     },
     "dynamic": {
-      "digest": "0e6764767811f2bd2d8dbb0f24b0c202da3a87a1b97d82ed7db4392869fa105d"
+      "digest": "83eb6f00d83155ae3f11b3b4dfb3cb38c6235c6b325c6b699018961bdeef5180"
     }
   },
   "bellstrikeSplendor": {
@@ -186581,7 +186609,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -187624,7 +187652,7 @@
       ]
     },
     "dynamic": {
-      "digest": "c839670ab9a01cfb6ea2f87dc030e97f7dbb67c9cdca312057b0e73450279e6c"
+      "digest": "adf12d8c6506720e2eb90a709a8fc75abb4470a3f61f00193a1d698b5cd6759a"
     }
   },
   "silkbindJade": {
@@ -187714,7 +187742,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "1715e9d9170fb35a69f26e6b356357ba7901f03532a72803115df3402adcd8a5"
+        "digest": "dda365b72ae0265994179042e8730c539d55463320149ac6de058e0e8229ec60"
       },
       "debuffs": {
         "count": 12,
@@ -187732,7 +187760,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "9cc8f99c775c8f643711b0698a3f902dfe9138f8331e742cefcdae4931c0680d"
+        "digest": "ec0f4ebc356f861a47f04c80df9ab37a77646a53b1aafd915b0cef802ae71290"
       },
       "buffs": [
         {
@@ -187822,7 +187850,7 @@
           "duration": 15,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+5% damage against your Combo target while Exhausted (PvE)"
+          "summary": "+5% floating umbrella damage against your Combo target; +10% while Exhausted (PvE)"
         },
         {
           "id": "comboSpringAwayBonus",
@@ -187848,7 +187876,33 @@
           "duration": 15,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+10% Spring Away damage against your Combo target; +15% while Exhausted (PvE)"
+          "summary": "+5% Spring Away damage against your Combo target; +10% while Exhausted (PvE)"
+        },
+        {
+          "id": "comboExtendMark",
+          "name": "Combo - Extend Mark",
+          "classBuff": false,
+          "requires": {
+            "param": "blossomBarrage",
+            "minTier": 4
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 0.5,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 0.5,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
         },
         {
           "id": "starReacher",
@@ -188354,7 +188408,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -189259,7 +189313,7 @@
       ]
     },
     "dynamic": {
-      "digest": "cca93b0d50645bee155f2966571a2185704e23686dad140bd30c063c70d3c708"
+      "digest": "9fda0d504bab1898764ba058d85898350b489f35ea517bb5975e0aded38409b0"
     }
   },
   "bamboocutDraught": {
@@ -189991,7 +190045,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -190944,7 +190998,7 @@
       ]
     },
     "dynamic": {
-      "digest": "204b5756b67153b8391c41d8e5b92c0558627819e261590c6c50f17348c88648"
+      "digest": "0916ae76e7f58fda9bf19af0d3765e0527fd5a972b6b5b652cc24b2df4da671b"
     }
   }
 }

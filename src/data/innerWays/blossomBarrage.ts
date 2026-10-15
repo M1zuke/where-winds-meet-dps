@@ -3,6 +3,7 @@ import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import {
   comboBuffDef,
+  comboExtendMarkBuffDef,
   comboSpringAwayBonusBuffDef,
   comboUmbLightBonusBuffDef,
 } from "./blossomBarrageBuffs"
@@ -20,5 +21,10 @@ export const blossomBarrage: InnerWayDef = defineInnerWay({
     4: { nodes: [INNER_WAY_NODE.blossomBarrageSpringAwayBonus] },
     5: { panelStats: { directCritRate: 0.046 } },
   },
-  buffDefs: [comboBuffDef(), comboUmbLightBonusBuffDef(), comboSpringAwayBonusBuffDef()],
+  buffDefs: [
+    comboBuffDef(),
+    comboUmbLightBonusBuffDef(),
+    comboSpringAwayBonusBuffDef(),
+    comboExtendMarkBuffDef(),
+  ],
 })

@@ -20,7 +20,7 @@ export const umbdrone12Hit = defineDebuff({
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  triggersBuffs: [BUFF.lingeringBone, BUFF.comboExtendMark],
 })
 
 export const umbdrone16Hit = defineDebuff({
@@ -37,7 +37,7 @@ export const umbdrone16Hit = defineDebuff({
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  triggersBuffs: [BUFF.lingeringBone, BUFF.comboExtendMark],
 })
 
 export const umbdrone20Hit = defineDebuff({
@@ -54,7 +54,7 @@ export const umbdrone20Hit = defineDebuff({
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  triggersBuffs: [BUFF.lingeringBone, BUFF.comboExtendMark],
 })
 
 export const umbdrone23Hit = defineDebuff({
@@ -71,7 +71,7 @@ export const umbdrone23Hit = defineDebuff({
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  triggersBuffs: [BUFF.lingeringBone, BUFF.comboExtendMark],
 })
 
 export const umbdrone26Hit = defineDebuff({
@@ -88,7 +88,7 @@ export const umbdrone26Hit = defineDebuff({
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  triggersBuffs: [BUFF.lingeringBone, BUFF.comboExtendMark],
 })
 
 export const bitterSeasonTick = defineDebuff({

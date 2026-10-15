@@ -10,6 +10,7 @@ export const BUFF = {
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
   combo: "combo",
+  comboExtendMark: "comboExtendMark",
   comboUmbLightBonus: "comboUmbLightBonus",
   comboSpringAwayBonus: "comboSpringAwayBonus",
   disintegration: "disintegration",

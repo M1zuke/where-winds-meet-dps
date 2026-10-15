@@ -740,6 +740,12 @@ export class BuffEngine {
 
     if (!this.canGrantTrigger(module, applyTime)) return
 
+    if (module.extendsBuffs) {
+      this.extendLiveWindows(module.extendsBuffs, applyTime)
+      this.applyBuff(module.id, applyTime, null, 1)
+      return
+    }
+
     if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
       const hitCount = props.hitCount ?? 1
       const span = props.duration || props.castTime || 0
@@ -857,6 +863,30 @@ export class BuffEngine {
     if (this.isBuffActiveAtTime(module.id, time)) return
     if (!this.spendStackInWindow(module.perHitConsume!.from, time)) return
     this.applyBuff(module.id, time, null, 1)
+  }
+
+  private extendLiveWindows(
+    extension: NonNullable<BuffModule["extendsBuffs"]>,
+    time: number,
+  ): void {
+    for (const id of extension.buffIds) {
+      const window = this.latestApplyAt(id, time)
+      if (!window || time >= window.expiresAt) continue
+      const extendedExpiry = Math.min(
+        window.expiresAt + extension.bySec,
+        Math.max(window.expiresAt, time + extension.maxRemainingSec),
+      )
+      if (extendedExpiry <= window.expiresAt) continue
+      this.buffHistory.push({
+        time,
+        buffType: id,
+        action: "apply",
+        expiresAt: extendedExpiry,
+        ...(window.stacks !== undefined && { stacks: window.stacks }),
+      })
+      const live = this.activeBuffs.get(id)
+      if (live) this.activeBuffs.set(id, { ...live, expiresAt: extendedExpiry })
+    }
   }
 
   private spendStackInWindow(id: string, time: number): boolean {

@@ -110,6 +110,10 @@ export type BuffMeta = BuffGate & {
   // window, never open one. A trigger without the property is unaffected, so
   // one def can have both an opening source and an extending source.
   extendedOnlyByProperty?: string
+  // A trigger of this def adds `bySec` to each listed window that is live,
+  // leaving no more than `maxRemainingSec` of it (a window already longer is
+  // left alone).
+  extendsBuffs?: { buffIds: readonly string[]; bySec: number; maxRemainingSec: number }
   activeAfterBuffEnds?: ActiveAfterBuffEnds
   conditionalFinalCrit?: ConditionalFinalCrit
   perCastConsume?: PerCastConsume

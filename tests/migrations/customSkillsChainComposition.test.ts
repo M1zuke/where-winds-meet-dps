@@ -66,6 +66,7 @@ import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations
 import { healSkill as healBleedRefundLockoutAndSecondTrackSlashEndurance } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import { healSkill as healLightAttackThreeHitFrames } from "../../src/migrations/customSkills/V69__lightAttackThreeHitFrames"
 import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
+import { healComboExtendMarkReach } from "../../src/migrations/customSkills/V71__comboExtendMarkReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -141,6 +142,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [67, healBleedRefundLockoutAndSecondTrackSlashEndurance],
   [69, healLightAttackThreeHitFrames],
   [70, healSplendorHitFrameRetiming],
+  [71, healComboExtendMarkReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

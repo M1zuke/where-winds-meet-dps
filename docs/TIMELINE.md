@@ -477,6 +477,12 @@ for applying, `receives` for boosting — never by the module itself.
   the debuff whose echo the event it reaches feeds; it changes nothing about
   the event itself. The share, the row and any release-time adjustment are
   the debuff's — never author them on the def.
+- **A module may extend other modules' live windows instead of opening one**
+  (`extendsBuffs`): each trigger adds a fixed number of seconds to every listed
+  module whose window is live, leaving at most a declared remaining span, and
+  does nothing for a window already lapsed. Its own `cooldown`, trigger phase
+  and `requiresActiveBuffOnTrigger` gate it like any other module; it carries
+  no stat effect.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this
