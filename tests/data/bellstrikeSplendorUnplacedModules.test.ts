@@ -83,18 +83,12 @@ describe("Sword - Dash after Shadow Step", () => {
     ])
   })
 
-  it.each([
-    [SKILL.swordSpecial, 144],
-    [SKILL.swordSpecial2nd, 167],
-    [SKILL.swordSpecialDeflect, 167],
-  ])("is granted by %s so the window closes 167 f after the cast starts", (skillId, duration) => {
-    expect(splendorSkill(skillId).hits[0]!.triggers).toContainEqual(
-      expect.objectContaining({
-        kind: "applyBuff",
-        targetId: BUFF.shadowStepDashWindow,
-        durationFrames: duration,
-      }),
-    )
+  it("is granted by Shadow Step's launch so the window closes 167 f after the cast starts", () => {
+    const grants = splendorSkill(SKILL.swordSpecial)
+      .hits.flatMap((skillHit) => skillHit.triggers.map((trigger) => ({ skillHit, trigger })))
+      .filter(({ trigger }) => trigger.targetId === BUFF.shadowStepDashWindow)
+    expect(grants).toHaveLength(1)
+    expect(grants[0]!.skillHit.frame + grants[0]!.trigger.durationFrames!).toBe(167)
   })
 
   const illegalDashWarnings = (skillIds: string[]) =>

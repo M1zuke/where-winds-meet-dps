@@ -6,6 +6,7 @@ import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
 import { multiWaveWindowGrantFromCastStart } from "./buffs/multiWaveWindowGrant"
 import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
+import { SHADOW_STEP_PROJECTILE } from "./flyingSwordProjectiles"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 
 export const swordSpecial = defineSkill({
@@ -38,20 +39,34 @@ export const swordSpecial = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
-      // In-game values as of 2026-09-24: the bolt launches at 17.24 f and
-      // lands after its own flight time, ≈ 23 f at melee range.
-      frame: 23,
+      // In-game values as of 2026-10-15: the bolt launches at 17.06 f.
+      frame: 17,
+      projectile: SHADOW_STEP_PROJECTILE,
       physMultiplier: 1.76747,
       attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
-      triggers: [
-        multiWaveWindowGrantFromCastStart(23),
-        shadowStepDashWindowGrantFromFrame(23),
-        energySurgeCooldownCut,
-      ],
+      triggers: [energySurgeCooldownCut],
+    }),
+    hit(1, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [multiWaveWindowGrantFromCastStart(0)],
+    }),
+    hit(2, {
+      // In-game values as of 2026-10-15: the Sword - Dash window opens with
+      // the 17.24 f keyframe.
+      frame: 17,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [shadowStepDashWindowGrantFromFrame(17)],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-10-05T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

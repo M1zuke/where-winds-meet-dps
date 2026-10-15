@@ -9,7 +9,10 @@ import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { BELLSTRIKE_SPLENDOR_GATES } from "./gates"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
 import { endlessGale, endlessGaleAtStart } from "../../skills/bellstrike-splendor/buffs/endlessGale"
-import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
+import {
+  qiankunsLockQiImbalance,
+  qiImbalance,
+} from "../../skills/bellstrike-splendor/buffs/qiImbalance"
 import { qiStruggleEnhancement } from "../../skills/bellstrike-splendor/buffs/qiStruggleEnhancement"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
 import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
@@ -62,6 +65,7 @@ export const bellstrikeSplendor = defineClass({
     swordEnergyEnhancement,
     swordEnergyHpDamage,
     qiImbalance,
+    qiankunsLockQiImbalance,
     qiStruggleEnhancement,
     belowSixtyEndurance,
     namelessSwordAdditionalAttack,

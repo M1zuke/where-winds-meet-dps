@@ -5,12 +5,13 @@ import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 import { QIANKUNS_LOCK_GAIN, MOUNTAINS_MIGHT_GAIN } from "./buffs/qiankunsLockEnduranceGains"
 import {
+  endlessGaleAtStartDispel,
   endlessGaleAtStartGrant,
+  endlessGaleAtStartRestart,
   endlessGaleGrant,
   endlessGaleMountainsMightExtend,
   endlessGaleCostReductionEndTrigger,
 } from "./buffs/endlessGaleCostReductionGrant"
-import { qiankunsLockQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 
 export const spearq0HitCancel = defineSkill({
   id: SKILL.spearq0HitCancel,
@@ -23,7 +24,7 @@ export const spearq0HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ0HitCancel,
   cancelledBy: "deflectCancel",
-  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
+  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight],
   receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 6,
   triggerable: true,
@@ -47,13 +48,14 @@ export const spearq0HitCancel = defineSkill({
         QIANKUNS_LOCK_GAIN,
         MOUNTAINS_MIGHT_GAIN,
         endlessGaleAtStartGrant,
+        endlessGaleAtStartRestart,
         endlessGaleGrant,
         endlessGaleMountainsMightExtend,
         endlessGaleCostReductionEndTrigger,
-        qiankunsLockQiImbalanceMarkerGrant,
+        endlessGaleAtStartDispel,
       ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -28,8 +28,6 @@ import { swordq } from "./swordq"
 import { swordq2nd } from "./swordq-2nd"
 import { swordq3rd } from "./swordq-3rd"
 import { swordSpecial } from "./swordspecial"
-import { swordSpecial2nd } from "./swordspecial-2nd"
-import { swordSpecialDeflect } from "./swordspecial-deflect"
 
 export const CLASS_ID = "bellstrikeSplendor"
 
@@ -43,8 +41,6 @@ export const SKILLS = [
   swordq2nd,
   swordq3rd,
   swordSpecial,
-  swordSpecial2nd,
-  swordSpecialDeflect,
   spearq,
   spearqPrepull,
   spearq0HitCancel,

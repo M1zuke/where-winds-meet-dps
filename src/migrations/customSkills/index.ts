@@ -83,6 +83,7 @@ import { V79__springAwayReach } from "./V79__springAwayReach"
 import { V80__prepullVagrantSwordWaveTiming } from "./V80__prepullVagrantSwordWaveTiming"
 import { V81__startWithoutServerWait } from "./V81__startWithoutServerWait"
 import { V82__umbraCastLengthsAndSweepAllBurstStacks } from "./V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { V83__splendorQiImbalanceOnHitAndEndlessGaleWindow } from "./V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 
 export type {
   CustomSkillMigration,
@@ -234,6 +235,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V80__prepullVagrantSwordWaveTiming,
   V81__startWithoutServerWait,
   V82__umbraCastLengthsAndSweepAllBurstStacks,
+  V83__splendorQiImbalanceOnHitAndEndlessGaleWindow,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

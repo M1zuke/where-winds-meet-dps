@@ -185966,7 +185966,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 66,
+        "count": 64,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-cloudstep",
@@ -186006,9 +186006,7 @@
           "bellstrikeSplendor-swordq-2nd",
           "bellstrikeSplendor-swordq-3rd",
           "bellstrikeSplendor-swordspecial",
-          "bellstrikeSplendor-swordspecial-2nd",
           "bellstrikeSplendor-swordspecial-dash",
-          "bellstrikeSplendor-swordspecial-deflect",
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
           "mystic-dragon-head",
@@ -186035,7 +186033,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "ff2fe00170089a22448e257a27b77fab1d7cf2a2af1841115f9f10238c7fab6a"
+        "digest": "a471ae16148abc55d0a91cdc76b07b7fa346888dc993185b87f4cfc703ab8064"
       },
       "debuffs": {
         "count": 6,
@@ -186047,7 +186045,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "19111f72ffe8a997c4b66fecaa38072ec7b85fae6a9995dbd41eb94b98a87ecd"
+        "digest": "5ec1d8cdfbeb0a89a72f14fad3a56d8114a62d7c619ec1df1dcae58878f5aa23"
       },
       "buffs": [
         {
@@ -186143,7 +186141,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187514,7 +187512,7 @@
           "grantRequires": null,
           "affectsAll": true,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187528,6 +187526,36 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "+10% Qi damage taken; +10% HP damage and +10% Bellstrike damage taken while Exhausted"
+        },
+        {
+          "id": "qiankunsLockQiImbalance",
+          "name": "Qi Imbalance (Qiankun's Lock)",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "applyBuff",
+              "id": "qiImbalance",
+              "stacks": 1,
+              "durationSec": 15
+            }
+          ],
+          "summary": null
         },
         {
           "id": "qiStruggleEnhancement",
@@ -187653,7 +187681,7 @@
       ]
     },
     "dynamic": {
-      "digest": "adf12d8c6506720e2eb90a709a8fc75abb4470a3f61f00193a1d698b5cd6759a"
+      "digest": "a61ea99575b40ad75b130ab85d9c5239059b94b309a5e186bbf6ad4b0cedaa84"
     }
   },
   "silkbindJade": {

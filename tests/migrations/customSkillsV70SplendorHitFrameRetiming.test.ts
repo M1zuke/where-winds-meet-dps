@@ -5,6 +5,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { V70__splendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
+import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -39,8 +40,9 @@ describe("V70__splendorHitFrameRetiming — called directly", () => {
     const after = V70__splendorHitFrameRetiming.migrate(clone(STORE))
     expect(after.v).toBe(70)
     for (const id of RETIMED_IDS) {
-      expect(skillIn(after, id).castFrames, id).toBe(builtin(id).castFrames)
-      expect(framesOf(skillIn(after, id)), id).toEqual(framesOf(builtin(id)))
+      const healed = healSplendorQiImbalanceOnHitAndEndlessGaleWindow(skillIn(after, id)) as Skill
+      expect(healed.castFrames, id).toBe(builtin(id).castFrames)
+      expect(framesOf(healed), id).toEqual(framesOf(builtin(id)))
     }
   })
 

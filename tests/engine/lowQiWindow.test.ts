@@ -2,7 +2,9 @@ import { describe, it, expect } from "vitest"
 import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { hitDealsDamage } from "../../src/engine/skill"
 import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import { ENDLESS_GALE_GATE } from "../../src/data/classes/bellstrike-splendor/gates"
 import { endlessGaleMountainsMightExtend } from "../../src/data/skills/bellstrike-splendor/buffs/endlessGaleCostReductionGrant"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
@@ -79,13 +81,11 @@ describe("Qi Imbalance as a low-Qi source", () => {
     const defs = buffDefsForClass("bellstrikeSplendor")
     expect(defs.map((def) => def.id)).toContain(QI_IMBALANCE_STATUS)
 
-    const applier = builtinSkillsForClass("bellstrikeSplendor").filter((skill) =>
-      skill.triggersBuffs?.includes(QI_IMBALANCE_STATUS),
-    )
-    expect(applier.length).toBeGreaterThan(0)
-
+    const spearQ = builtinSkillsForClass("bellstrikeSplendor").find(
+      (skill) => skill.id === SKILL.spearq,
+    )!
     const engine = new BuffEngine({ classId: "bellstrikeSplendor" }, defs)
-    engine.triggerDeclaredBuffs([QI_IMBALANCE_STATUS], applier[0]!.castTag ?? "", 1)
+    engine.processDamageHit(1, spearQ)
     expect(engine.qiPhase(2)).toBe("below30")
   })
 
@@ -93,27 +93,62 @@ describe("Qi Imbalance as a low-Qi source", () => {
   // only applies it because Mountain's Might Tier 1 widens the rule to any
   // martial art of the path, so it routes through that inner way's def.
   it("is applied directly by the spear and through Mountain's Might by the sword", () => {
-    const triggering = (buffId: string) =>
+    const applying = (buffId: string) =>
       [
         ...new Set(
           builtinSkillsForClass("bellstrikeSplendor")
-            .filter((skill) => skill.triggersBuffs?.includes(buffId))
+            .filter((skill) => skill.receives?.includes(buffId))
             .map((skill) => skill.weaponOrAttribute),
         ),
       ].sort()
-    expect(triggering(QI_IMBALANCE_STATUS)).toEqual(["Spear"])
-    expect(triggering(BUFF.mountainsMightQiImbalance)).toEqual(["Sword"])
+    expect(applying(BUFF.qiankunsLockQiImbalance)).toEqual(["Spear"])
+    expect(applying(BUFF.mountainsMightQiImbalance)).toEqual(["Sword"])
+  })
+
+  it("lands on a hit and on no cast that lands none", () => {
+    const hitless = builtinSkillsForClass("bellstrikeSplendor").filter(
+      (skill) =>
+        skill.receives?.includes(BUFF.qiankunsLockQiImbalance) &&
+        !skill.hits.some((candidate) => hitDealsDamage(candidate)),
+    )
+    expect(hitless).toEqual([])
+    for (const skillId of [SKILL.spearqPrepull, SKILL.spearq0HitCancel]) {
+      const skill = builtinSkillsForClass("bellstrikeSplendor").find(
+        (candidate) => candidate.id === skillId,
+      )!
+      expect(skill.receives).not.toContain(BUFF.qiankunsLockQiImbalance)
+      expect(skill.triggersBuffs).not.toContain(QI_IMBALANCE_STATUS)
+    }
   })
 
   it("the sword's application needs Mountain's Might slotted", () => {
     const defs = buffDefsForClass("bellstrikeSplendor")
-    const fire = (params: Record<string, unknown>) => {
+    const swordQ = builtinSkillsForClass("bellstrikeSplendor").find(
+      (skill) => skill.id === SKILL.swordq,
+    )!
+    const hitLandsAt = (params: Record<string, unknown>) => {
       const engine = new BuffEngine({ classId: "bellstrikeSplendor", ...params }, defs)
-      engine.triggerDeclaredBuffs([BUFF.mountainsMightQiImbalance], "cast:swordQ", 1)
+      engine.processDamageHit(1, swordQ)
       return engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 2)
     }
-    expect(fire({})).toBe(false)
-    expect(fire({ mountainsMight: true })).toBe(true)
+    expect(hitLandsAt({})).toBe(false)
+    expect(hitLandsAt({ mountainsMight: true })).toBe(true)
+  })
+
+  it("starts with the hit and not before it", () => {
+    const engine = new BuffEngine(
+      { classId: "bellstrikeSplendor", mountainsMight: true },
+      buffDefsForClass("bellstrikeSplendor"),
+    )
+    const swordQ = builtinSkillsForClass("bellstrikeSplendor").find(
+      (skill) => skill.id === SKILL.swordq,
+    )!
+    engine.processSkillCast("cast:swordQ", 0, {}, false, swordQ.triggersBuffs, undefined)
+    expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 1)).toBe(false)
+    engine.processDamageHit(22 / 60, swordQ)
+    expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 21 / 60)).toBe(false)
+    expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 14.9)).toBe(true)
+    expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 15.1)).toBe(false)
   })
 
   it("leaves the timeline band showing only the clock-driven span", () => {

@@ -18,6 +18,7 @@ import { V13__mysticArtLevelCap } from "./V13__mysticArtLevelCap"
 import { V14__droneComboExtendMarkReach } from "./V14__droneComboExtendMarkReach"
 import { V15__droneComboExtendMarkPerHit } from "./V15__droneComboExtendMarkPerHit"
 import { V16__droneStampsAndRecall } from "./V16__droneStampsAndRecall"
+import { V17__splendorBitterSeasonTickWithoutSoulShaken } from "./V17__splendorBitterSeasonTickWithoutSoulShaken"
 
 export type {
   CustomDebuffMigration,
@@ -54,6 +55,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V14__droneComboExtendMarkReach,
   V15__droneComboExtendMarkPerHit,
   V16__droneStampsAndRecall,
+  V17__splendorBitterSeasonTickWithoutSoulShaken,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

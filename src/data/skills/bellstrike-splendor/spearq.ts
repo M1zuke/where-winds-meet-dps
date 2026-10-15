@@ -5,7 +5,9 @@ import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 import { QIANKUNS_LOCK_GAIN, MOUNTAINS_MIGHT_GAIN } from "./buffs/qiankunsLockEnduranceGains"
 import {
+  endlessGaleAtStartDispel,
   endlessGaleAtStartGrant,
+  endlessGaleAtStartRestart,
   endlessGaleGrant,
   endlessGaleMountainsMightExtend,
   endlessGaleCostReductionEndTrigger,
@@ -22,8 +24,8 @@ export const spearq = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
-  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
-  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
+  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight],
+  receives: [BUFF.starweaveMartialBoost, BUFF.qiankunsLockQiImbalance, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 42,
   triggerable: true,
   // In-game values as of 2026-09-28: 5 m approach reach; once between 1.5
@@ -37,24 +39,32 @@ export const spearq = defineSkill({
   },
   hits: [
     hit(0, {
-      // In-game values as of 2026-09-24: the launch frame (cast length
-      // already matches).
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [
+        QIANKUNS_LOCK_GAIN,
+        MOUNTAINS_MIGHT_GAIN,
+        endlessGaleAtStartGrant,
+        endlessGaleAtStartRestart,
+        endlessGaleGrant,
+        endlessGaleMountainsMightExtend,
+        endlessGaleCostReductionEndTrigger,
+        endlessGaleAtStartDispel,
+      ],
+    }),
+    hit(1, {
+      // In-game values as of 2026-09-24: the collider frame.
       frame: 18,
       physMultiplier: 0.5732,
       attributeMultiplier: 0.8598,
       physFixed: 160,
       attributeFixed: 87,
-      triggers: [
-        QIANKUNS_LOCK_GAIN,
-        MOUNTAINS_MIGHT_GAIN,
-        endlessGaleAtStartGrant,
-        endlessGaleGrant,
-        endlessGaleMountainsMightExtend,
-        endlessGaleCostReductionEndTrigger,
-        qiankunsLockQiImbalanceMarkerGrant,
-      ],
+      triggers: [qiankunsLockQiImbalanceMarkerGrant],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

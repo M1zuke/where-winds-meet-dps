@@ -66,18 +66,21 @@ export const NAMELESS_SPEAR_ENDURANCE_REGEN_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-26T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-29: Qiankun's Lock opens this 5 s window at its
-// own cast start. This gate owns the window and the -10% Endurance cost it
-// also carries; the `endlessGaleAtStart` class-buff module reads this same id
-// for its own +18% affinity damage. A single unscoped `cost` entry is enough:
-// this cut covers every spend, a running charge drain included, so the
-// engine's own cross-layer rule (docs/TIMELINE.md § "Meters") already applies
-// it there without a second, duplicate `chargeCost` entry.
+// In-game values as of 2026-10-15: the plain Endless Gale opens at Qiankun's
+// Lock's (or Legion Crusher's) cast start and restarts at Qiankun's Lock's
+// end; Mountain's Might's variant blocks and dispels it. This gate owns the
+// window and the -10% Endurance cost it carries; the `endlessGaleAtStart`
+// class-buff module reads this same id for its own +18% affinity damage. A
+// single unscoped `cost` entry is enough: this cut covers every spend, a
+// running charge drain included, so the engine's own cross-layer rule
+// (docs/TIMELINE.md § "Meters") already applies it there without a second,
+// duplicate `chargeCost` entry.
 export const ENDLESS_GALE_AT_START_GATE: Buff = defineGateBuff({
   id: BUFF.endlessGaleAtStart,
   classId: CLASS_ID,
-  name: "Endless Gale (from Qiankun's Lock's start)",
-  description: "5s from Qiankun's Lock's own cast start; all Endurance costs -10%.",
+  name: "Endless Gale (plain)",
+  description:
+    "5s from Qiankun's Lock's cast start, restarted at its end; all Endurance costs -10%. Mountain's Might replaces it.",
   scope: "player",
   activation: "triggered",
   durationFrames: 300,
@@ -86,7 +89,7 @@ export const ENDLESS_GALE_AT_START_GATE: Buff = defineGateBuff({
   stackScaling: "flat",
   meterModifiers: [{ meterId: enduranceMeter.id, kind: "cost", amount: -0.1 }],
   createdAt: "2026-09-26T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })
 
 // In-game values as of 2026-09-28: Qiankun's Lock's own end opens this window

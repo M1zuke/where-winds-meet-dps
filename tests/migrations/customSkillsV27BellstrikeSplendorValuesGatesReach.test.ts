@@ -22,6 +22,7 @@ import { healSkill as healThreeWaveReleaseAndEnergySurgeInterval } from "../../s
 import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
 import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
+import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -38,10 +39,12 @@ const HEALED_IDS = [
   "bellstrikeSplendor-swordq",
   "bellstrikeSplendor-swordq-2nd",
   "bellstrikeSplendor-swordspecial",
-  "bellstrikeSplendor-swordspecial-2nd",
-  "bellstrikeSplendor-swordspecial-deflect",
   "bellstrikeSplendor-spearq-prepull",
   "bellstrikeSplendor-spearq-0-hit-cancel",
+]
+const REMOVED_FROM_LIBRARY_IDS = [
+  "bellstrikeSplendor-swordspecial-2nd",
+  "bellstrikeSplendor-swordspecial-deflect",
 ]
 const EDITED_ID = "bellstrikeSplendor-spearq"
 const USER_AUTHORED_ID = "sk-user-authored-splendor-slash"
@@ -68,19 +71,21 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids these later hops don't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healPrepullVagrantSwordWaveTiming(
-    healVagrantSwordChargeTiming(
-      healSplendorHitFrameRetiming(
-        healThreeWaveReleaseAndEnergySurgeInterval(
-          healInGameTimingCorrections(
-            healShadowStepDashWindow(
-              healInGameCoefficientCorrections(
-                healRelentlessChaseSecondStrike(
-                  healPerGrantSiteDelayAndSetReach(
-                    healStonesplitSplendorJadeTimingRepairs(
-                      healMountainsMightAndQiImbalanceMarker(
-                        healMeterModifierGains(
-                          healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill)),
+  healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
+    healPrepullVagrantSwordWaveTiming(
+      healVagrantSwordChargeTiming(
+        healSplendorHitFrameRetiming(
+          healThreeWaveReleaseAndEnergySurgeInterval(
+            healInGameTimingCorrections(
+              healShadowStepDashWindow(
+                healInGameCoefficientCorrections(
+                  healRelentlessChaseSecondStrike(
+                    healPerGrantSiteDelayAndSetReach(
+                      healStonesplitSplendorJadeTimingRepairs(
+                        healMountainsMightAndQiImbalanceMarker(
+                          healMeterModifierGains(
+                            healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill)),
+                          ),
                         ),
                       ),
                     ),
@@ -122,6 +127,13 @@ describe("healBellstrikeSplendorValuesGatesReach", () => {
     }
   })
 
+  it("still rewrites a copy of a skill the library no longer carries", () => {
+    for (const id of REMOVED_FROM_LIBRARY_IDS) {
+      const seeded = skillIn(STORE, id)
+      expect(healBellstrikeSplendorValuesGatesReach(clone(seeded)), id).not.toEqual(seeded)
+    }
+  })
+
   it("leaves an edited copy alone", () => {
     const edited = clone(skillIn(STORE, EDITED_ID))
     expect(healBellstrikeSplendorValuesGatesReach(clone(edited))).toEqual(edited)
@@ -146,7 +158,7 @@ describe("V27__bellstrikeSplendorValuesGatesReach — called directly", () => {
         )
     }
     for (const skill of STORE.skills) {
-      if (HEALED_IDS.includes(skill.id)) continue
+      if (HEALED_IDS.includes(skill.id) || REMOVED_FROM_LIBRARY_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)
     }
   })

@@ -12,6 +12,7 @@ import {
 import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
 import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
+import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -52,9 +53,11 @@ describe("custom-skills v64 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands %s on the built-in's hits and cast length", (id) => {
-    const healed = healPrepullVagrantSwordWaveTiming(
-      healVagrantSwordChargeTiming(
-        healSplendorHitFrameRetiming(healSkill(clone(skillIn(STORE, id)))),
+    const healed = healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
+      healPrepullVagrantSwordWaveTiming(
+        healVagrantSwordChargeTiming(
+          healSplendorHitFrameRetiming(healSkill(clone(skillIn(STORE, id)))),
+        ),
       ),
     ) as Skill
     const live = builtinOf(id)
@@ -87,8 +90,10 @@ describe("V65__threeWaveReleaseAndEnergySurgeInterval — called directly", () =
     for (const id of HEALED_IDS) {
       expect(
         (
-          healPrepullVagrantSwordWaveTiming(
-            healVagrantSwordChargeTiming(healSplendorHitFrameRetiming(skillIn(after, id))),
+          healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
+            healPrepullVagrantSwordWaveTiming(
+              healVagrantSwordChargeTiming(healSplendorHitFrameRetiming(skillIn(after, id))),
+            ),
           ) as Skill
         ).hits,
         id,

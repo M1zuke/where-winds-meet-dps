@@ -22,11 +22,13 @@ export const mountainsMightBuff = defineBuff({
 // gates rather than declared on the skill, which carries no gate of its own.
 // The spear applies it from the Nameless Spear talent and stays ungated.
 // Slotting at all satisfies the rule, tier 1 being the lowest selectable.
+// In-game values as of 2026-10-15: every hit of the Q family applies it.
 export const mountainsMightPathQiImbalance = defineBuff({
   id: BUFF.mountainsMightQiImbalance,
   name: "Qi Imbalance (Splendor path)",
   requires: { param: PARAM.mountainsMight },
   duration: 15,
-  buffAppliesOnCastEnd: true,
+  stackOnDamage: true,
+  stackOnDamageScoped: true,
   effects: [applyBuff(BUFF.qiImbalance, 1, 15)],
 })
