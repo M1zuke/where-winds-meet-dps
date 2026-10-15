@@ -1,4 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
@@ -8,7 +9,8 @@ import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./rec
 const REQUIRES_BINGE_100 = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 
 // Cast length to the earliest next input and hit frame: in-game animation,
-// 2026-09-05.
+// 2026-09-05. The 15 s cooldown holds when the follow-up ends the stance
+// (in-game values as of 2026-10-15).
 export const nightwickPrimepick = defineSkill({
   id: SKILL.nightwickPrimepick,
   classId: "bamboocutDraught",
@@ -24,6 +26,7 @@ export const nightwickPrimepick = defineSkill({
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
   ],
+  castConditions: [...REQUIRES_BINGE_100, { buffId: STATUS.tipsylayCooldown, op: "eq", stacks: 0 }],
   triggerable: false,
   castFrames: 51,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
@@ -38,6 +41,14 @@ export const nightwickPrimepick = defineSkill({
       physFixed: 262,
       attributeFixed: 143,
       conditions: REQUIRES_BINGE_100,
+    }),
+    hit(1, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [applyBuff({ target: STATUS.tipsylayCooldown, stacks: 1 })],
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",

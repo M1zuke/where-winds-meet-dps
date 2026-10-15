@@ -24,6 +24,8 @@ export const HEROS_BLOOD_COOLDOWN_FRAMES = 720
 // In-game values as of 2026-10-15.
 export const REVELDRIFT_SPACING_FRAMES = 180
 export const EMPOWERED_LIGHT_ATTACK_FRAMES = 66
+export const TIPSYLAY_COOLDOWN_FRAMES = 900
+export const SKYSTRIKE_GAUNTLETS_EX_COOLDOWN_FRAMES = 3600
 
 // In-game state text, 2026-09-06: Binge Points start at 60 and cap at 200;
 // Tipsy from 100, Deepdaze at 200 for 5 s, 10 s with Skyspeak tier 3. When
@@ -199,6 +201,32 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     scope: "player",
     activation: "triggered",
     durationFrames: EMPOWERED_LIGHT_ATTACK_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.tipsylayCooldown,
+    classId: CLASS_ID,
+    name: "Tipsylay Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: TIPSYLAY_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.skystrikeGauntletsExCooldown,
+    classId: CLASS_ID,
+    name: "Skystrike Gauntlets - EX Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: SKYSTRIKE_GAUNTLETS_EX_COOLDOWN_FRAMES,
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",

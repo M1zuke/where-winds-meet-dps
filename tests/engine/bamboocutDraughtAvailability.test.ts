@@ -6,7 +6,11 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { importProfile } from "../../src/storage"
+import { withDerivedStats } from "../../src/engine/derivedInputs"
+import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { testRotation } from "../builtins"
+import profileFile from "./bamboocutDraughtMeasured.profile.json"
 
 const CLASS = "bamboocutDraught"
 
@@ -25,7 +29,16 @@ function illegalStepIndexes(skillIds: string[], bingePoints = 100): number[] {
     .sort((left, right) => left - right)
 }
 
-const { reveldrift, reveldriftCancel, realmplay, bladeAgainstWaves, tidepour, boundvessel } = SKILL
+const {
+  reveldrift,
+  reveldriftCancel,
+  realmplay,
+  bladeAgainstWaves,
+  tidepour,
+  boundvessel,
+  nightwickPrimepick: tipsylay,
+  skystrikeGauntletsEx,
+} = SKILL
 const longCast = SKILL.dragonquenchInebriate
 
 describe("Reveldrift's two charges and its 3 s interval", () => {
@@ -66,5 +79,31 @@ describe("Empowered Light Attack", () => {
   it("shuts Boundvessel while it holds", () => {
     expect(illegalStepIndexes([boundvessel])).toEqual([])
     expect(illegalStepIndexes([realmplay, boundvessel])).toEqual([1])
+  })
+})
+
+describe("Tipsylay and the Skystrike Gauntlets ultimate", () => {
+  it("flags Tipsylay below 100 Binge Points", () => {
+    expect(illegalStepIndexes([tipsylay], 60)).toEqual([0])
+    expect(illegalStepIndexes([tipsylay], 100)).toEqual([])
+  })
+
+  it("holds Tipsylay for its 15 s cooldown", () => {
+    expect(illegalStepIndexes([tipsylay, longCast, tipsylay])).toEqual([2])
+    const sevenLongCasts = Array.from({ length: 7 }, () => longCast)
+    expect(illegalStepIndexes([tipsylay, ...sevenLongCasts, tipsylay])).toEqual([])
+  })
+
+  it("holds the ultimate for its 60 s cooldown", () => {
+    expect(illegalStepIndexes([skystrikeGauntletsEx, longCast, skystrikeGauntletsEx])).toEqual([2])
+  })
+})
+
+describe("the built-in dummy rotation", () => {
+  it("casts nothing the game would refuse", () => {
+    const profile = importProfile(JSON.stringify(profileFile))
+    const inputs = applyBowSet(applyArmorSet(withDerivedStats(profile.inputs)))
+    const result = simulateTimeline(inputs, { collect: "full" })
+    expect(result.invalidStepIds ?? []).toEqual([])
   })
 })

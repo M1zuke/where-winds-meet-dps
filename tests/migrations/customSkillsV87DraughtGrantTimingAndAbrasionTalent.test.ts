@@ -8,6 +8,9 @@ import {
   V87__draughtGrantTimingAndAbrasionTalent,
   healSkill,
 } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
+import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV86File from "./testCustomSkills/v86/store.json"
@@ -26,12 +29,14 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === id)!
 
-const withoutLaterReach = (receives: string[] | undefined) =>
-  receives?.filter((buffId) => !buffId.startsWith("mistwillow"))
+const throughLaterHops = (skill: unknown): Skill =>
+  healDraughtTipsylayAndExCooldowns(
+    healDraughtReveldriftChargesAndEmpoweredLightAttack(healDraughtMistwillowReach(skill)),
+  ) as Skill
 
 const fieldsOf = (skill: Skill) => ({
   hits: skill.hits,
-  receives: withoutLaterReach(skill.receives),
+  receives: skill.receives,
   neverAbrades: skill.neverAbrades,
 })
 
@@ -51,7 +56,7 @@ describe("custom-skills v86 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = throughLaterHops(healSkill(clone(skillIn(STORE, id))))
     expect(fieldsOf(healed)).toEqual(fieldsOf(builtinOf(id)))
   })
 
@@ -133,7 +138,7 @@ describe("V87__draughtGrantTimingAndAbrasionTalent — called directly", () => {
     const after = V87__draughtGrantTimingAndAbrasionTalent.migrate(clone(STORE))
     expect(after.v).toBe(87)
     for (const id of HEALED_IDS)
-      expect(fieldsOf(skillIn(after, id)), id).toEqual(fieldsOf(builtinOf(id)))
+      expect(fieldsOf(throughLaterHops(skillIn(after, id))), id).toEqual(fieldsOf(builtinOf(id)))
     expect(skillIn(after, UNTOUCHED_ID)).toEqual(skillIn(STORE, UNTOUCHED_ID))
   })
 

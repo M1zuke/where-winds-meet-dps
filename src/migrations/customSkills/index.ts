@@ -90,6 +90,7 @@ import { V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "./
 import { V87__draughtGrantTimingAndAbrasionTalent } from "./V87__draughtGrantTimingAndAbrasionTalent"
 import { V88__draughtMistwillowReach } from "./V88__draughtMistwillowReach"
 import { V89__draughtReveldriftChargesAndEmpoweredLightAttack } from "./V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { V90__draughtTipsylayAndExCooldowns } from "./V90__draughtTipsylayAndExCooldowns"
 
 export type {
   CustomSkillMigration,
@@ -248,6 +249,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V87__draughtGrantTimingAndAbrasionTalent,
   V88__draughtMistwillowReach,
   V89__draughtReveldriftChargesAndEmpoweredLightAttack,
+  V90__draughtTipsylayAndExCooldowns,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

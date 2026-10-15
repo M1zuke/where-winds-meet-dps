@@ -22,6 +22,7 @@ import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrat
 import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
 import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
 import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -92,7 +93,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withReviewedTimings = healReviewedTimingsGrantsAndNames(withGauntletRetiming)
   const withGrantTiming = healDraughtGrantTimingAndAbrasionTalent(withReviewedTimings)
   const withMistwillow = healDraughtMistwillowReach(withGrantTiming)
-  return healDraughtReveldriftChargesAndEmpoweredLightAttack(withMistwillow) as Skill
+  const withCharges = healDraughtReveldriftChargesAndEmpoweredLightAttack(withMistwillow)
+  return healDraughtTipsylayAndExCooldowns(withCharges) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
