@@ -86,6 +86,10 @@ export type BuffMeta = BuffGate & {
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
+  // One stack per damaging hit of a cast whose skill lists this def in
+  // `triggersBuffs`, landing just after that hit's own damage. The cast
+  // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
+  stackOnGrantingHit?: boolean
   stackOnDamage?: boolean
   // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast

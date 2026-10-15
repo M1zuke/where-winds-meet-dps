@@ -60,6 +60,7 @@ interface HistoryEntry {
   action: "apply" | "refresh"
   expiresAt: number
   stacks?: number
+  grant?: true
 }
 
 export type { QiPhase }
@@ -85,6 +86,7 @@ export interface DamageEffectsResult {
 
 const DEFAULT_DURATION = 15
 const COOLDOWN_TOLERANCE = 1e-9
+const AFTER_HIT_SEC = 1e-6
 // `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}
@@ -554,6 +556,7 @@ export class BuffEngine {
       buffType: id,
       action: "apply",
       expiresAt: time + duration,
+      grant: true,
       ...(stacks !== undefined && { stacks }),
     })
     for (const dispelledId of module?.dispelsOnGrant ?? []) this.endWindow(dispelledId, time)
@@ -699,6 +702,16 @@ export class BuffEngine {
     return latest
   }
 
+  private latestGrantAt(id: string, time: number): HistoryEntry | null {
+    let latest: HistoryEntry | null = null
+    for (const historyEntry of this.buffHistory) {
+      if (historyEntry.buffType !== id || historyEntry.grant !== true) continue
+      if (historyEntry.time > time) continue
+      if (!latest || historyEntry.time >= latest.time) latest = historyEntry
+    }
+    return latest
+  }
+
   private historicalApplyAt(id: string, time: number): { time: number; expiresAt: number } | null {
     const latest = this.latestApplyAt(id, time)
     return latest && time < latest.expiresAt
@@ -817,7 +830,7 @@ export class BuffEngine {
     tagSet?: ReadonlySet<string>,
     grantAtSec?: number,
   ): void {
-    if (module.extendsBuffs) return
+    if (module.extendsBuffs || module.stackOnGrantingHit) return
     if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
     const afterLastHit =
@@ -849,7 +862,7 @@ export class BuffEngine {
         if (last && time - last.appliedAt < this.resolveCooldown(module, time)) return
       } else {
         const grantTime = afterLastHit ? applyTime : time
-        const last = this.latestApplyAt(module.id, grantTime)
+        const last = this.latestGrantAt(module.id, grantTime)
         if (last && grantTime - last.time < this.resolveCooldown(module, time) - COOLDOWN_TOLERANCE)
           return
       }
@@ -906,9 +919,14 @@ export class BuffEngine {
   // the first damage query reads it — which is also why every read and write
   // here is history-indexed rather than against the live map: the cast walk
   // has already run in full, so the live map holds only each id's last window.
-  processDamageHit(time: number, skill?: Skill): void {
+  processDamageHit(time: number, skill?: Skill, fromGeneratedSkill = false): void {
     const tagSet = skill ? skillTagsOf(skill) : undefined
     for (const [id, module] of this.definitions) {
+      if (module.stackOnGrantingHit) {
+        if (skill && this.grantsOnHit(module, skill, tagSet!, fromGeneratedSkill))
+          this.applyBuff(id, time + AFTER_HIT_SEC, null, 1)
+        continue
+      }
       if (!this.gateOk(module)) continue
       if (module.perHitConsume) this.processPerHitConsume(module, time, tagSet)
       if (!module.stackOnDamage) continue
@@ -917,6 +935,17 @@ export class BuffEngine {
       if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, time)
       else if (this.canGrantDamageStack(module, time)) this.applyBuff(id, time, null, 1)
     }
+  }
+
+  private grantsOnHit(
+    module: BuffModule,
+    skill: Skill,
+    tagSet: ReadonlySet<string>,
+    fromGeneratedSkill: boolean,
+  ): boolean {
+    if (!skill.triggersBuffs?.includes(module.id)) return false
+    if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return false
+    return this.gateOk(module, castTagOf(skill), tagSet)
   }
 
   private static qiGateHolds(gate: QiGate, phase: QiPhase, fraction: number): boolean {

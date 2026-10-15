@@ -5,6 +5,10 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 
+// Soul Burning, then Total Annihilation after a 7 f lead (authored, not a game
+// value). In-game animation as of 2026-10-15: the strike lands 18.65 f and the
+// cast ends 42 f after Total Annihilation starts, which is where Soul Burning
+// ends.
 export const phalanxq = defineSkill({
   id: SKILL.phalanxq,
   classId: "stonesplitStrength",
@@ -15,12 +19,13 @@ export const phalanxq = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxQ,
   receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
-  triggersBuffs: [BUFF.throatPierced],
+  triggersBuffs: [BUFF.throatPierced, BUFF.jadeware],
+  triggersBuffsAtFrame: { [BUFF.jadeware]: 7 },
   castFrames: 49,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 26,
       physMultiplier: 1.8948,
       attributeMultiplier: 2.8422,
       physFixed: 525,
@@ -35,5 +40,5 @@ export const phalanxq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

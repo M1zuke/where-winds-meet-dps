@@ -1815,7 +1815,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           inheritedBuffIds: [],
           midCastExtraFrames: ls.midCastExtraFrames,
         }))
-        const damageHits: { frame: number; skill: Skill }[] = []
+        const damageHits: { frame: number; skill: Skill; generated: boolean }[] = []
 
         let processed = 0
         while (pending.length > 0 && processed < EVENT_CAP) {
@@ -1866,7 +1866,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           }
           for (const hit of performedHits) {
             const hitFrame = landingFrameOf(hit)
-            if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
+            if (hitDealsDamage(hit))
+              damageHits.push({ frame: hitFrame, skill: cast.skill, generated: cast.generated })
             for (const trigger of hit.triggers) {
               if (trigger.kind !== "castSkill") continue
               if (!castTriggerFires(trigger, hitFrame)) continue
@@ -1886,7 +1887,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
 
         damageHits.sort((left, right) => left.frame - right.frame)
-        for (const { frame, skill } of damageHits) engine.processDamageHit(frame / FPS, skill)
+        for (const { frame, skill, generated } of damageHits)
+          engine.processDamageHit(frame / FPS, skill, generated)
         return engine
       } catch {
         return null

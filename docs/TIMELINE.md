@@ -572,10 +572,17 @@ for applying, `receives` for boosting — never by the module itself.
   cast's last landed hit** (`buffAppliesAfterLastHitSec`) — the frame the hit
   lands at after any projectile flight, not the cast's start — for a state the
   game applies off a hit. Its trigger phase and its cooldown are read at that
-  moment, and its cooldown compares within float tolerance. A cast that landed
+  moment, and its cooldown compares within float tolerance, counted from the
+  last grant and never from a stack spent. A cast that landed
   no hit grants at its start; cast end and a per-site delay take precedence. A
   grant on the cast's end lands at the cast length the active hit variant
   selects, not the skill's base length.
+- **A module may stack per granting hit** (`stackOnGrantingHit`): every
+  damaging hit of a cast whose skill lists the module in `triggersBuffs` grants
+  one stack at that hit's own landing time, just after the hit's own damage —
+  the cast grants nothing at its start, and a zero-damage hit grants none. Only
+  `requires` and `grantRequires` gate a hit; a generated attack counts only for
+  a module that accepts one (`triggersFromGeneratedSkills`).
 - **A module may be blocked while other modules' windows are live**
   (`blockedWhileActive`: the grant lands neither a window nor a refresh) **and
   may end other modules' windows where it lands** (`dispelsOnGrant`). Both read

@@ -32,7 +32,7 @@ export const snowpartingspecial = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSpecial,
   receives: SNOWPARTING_BLADE_RECEIVES,
-  triggersBuffs: [BUFF.innerPassion, BUFF.jadeware],
+  triggersBuffs: [BUFF.innerPassion],
   // In-game values as of 2026-09-25: needs 50, but only 5 is actually spent.
   castConditions: [bladeMomentumRequires("gte", 50)],
   meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 5 }],

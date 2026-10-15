@@ -1,0 +1,1280 @@
+{
+  "v": 85,
+  "skills": [
+    {
+      "id": "stonesplitStrength-snowpartingvc",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingVC",
+      "tags": [
+        "prop:consumesInnerPassion",
+        "prop:cleftpeakBoost",
+        "weapon:Heng Blade",
+        "attack:heavy",
+        "attune:snowpartingVariedCombo",
+        "role:snowpartingVC"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingVC",
+      "castConditions": [
+        {
+          "buffId": "snowbreakSpringAvailable",
+          "op": "gte",
+          "stacks": 1
+        },
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gte",
+          "stacks": 25
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 25
+        }
+      ],
+      "receives": [
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "frostCladSnowbreak",
+        "frostCladSnowbreakIPConsume",
+        "frostCladSnowbreakT6",
+        "cleftpeakDeflect",
+        "snowpartingBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 52,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 2.0769,
+          "attributeMultiplier": 3.1153,
+          "physFixed": 575,
+          "attributeFixed": 313,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringCooldown",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight"
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldierheng",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 1
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-stonesplitStrength-dread",
+              "stacks": 0,
+              "condition": null,
+              "phase": "exhausted",
+              "extendFrames": 120,
+              "extendOnly": true,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "forgetfulness",
+              "stacks": 1,
+              "condition": {
+                "buffId": "forgetfulnessCooldown",
+                "op": "eq",
+                "stacks": 0
+              },
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "clearStatus",
+              "targetId": "forgetfulnessCooldown",
+              "stacks": 1,
+              "condition": null,
+              "phase": "exhausted",
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 12.5,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 3
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingvc-prepull",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingVC Prepull",
+      "tags": [
+        "prop:consumesInnerPassion",
+        "prop:cleftpeakBoost",
+        "weapon:Heng Blade",
+        "attack:heavy",
+        "attune:snowpartingVariedCombo",
+        "role:snowpartingVC"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingVCPrepull",
+      "castConditions": [
+        {
+          "buffId": "snowbreakSpringAvailable",
+          "op": "gte",
+          "stacks": 1
+        },
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gte",
+          "stacks": 25
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 25
+        }
+      ],
+      "receives": [
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "frostCladSnowbreak",
+        "frostCladSnowbreakIPConsume",
+        "frostCladSnowbreakT6",
+        "cleftpeakDeflect",
+        "snowpartingBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 6,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 2.07686,
+          "attributeMultiplier": 3.11529,
+          "physFixed": 575,
+          "attributeFixed": 313,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringCooldown",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight"
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldierheng",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 1
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "forgetfulness",
+              "stacks": 1,
+              "condition": {
+                "buffId": "forgetfulnessCooldown",
+                "op": "eq",
+                "stacks": 0
+              },
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "clearStatus",
+              "targetId": "forgetfulnessCooldown",
+              "stacks": 1,
+              "condition": null,
+              "phase": "exhausted",
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 12.5,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 3
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingcharged",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingCharged",
+      "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingCharged",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gt",
+          "stacks": 15
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 15
+        }
+      ],
+      "castFrames": 97,
+      "triggerable": true,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 50,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 63,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringAvailable",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 96,
+          "physMultiplier": 0.9798,
+          "attributeMultiplier": 1.4697,
+          "physFixed": 271.2,
+          "attributeFixed": 147.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingcharged-forgetfulness",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingCharged[Forgetfulness]",
+      "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingChargedForgetfulness",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "castFrames": 57,
+      "triggerable": true,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 11,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "forgetfulnessCooldown",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 31,
+          "physMultiplier": 0.4899,
+          "attributeMultiplier": 0.734867,
+          "physFixed": 135.6,
+          "attributeFixed": 73.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringAvailable",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 57,
+          "physMultiplier": 0.9798,
+          "attributeMultiplier": 1.4697,
+          "physFixed": 271.2,
+          "attributeFixed": 147.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 3.25,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingdual",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingDual",
+      "tags": ["weapon:Heng Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingDual",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "isWeaponSwap": true,
+      "castFrames": 34,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 22,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringAvailable",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight",
+              "requiresMinTier": 3
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 30,
+          "physMultiplier": 0.6486,
+          "attributeMultiplier": 0.9729,
+          "physFixed": 180,
+          "attributeFixed": 98,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingq-slash",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingQ-Slash",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingQSlash",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "castFrames": 40,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.596352,
+          "attributeMultiplier": 0.894528,
+          "physFixed": 165.2,
+          "attributeFixed": 90,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 30,
+          "physMultiplier": 0.894528,
+          "attributeMultiplier": 1.341792,
+          "physFixed": 247.8,
+          "attributeFixed": 135,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingq-stab",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingQ-Stab",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ", "prop:cleftpeakBoost", "role:snowpartingQStab"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingQStab",
+      "receives": ["cleftpeakDeflect", "snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 69,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.85296,
+          "attributeMultiplier": 1.27944,
+          "physFixed": 236,
+          "attributeFixed": 128.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 48,
+          "physMultiplier": 1.27944,
+          "attributeMultiplier": 1.91916,
+          "physFixed": 354,
+          "attributeFixed": 193.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldierheng-stab",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-stonesplitStrength-dread",
+              "stacks": 0,
+              "condition": null,
+              "extendFrames": 120,
+              "extendOnly": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-stonesplitStrength-fearful-blade",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingslide",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingSlide",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSlide",
+      "startLatency": "serverRoundTrip",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 32,
+          "physMultiplier": 1.2338,
+          "attributeMultiplier": 1.8507,
+          "physFixed": 342,
+          "attributeFixed": 186,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingslide-prepull",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingSlide Prepull",
+      "tags": ["weapon:Heng Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSlidePrepull",
+      "startLatency": "serverRoundTrip",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "castFrames": 0,
+      "triggerable": true,
+      "reachMeters": 8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingslide-prepull-hit",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingSlide Prepull[Hit]",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSlidePrepullHit",
+      "startLatency": "serverRoundTrip",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "castFrames": 6,
+      "triggerable": true,
+      "reachMeters": 8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.2338,
+          "attributeMultiplier": 1.8507,
+          "physFixed": 342,
+          "attributeFixed": 186,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingspecial",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingSpecial",
+      "tags": ["weapon:Heng Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSpecial",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["innerPassion", "jadeware"],
+      "castConditions": [
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 5
+        }
+      ],
+      "castFrames": 124,
+      "triggerable": true,
+      "reachMeters": 6,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 51,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 73,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 79,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 85,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 91,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-5",
+          "frame": 109,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-6",
+          "frame": 113,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-7",
+          "frame": 117,
+          "physMultiplier": 0.377968,
+          "attributeMultiplier": 0.566952,
+          "physFixed": 104.6,
+          "attributeFixed": 57,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-stonesplitStrength-dread",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-8",
+          "frame": 121,
+          "physMultiplier": 0.755936,
+          "attributeMultiplier": 1.133904,
+          "physFixed": 209.2,
+          "attributeFixed": 114,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-stonesplitStrength-dread",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxq",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxQ",
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxQ",
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 49,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.8948,
+          "attributeMultiplier": 2.8422,
+          "physFixed": 525,
+          "attributeFixed": 286,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermosweep",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxq-supreme",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxQ (Supreme)",
+      "breakdownName": "Total Annihilation - Supreme",
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxQSupreme",
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "totalAnnihilationSupremeShield"],
+      "triggersBuffsAtFrame": {
+        "totalAnnihilationSupremeShield": 42
+      },
+      "castFrames": 49,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 3.5256,
+          "attributeMultiplier": 5.2884,
+          "physFixed": 975,
+          "attributeFixed": 532,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermosweep-supreme",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxcharged-s3",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S3",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeart",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxChargedS3",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "castConditions": [
+        {
+          "param": "steadfastDevotion",
+          "minTier": 1
+        },
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gt",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 50
+        }
+      ],
+      "castFrames": 173,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 76,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 112,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermojump",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "steadfastDevotion",
+              "requiresMinTier": 1
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 151,
+          "physMultiplier": 1.7199,
+          "attributeMultiplier": 2.5798,
+          "physFixed": 475.8,
+          "attributeFixed": 259.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 160,
+          "physMultiplier": 4.0131,
+          "attributeMultiplier": 6.0196,
+          "physFixed": 1110.2,
+          "attributeFixed": 604.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S3[InnerPassion]",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeart",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxChargedS3InnerPassion",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "castConditions": [
+        {
+          "param": "steadfastDevotion",
+          "minTier": 1
+        },
+        {
+          "anyOf": [
+            {
+              "param": "steadfastDevotion",
+              "minTier": 4
+            },
+            {
+              "buffId": "meter:bladeMomentum",
+              "op": "gt",
+              "stacks": 25
+            }
+          ]
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 25,
+          "requiresParam": "steadfastDevotion",
+          "requiresMaxTier": 3
+        }
+      ],
+      "castFrames": 142,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 57,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 81,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermojump",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "steadfastDevotion",
+              "requiresMinTier": 1
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 120,
+          "physMultiplier": 1.7199,
+          "attributeMultiplier": 2.5798,
+          "physFixed": 475.8,
+          "attributeFixed": 259.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 129,
+          "physMultiplier": 4.0131,
+          "attributeMultiplier": 6.0196,
+          "physFixed": 1110.2,
+          "attributeFixed": 604.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-heng-dash",
+      "classId": "stonesplitStrength",
+      "name": "Heng Blade - Dash",
+      "tags": ["weapon:Heng Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:hengDash",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "castFrames": 40,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 7,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 6
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 1
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.43723,
+          "attributeMultiplier": 0.655845,
+          "physFixed": 122,
+          "attributeFixed": 66,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-snowparting-slide",
+      "classId": "stonesplitStrength",
+      "name": "My Slide",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSlide",
+      "startLatency": "serverRoundTrip",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 32,
+          "physMultiplier": 1.2338,
+          "attributeMultiplier": 1.8507,
+          "physFixed": 342,
+          "attributeFixed": 186,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    }
+  ]
+}

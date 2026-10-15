@@ -184322,7 +184322,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "2c463456efc12bd286c8c1d2e12ccc119be34ce2aa3c1906123cabb8557266d2"
+        "digest": "d34d90514470d0142f7689249f2d7cb9a0132e8a0e2b56b7eb8584047bb8ca82"
       },
       "debuffs": {
         "count": 6,
@@ -184500,7 +184500,7 @@
           "grantRequires": null,
           "affectsAll": true,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": 30,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -184599,7 +184599,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -185960,7 +185960,7 @@
       ]
     },
     "dynamic": {
-      "digest": "ab1ea20a0bd4afd0eaf0ceab2c788056b267704bd736945b7e3af7dfb81fae04"
+      "digest": "1fa0f10a9f6edb53e000bbf2b76e180cfc4a0dd1a0e53f484b08e55900c44c06"
     }
   },
   "bellstrikeSplendor": {

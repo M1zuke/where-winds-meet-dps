@@ -15,7 +15,7 @@ export const snowpartingqStab = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQStab,
   receives: [BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
-  triggersBuffs: [BUFF.throatPierced],
+  triggersBuffs: [BUFF.throatPierced, BUFF.jadeware],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 69,
   triggerable: true,

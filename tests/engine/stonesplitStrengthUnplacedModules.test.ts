@@ -29,7 +29,7 @@ const hitValues = (skillId: string) =>
   ])
 
 describe.each([
-  [SKILL.snowpartingqSlash, CAST.snowpartingQSlash, 40, [14, 30]],
+  [SKILL.snowpartingqSlash, CAST.snowpartingQSlash, 40, [14, 29]],
   [SKILL.phalanxchargedS1, CAST.phalanxChargedS1, 79, [48, 55]],
   [SKILL.phalanxchargedS2, CAST.phalanxChargedS2, 137, [76, 115, 124]],
   [SKILL.phalanxchargedS2Innerpassion, CAST.phalanxChargedS2InnerPassion, 118, [57, 96, 105]],
@@ -79,16 +79,16 @@ describe.each([
 describe("SnowpartingQ-Slash", () => {
   const slash = stonesplitSkill(SKILL.snowpartingqSlash)
 
-  it("carries the Snowparting Q attunement and none of the Stab's triggers", () => {
+  it("carries the Snowparting Q attunement, fires Jadeware, and none of the Stab's triggers", () => {
     expect(slash.tags).toEqual([WEAPON.hengBlade, ATTUNE.snowpartingQ])
-    expect(slash.triggersBuffs).toEqual([])
+    expect(slash.triggersBuffs).toEqual([BUFF.jadeware])
     expect(slash.hits.flatMap((skillHit) => skillHit.triggers)).toEqual([])
   })
 
   it("hits twice with the 0.4 / 0.6 split", () => {
     expect(hitValues(SKILL.snowpartingqSlash)).toEqual([
       [14, 0.596352, 0.894528, 165.2, 90],
-      [30, 0.894528, 1.341792, 247.8, 135],
+      [29, 0.894528, 1.341792, 247.8, 135],
     ])
     expect(slash.reachMeters).toBe(4.5)
   })

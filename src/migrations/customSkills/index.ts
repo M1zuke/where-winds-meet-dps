@@ -86,6 +86,7 @@ import { V82__umbraCastLengthsAndSweepAllBurstStacks } from "./V82__umbraCastLen
 import { V83__splendorQiImbalanceOnHitAndEndlessGaleWindow } from "./V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { V84__jadeHitLandingsGrantsAndClipTimings } from "./V84__jadeHitLandingsGrantsAndClipTimings"
 import { V85__jadeAvailabilityAndRecharge } from "./V85__jadeAvailabilityAndRecharge"
+import { V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "./V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
 
 export type {
   CustomSkillMigration,
@@ -240,6 +241,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V83__splendorQiImbalanceOnHitAndEndlessGaleWindow,
   V84__jadeHitLandingsGrantsAndClipTimings,
   V85__jadeAvailabilityAndRecharge,
+  V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -27,6 +27,7 @@ export const snowpartingvcPrepull = defineSkill({
   castTag: CAST.snowpartingVCPrepull,
   castConditions: [
     { buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 },
+    { buffId: BUFF.snowbreakSpringCooldown, op: "eq", stacks: 0 },
     bladeMomentumRequires("gte", 25),
   ],
   meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 25 }],
@@ -55,6 +56,10 @@ export const snowpartingvcPrepull = defineSkill({
       attributeFixed: 313,
       triggers: [
         applyBuff({ target: BUFF.snowbreakSpringCooldown, requiresParam: PARAM.frostCladNight }),
+        clearStatus({
+          target: BUFF.snowbreakSpringAvailable,
+          requiresParam: PARAM.frostCladNight,
+        }),
         castSkill({
           target: SKILL.anxisoldierheng,
           stacks: 0,
