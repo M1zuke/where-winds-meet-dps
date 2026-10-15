@@ -4,7 +4,7 @@ type TupleOfLength<
   Built extends Row[] = [],
 > = Built["length"] extends Length ? Built : TupleOfLength<Row, Length, [...Built, Row]>
 
-export type LadderLevels<Row> = Readonly<TupleOfLength<Row, 85>>
+export type LadderLevels<Row> = Readonly<TupleOfLength<Row, 75>>
 export type AverageBonusLevels = Readonly<TupleOfLength<AverageEnhancementBonusLevel, 17>>
 
 export interface WeaponEnhancementLevel {

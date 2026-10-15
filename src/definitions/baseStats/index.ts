@@ -15,11 +15,13 @@ import type {
   DisabledTalentNodes,
   EnhancementLevels,
   GearPiece,
+  GearSlot,
   Inputs,
   MartialArtsTalent,
   ScalingSource,
   UnclaimedOddityNodes,
 } from "../../engine/types"
+import { GEAR_SLOTS } from "../../engine/types"
 import {
   artAttackStageAt,
   BASE_STAT_LEVELS,
@@ -41,6 +43,7 @@ import {
   averageEnhancementBonus,
   defaultEnhancementLevels,
   effectiveEnhancementLevels,
+  enhancedSlotsOf,
   enhancementContributions as enhancementAttackContributions,
   enhancementHpTotal,
   enhancementPhysDefTotal,
@@ -380,6 +383,7 @@ export function totalMaxHp(
   enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+  enhancedSlots: readonly GearSlot[] = GEAR_SLOTS,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
   const gear = gearAttributeTotals(equippedPieces)
@@ -389,7 +393,7 @@ export function totalMaxHp(
     (acc.body + gear.body) * BODY_PER_POINT.hp +
     (acc.defense + gear.defense) * DEFENSE_PER_POINT.hp +
     arsenalHp(breakthrough, arsenalScores) +
-    enhancementHpTotal(enhancements) +
+    enhancementHpTotal(enhancements, enhancedSlots) +
     averageEnhancementBonus(enhancements).maxHp +
     oddityHpTotal(unclaimedOddityNodes)
   )
@@ -402,6 +406,7 @@ export function effectiveMaxHp(
   enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+  enhancedSlots: readonly GearSlot[] = GEAR_SLOTS,
 ): number {
   const raw = totalMaxHp(
     breakthrough,
@@ -410,6 +415,7 @@ export function effectiveMaxHp(
     enhancements,
     unclaimedOddityNodes,
     arsenalScores,
+    enhancedSlots,
   )
   return raw * (1 + averageEnhancementBonus(enhancements).percent)
 }
@@ -421,6 +427,7 @@ export function totalPhysDef(
   enhancements: EnhancementLevels = defaultEnhancementLevels(breakthrough),
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
   armorSetPhysDef = 0,
+  enhancedSlots: readonly GearSlot[] = GEAR_SLOTS,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
   const gear = gearAttributeTotals(equippedPieces)
@@ -428,7 +435,7 @@ export function totalPhysDef(
     acc.physDef +
     gearPhysDefTotal(equippedPieces) +
     (acc.defense + gear.defense) * DEFENSE_PER_POINT.physDef +
-    enhancementPhysDefTotal(enhancements) +
+    enhancementPhysDefTotal(enhancements, enhancedSlots) +
     oddityPhysDefTotal(unclaimedOddityNodes) +
     armorSetPhysDef
   )
@@ -539,9 +546,11 @@ export function getConfiguredBase(
     base[path] = (base[path] ?? 0) + amount
   }
   const enhancements = inputs.enhancements
-    ? effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough, inputs)
+    ? effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough)
     : defaultEnhancementLevels(inputs.breakthrough, inputs)
-  for (const [path, amount] of Object.entries(enhancementAttackContributions(enhancements))) {
+  for (const [path, amount] of Object.entries(
+    enhancementAttackContributions(enhancements, enhancedSlotsOf(inputs)),
+  )) {
     base[path] = (base[path] ?? 0) + amount
   }
   return base

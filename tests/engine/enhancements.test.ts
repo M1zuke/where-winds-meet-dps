@@ -4,6 +4,7 @@ import {
   averageEnhancementLevel,
   defaultEnhancementLevels,
   effectiveEnhancementLevels,
+  enhancedSlotsOf,
   enhancementCap,
   enhancementContributions,
   enhancementHpTotal,
@@ -62,8 +63,8 @@ describe("default enhancement levels", () => {
       [13, 45],
       [17, 65],
       [19, 75],
-      [20, 80],
-      [21, 80],
+      [20, 75],
+      [21, 75],
     ] as const) {
       const levels = defaultEnhancementLevels(breakthrough)
       for (const slot of GEAR_SLOTS) expect(levels[slot]).toBe(level)
@@ -77,16 +78,27 @@ describe("default enhancement levels", () => {
 
   it("defaults an empty slot to the highest level the breakthrough allows with sufficient gear", () => {
     expect(defaultEnhancementLevels(19).pendant).toBe(75)
-    expect(defaultEnhancementLevels(21).pendant).toBe(80)
+    expect(defaultEnhancementLevels(21).pendant).toBe(75)
     expect(defaultEnhancementLevels(18, gearWith("disc", 96)).pendant).toBe(70)
   })
 
-  it("clamps the effective level to the slot's cap without changing the stored levels", () => {
-    const stored: EnhancementLevels = { ...LEVEL_65, disc: 70 }
-    const effective = effectiveEnhancementLevels(stored, 18, gearWith("disc", 96))
-    expect(effective.disc).toBe(65)
+  it("clamps the effective level to the breakthrough's cap without changing the stored levels", () => {
+    const stored: EnhancementLevels = { ...LEVEL_65, disc: 80 }
+    const effective = effectiveEnhancementLevels(stored, 18)
+    expect(effective.disc).toBe(70)
     expect(effective.pendant).toBe(65)
-    expect(stored.disc).toBe(70)
+    expect(stored.disc).toBe(80)
+  })
+
+  it("keeps a level above the equipped piece's gear-level cap, the way an inherited level stays", () => {
+    const stored: EnhancementLevels = { ...LEVEL_65, disc: 70 }
+    expect(effectiveEnhancementLevels(stored, 18).disc).toBe(70)
+  })
+
+  it("never lets the effective level pass the 75 levels the ladder has", () => {
+    const stored: EnhancementLevels = { ...LEVEL_65, disc: 85 }
+    expect(effectiveEnhancementLevels(stored, 21).disc).toBe(75)
+    expect(stored.disc).toBe(85)
   })
 
   it("defaultEnhancementLevels() returns a fresh object each call", () => {
@@ -160,6 +172,29 @@ describe("the average-level bonus layer", () => {
   })
 })
 
+describe("which slots the enhancement sums count", () => {
+  const unequippedHelm = {
+    inventory: [{ id: "weapon-1", slot: "leftWeapon", level: 100 } as unknown as GearPiece],
+    equipped: { ...defaultInputs.equipped, leftWeapon: "weapon-1" },
+  }
+
+  it("counts every slot when no gear is entered", () => {
+    expect(enhancedSlotsOf(undefined)).toEqual(GEAR_SLOTS)
+    expect(enhancedSlotsOf({ inventory: [], equipped: defaultInputs.equipped })).toEqual(GEAR_SLOTS)
+  })
+
+  it("counts only the equipped slots once an inventory exists", () => {
+    expect(enhancedSlotsOf(unequippedHelm)).toEqual(["leftWeapon"])
+  })
+
+  it("leaves an unequipped slot out of the sums but keeps its level in the average", () => {
+    const slots = enhancedSlotsOf(unequippedHelm)
+    expect(enhancementHpTotal(LEVEL_65, slots)).toBe(0)
+    expect(enhancementContributions(LEVEL_65, slots)["phys.min"]).toBe(120)
+    expect(averageEnhancementLevel(LEVEL_65)).toBe(65)
+  })
+})
+
 describe("enhancementCap", () => {
   it("matches the effective cap per breakthrough at that breakthrough's own gear level", () => {
     expect(enhancementCap(86, 13)).toBe(45)
@@ -174,18 +209,16 @@ describe("enhancementCap", () => {
     expect(enhancementCap(100, 19)).toBe(75)
   })
 
-  it("caps at the season ceiling of 80 from world level 20 on", () => {
-    expect(enhancementCap(105, 20)).toBe(80)
-    expect(enhancementCap(105, 21)).toBe(80)
+  it("stops at the 75 levels the ladder has from world level 19 on", () => {
+    expect(enhancementCap(105, 19)).toBe(75)
+    expect(enhancementCap(105, 20)).toBe(75)
+    expect(enhancementCap(105, 21)).toBe(75)
   })
 
-  it("grants the level-76 to level-85 figures the ladder authors", () => {
-    expect(enhancementStatsAtLevel("leftWeapon", 80)).toEqual({ minPhys: 147, maxPhys: 98 })
-    expect(enhancementStatsAtLevel("rightWeapon", 85)).toEqual({ minPhys: 156, maxPhys: 104 })
-    expect(enhancementStatsAtLevel("pendant", 85)).toEqual({ maxPhys: 208 })
-    expect(enhancementStatsAtLevel("bracer", 85)).toEqual({ maxHp: 11619 })
-    expect(enhancementStatsAtLevel("greaves", 84)).toEqual({ maxHp: 7930, physDef: 77 })
-    expect(enhancementStatsAtLevel("greaves", 85)).toEqual({ maxHp: 8023, physDef: 78 })
+  it("grants the level-75 figures for any higher level", () => {
+    expect(enhancementStatsAtLevel("leftWeapon", 80)).toEqual(
+      enhancementStatsAtLevel("leftWeapon", 75),
+    )
   })
 
   it("reads the average bonus at every 5-level threshold up to 85", () => {
@@ -220,12 +253,12 @@ describe("the gear level that would unlock a higher enhancement cap", () => {
     expect(gearLevelUnlock(100, 18)).toBeUndefined()
   })
 
-  it("offers the season ceiling, not the next tier, at breakthrough 21", () => {
-    expect(gearLevelUnlock(100, 21)).toEqual({ level: 80, gearLevel: 105 })
+  it("offers nothing to a gear level 100 piece at breakthrough 21, where the ladder ends at 75", () => {
+    expect(gearLevelUnlock(100, 21)).toBeUndefined()
   })
 
-  it("offers nothing to a piece already at the season ceiling at breakthrough 21", () => {
-    expect(gearLevelUnlock(105, 21)).toBeUndefined()
+  it("offers level 75 at gear level 100 to a gear level 96 piece at breakthrough 21", () => {
+    expect(gearLevelUnlock(96, 21)).toEqual({ level: 75, gearLevel: 100 })
   })
 
   it("names the lowest gear level that reaches the full level, not the next tier step", () => {

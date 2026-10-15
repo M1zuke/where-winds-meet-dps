@@ -48,8 +48,8 @@ export function EnhancementTab({ inputs, onChange }: Props) {
     [inputs.inventory, inputs.equipped],
   )
   const levels = useMemo(
-    () => effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough, gear),
-    [inputs.enhancements, inputs.breakthrough, gear],
+    () => effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough),
+    [inputs.enhancements, inputs.breakthrough],
   )
 
   const { capBySlot, unlockBySlot } = useMemo(() => {
@@ -70,7 +70,7 @@ export function EnhancementTab({ inputs, onChange }: Props) {
     if (delta > 0 && current >= capBySlot[slot]) return
     onChange({
       ...inputs,
-      enhancements: { ...levels, [slot]: Math.max(0, current + delta) },
+      enhancements: { ...inputs.enhancements, [slot]: Math.max(0, current + delta) },
     })
   }
 

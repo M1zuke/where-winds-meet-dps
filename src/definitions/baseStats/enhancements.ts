@@ -15,7 +15,7 @@ import {
 } from "../../data/baseStats"
 import type { LadderLevels } from "./enhancementLadderDef"
 
-const LADDER_CEILING = 85
+const LADDER_CEILING = WEAPON_ENHANCEMENT_LEVELS.length
 
 type EnhancementProfile = "weapon" | "discPendant" | "helmBracer" | "chestGreaves"
 
@@ -83,9 +83,12 @@ export function levelForEnhancementValue(slot: GearSlot, stat: string, value: nu
   }
 }
 
-export function enhancementContributions(levels: EnhancementLevels): Record<string, number> {
+export function enhancementContributions(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const slot of GEAR_SLOTS) {
+  for (const slot of slots) {
     const stats = enhancementStatsAtLevel(slot, levels[slot] ?? 0)
     if (stats.minPhys) out["phys.min"] = (out["phys.min"] ?? 0) + stats.minPhys
     if (stats.maxPhys) out["phys.max"] = (out["phys.max"] ?? 0) + stats.maxPhys
@@ -93,15 +96,21 @@ export function enhancementContributions(levels: EnhancementLevels): Record<stri
   return out
 }
 
-export function enhancementHpTotal(levels: EnhancementLevels): number {
+export function enhancementHpTotal(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): number {
   let hp = 0
-  for (const slot of GEAR_SLOTS) hp += enhancementStatsAtLevel(slot, levels[slot] ?? 0).maxHp ?? 0
+  for (const slot of slots) hp += enhancementStatsAtLevel(slot, levels[slot] ?? 0).maxHp ?? 0
   return hp
 }
 
-export function enhancementPhysDefTotal(levels: EnhancementLevels): number {
+export function enhancementPhysDefTotal(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): number {
   let physDef = 0
-  for (const slot of GEAR_SLOTS) {
+  for (const slot of slots) {
     physDef += enhancementStatsAtLevel(slot, levels[slot] ?? 0).physDef ?? 0
   }
   return physDef
@@ -224,6 +233,12 @@ export function equippedPieceGearLevel(
   return gear?.inventory.find((piece) => piece.id === equippedId)?.level
 }
 
+export function enhancedSlotsOf(gear: EnhancementGear | undefined): readonly GearSlot[] {
+  if (!gear || gear.inventory.length === 0) return GEAR_SLOTS
+  const pieceIds = new Set(gear.inventory.map((piece) => piece.id))
+  return GEAR_SLOTS.filter((slot) => pieceIds.has(gear.equipped[slot] ?? ""))
+}
+
 export function slotEnhancementCap(
   slot: GearSlot,
   breakthrough: number,
@@ -244,11 +259,9 @@ export function defaultEnhancementLevels(
 export function effectiveEnhancementLevels(
   levels: EnhancementLevels,
   breakthrough: number,
-  gear?: EnhancementGear,
 ): EnhancementLevels {
+  const ceiling = enhancementCap(Infinity, breakthrough)
   const effective = {} as EnhancementLevels
-  for (const slot of GEAR_SLOTS) {
-    effective[slot] = Math.min(levels[slot] ?? 0, slotEnhancementCap(slot, breakthrough, gear))
-  }
+  for (const slot of GEAR_SLOTS) effective[slot] = Math.min(levels[slot] ?? 0, ceiling)
   return effective
 }

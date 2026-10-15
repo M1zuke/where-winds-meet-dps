@@ -2,6 +2,7 @@ import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import {
   effectiveEnhancementLevels,
+  enhancedSlotsOf,
   effectiveMaxHp,
   totalFormlessAttack,
   totalMaxHp,
@@ -93,7 +94,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
   })
 
   const equippedPieces = equippedPiecesFor(inputs)
-  const enhancements = effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough, inputs)
+  const enhancedSlots = enhancedSlotsOf(inputs)
+  const enhancements = effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough)
   const attrs = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
@@ -106,6 +108,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const maxHpEffective = effectiveMaxHp(
     inputs.breakthrough,
@@ -114,6 +117,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const physDef = totalPhysDef(
     inputs.breakthrough,
@@ -122,6 +126,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     enhancements,
     inputs.unclaimedOddityNodes,
     armorSetPhysDefBonus(inputs),
+    enhancedSlots,
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
