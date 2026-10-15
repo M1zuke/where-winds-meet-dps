@@ -8,6 +8,7 @@ import {
   V60__springlessSilenceLandingHitOnly,
   healSkill,
 } from "../../src/migrations/customSkills/V60__springlessSilenceLandingHitOnly"
+import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV59File from "./testCustomSkills/v59/store.json"
@@ -41,7 +42,9 @@ describe("healSkill", () => {
     const original = clone(skillIn(STORE, SPRINGLESS_ID))
     const healed = healSkill(clone(original)) as Skill
     expect(healed.hits).toEqual([{ ...original.hits[1], id: "hit-0" }])
-    expect(healed.hits[0]).toEqual(builtinSpringless().hits[0])
+    expect((healJadeHitLandingsGrantsAndClipTimings(healed) as Skill).hits[0]).toEqual(
+      builtinSpringless().hits[0],
+    )
   })
 
   it("keeps every other field of the copy", () => {
@@ -99,7 +102,9 @@ describe("V60__springlessSilenceLandingHitOnly — through the chain", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 60 })!
     expect(result.applied).toEqual(["V60__springlessSilenceLandingHitOnly"])
     expect(result.blob.v).toBe(60)
-    expect(skillIn(result.blob, SPRINGLESS_ID).hits).toEqual(builtinSpringless().hits)
+    expect(
+      (healJadeHitLandingsGrantsAndClipTimings(skillIn(result.blob, SPRINGLESS_ID)) as Skill).hits,
+    ).toEqual(builtinSpringless().hits)
     expect(skillIn(result.blob, USER_AUTHORED_ID)).toEqual(skillIn(STORE, USER_AUTHORED_ID))
   })
 })

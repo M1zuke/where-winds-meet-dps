@@ -118,6 +118,8 @@ export const BUFF = {
   soulShaken: "soulShaken",
   springThunder: "springThunder",
   starReacher: "starReacher",
+  starReacherSupreme: "starReacherSupreme",
+  starReacherMarkedTarget: "starReacherMarkedTarget",
   strategicSwordAdditionalAttack: "strategicSwordAdditionalAttack",
   subtlefit: "subtlefit",
   surgingWaves: "surgingWaves",

@@ -26,6 +26,8 @@ export const umbqPrepull = defineSkill({
     BUFF.trajectorySkill,
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
+    BUFF.thunderousBloom,
+    BUFF.springThunder,
     BUFF.starweaveMartialBoost,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],

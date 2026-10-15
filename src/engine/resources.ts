@@ -16,7 +16,7 @@ export interface ResourceLaunch {
   endSec: number
   endAmount: number
   ticks: number
-  reason: "depleted" | "recalled" | "fightEnd" | "insufficient"
+  reason: "depleted" | "recalled" | "expired" | "fightEnd" | "insufficient"
   share: number
 }
 export interface ResourceResult {
@@ -46,6 +46,7 @@ interface Branch {
   active: ResourceLaunch | null
   activeOwner: number | null
   lastRefund: number
+  pendingRefundFrame: number | null
   armedAt: Map<string, number>
 }
 
@@ -69,6 +70,7 @@ export class CombatResource {
         active: null,
         activeOwner: null,
         lastRefund: -Infinity,
+        pendingRefundFrame: null,
         armedAt: new Map(),
       },
     ]
@@ -143,6 +145,7 @@ export class CombatResource {
         branch.amount,
         branch.activeOwner,
         branch.lastRefund,
+        branch.pendingRefundFrame,
         launch ? `${launch.timeSec}/${launch.opening}/${launch.ticks}` : "idle",
         [...branch.armedAt].join(","),
       ].join("|")
@@ -172,9 +175,20 @@ export class CombatResource {
           0,
           Math.min(this.definition.capacity, branch.amount + (regen - drain) / this.context.fps),
         )
+        if (branch.pendingRefundFrame !== null && this.frame >= branch.pendingRefundFrame) {
+          branch.pendingRefundFrame = null
+          this.credit(branch, this.definition.endRefund)
+        }
         if (wasActive && branch.amount < 1e-8) {
           branch.amount = 0
           this.stop(branch, "depleted")
+        } else if (
+          wasActive &&
+          branch.active &&
+          this.definition.maxRunSeconds !== undefined &&
+          this.frame - branch.activeOwner! >= this.definition.maxRunSeconds * this.context.fps
+        ) {
+          this.stop(branch, "expired")
         }
       }
       if (this.frame % 6 === 0) this.sample()
@@ -193,7 +207,9 @@ export class CombatResource {
       reason !== "fightEnd" &&
       this.frame - branch.lastRefund >= this.definition.refundCooldownSeconds * this.context.fps
     ) {
-      this.credit(branch, this.definition.endRefund)
+      const delayFrames = (this.definition.refundDelaySeconds ?? 0) * this.context.fps
+      if (delayFrames > 0) branch.pendingRefundFrame = this.frame + delayFrames
+      else this.credit(branch, this.definition.endRefund)
       branch.lastRefund = this.frame
     }
     launch.endAmount = branch.amount
@@ -216,9 +232,12 @@ export class CombatResource {
         existing.share += count / this.context.particleCount
         continue
       }
+      const opening = branch.amount
+      if (!insufficient)
+        branch.amount = Math.max(0, branch.amount - (this.definition.launchCost ?? 0))
       const launch: ResourceLaunch = {
         timeSec: frame / this.context.fps,
-        opening: branch.amount,
+        opening,
         endSec: frame / this.context.fps,
         endAmount: branch.amount,
         ticks: 0,

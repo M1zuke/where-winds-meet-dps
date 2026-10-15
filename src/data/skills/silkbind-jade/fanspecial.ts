@@ -54,12 +54,9 @@ export const fanspecial = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.fanSpecial,
   receives: [BUFF.gourdTossThunder, ...INKWELL_FAN_RECEIVES],
-  triggersBuffs: [BUFF.lingeringBone],
-  // In-game values as of 2026-09-28: granted at its own hit, not at the
-  // cast's start.
-  triggersBuffsAtFrame: { [BUFF.lingeringBone]: 33 },
-  // Cast length to the earliest next input (in-game animation, 2026-09-24).
-  castFrames: 67,
+  triggersBuffs: [BUFF.lingeringBone, BUFF.starReacherSupreme, BUFF.starReacher],
+  // Cast length to the earliest next input (in-game animation, 2026-10-15).
+  castFrames: 66.8,
   triggerable: true,
   // In-game values as of 2026-09-28: 9 m approach reach; the cast's own
   // segments then teleport to about 1.5 m from the target, along its facing.
@@ -67,7 +64,7 @@ export const fanspecial = defineSkill({
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
     hit(0, {
-      frame: 33,
+      frame: 33.45,
       ...landingHitCoefficients,
       triggers: [gourdTossThunderGrant, gourdTossFlyingTornadoGrant],
     }),

@@ -8,6 +8,7 @@ import layout from "./BlossomTimelinePanel.module.scss"
 const REASON_KEYS = {
   depleted: "overview.blossoms.depleted",
   recalled: "overview.blossoms.recalled",
+  expired: "overview.blossoms.expired",
   insufficient: "overview.blossoms.insufficient",
   fightEnd: "overview.blossoms.fightEnd",
 } as const

@@ -1,5 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { FRAME_AFTER_HIT_SEC } from "../skills/buffs/hitTiming"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -15,8 +16,8 @@ export function comboBuffDef(): BuffModule {
     id: BUFF.combo,
     name: "Combo",
     requires: { param: PARAM.blossomBarrage },
-    duration: 15,
-    buffAppliesOnCastEnd: true,
+    duration: (ctx) => (ctx.build.paramTier(PARAM.blossomBarrage) >= 3 ? 15 : 10),
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
     effects: [stat("allDamageBoost", 0.2)],
   })
 }
@@ -39,7 +40,7 @@ export function comboUmbLightBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    buffAppliesOnCastEnd: true,
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
     summary: "+5% floating umbrella damage against your Combo target; +10% while Exhausted (PvE)",
     effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
   })
@@ -62,7 +63,7 @@ export function comboSpringAwayBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    buffAppliesOnCastEnd: true,
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
     summary: "+5% Spring Away damage against your Combo target; +10% while Exhausted (PvE)",
     effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
   })

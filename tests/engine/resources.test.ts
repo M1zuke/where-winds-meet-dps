@@ -379,3 +379,66 @@ describe("resource refund on exhausted-target projectile hits", () => {
     ).toBe(100)
   })
 })
+
+describe("a launch with a cost, a lifetime and a delayed refund", () => {
+  const timed = {
+    ...definition,
+    drainPerSecond: 0,
+    launchCost: 10,
+    maxRunSeconds: 2,
+    refundDelaySeconds: 0.5,
+  }
+
+  function timedResource(opening: number) {
+    return new CombatResource(
+      timed,
+      { opening },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        particleCount: 1,
+        buffLive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+  }
+
+  it("takes its cost from a funded launch and none from a rejected one", () => {
+    const funded = timedResource(60)
+    funded.launch(0)
+    expect(amount(funded)).toBe(50)
+    const rejected = timedResource(40)
+    rejected.launch(0)
+    expect(amount(rejected)).toBe(40)
+    expect(rejected.result.launches[0].reason).toBe("insufficient")
+  })
+
+  it("keeps the opening balance in the launch record", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    expect(simulation.result.launches[0].opening).toBe(60)
+  })
+
+  it("ends the launch when its lifetime runs out and pays the refund after the delay", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    simulation.advance(119)
+    expect(simulation.result.launches[0].reason).not.toBe("expired")
+    simulation.advance(120)
+    expect(simulation.result.launches[0].reason).toBe("expired")
+    expect(amount(simulation)).toBe(50)
+    simulation.advance(149)
+    expect(amount(simulation)).toBe(50)
+    simulation.advance(150)
+    expect(amount(simulation)).toBe(65)
+  })
+
+  it("pays no refund for a launch that is still running when the fight ends", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    simulation.finish(60)
+    expect(amount(simulation)).toBe(50)
+  })
+})

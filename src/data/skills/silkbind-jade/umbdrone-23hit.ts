@@ -18,7 +18,6 @@ export const umbdrone23HitTick = defineSkill({
   receives: [
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
-    BUFF.soulShaken,
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.combo,

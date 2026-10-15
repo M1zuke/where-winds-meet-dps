@@ -84,6 +84,7 @@ export interface DamageEffectsResult {
 }
 
 const DEFAULT_DURATION = 15
+const COOLDOWN_TOLERANCE = 1e-9
 // `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}
@@ -555,7 +556,23 @@ export class BuffEngine {
       expiresAt: time + duration,
       ...(stacks !== undefined && { stacks }),
     })
+    for (const dispelledId of module?.dispelsOnGrant ?? []) this.endWindow(dispelledId, time)
     if (module) this.runCastEffects(module, time, stacks ?? 1)
+  }
+
+  private endWindow(id: string, time: number): void {
+    if (!this.isBuffActiveAtTime(id, time)) return
+    const live = this.activeBuffs.get(id)
+    if (live && time >= live.appliedAt && time < live.expiresAt)
+      this.activeBuffs.set(id, { ...live, expiresAt: time })
+    this.buffHistory.push({ time, buffType: id, action: "apply", expiresAt: time })
+  }
+
+  private triggerPhaseHolds(module: BuffModule, time: number, reading: QiReading): boolean {
+    const gate = module.triggerPhase
+    if (!gate) return true
+    const phase = this.qiPhase(time, reading)
+    return Array.isArray(gate) ? gate.includes(phase) : gate === phase
   }
 
   private runCastEffects(module: BuffModule, time: number, selfStacks: number): void {
@@ -653,9 +670,7 @@ export class BuffEngine {
           runKey: event.runKey ?? null,
           latenessMaxSec:
             spec.lateness && tagSet.has(spec.lateness.property) ? spec.lateness.maxSec : 0,
-          conditionsHold:
-            !module.triggerPhase ||
-            this.qiPhase(event.timeSec, "beforeHit") === module.triggerPhase,
+          conditionsHold: this.triggerPhaseHolds(module, event.timeSec, "beforeHit"),
           cooldownSec: this.resolveCooldown(module, event.timeSec),
           requiredWindowId: module.requiresActiveBuffOnTrigger ?? null,
           particles: event.particles ?? null,
@@ -712,7 +727,10 @@ export class BuffEngine {
     )
   }
   private requiresBuffActiveGate(module: BuffModule, applyTime: number): boolean | null {
-    if (module.requiresBuffActive) return this.isBuffActive(module.requiresBuffActive, applyTime)
+    if (module.requiresBuffActive)
+      return module.buffAppliesAfterLastHitSec === undefined
+        ? this.isBuffActive(module.requiresBuffActive, applyTime)
+        : this.isBuffActiveAtTime(module.requiresBuffActive, applyTime)
     return null
   }
 
@@ -798,23 +816,40 @@ export class BuffEngine {
     if (module.extendsBuffs) return
     if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
-    if (module.triggerPhase && this.qiPhase(time, "afterHit") !== module.triggerPhase) return
+    const afterLastHit =
+      module.buffAppliesAfterLastHitSec !== undefined && props.lastHitSec !== undefined
+    const applyTime =
+      grantAtSec !== undefined
+        ? time + grantAtSec
+        : module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
+          ? time + (props.castTime ?? 1)
+          : afterLastHit
+            ? time + props.lastHitSec! + module.buffAppliesAfterLastHitSec!
+            : time + (module.buffAppliesAfterSec ?? 0)
+    if (!this.triggerPhaseHolds(module, afterLastHit ? applyTime : time, "afterHit")) return
     if (
       module.requiresActiveBuffOnTrigger &&
       !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
     )
       return
     if (this.triggerOnlyExtends(module, props) && !this.isBuffActiveAtTime(module.id, time)) return
+    if (
+      module.blockedWhileActive?.some((blockingId) =>
+        this.isBuffActiveAtTime(blockingId, applyTime),
+      )
+    )
+      return
     if (module.cooldown !== undefined) {
-      const last = this.activeBuffs.get(module.id)
-      if (last && time - last.appliedAt < this.resolveCooldown(module, time)) return
+      if (module.buffAppliesAfterLastHitSec === undefined) {
+        const last = this.activeBuffs.get(module.id)
+        if (last && time - last.appliedAt < this.resolveCooldown(module, time)) return
+      } else {
+        const grantTime = afterLastHit ? applyTime : time
+        const last = this.latestApplyAt(module.id, grantTime)
+        if (last && grantTime - last.time < this.resolveCooldown(module, time) - COOLDOWN_TOLERANCE)
+          return
+      }
     }
-    const applyTime =
-      grantAtSec !== undefined
-        ? time + grantAtSec
-        : module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
-          ? time + (props.castTime ?? 1)
-          : time + (module.buffAppliesAfterSec ?? 0)
 
     if (!this.canGrantTrigger(module, applyTime)) return
 
@@ -1136,7 +1171,7 @@ export class BuffEngine {
         this.maxStacksOf(module.id) !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
       const ctx = this.buildContext(
         time,
-        { kind: "damage", castTag, tags: tagSet },
+        { kind: "damage", castTag, tags: tagSet, isDotTick: skill.isDotTick === true },
         stacks,
         module,
         false,

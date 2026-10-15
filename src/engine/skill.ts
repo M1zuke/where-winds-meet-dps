@@ -84,6 +84,8 @@ export interface HitVariant {
   // docs/TIMELINE.md § "Hit variants" — replaces the hit's own `frame` where
   // this variant is the active one.
   frame?: number
+  // Replaces the hit's own `projectile` where this variant is the active one.
+  projectile?: ProjectileSpec
 }
 
 export interface HitTrigger {
@@ -506,7 +508,20 @@ export function isHitVariant(x: unknown): x is HitVariant {
   if (v.frame !== undefined) {
     if (typeof v.frame !== "number" || !Number.isFinite(v.frame)) return false
   }
+  if (v.projectile !== undefined && !isProjectileSpecValue(v.projectile)) return false
   return true
+}
+
+function isProjectileSpecValue(value: unknown): value is ProjectileSpec {
+  if (!value || typeof value !== "object") return false
+  const projectile = value as Record<string, unknown>
+  return (
+    typeof projectile.speedMetersPerSecond === "number" &&
+    projectile.speedMetersPerSecond > 0 &&
+    typeof projectile.maxTravelFrames === "number" &&
+    Number.isFinite(projectile.maxTravelFrames) &&
+    isProjectileExtrasValid(projectile)
+  )
 }
 
 export function isSkillHit(x: unknown): x is SkillHit {
@@ -551,21 +566,7 @@ export function isSkillHit(x: unknown): x is SkillHit {
     return false
   if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat)))
     return false
-  if (h.projectile !== undefined) {
-    if (!h.projectile || typeof h.projectile !== "object") return false
-    const projectile = h.projectile as Record<string, unknown>
-    if (
-      typeof projectile.speedMetersPerSecond !== "number" ||
-      !(projectile.speedMetersPerSecond > 0)
-    )
-      return false
-    if (
-      typeof projectile.maxTravelFrames !== "number" ||
-      !Number.isFinite(projectile.maxTravelFrames)
-    )
-      return false
-    if (!isProjectileExtrasValid(projectile)) return false
-  }
+  if (h.projectile !== undefined && !isProjectileSpecValue(h.projectile)) return false
   return true
 }
 
@@ -650,9 +651,11 @@ export function resolvedHitFrame(
   test: (condition: TriggerCondition) => boolean,
   distanceMeters?: number,
 ): number {
-  const base = selectHitVariant(hit, test)?.frame ?? hit.frame
-  if (!hit.projectile || distanceMeters === undefined) return base
-  return base + projectileTravelFrames(hit.projectile, distanceMeters)
+  const variant = selectHitVariant(hit, test)
+  const base = variant?.frame ?? hit.frame
+  const projectile = variant?.projectile ?? hit.projectile
+  if (!projectile || distanceMeters === undefined) return base
+  return base + projectileTravelFrames(projectile, distanceMeters)
 }
 
 // The one place `SkillHit.conditions` is checked — every path that turns a

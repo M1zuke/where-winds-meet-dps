@@ -187771,7 +187771,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "62d32b3b0329def78cfd73502a708686a4e09f046382cfa03fcf4b7a89c4cc7e"
+        "digest": "3904b642a84fe8bb8f3b31d5f0150ed7d1fe9a5e9981ba1b1edc67a2afe8abb6"
       },
       "debuffs": {
         "count": 12,
@@ -187789,7 +187789,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "7c7a884b9538f268667cb2d43f1511cea15dd35ab884f2d2ce70d667ba25b15a"
+        "digest": "d719c141cdb227da2535c5181a689d0c13f83572861f19e0726d6a952221241e"
       },
       "buffs": [
         {
@@ -187834,7 +187834,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187844,7 +187844,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 15,
+          "duration": "[fn]",
           "maxStacks": null,
           "effects": [
             {
@@ -187866,7 +187866,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187892,7 +187892,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187942,6 +187942,80 @@
           },
           "grantRequires": null,
           "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": "lingeringBone",
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "artBonus",
+              "field": "minPhysPctBonus",
+              "amount": 0.075
+            },
+            {
+              "kind": "artBonus",
+              "field": "maxPhysPctBonus",
+              "amount": 0.075
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "starReacherSupreme",
+          "name": "Star Reacher (Supreme)",
+          "classBuff": false,
+          "requires": {
+            "param": "starReacher",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": "lingeringBone",
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "artBonus",
+              "field": "minPhysPctBonus",
+              "amount": 0.15
+            },
+            {
+              "kind": "artBonus",
+              "field": "maxPhysPctBonus",
+              "amount": 0.15
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "starReacherMarkedTarget",
+          "name": "Star Reacher (Marked Target)",
+          "classBuff": false,
+          "requires": {
+            "param": "starReacher",
+            "minTier": 6
+          },
+          "grantRequires": null,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -187956,7 +188030,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Physical Attack +7.5% (normal), +15% (<30% Qi or Qi exhausted)"
+          "summary": "+3% damage on direct hits against a target carrying your Lingering Bone"
         },
         {
           "id": "springThunder",
@@ -189342,7 +189416,7 @@
       ]
     },
     "dynamic": {
-      "digest": "9fda0d504bab1898764ba058d85898350b489f35ea517bb5975e0aded38409b0"
+      "digest": "93b08691ca4f6d2435d4e0e8afa0b70737a5d79b32faf0cd58649622835863ff"
     }
   },
   "bamboocutDraught": {

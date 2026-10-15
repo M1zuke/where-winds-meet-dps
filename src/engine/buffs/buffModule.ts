@@ -75,6 +75,10 @@ export type BuffMeta = BuffGate & {
   // instead of at the trigger hit's own frame. Ignored when
   // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
   buffAppliesAfterSec?: number
+  // Opens the window this many seconds after the triggering cast's last landed
+  // hit instead of at its start. Yields to `buffAppliesOnCastEnd` and to a
+  // per-site delay; a cast with no landed hit grants at its start.
+  buffAppliesAfterLastHitSec?: number
   // Unlike `duration`/`cooldown`, a function here resolves once at
   // registration rather than being re-read per event.
   maxStacks?: number | ((params: BuffParams) => number)
@@ -101,7 +105,11 @@ export type BuffMeta = BuffGate & {
   triggersFromGeneratedSkills?: boolean
   // Restricts the trigger to one Qi phase; a cast in any other phase is not a
   // trigger for this def at all, so no stack and no refresh.
-  triggerPhase?: QiPhase
+  triggerPhase?: QiPhase | readonly QiPhase[]
+  // The listed modules' windows must be down for this grant to land.
+  blockedWhileActive?: readonly string[]
+  // The listed modules' windows end where this grant lands.
+  dispelsOnGrant?: readonly string[]
   seedAtStart?: boolean
   refreshOnAnyCast?: boolean
   requiresBuffActive?: string

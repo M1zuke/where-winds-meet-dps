@@ -180,6 +180,17 @@ function castEndFrame(
   return castFrame + (skill.castFrames || lastHitFrame + 1)
 }
 
+function activeVariantCastFrames(
+  hits: readonly SkillHit[],
+  holds: (condition: TriggerCondition) => boolean,
+): number | null {
+  for (const skillHit of hits) {
+    const variant = selectHitVariant(skillHit, holds)
+    if (variant?.castFrames !== undefined && variant.castFrames > 0) return variant.castFrames
+  }
+  return null
+}
+
 interface HitEvent {
   frame: number
   // The landing time before it is rounded to a whole 60 fps frame, for the one
@@ -1034,17 +1045,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         return starts
       }
 
-      const activeVariantCastFrames = (
-        hits: readonly SkillHit[],
-        holds: (condition: TriggerCondition) => boolean,
-      ): number | null => {
-        for (const skillHit of hits) {
-          const variant = selectHitVariant(skillHit, holds)
-          if (variant?.castFrames !== undefined && variant.castFrames > 0) return variant.castFrames
-        }
-        return null
-      }
-
       // A summoned hit counts as a hit for every hit-driven schedule (proc
       // mechanics, the layout ledger), the same as a laid one — the frame it
       // lands at is all that distinguishes them. `detonateDot`'s own sub-cast
@@ -1805,6 +1805,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           processed++
           const castTag = castTagOf(cast.skill)
           let propagated = [...cast.inheritedBuffIds]
+          const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
+          const castDistanceMeters = targetDistanceAt(cast.frame)
+          const performedHits = cast.skill.hits.filter((candidate) =>
+            hitConditionsHold(candidate, castHolds),
+          )
+          const landingFrameOf = (hit: SkillHit) =>
+            hitLandingFrame(
+              cast.frame,
+              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
+            )
+          const lastHitFrame =
+            performedHits.length > 0 ? Math.max(...performedHits.map(landingFrameOf)) : null
+          const variantCastFrames = activeVariantCastFrames(performedHits, castHolds)
           if (castTag) {
             const grantAtSec = cast.skill.triggersBuffsAtFrame
               ? new Map(
@@ -1817,7 +1830,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const result = engine.processSkillCast(
               castTag,
               cast.frame / FPS,
-              propsOfSkill(cast.skill, cast.hitCount),
+              {
+                ...propsOfSkill(cast.skill, cast.hitCount),
+                ...(variantCastFrames !== null && { castTime: variantCastFrames / FPS }),
+                ...(lastHitFrame !== null && { lastHitSec: (lastHitFrame - cast.frame) / FPS }),
+              },
               cast.generated,
               cast.skill.triggersBuffs ?? [],
               skillTagsOf(cast.skill),
@@ -1828,15 +1845,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const key = castScopedKey(cast.frame, cast.skill.id)
             castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
           }
-          const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
-          const castDistanceMeters = targetDistanceAt(cast.frame)
-          for (const hit of cast.skill.hits.filter((candidate) =>
-            hitConditionsHold(candidate, castHolds),
-          )) {
-            const hitFrame = hitLandingFrame(
-              cast.frame,
-              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
-            )
+          for (const hit of performedHits) {
+            const hitFrame = landingFrameOf(hit)
             if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
             for (const trigger of hit.triggers) {
               if (trigger.kind !== "castSkill") continue

@@ -106,7 +106,9 @@ reader of it uses, resolved at the same point a hit variant's own override
 is. A ceiling on travel time bounds it independently of the target's
 distance, for a projectile with its own limited lifetime. Every reader of a
 hit's frame carries this the same way it carries a variant's own override —
-resolving through the one function, never a fixed value baked in separately.
+resolving through the one function, never a fixed value baked in separately. A
+variant may carry its own `projectile`, replacing the hit's own where it is the
+active one, for a form whose projectile flies at another speed.
 
 ### Conditional hits
 
@@ -565,6 +567,22 @@ for applying, `receives` for boosting — never by the module itself.
   that offset on the module, never as a per-skill adjustment to the trigger's
   own frame; it is ignored once the module (or the trigger) already applies on
   cast end.
+- **A module may instead open its window a fixed offset after the triggering
+  cast's last landed hit** (`buffAppliesAfterLastHitSec`) — the frame the hit
+  lands at after any projectile flight, not the cast's start — for a state the
+  game applies off a hit. Its trigger phase and its cooldown are read at that
+  moment, and its cooldown compares within float tolerance. A cast that landed
+  no hit grants at its start; cast end and a per-site delay take precedence. A
+  grant on the cast's end lands at the cast length the active hit variant
+  selects, not the skill's base length.
+- **A module may be blocked while other modules' windows are live**
+  (`blockedWhileActive`: the grant lands neither a window nor a refresh) **and
+  may end other modules' windows where it lands** (`dispelsOnGrant`). Both read
+  the buff history at the grant's own time. A module's `triggerPhase` may list
+  several Qi phases; it holds in any of them.
+- **A module's `effects` may read whether the damage event is a
+  damage-over-time tick** (`ctx.event.isDotTick`), for a rule that reaches
+  direct hits and one DoT-typed source alone.
 - **A module's `effects` may return `forceOutcome("noAbrasion")` or
   `finalCritAtLeast({ threshold, bonusBelowThreshold })`**, scoped by whatever
   the function already reads off its context — a phase, another status, a
@@ -886,6 +904,11 @@ a refactor.
   must not grant a hit refund. Clamp balances and use the encounter's phase clock.
 - Declare passive regeneration as a flat per-second rate on the resource, netted
   against drain every frame and clamped to `[0, capacity]`.
+- Declare a launch's own cost (`launchCost`, taken from a funded launch only), the
+  lifetime that ends a running launch (`maxRunSeconds`) and the delay before an
+  end refund lands (`refundDelaySeconds`) on the resource, never as a gain rule.
+  Every removal of a launch pays the refund, a lapsed lifetime included, and the
+  refund cooldown counts from the removal, not from the credit.
 - Expose uncertain gain amounts as persisted, hydrated inputs. Report actual funded
   windows and rejected launches, and distinguish assumptions from measured anchors.
 

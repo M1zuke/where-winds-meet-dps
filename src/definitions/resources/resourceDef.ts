@@ -20,12 +20,15 @@ export interface ResourceDef {
   defaultExhaustedGainPerTick?: number
   launchSkillId: string
   debuffId: string
+  launchCost?: number
+  maxRunSeconds?: number
   drainPerSecond: number
   regenPerSecond?: number
   enhancedRunCost: number
   recallTag?: string
   recallExemptSkillIds?: readonly string[]
   endRefund: number
+  refundDelaySeconds?: number
   refundCooldownSeconds: number
   gains: readonly ResourceGainRule[]
 }

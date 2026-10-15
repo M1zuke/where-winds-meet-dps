@@ -50,6 +50,7 @@ export type SkillProperties = Partial<Record<SkillPropertyKey, boolean>> & {
   attackType?: "heavy" | "light" | "mixed" | "charge"
   hitCount?: number
   castTime?: number
+  lastHitSec?: number
   noBuffTrigger?: boolean
   duration?: number
   buffAppliesOnCastEnd?: boolean
@@ -79,7 +80,7 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
 
 export type EffectEvent =
   | { kind: "cast"; castTag: string; props: SkillProperties }
-  | { kind: "damage"; castTag: string; tags: ReadonlySet<string> }
+  | { kind: "damage"; castTag: string; tags: ReadonlySet<string>; isDotTick?: boolean }
   | { kind: "display" }
 
 // Read-only and engine-free: a buff module receives a view, never the engine
