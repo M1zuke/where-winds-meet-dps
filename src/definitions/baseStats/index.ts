@@ -28,7 +28,7 @@ import {
 } from "../../data/baseStats"
 import { resolvedMaxBonus, resolvedScaleMax } from "./classSkillBoostDef"
 import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
-import { ODDITY_BOARD, isOddityNodeClaimed } from "./oddityBoardGraph"
+import { ODDITY_BOARD, isOddityNodeClaimed, oddityBoardTotals } from "./oddityBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
@@ -455,7 +455,13 @@ export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<str
   for (const region of ODDITY_BOARD) {
     for (const node of region.nodes) {
       if (!node.value || node.stat === undefined) continue
-      if (node.stat === "maxHp" || node.stat === "physDef" || node.stat === "endurance") continue
+      if (
+        node.stat === "maxHp" ||
+        node.stat === "physDef" ||
+        node.stat === "endurance" ||
+        node.stat === "vitality"
+      )
+        continue
       if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
       const path = STAT_TO_PATH[node.stat] ?? node.stat
       out[path] = (out[path] ?? 0) + node.value
@@ -464,23 +470,12 @@ export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<str
   return out
 }
 
-function oddityStatTotal(unclaimed: UnclaimedOddityNodes, stat: "maxHp" | "physDef"): number {
-  let total = 0
-  for (const region of ODDITY_BOARD) {
-    for (const node of region.nodes) {
-      if (node.stat !== stat || !node.value) continue
-      if (isOddityNodeClaimed(unclaimed, region.key, node.id)) total += node.value
-    }
-  }
-  return total
-}
-
 export function oddityHpTotal(unclaimed: UnclaimedOddityNodes): number {
-  return oddityStatTotal(unclaimed, "maxHp")
+  return oddityBoardTotals(unclaimed).maxHp ?? 0
 }
 
 export function oddityPhysDefTotal(unclaimed: UnclaimedOddityNodes): number {
-  return oddityStatTotal(unclaimed, "physDef")
+  return oddityBoardTotals(unclaimed).physDef ?? 0
 }
 
 export function buildScalingSources(

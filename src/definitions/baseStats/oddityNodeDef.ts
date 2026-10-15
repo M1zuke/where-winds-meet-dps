@@ -1,4 +1,4 @@
-export type OddityStat = "minPhys" | "maxPhys" | "maxHp" | "physDef" | "endurance"
+export type OddityStat = "minPhys" | "maxPhys" | "maxHp" | "physDef" | "endurance" | "vitality"
 
 export type OddityNodeKind = "opener" | "reward" | "final"
 
@@ -15,6 +15,7 @@ export interface OddityNodeDef {
   readonly description: string
   readonly stat?: OddityStat
   readonly value?: number
+  readonly fallbackMaxHp?: number
 }
 
 type UniqueOddityIds<

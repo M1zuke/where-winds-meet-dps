@@ -2,6 +2,7 @@ import {
   ODDITIES,
   ODDITY_CHAPTERS,
   ODDITY_REGIONS,
+  ODDITY_RESOURCE_CAPS,
   type OddityRegionKey,
 } from "../../data/baseStats"
 import type { UnclaimedOddityNodes } from "../../engine/types"
@@ -130,6 +131,14 @@ export function oddityBoardTotals(
     for (const node of region.nodes) {
       if (!node.stat || !node.value) continue
       if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
+      if (
+        (node.stat === "endurance" || node.stat === "vitality") &&
+        node.fallbackMaxHp !== undefined &&
+        (totals[node.stat] ?? 0) >= ODDITY_RESOURCE_CAPS[node.stat]
+      ) {
+        totals.maxHp = (totals.maxHp ?? 0) + node.fallbackMaxHp
+        continue
+      }
       totals[node.stat] = (totals[node.stat] ?? 0) + node.value
     }
   }

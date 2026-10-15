@@ -32,7 +32,7 @@ interface Props {
   onChange: (next: Inputs) => void
 }
 
-const STAT_KEYS: Readonly<Record<OddityStat, string>> = {
+const STAT_KEYS: Readonly<Record<Exclude<OddityStat, "vitality">, string>> = {
   minPhys: "common.minPhys",
   maxPhys: "common.maxPhys",
   physDef: "content.statLine.physDef",
@@ -40,7 +40,13 @@ const STAT_KEYS: Readonly<Record<OddityStat, string>> = {
   endurance: "content.meter.endurance",
 }
 
-const STAT_ORDER: readonly OddityStat[] = ["minPhys", "maxPhys", "physDef", "maxHp", "endurance"]
+const STAT_ORDER: readonly (keyof typeof STAT_KEYS)[] = [
+  "minPhys",
+  "maxPhys",
+  "physDef",
+  "maxHp",
+  "endurance",
+]
 
 type NodeState = "claimed" | "ready" | "locked"
 
@@ -460,7 +466,9 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                       </div>
                       <div className={styles.tooltipState}>
                         {t(STATE_KEYS[stateOf(hovered)])}
-                        {hovered.stat ? "" : ` — ${t("talents.oddities.noEngineEffect")}`}
+                        {hovered.stat && hovered.stat !== "vitality"
+                          ? ""
+                          : ` — ${t("talents.oddities.noEngineEffect")}`}
                       </div>
                       <div className={styles.tooltipGate}>
                         {gate

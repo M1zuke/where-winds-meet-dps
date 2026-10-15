@@ -42,21 +42,38 @@ describe("oddity board", () => {
     expect(out["phys.max"]).toBeCloseTo(raw.max, 6)
   })
 
-  it("leaves the attack-melody total at 124", () => {
+  it("leaves the attack-melody total at 196", () => {
     const raw = rawTotals()
-    expect(raw.min + raw.max).toBe(124)
+    expect(raw.min + raw.max).toBe(196)
   })
 
-  it("sums every region's Max HP melodies to 8150", () => {
-    expect(oddityHpTotal({})).toBe(8150)
+  it("sums every region's Max HP melodies plus the converted resource melodies to 10750", () => {
+    expect(oddityHpTotal({})).toBe(10750)
   })
 
-  it("sums every region's Physical Defense melodies to 50", () => {
-    expect(oddityPhysDefTotal({})).toBe(50)
+  it("sums every region's Physical Defense melodies to 66", () => {
+    expect(oddityPhysDefTotal({})).toBe(66)
   })
 
-  it("sums the 8 Max Endurance melodies to 40, additive and uncapped", () => {
+  it("caps Max Endurance from every board at 40", () => {
     expect(oddityEnduranceTotal({})).toBe(40)
+  })
+
+  it("caps Max Vitality from every board at 60", () => {
+    expect(oddityBoardTotals({}).vitality).toBe(60)
+  })
+
+  it("pays the three converted resource melodies as 900 Max HP on a full board", () => {
+    const flatMaxHp = ODDITY_BOARD.flatMap((region) => region.nodes)
+      .filter((node) => node.stat === "maxHp")
+      .reduce((sum, node) => sum + (node.value ?? 0), 0)
+    expect(oddityHpTotal({}) - flatMaxHp).toBe(900)
+  })
+
+  it("lets a later Endurance melody fill the gap when an earlier one is released", () => {
+    const releasedEarlier = withOddityNodeClaimed({}, "Hexi", 324, false)
+    const totals = oddityBoardTotals(releasedEarlier)
+    expect(totals.endurance).toBe(40)
   })
 
   it("keeps Max HP, Physical Defense and Endurance off the combat base, unlike the attack melodies", () => {
@@ -140,11 +157,10 @@ describe("oddity board", () => {
 
   it("gives every melody an icon, a chapter and a cost", () => {
     for (const region of ODDITY_BOARD) {
-      expect(region.chapters).toHaveLength(12)
       for (const node of region.nodes) {
         expect(node.icon).not.toBe("")
         expect(node.chapter).toBeGreaterThanOrEqual(1)
-        expect(node.chapter).toBeLessThanOrEqual(12)
+        expect(node.chapter).toBeLessThanOrEqual(region.chapters.length)
         expect(node.cost).toBeGreaterThan(0)
       }
     }

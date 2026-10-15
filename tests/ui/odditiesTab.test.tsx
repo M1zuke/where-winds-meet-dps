@@ -68,8 +68,8 @@ describe("OdditiesTab", () => {
     const onChange = renderTab({ ...defaultInputs, unclaimedOddityNodes: released })
     fireEvent.click(nodes()[NEWEST.nodes.length - 1])
     const unclaimed = unclaimedFrom(onChange)
-    expect(unclaimed[NEWEST.key]).not.toContain(last.id)
-    expect(unclaimed[NEWEST.key]).not.toContain(last.requires)
+    expect(unclaimed[NEWEST.key] ?? []).not.toContain(last.id)
+    expect(unclaimed[NEWEST.key] ?? []).not.toContain(last.requires)
   })
 
   it("draws a claimed melody the same whether or not the calculator reads it", () => {

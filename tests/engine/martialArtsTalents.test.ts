@@ -98,7 +98,7 @@ describe("user-defined martial-arts talents", () => {
 
     it("seeded defaults match the JSON's bonus + scaling", () => {
       const byName = Object.fromEntries(
-        getDefaultTalentsForClass("bellstrikeUmbra").map((d) => [d.name, d]),
+        getDefaultTalentsForClass("bellstrikeUmbra", 17).map((d) => [d.name, d]),
       )
       const phys = byName["Physical Attack UP"]
       expect(phys.stat).toBe("maxPhys")
@@ -141,7 +141,7 @@ describe("user-defined martial-arts talents", () => {
     // Sword and Spear each grant their own independent +98/+196 Bellstrike
     // Attack talent row — a deliberate double contribution, not a duplicate.
     it("Sword + Spear flat Bellstrike Attack bonuses stack (double contribution)", () => {
-      const contributions = userTalentContributions(getDefaultTalentsForClass("bellstrikeUmbra"), {
+      const contributions = userTalentContributions(getDefaultTalentsForClass("bellstrikeUmbra", 17), {
         power: 280,
         agility: 0,
         momentum: 0,
