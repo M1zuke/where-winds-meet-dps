@@ -1421,6 +1421,7 @@
   "content.statLine.agility": "민첩",
   "content.statLine.allDamageBoost": "전체 피해 증가",
   "content.statLine.allMartialBoost": "모든 무술 효과 증가",
+  "content.statLine.allMysticBoost": "",
   "content.statLine.areaMysticBoost": "단체류 비결 피해 증가",
   "content.statLine.attributeDamageBoost": "속성 피해 보너스",
   "content.statLine.bamboocutPenetration": "파죽 관통",

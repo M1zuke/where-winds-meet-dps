@@ -123,6 +123,7 @@ import {
   movePreferredDistanceOntoRotation,
   moveCustomBuildWeaponsToMartialArtSlots,
   moveWeaponsToMartialArtSlots,
+  mergeMysticBoostWords,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -448,6 +449,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
         : {}),
     }
   })
+  Object.assign(next, mergeMysticBoostWords(next as unknown as Record<string, unknown>))
   if (!next.equipped || typeof next.equipped !== "object") {
     next.equipped = { ...EMPTY_EQUIPPED }
   } else {
