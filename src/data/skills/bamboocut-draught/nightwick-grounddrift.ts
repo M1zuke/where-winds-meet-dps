@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
+import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightwick-stance"
 
 const pursuit = (index: number, frame: number) =>
   hit(index, {
@@ -32,6 +33,7 @@ export const nightwickGrounddrift = defineSkill({
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
   ],
+  castConditions: NIGHTWICK_STANCE_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 93,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
@@ -51,6 +53,7 @@ export const nightwickGrounddrift = defineSkill({
       attributeFixed: 0,
       triggers: skillBingePointAccumulationTriggers,
     }),
+    nightwickStanceSpent(5),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

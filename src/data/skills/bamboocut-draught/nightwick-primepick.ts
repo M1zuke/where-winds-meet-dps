@@ -4,6 +4,7 @@ import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import { nightwickStanceOpened } from "./nightwick-stance"
 
 // In-game values as of 2026-09-16.
 const REQUIRES_BINGE_100 = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
@@ -50,6 +51,7 @@ export const nightwickPrimepick = defineSkill({
       attributeFixed: 0,
       triggers: [applyBuff({ target: STATUS.tipsylayCooldown, stacks: 1 })],
     }),
+    nightwickStanceOpened(2),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",

@@ -5,6 +5,7 @@ import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
+import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightwick-stance"
 
 // On a PvE target the follow-up out of Tipsylay is always Nightwick -
 // Primepick's single hit — the 3-hit Tri-strike form needs the arena-only
@@ -28,6 +29,7 @@ export const primepickFollowUpHits = [
     attributeFixed: 0,
     triggers: skillBingePointAccumulationTriggers,
   }),
+  nightwickStanceSpent(2),
 ]
 
 // Cast length to the earliest next input: in-game animation, 2026-10-15.
@@ -46,6 +48,7 @@ export const nightwickPrimepickFollowUp = defineSkill({
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
   ],
+  castConditions: NIGHTWICK_STANCE_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 36,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

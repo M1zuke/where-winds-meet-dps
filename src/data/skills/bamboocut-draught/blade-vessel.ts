@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { BLADE_VESSEL_NOT_REPLACED } from "./empowered-light-attack"
 import {
   CLASS_RECEIVES,
   MISTWILLOW_HEAVY_ATTACK_RECEIVES,
@@ -40,6 +41,7 @@ export const bladeVessel = defineSkill({
     BUFF.nonPlayerBaseDamage50,
     ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
+  castConditions: BLADE_VESSEL_NOT_REPLACED,
   triggerable: false,
   castFrames: 205,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

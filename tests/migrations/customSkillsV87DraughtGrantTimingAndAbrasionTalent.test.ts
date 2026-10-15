@@ -11,6 +11,7 @@ import {
 import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
 import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
+import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV86File from "./testCustomSkills/v86/store.json"
@@ -30,8 +31,10 @@ const builtinOf = (id: string): Skill =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === id)!
 
 const throughLaterHops = (skill: unknown): Skill =>
-  healDraughtTipsylayAndExCooldowns(
-    healDraughtReveldriftChargesAndEmpoweredLightAttack(healDraughtMistwillowReach(skill)),
+  healDraughtNightwickStanceAndVariedComboOverrides(
+    healDraughtTipsylayAndExCooldowns(
+      healDraughtReveldriftChargesAndEmpoweredLightAttack(healDraughtMistwillowReach(skill)),
+    ),
   ) as Skill
 
 const fieldsOf = (skill: Skill) => ({

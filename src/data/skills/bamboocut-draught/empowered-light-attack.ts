@@ -19,3 +19,20 @@ export const empoweredLightAttackSpent = (index: number) =>
     attributeFixed: 0,
     triggers: [applyBuff({ target: STATUS.empoweredLightAttack, stacks: -1 })],
   })
+
+export const LIGHT_ATTACK_NOT_REPLACED: TriggerCondition = {
+  anyOf: [
+    { buffId: STATUS.empoweredLightAttack, op: "eq", stacks: 0 },
+    { buffId: STATUS.bingePoints, op: "lte", stacks: 49 },
+  ],
+}
+
+export const BLADE_VESSEL_NOT_REPLACED: TriggerCondition[] = [
+  {
+    anyOf: [
+      { buffId: STATUS.bingePoints, op: "lt", stacks: 100 },
+      { buffId: STATUS.empoweredLightAttack, op: "gte", stacks: 1 },
+    ],
+  },
+  LIGHT_ATTACK_NOT_REPLACED,
+]

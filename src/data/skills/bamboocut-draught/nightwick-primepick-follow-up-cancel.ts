@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { primepickFollowUpHits } from "./nightwick-primepick-follow-up"
+import { NIGHTWICK_STANCE_CAST_CONDITIONS } from "./nightwick-stance"
 
 // A cancel form ends where the drink that follows it is first able to
 // interrupt, not one frame after its own last landed collider — in-game
@@ -24,6 +25,7 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
   ],
+  castConditions: NIGHTWICK_STANCE_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 36,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

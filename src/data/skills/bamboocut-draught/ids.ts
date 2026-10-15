@@ -71,6 +71,7 @@ export const STATUS = {
   herosBloodCooldown: "buff-bamboocutDraught-heros-blood-cooldown",
   reveldriftSpacing: "buff-bamboocutDraught-reveldrift-spacing",
   empoweredLightAttack: "buff-bamboocutDraught-empowered-light-attack",
+  nightwickStance: "buff-bamboocutDraught-nightwick-stance",
   tipsylayCooldown: "buff-bamboocutDraught-tipsylay-cooldown",
   skystrikeGauntletsExCooldown: "buff-bamboocutDraught-skystrike-gauntlets-ex-cooldown",
 } as const

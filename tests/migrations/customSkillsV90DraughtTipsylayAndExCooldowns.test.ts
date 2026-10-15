@@ -8,6 +8,7 @@ import {
   V90__draughtTipsylayAndExCooldowns,
   healSkill,
 } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
+import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV89File from "./testCustomSkills/v89/store.json"
@@ -25,6 +26,9 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === id)!
+
+const throughLaterHops = (skill: unknown): Skill =>
+  healDraughtNightwickStanceAndVariedComboOverrides(skill) as Skill
 
 const gatedFieldsOf = (skill: Skill) => ({
   castConditions: skill.castConditions,
@@ -44,7 +48,7 @@ describe("custom-skills v89 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in's gates and hits", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = throughLaterHops(healSkill(clone(skillIn(STORE, id))))
     expect(gatedFieldsOf(healed)).toEqual(gatedFieldsOf(builtinOf(id)))
   })
 
@@ -77,7 +81,9 @@ describe("V90__draughtTipsylayAndExCooldowns — called directly", () => {
     const after = V90__draughtTipsylayAndExCooldowns.migrate(clone(STORE))
     expect(after.v).toBe(90)
     for (const id of HEALED_IDS)
-      expect(gatedFieldsOf(skillIn(after, id)), id).toEqual(gatedFieldsOf(builtinOf(id)))
+      expect(gatedFieldsOf(throughLaterHops(skillIn(after, id))), id).toEqual(
+        gatedFieldsOf(builtinOf(id)),
+      )
     expect(skillIn(after, UNTOUCHED_ID)).toEqual(skillIn(STORE, UNTOUCHED_ID))
   })
 

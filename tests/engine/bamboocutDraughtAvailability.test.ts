@@ -37,6 +37,11 @@ const {
   tidepour,
   boundvessel,
   nightwickPrimepick: tipsylay,
+  nightwickPrimepickFollowUp: followUp,
+  nightwickPrimepickFollowUpCancel: followUpCancel,
+  nightwickGrounddrift: grounddrift,
+  bladeVessel,
+  dualBladesLightAttack1: twinbladeLightAttack,
   skystrikeGauntletsEx,
 } = SKILL
 const longCast = SKILL.dragonquenchInebriate
@@ -96,6 +101,37 @@ describe("Tipsylay and the Skystrike Gauntlets ultimate", () => {
 
   it("holds the ultimate for its 60 s cooldown", () => {
     expect(illegalStepIndexes([skystrikeGauntletsEx, longCast, skystrikeGauntletsEx])).toEqual([2])
+  })
+})
+
+describe("the Nightwick follow-up stance", () => {
+  it.each([followUp, followUpCancel, grounddrift])(
+    "%s needs Tipsylay and spends the stance",
+    (skillId) => {
+      expect(illegalStepIndexes([tipsylay, skillId])).toEqual([])
+      expect(illegalStepIndexes([skillId])).toEqual([0])
+      expect(illegalStepIndexes([tipsylay, skillId, skillId])).toEqual([2])
+    },
+  )
+
+  it("lapses after 5 s", () => {
+    const fiveSeconds = Array.from({ length: 2 }, () => longCast)
+    expect(illegalStepIndexes([tipsylay, ...fiveSeconds, followUp])).toEqual([3])
+  })
+})
+
+describe("Empowered Light Attack replaces the base light and heavy attacks", () => {
+  it("flags the twin-blade light attack while Blade Against Waves is offered", () => {
+    expect(illegalStepIndexes([twinbladeLightAttack])).toEqual([])
+    expect(illegalStepIndexes([realmplay, twinbladeLightAttack])).toEqual([1])
+    expect(illegalStepIndexes([realmplay, twinbladeLightAttack], 40)).toEqual([])
+  })
+
+  it("flags Blade Vessel while Tipsy or while Tidepour is offered", () => {
+    expect(illegalStepIndexes([bladeVessel], 60)).toEqual([])
+    expect(illegalStepIndexes([bladeVessel], 100)).toEqual([0])
+    expect(illegalStepIndexes([realmplay, bladeVessel], 60)).toEqual([1])
+    expect(illegalStepIndexes([realmplay, bladeVessel], 40)).toEqual([])
   })
 })
 

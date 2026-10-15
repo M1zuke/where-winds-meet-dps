@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { LIGHT_ATTACK_NOT_REPLACED } from "./empowered-light-attack"
 import {
   CLASS_RECEIVES,
   MISTWILLOW_LIGHT_ATTACK_RECEIVES,
@@ -27,6 +28,7 @@ export const dualBladesLightAttack1 = defineSkill({
     ...RIVEN_TWINBLADES_RECEIVES,
     ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   ],
+  castConditions: [LIGHT_ATTACK_NOT_REPLACED],
   castFrames: 26,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — no approach field found.
