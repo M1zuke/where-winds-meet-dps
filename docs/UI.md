@@ -31,20 +31,26 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    so a second subscriber to a kind receives the first one's results and their
    posts coalesce into one request.
 4. **Never construct a worker in a hook.** The client owns a bounded, lazily
-   grown pool and keeps it for the life of the document. A hook that spawns its
-   own pays a full module instantiation per mount — for a route-mounted tab, per
-   visit. **A request goes to the freest worker at the moment it is sent** — an
-   idle one where there is one, a new one while the pool may still grow, the
-   least loaded otherwise. Nothing is pinned to a kind: pinning puts a cheap
-   sweep behind an expensive one while another worker sits idle.
+   grown pool and keeps it for the life of the document, replacing a worker only
+   when it terminates one (rule 5). A hook that spawns its own pays a full
+   module instantiation per mount — for a route-mounted tab, per visit. **A
+   worker holds at most one request at a time.** A request goes to an idle
+   worker — a new one while the pool may still grow; while none is idle it waits
+   in the client, where a newer request of its kind replaces it. Nothing is
+   pinned to a kind: pinning puts a cheap sweep behind an expensive one while
+   another worker sits idle.
 5. **Post through the client, never around it.** It debounces per kind with the
-   shared table, keeps only the newest request, discards superseded responses,
-   and once a kind has no listeners left drops its queued request and **aborts**
-   the ones already in flight, so the next mount is never handed the previous
-   one's result and no worker keeps computing for a tab that is gone. Each post
-   structured-clones the full inputs, gear inventory included, on the main thread
-   — a zero-delay timeout is not a debounce, so a kind that must fire at once
-   takes a zero entry in that table and posts synchronously.
+   shared table, keeps only the newest request and discards superseded
+   responses. **A run nobody is waiting for is stopped, not finished:** when a
+   request is superseded or its kind loses its last listener, the client drops it
+   if it is still waiting and terminates the worker running it if it was sent — a
+   synchronous engine loop cannot be interrupted any other way. The only run a
+   newer request keeps alive is one computing that request's own signature
+   (rule 6). A user's cancel of a progress-reporting kind is the cooperative one
+   in rule 12, because it keeps the partial result. Each post structured-clones
+   the full inputs, gear inventory included, on the main thread — a zero-delay
+   timeout is not a debounce, so a kind that must fire at once takes a zero
+   entry in that table and posts synchronously.
 6. **The client answers from memory where the request settles it.** Each cacheable
    kind keeps a bounded set of responses keyed by a signature of the request, and
    each kind retains its last response for the next mount. Both live only in the
@@ -54,10 +60,8 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    the request-id and delivery path of a computed one, and never raises pending.
    **No signature is ever computed twice.** A request whose signature is already
    being computed waits on that run rather than starting a second, and answers
-   under the waiting request's id. A run abandoned under rule 5 still fills the
-   cache **and becomes the retained response** when it lands, so the mount that
-   re-posts it opens on that answer instead of on an empty panel — abandoning
-   drops the _delivery_, never the work. Retention tracks its own newest-answer
+   under the waiting request's id. A terminated run leaves nothing behind — no
+   cache entry and no retained response. Retention tracks its own newest-answer
    mark, so a superseded or out-of-order response can never overwrite a newer
    one with an older one.
 7. **Mount worker hooks where the results are consumed**, not in the app shell, so
