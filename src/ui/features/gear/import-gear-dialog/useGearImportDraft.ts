@@ -36,14 +36,14 @@ export function useGearImportDraft(inputs: Inputs) {
     if (!pasted.trim()) return { result: null, error: "" }
     try {
       return {
-        result: resolveAgainstBuild(parseDashboardGearPayload(pasted), inputs, choices),
+        result: resolveAgainstBuild(parseDashboardGearPayload(pasted), inputs, choices, overrides),
         error: "",
       }
     } catch (failure) {
       if (failure instanceof GearImportError) return { result: null, error: failure.message }
       throw failure
     }
-  }, [pasted, inputs, choices])
+  }, [pasted, inputs, choices, overrides])
 
   const result = parsed.result
   const summary = useMemo(() => (result ? summarizeImport(result) : null), [result])

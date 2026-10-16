@@ -10,11 +10,14 @@ import {
   computeProfileMetrics,
   computeRankingRequest,
   computeRotationDps,
+  computeSelectedPieceDelta,
   computeSetTiles,
   PARSE_RUN_CAP,
   parseRunSeed,
   type ParseSimulationWorkerRequest,
 } from "../../src/engine/dpsWorker"
+import type { WorkerRequest, WorkerResponse } from "../../src/engine/dpsWorker"
+import { mergeShardResponses, shardRequest } from "../../src/ui/hooks/workerShards"
 import { RUN_SEED_STRIDE } from "../../src/engine/rng"
 import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
@@ -456,6 +459,53 @@ describe("computeEquippedDeltas", () => {
   })
 })
 
+describe("computeSelectedPieceDelta", () => {
+  it("answers the selected piece's delta exactly as the inventory sweep does", () => {
+    const piece = (id: string, slot: GearPiece["slot"], minPhys: number): GearPiece => ({
+      id,
+      slot,
+      level: 91,
+      rarity: "legendary",
+      minPhys,
+      maxPhys: minPhys * 2,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "crit", value: 0.03, retuned: false },
+        { word: "power", value: 40, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "physPen",
+      attunementValue: 0.03,
+      relayed: true,
+    })
+    const inputs: Inputs = {
+      ...umbraInputs,
+      inventory: [piece("worn-helm", "helm", 1000), piece("spare-helm", "helm", 1500)],
+      equipped: { ...umbraInputs.equipped, helm: "worn-helm" },
+    }
+    const baselineDps = runEngine(inputs).dps
+
+    const whole = computeDpsDeltas({
+      reqId: 1,
+      inputs,
+      baselineDps,
+      pieceIds: inputs.inventory.map((candidate) => candidate.id),
+    })
+    const single = computeSelectedPieceDelta({
+      reqId: 2,
+      inputs,
+      baselineDps,
+      pieceId: "spare-helm",
+    })
+
+    expect(single.reqId).toBe(2)
+    expect(single.deltas).toEqual({ "spare-helm": whole.deltas["spare-helm"] })
+  })
+})
+
 describe("computeDpsDeltas shard parity", () => {
   it("answers the same per piece-id subset as it does for the whole set", () => {
     const inputs = umbraInputs
@@ -467,5 +517,77 @@ describe("computeDpsDeltas shard parity", () => {
     )
 
     expect(Object.assign({}, ...shards)).toEqual(whole.deltas)
+  })
+})
+
+describe("gear analysis and ranking shard parity", { timeout: 60_000 }, () => {
+  function unrelayedPiece(id: string, slot: GearPiece["slot"]): GearPiece {
+    return {
+      id,
+      slot,
+      level: 91,
+      rarity: "legendary",
+      minPhys: 1000,
+      maxPhys: 2000,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "crit", value: 0.03, retuned: false },
+        { word: "power", value: 40, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "physPen",
+      attunementValue: 0.03,
+      relayed: false,
+    }
+  }
+  const geared: Inputs = {
+    ...umbraInputs,
+    inventory: [
+      unrelayedPiece("worn-weapon", "leftWeapon"),
+      unrelayedPiece("worn-helm", "helm"),
+      unrelayedPiece("worn-armor", "armor"),
+    ],
+    equipped: {
+      ...umbraInputs.equipped,
+      leftWeapon: "worn-weapon",
+      helm: "worn-helm",
+      armor: "worn-armor",
+    },
+  }
+  const baselineDps = runEngine(geared).dps
+
+  function answerShards(request: WorkerRequest, shardCount: number): WorkerResponse {
+    const shards = shardRequest(request, shardCount)
+    expect(shards).not.toBeNull()
+    const parts = (shards as WorkerRequest[]).map((shard) => {
+      if (shard.kind === "gearAnalysis")
+        return { kind: "gearAnalysis" as const, ...computeGearAnalysisRequest(shard) }
+      if (shard.kind === "ranking")
+        return { kind: "ranking" as const, ...computeRankingRequest(shard) }
+      throw new Error(`unexpected shard kind ${shard.kind}`)
+    })
+    return mergeShardResponses(parts)
+  }
+
+  it("merged shards answer what the whole sweep answered for the gear analysis", () => {
+    const whole = computeGearAnalysisRequest({ reqId: 1, inputs: geared, baselineDps })
+    const merged = answerShards({ kind: "gearAnalysis", reqId: 1, inputs: geared, baselineDps }, 3)
+
+    expect(merged).toEqual({ kind: "gearAnalysis", ...whole })
+  })
+
+  it("merged shards answer what the whole sweep answered for the ranking", () => {
+    const whole = computeRankingRequest({ reqId: 1, inputs: geared, baselineDps })
+    for (const shardCount of [2, 4]) {
+      const merged = answerShards(
+        { kind: "ranking", reqId: 1, inputs: geared, baselineDps },
+        shardCount,
+      )
+
+      expect(merged).toEqual({ kind: "ranking", ...whole })
+    }
   })
 })

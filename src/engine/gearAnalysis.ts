@@ -105,11 +105,12 @@ export function computeGearAnalysis(
   inputs: Inputs,
   baselineDps: number,
   options?: EngineRunOptions,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
 ): GearSlotAnalysisRow[] {
   const pool = poolForClass(inputs.classId)
   const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
 
-  return GEAR_SLOTS.map((slot) => {
+  return slots.map((slot) => {
     const piece = equippedPiece(inputs, slot)
     if (!piece) {
       return {
