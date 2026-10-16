@@ -1949,7 +1949,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     expect(profiles[0].inputs.arsenal).toBe(defaultInputs.arsenal)
     expect(profiles[0].inputs.mindMethods).toEqual(defaultInputs.mindMethods)
     expect(profiles[0].inputs.martialArtsTalents).toEqual(
-      getDefaultTalentsForClass(defaultInputs.classId),
+      getDefaultTalentsForClass(defaultInputs.classId, defaultInputs.breakthrough),
     )
   })
 
