@@ -11,7 +11,7 @@ export const umbdrone26HitTick = defineSkill({
   name: "UmbDrone[26hit] Tick",
   breakdownName: "Umbrella Drone",
   tags: [PROP.isDrone, WEAPON.umbrella, ATTACK.light, ATTUNE.umbFrequentProjectile, ROLE.umbDrone],
-  skillType: "sustain",
+  skillType: "weapon",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbDroneTick26hit,
@@ -31,5 +31,5 @@ export const umbdrone26HitTick = defineSkill({
   triggerable: true,
   hits: [hit(0, { frame: 0, ...DRONE_TICK })],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-10-05T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

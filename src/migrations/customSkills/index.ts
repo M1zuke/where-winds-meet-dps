@@ -93,6 +93,7 @@ import { V89__draughtReveldriftChargesAndEmpoweredLightAttack } from "./V89__dra
 import { V90__draughtTipsylayAndExCooldowns } from "./V90__draughtTipsylayAndExCooldowns"
 import { V91__draughtNightwickStanceAndVariedComboOverrides } from "./V91__draughtNightwickStanceAndVariedComboOverrides"
 import { V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming } from "./V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { V93__jadeBulletSkillsAsWeaponHits } from "./V93__jadeBulletSkillsAsWeaponHits"
 
 export type {
   CustomSkillMigration,
@@ -254,6 +255,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V90__draughtTipsylayAndExCooldowns,
   V91__draughtNightwickStanceAndVariedComboOverrides,
   V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming,
+  V93__jadeBulletSkillsAsWeaponHits,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

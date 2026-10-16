@@ -1,0 +1,309 @@
+{
+  "v": 19,
+  "debuffs": [
+    {
+      "id": "debuff-silkbindJade-umbdrone",
+      "classId": "silkbindJade",
+      "name": "UmbDrone",
+      "activation": "triggered",
+      "durationFrames": 216000,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "additionalTicks": {
+          "offsetsFrames": [
+            9
+          ],
+          "requiresBuff": "lingeringBone"
+        },
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[12hit]",
+      "activation": "triggered",
+      "durationFrames": 364,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-16hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[16hit]",
+      "activation": "triggered",
+      "durationFrames": 484,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-20hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[20hit]",
+      "activation": "triggered",
+      "durationFrames": 604,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-23hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[23hit]",
+      "activation": "triggered",
+      "durationFrames": 694,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-26hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[26hit]",
+      "activation": "triggered",
+      "durationFrames": 784,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "rearmsToAbsoluteDeadline": true,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "extraCritDamage": 1,
+        "qiHitKind": "direct",
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "attuneTag": "attune:umbFrequentProjectile",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone",
+      "receives": [
+        "lingeringBone",
+        "comboExtendMark"
+      ],
+      "triggersBuffs": [
+        "lingeringBone",
+        "starReacherSupreme",
+        "starReacher"
+      ]
+    },
+    {
+      "id": "debuff-silkbindJade-bitter-season-tick",
+      "classId": "silkbindJade",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.02,
+        "physFixed": 0,
+        "attributeMultiplier": 0,
+        "attributeFixed": 0,
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "receives": []
+    },
+    {
+      "id": "df-user-authored-gust",
+      "classId": "silkbindJade",
+      "name": "User-authored gust",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 1,
+        "physFixed": 50,
+        "attributeMultiplier": 1.5,
+        "attributeFixed": 50,
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "count": 1
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

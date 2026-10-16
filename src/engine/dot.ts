@@ -1,5 +1,5 @@
 import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
-import type { Skill } from "./skill"
+import { projectileTravelFrames, type Skill } from "./skill"
 import type { StatusWindow } from "./ledger"
 import type { computeSkillDamage, FormulaContext, RolledHit } from "./formula"
 import type { ArtBonusField } from "./effects/effect"
@@ -208,6 +208,10 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
 
 export interface DotTickPlan {
   frame: number
+  // Where the pulse fires; `frame` is where its bullet lands. Equal for a
+  // pulse with no projectile.
+  launchFrame: number
+  runFrame: number
   weight: number
   stampLatenessFrames?: number
   requiresBuff?: string
@@ -222,6 +226,7 @@ export interface DotPlanQuery {
   dot: DebuffDotSpec
   windows: readonly StatusWindow[]
   stacksAt(frame: number): number
+  distanceAt?(frame: number): number
   inWindow(frame: number): boolean
   // Expected uptime for a stochastic DoT: a tick is worth the probability the
   // debuff is actually up at that moment. 1 for a deterministic one.
@@ -249,7 +254,13 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
         if (offset < 0 || offset >= interval) continue
         const at = pulse + offset
         if (at >= episode.end) continue
-        const frame = Math.round(at)
+        const launchFrame = Math.round(at)
+        const travelFrames =
+          dot.projectile && query.distanceAt
+            ? projectileTravelFrames(dot.projectile, query.distanceAt(launchFrame))
+            : 0
+        const frame = Math.round(at + travelFrames)
+        const runFrame = Math.round(pulse)
         const stampLateness =
           dot.rearmsToAbsoluteDeadline === true
             ? {
@@ -263,7 +274,7 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
         const enhancingBuff = dot.additionalTicks?.requiresBuff
         const requirement =
           offset > 0
-            ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: Math.round(pulse) }
+            ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: runFrame }
             : enhancingBuff
               ? { enhancedBy: enhancingBuff }
               : {}
@@ -275,6 +286,8 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
           const live = Math.max(1, query.stacksAt(frame))
           plans.push({
             frame,
+            launchFrame,
+            runFrame,
             weight,
             ...stampLateness,
             ...requirement,
@@ -285,6 +298,8 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
           if (live === 0) continue
           plans.push({
             frame,
+            launchFrame,
+            runFrame,
             weight,
             ...stampLateness,
             ...requirement,
@@ -293,7 +308,15 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
         } else {
           const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
           if (perStack && count === 0) continue
-          plans.push({ frame, weight, ...stampLateness, ...requirement, scale: count })
+          plans.push({
+            frame,
+            launchFrame,
+            runFrame,
+            weight,
+            ...stampLateness,
+            ...requirement,
+            scale: count,
+          })
         }
       }
     }

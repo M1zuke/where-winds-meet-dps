@@ -1,4 +1,5 @@
 import type { BuffStatEffect, StackScaling, BuffActivation } from "./buff"
+import type { ProjectileSpec } from "./skill"
 import type { AttributeKey } from "./types"
 
 export interface DotStackShape {
@@ -15,6 +16,9 @@ export interface DebuffDotSpec {
   // application carries 0. Absent, the first tick falls one interval in.
   firstTickOffsetFrames?: number | null
   additionalTicks?: { offsetsFrames: readonly number[]; requiresBuff: string }
+  // Each pulse fires a bullet that lands after its flight at the live target
+  // distance, in place of landing on the pulse itself.
+  projectile?: ProjectileSpec
   // Whether each tick schedules the next one, which is what makes the interval
   // and the first tick run long (see `dot.ts`'s tick timer). False for a DoT
   // that pulses on a fixed schedule instead. Absent means it has not been

@@ -16,7 +16,7 @@ import {
 import { dragonquenchSecondStages } from "../../src/data/skills/bamboocut-draught/dragonquench-inebriate-second"
 import { dragonquenchThirdStages } from "../../src/data/skills/bamboocut-draught/dragonquench-inebriate-third"
 import { combustion, smolder, toadPoison, fluteRipple } from "../../src/data/skills/mystic/debuffs"
-import { DRONE_TICK } from "../../src/data/skills/silkbind-jade/droneTick"
+import { droneDotSpec } from "../../src/data/skills/silkbind-jade/droneTick"
 import { fireOilBurnMechanic } from "../../src/data/consumables/divinecraftMechanics"
 import { ROLE } from "../../src/data/skills/ids"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
@@ -108,15 +108,15 @@ describe("built-in Qi rates match the in-game table", () => {
 })
 
 describe("the silkbind Jade drone family deals no Qi inside the post-refill immunity window", () => {
-  it("types the drone tick a direct hit for the Qi rule, without changing its damage typing", () => {
-    expect(DRONE_TICK.qiHitKind).toBe("direct")
+  it("types the drone tick a direct hit", () => {
+    expect(droneDotSpec(false).directHit).toBe(true)
   })
 
   it("a drone tick inside the 4 s post-refill window deals no Qi", () => {
     const bar = new QiBar(QI_BAR, FPS)
     bar.apply(0, 800, "direct")
     // Refill lands at frame 600 (10 s); the direct-hit immunity runs to 840 (14 s).
-    bar.apply(600 + 30, 50, DRONE_TICK.qiHitKind)
+    bar.apply(600 + 30, 50, "direct")
     const schedule = bar.schedule()
     expect(schedule.fractionAt((600 + 30) / FPS)).toBe(1)
   })

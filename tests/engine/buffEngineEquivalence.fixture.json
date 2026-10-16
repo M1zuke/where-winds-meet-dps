@@ -187450,7 +187450,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "36a79721c976ef86affd61ef552c2832097fce8a5c2f86d4a8979f83325eba06"
+        "digest": "687287a5a4ece749acf7719c9ba027119df8c6fd9468b489e9903f18fadb261c"
       },
       "debuffs": {
         "count": 12,
@@ -187468,7 +187468,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "d719c141cdb227da2535c5181a689d0c13f83572861f19e0726d6a952221241e"
+        "digest": "e4e216b81b89bb12e92138fbea77db465eda174c4fc516e1f796f8bb3a2d2dc8"
       },
       "buffs": [
         {

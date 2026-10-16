@@ -21,7 +21,7 @@ export const umblightcharge = defineSkill({
   classId: "silkbindJade",
   name: "UmbLightCharge",
   tags: SPRING_AWAY_TAGS,
-  skillType: "sustain",
+  skillType: "weapon",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbLightCharge,

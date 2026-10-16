@@ -44,6 +44,12 @@ function amount(simulation: CombatResource) {
   return simulation.result.samples.at(-1)!.amount
 }
 
+function tickAndLand(simulation: CombatResource, frame: number, owner = 0) {
+  const outcome = simulation.tick(frame, owner)
+  if (outcome.share > 0) simulation.creditHit(frame, outcome.particles)
+  return outcome
+}
+
 describe("resource refund on exhausted-target projectile hits", () => {
   it("distributes a combo's resource total across actual hits without crediting skipped hits", () => {
     const simulation = new CombatResource(
@@ -261,14 +267,25 @@ describe("resource refund on exhausted-target projectile hits", () => {
   it("credits only accepted projectile ticks within the half-open exhausted phase", () => {
     const simulation = resource()
     simulation.launch(0)
-    expect(simulation.tick(30, 0).share).toBe(1)
+    expect(tickAndLand(simulation, 30).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(55)
-    expect(simulation.tick(60, 0).share).toBe(1)
+    expect(tickAndLand(simulation, 60).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(58)
-    expect(simulation.tick(120, 0).share).toBe(1)
+    expect(tickAndLand(simulation, 120).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(56)
-    expect(simulation.tick(180, 0).share).toBe(1)
+    expect(tickAndLand(simulation, 180).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(46)
+  })
+
+  it("credits a bullet's refund against the phase it lands in, not the one it was launched in", () => {
+    const simulation = resource()
+    simulation.launch(0)
+    const launchedBefore = simulation.tick(54, 0)
+    simulation.creditHit(72, launchedBefore.particles)
+    expect(amount(simulation)).toBeCloseTo(60 - (10 * 72) / 60 + 8)
+    const launchedInside = simulation.tick(174, 0)
+    simulation.creditHit(186, launchedInside.particles)
+    expect(amount(simulation)).toBeCloseTo(60 - (10 * 186) / 60 + 8)
   })
 
   it("does not refill merely because time passes during exhaustion", () => {
@@ -281,7 +298,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
   it("charges an enhanced run's cost once, on top of the drain and the hit refund", () => {
     const simulation = resource(100)
     simulation.launch(0)
-    simulation.tick(60, 0)
+    tickAndLand(simulation, 60)
     simulation.chargeEnhancedRun(60, 0)
     expect(amount(simulation)).toBeCloseTo(93)
   })
@@ -319,7 +336,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
     const simulation = resource(100)
     simulation.settings.exhaustedGainPerTick = 100
     simulation.launch(0)
-    simulation.tick(60, 0)
+    tickAndLand(simulation, 60)
     expect(amount(simulation)).toBe(100)
     simulation.advance(660)
     expect(simulation.tick(660, 0).share).toBe(0)

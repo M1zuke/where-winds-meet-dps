@@ -317,17 +317,35 @@ export class CombatResource {
       (branch) => branch.active !== null && branch.activeOwner === owner,
     )
     if (ticked.length === 0) return { share: 0, particles: null }
-    const exhausted = this.context.exhausted(frame)
     let tickedParticles = 0
     for (const branch of ticked) {
       branch.active!.ticks++
-      if (exhausted) this.credit(branch, this.settings.exhaustedGainPerTick)
       tickedParticles += this.countOf(branch)
     }
     const particles = this.maskOf(ticked)
     this.mergeEquivalent()
     this.sample()
     return { share: tickedParticles / this.context.particleCount, particles }
+  }
+
+  creditHit(frame: number, launched: Uint8Array | null) {
+    this.advance(frame)
+    if (!this.context.exhausted(frame)) return
+    const gain = this.settings.exhaustedGainPerTick
+    if (launched === null) {
+      for (const branch of this.branches) this.credit(branch, gain)
+    } else {
+      const next: Branch[] = []
+      for (const branch of this.branches) {
+        const credited = this.creditedPart(branch, launched, next)
+        if (!credited) continue
+        this.credit(credited, gain)
+        next.push(credited)
+      }
+      this.branches = next
+    }
+    this.mergeEquivalent()
+    this.sample()
   }
 
   chargeEnhancedRun(frame: number, owner: number) {

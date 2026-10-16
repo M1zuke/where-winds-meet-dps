@@ -22,7 +22,7 @@ export const umblightcharge12 = defineSkill({
   name: "UmbLightCharge (12 bullets)",
   breakdownName: "UmbLightCharge",
   tags: SPRING_AWAY_TAGS,
-  skillType: "sustain",
+  skillType: "weapon",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbLightCharge12,

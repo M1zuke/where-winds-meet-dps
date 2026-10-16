@@ -443,6 +443,11 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A `dot` may declare `directHit`**: its pulse is a direct hit rather than a
   damage-over-time tick, so the row carries no `isDotTick` flag, takes no
   DoT-only effect, and reaches no sustain routing.
+- **A `dot` may declare a `projectile`**: each pulse launches a bullet that
+  lands its flight later, at the target distance read where it launches. The
+  resource gate and the extra-pulse requirement read the launch; the damage,
+  the debuff's `triggersBuffs` and every damage-driven effect read the landing.
+  A window cut after a launch does not stop that bullet.
 - A stacking DoT's detonation spec is the single source of truth for its
   threshold behaviour — see Triggers above.
 

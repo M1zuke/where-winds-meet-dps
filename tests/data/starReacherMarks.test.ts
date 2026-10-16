@@ -13,7 +13,7 @@ const LINGERING_BONE_DELAY_SEC = 0.03
 const MARK_GRANTS = [BUFF.lingeringBone, BUFF.starReacherSupreme, BUFF.starReacher]
 const ANY_HIT = makeSkill("test", { name: "Any hit" })
 const DIRECT_DOT_TICK = makeSkill("test", { name: "Tick", isDotTick: true })
-const DRONE_TICK = makeSkill("test", { name: "Drone tick", isDotTick: true, tags: [PROP.isDrone] })
+const DRONE_TICK = makeSkill("test", { name: "Drone tick", tags: [PROP.isDrone] })
 
 function engine(tier: number, breakSeconds?: [start: number, end: number]) {
   const result = new BuffEngine(

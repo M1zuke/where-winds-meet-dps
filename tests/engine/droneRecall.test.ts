@@ -5,7 +5,11 @@ import { makeStep } from "../../src/engine/rotation"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { DEBUFFS } from "../../src/data/skills/silkbind-jade/debuffs"
 import { DEBUFF, SKILL } from "../../src/data/skills/silkbind-jade/ids"
-import { DRONE_RECALL } from "../../src/data/skills/silkbind-jade/droneTick"
+import {
+  DRONE_BULLET_PROJECTILE,
+  DRONE_RECALL,
+} from "../../src/data/skills/silkbind-jade/droneTick"
+import { projectileTravelFrames } from "../../src/engine/skill"
 import { blossomResource } from "../../src/data/classes/silkbind-jade/blossoms"
 import { testRotation } from "../builtins"
 
@@ -30,7 +34,9 @@ function droneTicks(finalSkillId: string) {
   const rotationCasts = (result.casts ?? []).filter(
     (cast) => !cast.skillName.startsWith("Weapon Swap"),
   )
-  return { ticks, recallSec: rotationCasts[FAN_CASTS + 1].timeSec }
+  const recallCast = rotationCasts[FAN_CASTS + 1]
+  const flightSec = projectileTravelFrames(DRONE_BULLET_PROJECTILE, recallCast.distanceMeters) / 60
+  return { ticks, recallSec: recallCast.timeSec, flightSec }
 }
 
 describe("the fixed-count floating umbrella", () => {
@@ -39,10 +45,12 @@ describe("the fixed-count floating umbrella", () => {
     expect(ticks.some((tick) => tick.timeSec > recallSec)).toBe(true)
   })
 
-  it("is recalled when an umbrella skill starts, so none of its ticks land after that", () => {
-    const { ticks, recallSec } = droneTicks(SKILL.umblightcharge)
+  it("is recalled when an umbrella skill starts, so only bullets already in flight land after that", () => {
+    const { ticks, recallSec, flightSec } = droneTicks(SKILL.umblightcharge)
     expect(ticks.length).toBeGreaterThan(0)
-    for (const tick of ticks) expect(tick.timeSec).toBeLessThan(recallSec)
+    for (const tick of ticks) expect(tick.timeSec).toBeLessThan(recallSec + flightSec)
+    const ordinary = droneTicks(SKILL.fanspecial).ticks
+    expect(ticks.length).toBeLessThan(ordinary.length)
   })
 
   it("is recalled by the same skills as the Blossoms-gated floating umbrella", () => {

@@ -1,6 +1,5 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
-import { PROP } from "../skills/ids"
 import { LINGERING_BONE_APPLIED_AFTER_HIT_SEC } from "../skills/buffs/lingeringBone"
 import { artBonus, stat } from "../../engine/effects/effect"
 
@@ -54,9 +53,7 @@ export const starReacherMarkedTargetBuffDef = defineBuff({
   duration: 9999,
   summary: "+3% damage on direct hits against a target carrying your Lingering Bone",
   effects: (ctx) =>
-    ctx.status.isActive(BUFF.lingeringBone) &&
-    ctx.event.kind === "damage" &&
-    (!ctx.event.isDotTick || ctx.event.tags.has(PROP.isDrone))
+    ctx.status.isActive(BUFF.lingeringBone) && ctx.event.kind === "damage" && !ctx.event.isDotTick
       ? [stat("allDamageBoost", 0.03)]
       : [],
 })

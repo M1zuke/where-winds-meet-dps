@@ -31,7 +31,7 @@ const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
   "builtin-silkbindJade-20-dh-video-60s": [[1707, 2307]],
   "builtin-silkbindJade-30s-dummy-max": [[1634, 2234]],
   "builtin-silkbindJade-standardized-1-7": [[1859, 2459]],
-  "builtin-silkbindJade-t5": [[2216, 2816]],
+  "builtin-silkbindJade-t5": [[2215, 2815]],
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": [[1508, 2108]],
 }
 

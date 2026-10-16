@@ -21,6 +21,7 @@ import { V16__droneStampsAndRecall } from "./V16__droneStampsAndRecall"
 import { V17__splendorBitterSeasonTickWithoutSoulShaken } from "./V17__splendorBitterSeasonTickWithoutSoulShaken"
 import { V18__jadeDroneStarReacherGrantsAndNoSoulShaken } from "./V18__jadeDroneStarReacherGrantsAndNoSoulShaken"
 import { V19__draughtBitterSeasonTickWithoutSoulShaken } from "./V19__draughtBitterSeasonTickWithoutSoulShaken"
+import { V20__jadeDroneDirectHitFlight } from "./V20__jadeDroneDirectHitFlight"
 
 export type {
   CustomDebuffMigration,
@@ -60,6 +61,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V17__splendorBitterSeasonTickWithoutSoulShaken,
   V18__jadeDroneStarReacherGrantsAndNoSoulShaken,
   V19__draughtBitterSeasonTickWithoutSoulShaken,
+  V20__jadeDroneDirectHitFlight,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

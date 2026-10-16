@@ -70,7 +70,7 @@ import {
 import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
 import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
-import { CombatResource } from "./resources"
+import { CombatResource, type ResourceTickOutcome } from "./resources"
 import { MeterEngine } from "./meter"
 import { meterMaxParamKey, type MeterMaxContext } from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
@@ -1600,6 +1600,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           dot,
           windows,
           stacksAt: (frame) => ledger.stacksAt(buffId, frame),
+          distanceAt: (frame) => ledger.stacksAt(TARGET_DISTANCE_STATUS, frame),
           inWindow: () => true,
           weightAt: () => 1,
         })) {
@@ -2021,6 +2022,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       ledgerEntries: Iterable<[string, readonly StatusWindow[]]>,
       stacksAt: (buffId: string, frame: number) => number,
       weightAt: (buffId: string, frame: number) => number,
+      distanceAt: (frame: number) => number,
     ): PlannedDotTick[] {
       const planned: PlannedDotTick[] = []
       for (const [buffId, arr] of ledgerEntries) {
@@ -2050,6 +2052,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             dot,
             windows: episode,
             stacksAt: (frame) => stacksAt(buffId, frame),
+            distanceAt,
             inWindow: (frame) => frame <= windowFrames,
             weightAt: (frame) => weightAt(buffId, frame),
           })) {
@@ -2075,6 +2078,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       layoutLedger.entries(),
       (buffId, frame) => layoutLedger.stacksAt(buffId, frame),
       () => 1,
+      targetDistanceAt,
     )) {
       if (
         plan.requiresBuff &&
@@ -2289,6 +2293,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           forcedAffinityByOnHit: boolean
           ledgerMark: number
         }
+      | { kind: "tickLaunch"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "extra"; frame: number; seq: number; event: MechanicEvent }
       | { kind: "echoRelease"; frame: number; seq: number; debuffId: string }
@@ -2297,6 +2302,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const MERGED_KIND_PRIORITY: Record<MergedEvent["kind"], number> = {
       recall: -1,
       hit: 0,
+      tickLaunch: 0.5,
       tick: 1,
       extra: 2,
       echoRelease: 3,
@@ -2691,6 +2697,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         return 1
       },
+      targetDistanceAt,
     )) {
       const entry: DotTickEntry = {
         ...plan,
@@ -2706,6 +2713,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         dotType: dot.skillType || "sustain",
       }
       dotTickEntries.push(entry)
+      mergedEvents.push({ kind: "tickLaunch", frame: entry.launchFrame, seq: mergedSeq++, entry })
       mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
     }
 
@@ -2935,6 +2943,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // last release. `totalDamage` accumulates as each one is scored, so a buff
     // module's `target.remainingHealthFraction` reads the true running total.
     mergedEvents.sort(byMergedOrder)
+    const launchedTicks = new Map<DotTickEntry, ResourceTickOutcome>()
     for (const event of mergedEvents) {
       if (buffEngine && !fixedQiBreaks) {
         scoringSchedule = qiScheduleReadingLiveBar(qiSchedule, qiBar, event.frame, FPS)
@@ -3006,32 +3015,39 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           damage,
           inWindow: landsInFight,
         })
-      } else if (event.kind === "tick") {
+      } else if (event.kind === "tickLaunch") {
         const { entry } = event
         const resource = resourceByDebuff.get(entry.debuff.id)
         if (
           entry.requiresBuff &&
           !buffEngine?.isBuffActiveAtTime(
             entry.requiresBuff,
-            (entry.requiresBuffAtFrame ?? entry.frame) / FPS,
+            (entry.requiresBuffAtFrame ?? entry.launchFrame) / FPS,
           )
         )
           continue
-        const resourceTick = resource?.tick(entry.frame, entry.resourceOwner!)
+        const resourceTick = resource?.tick(entry.launchFrame, entry.resourceOwner!)
         if (resourceTick && resourceTick.share <= 0) continue
-        const tickShare = resourceTick?.share ?? 1
         if (
           resource &&
           entry.enhancedBy &&
-          buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.frame / FPS)
+          buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.launchFrame / FPS)
         )
-          resource.chargeEnhancedRun(entry.frame, entry.resourceOwner!)
+          resource.chargeEnhancedRun(entry.launchFrame, entry.resourceOwner!)
+        launchedTicks.set(entry, resourceTick ?? { share: 1, particles: null })
+      } else if (event.kind === "tick") {
+        const { entry } = event
+        const resource = resourceByDebuff.get(entry.debuff.id)
+        const launched = launchedTicks.get(entry)
+        if (!launched) continue
+        const tickShare = launched.share
+        resource?.creditHit(entry.frame, launched.particles)
         buffEngine?.processDamagingEvent({
           skill: entry.dotSkill,
           timeSec: entry.frame / FPS,
           stampSec: (entry.frame + (entry.stampLatenessFrames ?? 0)) / FPS,
-          runKey: `${entry.debuff.id}|${entry.requiresBuffAtFrame ?? entry.frame}`,
-          particles: resourceTick?.particles ?? null,
+          runKey: `${entry.debuff.id}|${entry.runFrame}`,
+          particles: launched.particles,
         })
         if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
           buffEngine?.triggerDeclaredBuffs(
