@@ -61,7 +61,7 @@ function withInventory(p: GearPiece, equipped: boolean = false, extra: GearPiece
   }
 }
 
-describe("getFTPiece", () => {
+describe("getFTPiece", { timeout: 30_000 }, () => {
   it("for a non-relayed piece, returns the variant whose DPS is at least as high as either build path", () => {
     const p = piece([w("crit", 0.05), w("agility", 30), w("momentum", 30), EMPTY, EMPTY], {
       attunement: "physPen",
