@@ -12,10 +12,12 @@ export interface DpsDeltasResult {
 }
 
 const EMPTY_DELTAS: DpsDeltaMap = {}
+const PIECE_ID_SEPARATOR = "\n"
 
 export function useDpsDeltas(
   inputs: Inputs,
   baselineDps: number,
+  pieceIds: readonly string[],
   baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): DpsDeltasResult {
   const [deltas, setDeltas] = useState<DpsDeltaMap>(
@@ -23,7 +25,8 @@ export function useDpsDeltas(
   )
   const isPending = useDpsWorkerPending("dpsDeltas")
 
-  const hasCandidates = inputs.inventory.length > 0
+  const hasCandidates = pieceIds.length > 0
+  const pieceIdsKey = pieceIds.join(PIECE_ID_SEPARATOR)
 
   useEffect(() => {
     return subscribeToDpsWorker("dpsDeltas", ({ deltas: next }) => setDeltas(next))
@@ -35,10 +38,10 @@ export function useDpsDeltas(
       kind: "dpsDeltas",
       inputs,
       baselineDps,
-      pieceIds: inputs.inventory.map((piece) => piece.id),
+      pieceIds: pieceIdsKey.split(PIECE_ID_SEPARATOR),
       baselineQiBreaks,
     })
-  }, [inputs, baselineDps, hasCandidates, baselineQiBreaks])
+  }, [inputs, baselineDps, pieceIdsKey, hasCandidates, baselineQiBreaks])
 
   if (!hasCandidates) return { deltas: EMPTY_DELTAS, isPending: false }
   return { deltas, isPending }

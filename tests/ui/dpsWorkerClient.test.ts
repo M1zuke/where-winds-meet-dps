@@ -9,17 +9,21 @@ const { created, MockWorker } = vi.hoisted(() => {
   const instances: {
     posted: unknown[]
     onmessage: ((event: { data: unknown }) => void) | null
+    terminated: boolean
   }[] = []
   class Mock {
     posted: unknown[] = []
     onmessage: ((event: { data: unknown }) => void) | null = null
+    terminated = false
     constructor() {
       instances.push(this)
     }
     postMessage(request: unknown) {
       this.posted.push(request)
     }
-    terminate() {}
+    terminate() {
+      this.terminated = true
+    }
   }
   return { created: instances, MockWorker: Mock }
 })
@@ -35,16 +39,29 @@ async function freshClient(cores = 8): Promise<Client> {
   return import("../../src/ui/hooks/dpsWorkerClient")
 }
 
-function rankingRequest(baselineDps = 1000): UnsentRequest {
-  return { kind: "ranking", inputs: defaultInputs, baselineDps }
+function unshardedRequest(variant = 1000): UnsentRequest {
+  return {
+    kind: "rotationDps",
+    inputs: defaultInputs,
+    options: [{ optionId: `variant${variant}`, rotation: null }],
+  }
 }
 
-function rankingResponse(reqId: number): WorkerResponse {
-  return { kind: "ranking", reqId, rows: [] }
+function unshardedResponse(reqId: number): WorkerResponse {
+  return { kind: "rotationDps", reqId, dpsByOptionId: {} }
 }
 
 function respond(workerIndex: number, response: WorkerResponse): void {
-  created[workerIndex].onmessage?.({ data: response })
+  const owner =
+    created.find((worker) =>
+      worker.posted.some((post) => (post as WorkerRequest).reqId === response.reqId),
+    ) ?? created[workerIndex]
+  if (owner.terminated || owner.onmessage === null) return
+  owner.onmessage({ data: response })
+}
+
+function liveWorkers() {
+  return created.filter((worker) => !worker.terminated)
 }
 
 function reqIdOfLastPost(workerIndex: number): number {
@@ -153,56 +170,56 @@ afterEach(() => {
 describe("dpsWorkerClient", () => {
   it("coalesces rapid posts of one kind into a single worker message", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
-    client.postToDpsWorker(rankingRequest())
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
+    client.postToDpsWorker(unshardedRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
 
     expect(created).toHaveLength(1)
-    expect(created[0].posted).toEqual([{ ...rankingRequest(), reqId: 3 }])
+    expect(created[0].posted).toEqual([{ ...unshardedRequest(), reqId: 3 }])
   })
 
   it("reports pending from the first post until the matching response", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
-    client.postToDpsWorker(rankingRequest())
-    expect(client.isDpsWorkerPending("ranking")).toBe(true)
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
+    client.postToDpsWorker(unshardedRequest())
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(true)
 
     await vi.runAllTimersAsync()
-    expect(client.isDpsWorkerPending("ranking")).toBe(true)
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(true)
 
-    respond(0, rankingResponse(reqIdOfLastPost(0)))
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
   })
 
   it("stays pending when a superseded response arrives before the newest one", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest(1000))
+    client.postToDpsWorker(unshardedRequest(1000))
     await vi.runAllTimersAsync()
     const supersededReqId = reqIdOfLastPost(0)
-    client.postToDpsWorker(rankingRequest(1001))
+    client.postToDpsWorker(unshardedRequest(1001))
     await vi.runAllTimersAsync()
 
-    respond(0, rankingResponse(supersededReqId))
-    expect(client.isDpsWorkerPending("ranking")).toBe(true)
+    respond(0, unshardedResponse(supersededReqId))
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(true)
 
-    respond(0, rankingResponse(newestPostedReqId()))
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+    respond(0, unshardedResponse(newestPostedReqId()))
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
   })
 
-  it("sends a concurrent request to an idle worker rather than queueing it", async () => {
+  it("sends a concurrent request of another kind to an idle worker rather than queueing it", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
+    client.subscribeToDpsWorker("setTiles", () => {})
 
-    client.postToDpsWorker(rankingRequest(1000))
-    await vi.runAllTimersAsync()
-    client.postToDpsWorker(rankingRequest(1001))
+    client.postToDpsWorker(unshardedRequest())
+    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
     await vi.runAllTimersAsync()
 
     expect(created).toHaveLength(2)
@@ -210,14 +227,82 @@ describe("dpsWorkerClient", () => {
     expect(created[1].posted).toHaveLength(1)
   })
 
+  it("terminates the worker running a superseded request and sends the newest to a fresh one", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("rotationDps", () => {})
+
+    client.postToDpsWorker(unshardedRequest(1000))
+    await vi.runAllTimersAsync()
+    client.postToDpsWorker(unshardedRequest(1001))
+    await vi.runAllTimersAsync()
+
+    expect(created).toHaveLength(2)
+    expect(created[0].terminated).toBe(true)
+    expect(created[1].terminated).toBe(false)
+    expect((created[1].posted[0] as WorkerRequest).reqId).toBe(newestPostedReqId())
+  })
+
+  it("never sends a second request to a busy worker", async () => {
+    const client = await freshClient(2)
+    const kinds = ["dpsDeltas", "retunement", "rotationDps", "setTiles", "graduation"] as const
+    for (const kind of kinds) {
+      client.subscribeToDpsWorker(kind, () => {})
+      client.postToDpsWorker({ ...unshardedRequest(), kind, pieceIds: [] } as UnsentRequest)
+    }
+    await vi.runAllTimersAsync()
+
+    expect(created).toHaveLength(1)
+    expect(created[0].posted).toHaveLength(1)
+  })
+
+  it("holds a request in the client until a worker frees, and lets a newer one of its kind replace it", async () => {
+    const client = await freshClient(2)
+    client.subscribeToDpsWorker("rotationDps", () => {})
+    client.subscribeToDpsWorker("setTiles", () => {})
+
+    client.postToDpsWorker(unshardedRequest())
+    await vi.runAllTimersAsync()
+    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    await vi.runAllTimersAsync()
+    expect(created[0].posted).toHaveLength(1)
+
+    client.postToDpsWorker({ kind: "setTiles", inputs: gearedInputs() })
+    await vi.runAllTimersAsync()
+    expect(created[0].posted).toHaveLength(1)
+
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
+
+    expect(created[0].posted).toHaveLength(2)
+    expect((created[0].posted[1] as WorkerRequest).reqId).toBe(newestPostedReqId())
+    expect((created[0].posted[1] as WorkerRequest).kind).toBe("setTiles")
+  })
+
+  it("delivers the newest answer after many rapid changes", async () => {
+    const client = await freshClient()
+    const seen: number[] = []
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
+
+    for (let change = 0; change < 12; change++) {
+      client.postToDpsWorker(unshardedRequest(1000 + change))
+      await vi.advanceTimersByTimeAsync(400)
+    }
+    await vi.runAllTimersAsync()
+
+    expect(liveWorkers()).toHaveLength(1)
+    const newestReqId = newestPostedReqId()
+    respond(0, unshardedResponse(newestReqId))
+    expect(seen).toEqual([newestReqId])
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
+  })
+
   it("reuses the worker a finished request freed", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    for (const baselineDps of [1000, 1001, 1002]) {
-      client.postToDpsWorker(rankingRequest(baselineDps))
+    for (const variant of [1000, 1001, 1002]) {
+      client.postToDpsWorker(unshardedRequest(variant))
       await vi.runAllTimersAsync()
-      respond(0, rankingResponse(reqIdOfLastPost(0)))
+      respond(0, unshardedResponse(reqIdOfLastPost(0)))
     }
 
     expect(created).toHaveLength(1)
@@ -225,30 +310,30 @@ describe("dpsWorkerClient", () => {
 
   it("delivers a response only to listeners of its own kind", async () => {
     const client = await freshClient()
-    const rankingSeen: number[] = []
+    const unshardedSeen: number[] = []
     const setTilesSeen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => rankingSeen.push(reqId))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => unshardedSeen.push(reqId))
     client.subscribeToDpsWorker("setTiles", ({ reqId }) => setTilesSeen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const reqId = reqIdOfLastPost(0)
-    respond(0, rankingResponse(reqId))
+    respond(0, unshardedResponse(reqId))
 
-    expect(rankingSeen).toEqual([reqId])
+    expect(unshardedSeen).toEqual([reqId])
     expect(setTilesSeen).toEqual([])
   })
 
   it("discards a response older than the newest one already delivered", async () => {
     const client = await freshClient()
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const newest = reqIdOfLastPost(0)
-    respond(0, rankingResponse(newest))
-    respond(0, rankingResponse(newest - 1))
+    respond(0, unshardedResponse(newest))
+    respond(0, unshardedResponse(newest - 1))
 
     expect(seen).toEqual([newest])
   })
@@ -256,19 +341,19 @@ describe("dpsWorkerClient", () => {
   it("numbers requests itself so a remounted listener still gets its results", async () => {
     const client = await freshClient()
 
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    const firstVisit = client.subscribeToDpsWorker("rotationDps", () => {})
     for (const change of [1, 2, 3]) {
-      client.postToDpsWorker(rankingRequest(1000 + change))
+      client.postToDpsWorker(unshardedRequest(1000 + change))
       await vi.runAllTimersAsync()
-      respond(0, rankingResponse(reqIdOfLastPost(0)))
+      respond(0, unshardedResponse(reqIdOfLastPost(0)))
     }
     firstVisit()
 
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
-    client.postToDpsWorker(rankingRequest(2000))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
+    client.postToDpsWorker(unshardedRequest(2000))
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(reqIdOfLastPost(0)))
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
 
     expect(seen).toEqual([reqIdOfLastPost(0)])
   })
@@ -276,15 +361,15 @@ describe("dpsWorkerClient", () => {
   it("withholds a response the previous listener abandoned from the next one", async () => {
     const client = await freshClient()
 
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
-    client.postToDpsWorker(rankingRequest())
+    const firstVisit = client.subscribeToDpsWorker("rotationDps", () => {})
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const abandonedReqId = reqIdOfLastPost(0)
     firstVisit()
 
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
-    respond(0, rankingResponse(abandonedReqId))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
+    respond(0, unshardedResponse(abandonedReqId))
 
     expect(seen).toEqual([])
   })
@@ -293,9 +378,10 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
 
     for (const _visit of [0, 1, 2]) {
-      const unsubscribe = client.subscribeToDpsWorker("ranking", () => {})
-      client.postToDpsWorker(rankingRequest())
+      const unsubscribe = client.subscribeToDpsWorker("rotationDps", () => {})
+      client.postToDpsWorker(unshardedRequest())
       await vi.runAllTimersAsync()
+      respond(0, unshardedResponse(reqIdOfLastPost(0)))
       unsubscribe()
     }
 
@@ -304,14 +390,14 @@ describe("dpsWorkerClient", () => {
 
   it("drops a queued request when the last listener of its kind unsubscribes", async () => {
     const client = await freshClient()
-    const unsubscribe = client.subscribeToDpsWorker("ranking", () => {})
+    const unsubscribe = client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     unsubscribe()
     await vi.runAllTimersAsync()
 
     expect(created).toHaveLength(0)
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
   })
 
   it("spreads every request kind over a pool bounded by the core count", async () => {
@@ -321,13 +407,13 @@ describe("dpsWorkerClient", () => {
       "retunement",
       "reattunement",
       "wordMax",
-      "ranking",
+      "rotationDps",
       "setTiles",
       "graduation",
     ] as const
     for (const kind of kinds) {
       client.subscribeToDpsWorker(kind, () => {})
-      client.postToDpsWorker({ ...rankingRequest(), kind, pieceIds: [] } as UnsentRequest)
+      client.postToDpsWorker({ ...unshardedRequest(), kind, pieceIds: [] } as UnsentRequest)
       await vi.runAllTimersAsync()
     }
 
@@ -377,15 +463,17 @@ describe("dpsWorkerClient", () => {
     expect(seen).toEqual([])
   })
 
-  it("tells the worker to stop the run it is superseding", async () => {
+  it("terminates the run a parse simulation is superseding", async () => {
     const client = await freshClient()
     client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
-    const first = reqIdOfLastPost(0)
     client.postToDpsWorker(parseSimulationRequest())
 
-    expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId: first })
+    expect(created).toHaveLength(2)
+    expect(created[0].terminated).toBe(true)
+    expect(created[0].posted).toHaveLength(1)
+    expect(created[1].terminated).toBe(false)
   })
 
   it("keeps the partial result of a run the user cancelled", async () => {
@@ -403,28 +491,28 @@ describe("dpsWorkerClient", () => {
     expect(delivered).toEqual([reqId])
   })
 
-  it("cancels the sweep when the last listener unsubscribes", async () => {
+  it("terminates the sweep when the last listener unsubscribes", async () => {
     const client = await freshClient()
     const stop = client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
-    const reqId = reqIdOfLastPost(0)
     stop()
 
-    expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId })
+    expect(created[0].terminated).toBe(true)
+    expect(created[0].posted).toHaveLength(1)
   })
 
   it("answers a repeated request from the cache instead of the worker", async () => {
     const client = await freshClient()
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const computed = reqIdOfLastPost(0)
-    respond(0, rankingResponse(computed))
+    respond(0, unshardedResponse(computed))
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
 
     expect(created[0].posted).toHaveLength(1)
@@ -433,13 +521,13 @@ describe("dpsWorkerClient", () => {
 
   it("posts again when one field of the request differs", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest(1000))
+    client.postToDpsWorker(unshardedRequest(1000))
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(reqIdOfLastPost(0)))
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
 
-    client.postToDpsWorker(rankingRequest(1001))
+    client.postToDpsWorker(unshardedRequest(1001))
     await vi.runAllTimersAsync()
 
     expect(created[0].posted).toHaveLength(2)
@@ -460,103 +548,158 @@ describe("dpsWorkerClient", () => {
 
   it("stays unpending through a cached answer", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(reqIdOfLastPost(0)))
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
 
-    client.postToDpsWorker(rankingRequest())
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+    client.postToDpsWorker(unshardedRequest())
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
   })
 
   it("evicts the oldest signature once the per-kind cap is passed", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
     for (let entry = 0; entry <= CACHE_ENTRIES_PER_KIND; entry++) {
-      client.postToDpsWorker(rankingRequest(1000 + entry))
+      client.postToDpsWorker(unshardedRequest(1000 + entry))
       await vi.runAllTimersAsync()
-      respond(0, rankingResponse(reqIdOfLastPost(0)))
+      respond(0, unshardedResponse(reqIdOfLastPost(0)))
     }
     const postsBeforeReplay = created[0].posted.length
 
-    client.postToDpsWorker(rankingRequest(1000))
+    client.postToDpsWorker(unshardedRequest(1000))
     await vi.runAllTimersAsync()
 
     expect(created[0].posted).toHaveLength(postsBeforeReplay + 1)
   })
 
-  it("caches a run whose listener left before it answered", async () => {
+  it("terminates the run its last listener abandoned, and caches and retains nothing from it", async () => {
     const client = await freshClient()
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    const firstVisit = client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const abandonedReqId = reqIdOfLastPost(0)
     firstVisit()
-    respond(0, rankingResponse(abandonedReqId))
+    respond(0, unshardedResponse(abandonedReqId))
 
-    const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
-    client.postToDpsWorker(rankingRequest())
+    expect(created[0].terminated).toBe(true)
+    expect(client.retainedResponse("rotationDps")).toBeNull()
+
+    client.subscribeToDpsWorker("rotationDps", () => {})
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
 
+    expect(created).toHaveLength(2)
+    expect(created[1].posted).toHaveLength(1)
+  })
+
+  it("keeps an in-flight run alive when a newer request repeats its signature", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("rotationDps", () => {})
+
+    client.postToDpsWorker(unshardedRequest())
+    await vi.runAllTimersAsync()
+    client.postToDpsWorker(unshardedRequest())
+    await vi.runAllTimersAsync()
+
+    expect(created).toHaveLength(1)
+    expect(created[0].terminated).toBe(false)
     expect(created[0].posted).toHaveLength(1)
-    expect(seen).toEqual([abandonedReqId + 1])
+  })
+
+  it("terminates every running shard of a superseded sweep and drops its waiting shards", async () => {
+    const client = await freshClient(3)
+    client.subscribeToDpsWorker("setTiles", () => {})
+    client.subscribeToDpsWorker("equippedDeltas", () => {})
+
+    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    client.postToDpsWorker(equippedDeltasRequest(1000))
+    await vi.runAllTimersAsync()
+    expect(allPostsOfKind("equippedDeltas")).toHaveLength(1)
+
+    client.postToDpsWorker(equippedDeltasRequest(1001))
+    await vi.runAllTimersAsync()
+
+    expect(created[1].terminated).toBe(true)
+    expect(created[0].terminated).toBe(false)
+    expect(allPostsOfKind("equippedDeltas")).toHaveLength(2)
+
+    respond(0, { kind: "setTiles", reqId: reqIdOfLastPost(0) } as unknown as WorkerResponse)
+    expect(allPostsOfKind("equippedDeltas")).toHaveLength(3)
+  })
+
+  it("ignores a message from a terminated worker", async () => {
+    const client = await freshClient()
+    const seen: number[] = []
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
+
+    client.postToDpsWorker(unshardedRequest(1000))
+    await vi.runAllTimersAsync()
+    const supersededReqId = reqIdOfLastPost(0)
+    const staleHandler = created[0].onmessage
+    client.postToDpsWorker(unshardedRequest(1001))
+    await vi.runAllTimersAsync()
+    staleHandler?.({ data: unshardedResponse(supersededReqId) })
+
+    expect(seen).toEqual([])
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(true)
   })
 
   it("waits on the run already computing a request instead of starting a second", async () => {
     const client = await freshClient()
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const computingReqId = reqIdOfLastPost(0)
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
 
     expect(created[0].posted).toHaveLength(1)
-    expect(client.isDpsWorkerPending("ranking")).toBe(true)
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(true)
 
-    respond(0, rankingResponse(computingReqId))
+    respond(0, unshardedResponse(computingReqId))
     expect(seen).toEqual([computingReqId + 1])
-    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+    expect(client.isDpsWorkerPending("rotationDps")).toBe(false)
   })
 
-  it("answers a remounted listener from the run its own unmount abandoned", async () => {
+  it("answers a remounted listener from a fresh run after its own unmount abandoned the old one", async () => {
     const client = await freshClient()
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    const firstVisit = client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const abandonedReqId = reqIdOfLastPost(0)
     firstVisit()
 
     const seen: number[] = []
-    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
-    client.postToDpsWorker(rankingRequest())
+    client.subscribeToDpsWorker("rotationDps", ({ reqId }) => seen.push(reqId))
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(abandonedReqId))
+    respond(0, unshardedResponse(abandonedReqId))
+    expect(seen).toEqual([])
 
-    expect(created[0].posted).toHaveLength(1)
+    respond(1, unshardedResponse(abandonedReqId + 1))
     expect(seen).toEqual([abandonedReqId + 1])
   })
 
   it("reports every pending kind as one batch, and clears it when the last lands", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
     client.subscribeToDpsWorker("setTiles", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
     await vi.runAllTimersAsync()
 
     expect(client.dpsWorkerActivity()).toMatchObject({ done: 0, total: 2 })
-    expect([...client.dpsWorkerActivity().kinds].sort()).toEqual(["ranking", "setTiles"])
+    expect([...client.dpsWorkerActivity().kinds].sort()).toEqual(["rotationDps", "setTiles"])
 
-    respond(0, rankingResponse(reqIdOfLastPost(0)))
+    respond(0, unshardedResponse(reqIdOfLastPost(0)))
     expect(client.dpsWorkerActivity()).toMatchObject({ kinds: ["setTiles"], done: 1, total: 2 })
 
     respond(0, { kind: "setTiles", reqId: reqIdOfLastPost(1) } as unknown as WorkerResponse)
@@ -680,6 +823,50 @@ describe("dpsWorkerClient", () => {
     expect(Object.keys(seen[0].metricsByProfileId).sort()).toEqual(["one", "three", "two"])
   })
 
+  it("merges ranking shards in shard order whatever order they land in", async () => {
+    const client = await freshClient(5)
+    const seen: Extract<WorkerResponse, { kind: "ranking" }>[] = []
+    client.subscribeToDpsWorker("ranking", (response) => seen.push(response))
+
+    client.postToDpsWorker({ kind: "ranking", inputs: defaultInputs, baselineDps: 1000 })
+    await vi.runAllTimersAsync()
+    const shards = allPostsOfKind("ranking")
+    expect(shards).toHaveLength(4)
+    const requestReqId = Math.min(...shards.map((shard) => shard.reqId)) - 1
+
+    const blockIndexOf = (shard: WorkerRequest) =>
+      shard.kind === "ranking" && shard.block ? shard.block.index : -1
+    const landingOrder = [...shards].sort(
+      (first, second) => blockIndexOf(second) - blockIndexOf(first),
+    )
+    for (const shard of landingOrder) {
+      const blockIndex = blockIndexOf(shard)
+      respond(0, {
+        kind: "ranking",
+        reqId: shard.reqId,
+        rows: [
+          {
+            statLineId: `line${blockIndex}`,
+            label: "",
+            labelKey: "",
+            source: "tunement",
+            amount: 1,
+            unit: "raw",
+            expectedDps: 1,
+            dpsDelta: 1,
+            liftPercent: 0.01 * (blockIndex + 1),
+            leadVsMin: 0,
+          },
+        ],
+      })
+    }
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0].reqId).toBe(requestReqId)
+    expect(seen[0].rows.map((row) => row.statLineId)).toEqual(["line0", "line1", "line2", "line3"])
+    seen[0].rows.forEach((row, at) => expect(row.leadVsMin).toBeCloseTo(at, 9))
+  })
+
   it("sends one message when the pool cannot hold a second worker", async () => {
     const client = await freshClient(2)
     client.subscribeToDpsWorker("equippedDeltas", () => {})
@@ -692,50 +879,37 @@ describe("dpsWorkerClient", () => {
 
   it("hands the last response to a listener that subscribes after it landed", async () => {
     const client = await freshClient()
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    const firstVisit = client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
     const reqId = reqIdOfLastPost(0)
-    respond(0, rankingResponse(reqId))
+    respond(0, unshardedResponse(reqId))
     firstVisit()
 
-    expect(client.retainedResponse("ranking")?.reqId).toBe(reqId)
-  })
-
-  it("retains a run whose listener left before it answered", async () => {
-    const client = await freshClient()
-    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
-
-    client.postToDpsWorker(rankingRequest())
-    await vi.runAllTimersAsync()
-    const abandonedReqId = reqIdOfLastPost(0)
-    firstVisit()
-    respond(0, rankingResponse(abandonedReqId))
-
-    expect(client.retainedResponse("ranking")?.reqId).toBe(abandonedReqId)
+    expect(client.retainedResponse("rotationDps")?.reqId).toBe(reqId)
   })
 
   it("never lets a superseded answer overwrite a newer retained one", async () => {
     const client = await freshClient()
-    client.subscribeToDpsWorker("ranking", () => {})
+    client.subscribeToDpsWorker("rotationDps", () => {})
 
-    client.postToDpsWorker(rankingRequest(1000))
+    client.postToDpsWorker(unshardedRequest(1000))
     await vi.runAllTimersAsync()
     const supersededReqId = reqIdOfLastPost(0)
-    client.postToDpsWorker(rankingRequest(1001))
+    client.postToDpsWorker(unshardedRequest(1001))
     await vi.runAllTimersAsync()
     const newestReqId = newestPostedReqId()
 
-    respond(0, rankingResponse(newestReqId))
-    respond(0, rankingResponse(supersededReqId))
+    respond(0, unshardedResponse(newestReqId))
+    respond(0, unshardedResponse(supersededReqId))
 
-    expect(client.retainedResponse("ranking")?.reqId).toBe(newestReqId)
+    expect(client.retainedResponse("rotationDps")?.reqId).toBe(newestReqId)
   })
 
   it("has nothing retained for a kind that never answered", async () => {
     const client = await freshClient()
 
-    expect(client.retainedResponse("ranking")).toBeNull()
+    expect(client.retainedResponse("rotationDps")).toBeNull()
   })
 })

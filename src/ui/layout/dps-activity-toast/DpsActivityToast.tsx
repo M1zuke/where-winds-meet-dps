@@ -6,6 +6,7 @@ import styles from "./DpsActivityToast.module.scss"
 const SWEEP_KEYS: Partial<Record<WorkerRequest["kind"], string>> = {
   equippedDeltas: "layout.dpsActivityToast.sweep.equippedDeltas",
   dpsDeltas: "common.inventory",
+  selectedPieceDelta: "layout.dpsActivityToast.sweep.selectedPieceDelta",
   gearAnalysis: "layout.dpsActivityToast.sweep.gearAnalysis",
   retunement: "common.retunement",
   reattunement: "common.reattunement",

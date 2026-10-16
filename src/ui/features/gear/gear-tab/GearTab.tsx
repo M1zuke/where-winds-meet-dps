@@ -17,7 +17,7 @@ import { EquippedBuildDialog } from "../equipped-build-dialog/EquippedBuildDialo
 import { equippedFromImported } from "../import-gear-dialog/importedGearPieces"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
 import { ReattunementAnalyzerPanel } from "../reattunement-analyzer-panel/ReattunementAnalyzerPanel"
-import { useDpsDeltas } from "../../../hooks/useDpsDeltas"
+import { useSelectedPieceDelta } from "../../../hooks/useSelectedPieceDelta"
 import { useEquippedDpsDeltas } from "../../../hooks/useEquippedDpsDeltas"
 import { useRetunementAnalysis } from "../../../hooks/useRetunementAnalysis"
 import { useReattunementAnalysis } from "../../../hooks/useReattunementAnalysis"
@@ -73,10 +73,24 @@ export function GearTab({
   const isEquipped = !!selectedPiece && equipped[selectedPiece.slot] === selectedPiece.id
 
   const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
-  const inventoryDeltas = useDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
-  const selectedDelta = selectedPiece
-    ? (inventoryDeltas.deltas[selectedPiece.id] ?? equippedDeltas.deltas[selectedPiece.id])
-    : undefined
+  const previewPieceId = selectedPiece && !isEquipped ? selectedPiece.id : null
+  const previewDelta = useSelectedPieceDelta(
+    engineInputs,
+    currentDps,
+    previewPieceId,
+    baselineQiBreaks,
+  )
+  const previewMatches = previewDelta.forPieceId === previewPieceId
+  const selectedDelta = !selectedPiece
+    ? undefined
+    : isEquipped
+      ? equippedDeltas.deltas[selectedPiece.id]
+      : previewMatches
+        ? previewDelta.delta
+        : undefined
+  const selectedDeltaPending = isEquipped
+    ? equippedDeltas.isPending
+    : previewDelta.isPending || !previewMatches
 
   const retuneTargetId = selectedPiece?.id ?? null
   const retunement = useRetunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
@@ -285,8 +299,9 @@ export function GearTab({
                   onSelect={selectInventoryRow}
                   slotFilter={selectedSlot}
                   onClearSlotFilter={() => setSelectedSlot(null)}
-                  dpsDeltas={inventoryDeltas.deltas}
-                  dpsDeltasPending={inventoryDeltas.isPending}
+                  engineInputs={engineInputs}
+                  currentDps={currentDps}
+                  baselineQiBreaks={baselineQiBreaks}
                 />
               )}
             </SubTabPanel>
@@ -298,7 +313,7 @@ export function GearTab({
             isEquipped={isEquipped}
             currentDps={currentDps}
             dpsDelta={selectedDelta}
-            dpsDeltasPending={inventoryDeltas.isPending}
+            dpsDeltasPending={selectedDeltaPending}
           />
         </div>
       </div>

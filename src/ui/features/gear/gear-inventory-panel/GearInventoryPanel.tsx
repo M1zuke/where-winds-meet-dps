@@ -1,10 +1,10 @@
-import type { GearPiece, GearSlot } from "../../../../engine/types"
+import type { GearPiece, GearSlot, Inputs } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { rarityKey } from "../../../../i18n/contentKeys"
 import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
-import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
+import { useDpsDeltas } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
@@ -19,8 +19,9 @@ interface Props {
   onSelect(row: InventoryRow): void
   slotFilter: GearSlot | null
   onClearSlotFilter(): void
-  dpsDeltas: DpsDeltaMap
-  dpsDeltasPending: boolean
+  engineInputs: Inputs
+  currentDps: number
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -49,8 +50,9 @@ export function GearInventoryPanel({
   onSelect,
   slotFilter,
   onClearSlotFilter,
-  dpsDeltas,
-  dpsDeltasPending,
+  engineInputs,
+  currentDps,
+  baselineQiBreaks,
 }: Props) {
   const { t } = useI18n()
 
@@ -59,6 +61,12 @@ export function GearInventoryPanel({
     slotFilter == null
       ? unequippedRows
       : unequippedRows.filter((row) => row.piece.slot === slotFilter)
+  const { deltas: dpsDeltas, isPending: dpsDeltasPending } = useDpsDeltas(
+    engineInputs,
+    currentDps,
+    filteredRows.map((row) => row.piece.id),
+    baselineQiBreaks,
+  )
   const visibleRows = sortInventoryRowsByDps(filteredRows, dpsDeltas)
 
   function renderTile(row: InventoryRow) {

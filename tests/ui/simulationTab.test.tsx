@@ -6,17 +6,21 @@ const { created, MockWorker } = vi.hoisted(() => {
   const instances: {
     posted: unknown[]
     onmessage: ((event: { data: unknown }) => void) | null
+    terminated: boolean
   }[] = []
   class Mock {
     posted: unknown[] = []
     onmessage: ((event: { data: unknown }) => void) | null = null
+    terminated = false
     constructor() {
       instances.push(this)
     }
     postMessage(request: unknown) {
       this.posted.push(request)
     }
-    terminate() {}
+    terminate() {
+      this.terminated = true
+    }
   }
   return { created: instances, MockWorker: Mock }
 })
@@ -62,7 +66,12 @@ function lastRequest(): Record<string, unknown> {
 }
 
 function respond(response: WorkerResponse): void {
-  act(() => created[0].onmessage?.({ data: response }))
+  const owner = created.find(
+    (worker) =>
+      !worker.terminated &&
+      worker.posted.some((post) => (post as { reqId: number }).reqId === response.reqId),
+  )
+  act(() => owner?.onmessage?.({ data: response }))
 }
 
 function completion(

@@ -1,8 +1,9 @@
 import { runEngine } from "./dps"
+import { withPassMemo } from "./passMemo"
 import { FPS } from "./timeline"
 import { engineRunOptionsFrom, engineRunOptionsSharingQiOf } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
-import { computeRanking, getWordSpecs } from "./itemRanking"
+import { computeRanking, getWordSpecs, rankingRows, type RankingBlock } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
 import { attributeForClass, poolForClass } from "../definitions/classes/registry"
 import {
@@ -87,6 +88,14 @@ export interface DpsWorkerResponse {
   deltas: Record<string, DpsDelta>
 }
 
+export interface SelectedPieceDeltaWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  baselineDps: number
+  pieceId: string
+  baselineQiBreaks?: BaselineQiBreaks
+}
+
 export interface EquippedDeltasWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -120,6 +129,11 @@ function computeEquippedDeltas(req: EquippedDeltasWorkerRequest): EquippedDeltas
   const { reqId, inputs, baselineDps, slots, baselineQiBreaks } = req
   const pieceIds = equippedPieceIds(inputs, slots ?? GEAR_SLOTS)
   return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds, baselineQiBreaks })
+}
+
+function computeSelectedPieceDelta(req: SelectedPieceDeltaWorkerRequest): DpsWorkerResponse {
+  const { reqId, inputs, baselineDps, pieceId, baselineQiBreaks } = req
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds: [pieceId], baselineQiBreaks })
 }
 
 function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
@@ -597,6 +611,7 @@ export interface RankingWorkerRequest {
   // The baseline's own converged Qi breaks, in seconds — docs/UI.md § "The
   // rules", "warm-start".
   baselineQiBreaks?: BaselineQiBreaks
+  block?: RankingBlock
 }
 
 export interface RankingWorkerResponse {
@@ -605,9 +620,12 @@ export interface RankingWorkerResponse {
 }
 
 function computeRankingRequest(req: RankingWorkerRequest): RankingWorkerResponse {
+  const options = engineOptionsFrom(req.baselineQiBreaks)
   return {
     reqId: req.reqId,
-    rows: computeRanking(req.inputs, req.baselineDps, engineOptionsFrom(req.baselineQiBreaks)),
+    rows: req.block
+      ? rankingRows(req.inputs, req.baselineDps, options, req.block)
+      : computeRanking(req.inputs, req.baselineDps, options),
   }
 }
 
@@ -615,6 +633,7 @@ export interface GearAnalysisWorkerRequest {
   reqId: number
   inputs: Inputs
   baselineDps: number
+  slots?: readonly GearSlot[]
   baselineQiBreaks?: BaselineQiBreaks
 }
 
@@ -626,7 +645,12 @@ export interface GearAnalysisWorkerResponse {
 function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysisWorkerResponse {
   return {
     reqId: req.reqId,
-    rows: computeGearAnalysis(req.inputs, req.baselineDps, engineOptionsFrom(req.baselineQiBreaks)),
+    rows: computeGearAnalysis(
+      req.inputs,
+      req.baselineDps,
+      engineOptionsFrom(req.baselineQiBreaks),
+      req.slots,
+    ),
   }
 }
 
@@ -956,6 +980,7 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
 
 export type WorkerRequest =
   | ({ kind: "dpsDeltas" } & DpsWorkerRequest)
+  | ({ kind: "selectedPieceDelta" } & SelectedPieceDeltaWorkerRequest)
   | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerRequest)
   | ({ kind: "retunement" } & RetunementWorkerRequest)
   | ({ kind: "reattunement" } & ReattunementWorkerRequest)
@@ -972,6 +997,7 @@ export type WorkerRequest =
 
 export type WorkerResponse =
   | ({ kind: "dpsDeltas" } & DpsWorkerResponse)
+  | ({ kind: "selectedPieceDelta" } & DpsWorkerResponse)
   | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerResponse)
   | ({ kind: "retunement" } & RetunementWorkerResponse)
   | ({ kind: "reattunement" } & ReattunementWorkerResponse)
@@ -991,37 +1017,40 @@ const cancelledReqIds = new Set<number>()
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   const req = e.data
   if (req.kind === "dpsDeltas") {
-    const res = computeDpsDeltas(req)
+    const res = withPassMemo(() => computeDpsDeltas(req))
     ;(self as unknown as Worker).postMessage({ kind: "dpsDeltas", ...res })
+  } else if (req.kind === "selectedPieceDelta") {
+    const res = withPassMemo(() => computeSelectedPieceDelta(req))
+    ;(self as unknown as Worker).postMessage({ kind: "selectedPieceDelta", ...res })
   } else if (req.kind === "equippedDeltas") {
-    const res = computeEquippedDeltas(req)
+    const res = withPassMemo(() => computeEquippedDeltas(req))
     ;(self as unknown as Worker).postMessage({ kind: "equippedDeltas", ...res })
   } else if (req.kind === "retunement") {
-    const res = computeRetunement(req)
+    const res = withPassMemo(() => computeRetunement(req))
     ;(self as unknown as Worker).postMessage({ kind: "retunement", ...res })
   } else if (req.kind === "reattunement") {
-    const res = computeReattunement(req)
+    const res = withPassMemo(() => computeReattunement(req))
     ;(self as unknown as Worker).postMessage({ kind: "reattunement", ...res })
   } else if (req.kind === "wordMax") {
-    const res = computeWordMax(req)
+    const res = withPassMemo(() => computeWordMax(req))
     ;(self as unknown as Worker).postMessage({ kind: "wordMax", ...res })
   } else if (req.kind === "ranking") {
-    const res = computeRankingRequest(req)
+    const res = withPassMemo(() => computeRankingRequest(req))
     ;(self as unknown as Worker).postMessage({ kind: "ranking", ...res })
   } else if (req.kind === "gearAnalysis") {
-    const res = computeGearAnalysisRequest(req)
+    const res = withPassMemo(() => computeGearAnalysisRequest(req))
     ;(self as unknown as Worker).postMessage({ kind: "gearAnalysis", ...res })
   } else if (req.kind === "setTiles") {
-    const res = computeSetTiles(req)
+    const res = withPassMemo(() => computeSetTiles(req))
     ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
   } else if (req.kind === "rotationDps") {
-    const res = computeRotationDps(req)
+    const res = withPassMemo(() => computeRotationDps(req))
     ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
   } else if (req.kind === "profileMetrics") {
-    const res = computeProfileMetrics(req)
+    const res = withPassMemo(() => computeProfileMetrics(req))
     ;(self as unknown as Worker).postMessage({ kind: "profileMetrics", ...res })
   } else if (req.kind === "parseRunDetail") {
-    const res = computeParseRunDetail(req)
+    const res = withPassMemo(() => computeParseRunDetail(req))
     ;(self as unknown as Worker).postMessage({ kind: "parseRunDetail", ...res })
   } else if (req.kind === "parseSimulationCancel") {
     cancelledReqIds.add(req.reqId)
@@ -1041,13 +1070,14 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
       ;(self as unknown as Worker).postMessage({ kind: "parseSimulation", ...res })
     })
   } else {
-    const res = computeGraduation(req)
+    const res = withPassMemo(() => computeGraduation(req))
     ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
   }
 }
 
 export {
   computeDpsDeltas,
+  computeSelectedPieceDelta,
   computeEquippedDeltas,
   computeRetunement,
   computeReattunement,
