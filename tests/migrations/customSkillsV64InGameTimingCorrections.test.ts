@@ -11,6 +11,7 @@ import {
 } from "../../src/migrations/customSkills/V64__inGameTimingCorrections"
 import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -76,7 +77,7 @@ describe("custom-skills v63 fixture", () => {
 
 describe("healSkill", () => {
   it.each(UMBRA_STAGE_1_IDS)("lands %s on the built-in's frames, cast length and drain", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healUmbraGameplayTimings(healSkill(clone(skillIn(STORE, id)))) as Skill
     const live = builtin(id)
     expect(healed.castFrames).toBe(live.castFrames)
     expect(frames(healed)).toEqual(frames(live))

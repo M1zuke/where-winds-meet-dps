@@ -10,6 +10,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -70,8 +71,8 @@ describe("custom-skills v66 fixture", () => {
 
 describe("healSkill", () => {
   it.each(REFUND_IDS)("lands the seeded %s on the built-in's own hits", (id) => {
-    const healed = healUmbraCastLengthsAndSweepAllBurstStacks(
-      healSkill(clone(skillIn(STORE, id))),
+    const healed = healUmbraGameplayTimings(
+      healUmbraCastLengthsAndSweepAllBurstStacks(healSkill(clone(skillIn(STORE, id)))),
     ) as Skill
     expect(withSortedTriggers(healed.hits)).toEqual(withSortedTriggers(builtin(id).hits))
   })

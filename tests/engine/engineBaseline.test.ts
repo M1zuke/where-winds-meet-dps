@@ -296,8 +296,8 @@ describe("engine baseline", () => {
 // count towards it. The figures the board's full 122 nodes produce are the
 // breakthrough-17 block below.
 const UNBEANED_ENDURANCE_WARNINGS = [
-  "SwordSpecial 3-Hit at 10.65s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-  "SwordSpecial 3-Hit at 50.55s would be illegal in the game: needs Endurance ≥ 50 (has 44.17).",
+  "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+  "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17).",
 ]
 
 describe("engine baseline — profile-v7 anchor", () => {
@@ -306,8 +306,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(71686.94)
-    expect(round(result.totalDamage, 2)).toBe(4301216.47)
+    expect(round(result.dps, 2)).toBe(71579.66)
+    expect(round(result.totalDamage, 2)).toBe(4294779.89)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -315,14 +315,14 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2070598)
-    expect(damageOf("Bleeding (DoT)")).toBe(310721.95)
+    expect(damageOf("Blood Burst")).toBe(2070608.37)
+    expect(damageOf("Bleeding (DoT)")).toBe(305771.43)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(469865.99)
+    expect(damageOf("Smolder (DoT)")).toBe(469755.64)
     expect(damageOf("Flute Ripple (DoT)")).toBe(75963.4)
   })
 
@@ -338,16 +338,16 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(73009.89)
-    expect(round(result.totalDamage, 2)).toBe(4380593.4)
+    expect(round(result.dps, 2)).toBe(72899.51)
+    expect(round(result.totalDamage, 2)).toBe(4373970.64)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
-    expect(damageOf("Blood Burst")).toBe(2111057.65)
-    expect(damageOf("Bleeding (DoT)")).toBe(316128.41)
-    expect(damageOf("Smolder (DoT)")).toBe(478294.48)
+    expect(damageOf("Blood Burst")).toBe(2111068.15)
+    expect(damageOf("Bleeding (DoT)")).toBe(311012.47)
+    expect(damageOf("Smolder (DoT)")).toBe(478183.55)
     expect(damageOf("Flute Ripple (DoT)")).toBe(77341.34)
     expect(damageOf("Yi River")).toBe(60232.92)
   })

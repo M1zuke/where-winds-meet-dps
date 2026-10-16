@@ -140,6 +140,8 @@ const HIT_2_TRIGGERS_WITH_CAST_FIRST = [
 // hit 2; a migrated copy instead appends it after, since a later hop can only
 // ever append to what an earlier one already wrote — `CURRENT_HITS` is the
 // live built-in's own order, `HYDRATED_HITS` the migration chain's.
+const RETIMED_FRAMES = [28.8, 35.16, 43.44]
+
 const CURRENT_HITS: SkillHit[] = [
   {
     ...HEALED_HITS[0]!,
@@ -157,18 +159,18 @@ const CURRENT_HITS: SkillHit[] = [
         attributeMultiplier: 0.294531,
         physFixed: 54.4,
         attributeFixed: 29.6,
-        castFrames: 77,
+        castFrames: 76.96,
       },
     ],
   },
   { ...HEALED_HITS[1]!, triggers: [...HEALED_HITS[1]!.triggers, BLEED_MECHANISM_ENHANCEMENT_GAIN] },
   { ...HEALED_HITS[2]!, triggers: HIT_2_TRIGGERS_WITH_CAST_LAST },
-]
+].map((hit, index) => ({ ...hit, frame: RETIMED_FRAMES[index]! }))
 
 const HYDRATED_HITS: SkillHit[] = [
   CURRENT_HITS[0]!,
   CURRENT_HITS[1]!,
-  { ...HEALED_HITS[2]!, triggers: HIT_2_TRIGGERS_WITH_CAST_FIRST },
+  { ...HEALED_HITS[2]!, triggers: HIT_2_TRIGGERS_WITH_CAST_FIRST, frame: RETIMED_FRAMES[2]! },
 ]
 
 describe("frozen hits match the live built-in", () => {

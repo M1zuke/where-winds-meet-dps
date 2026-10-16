@@ -97,6 +97,7 @@ import { V93__jadeBulletSkillsAsWeaponHits } from "./V93__jadeBulletSkillsAsWeap
 import { V94__jadeSpringSorrowChargesAndComboRechargeCut } from "./V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { V95__fractionalFrameTiming } from "./V95__fractionalFrameTiming"
 import { V96__stonesplitFractionalFrameTiming } from "./V96__stonesplitFractionalFrameTiming"
+import { V97__umbraGameplayTimings } from "./V97__umbraGameplayTimings"
 
 export type {
   CustomSkillMigration,
@@ -262,6 +263,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V94__jadeSpringSorrowChargesAndComboRechargeCut,
   V95__fractionalFrameTiming,
   V96__stonesplitFractionalFrameTiming,
+  V97__umbraGameplayTimings,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

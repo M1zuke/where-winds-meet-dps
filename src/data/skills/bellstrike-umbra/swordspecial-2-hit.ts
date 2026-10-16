@@ -15,13 +15,15 @@ export const swordspecial2Hit = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial2Hit,
+  cancelledBy: "deflectCancel",
   receives: STRATEGIC_SWORD_RECEIVES,
   castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES],
   meterCosts: [INNER_BALANCE_STRIKE_III_COST],
-  // A player-ended form: castFrames sits 11 frames past the frame at which the animation would accept the next input (in-game animation, 2026-09-09).
-  castFrames: 47,
+  // In-game values as of 2026-10-16: only a Deflect or dodge ends the cast
+  // before MOVEPOST, one frame after the hit; any other follow-up waits for it.
+  castFrames: 36.16,
   triggerable: true,
   hits: SWORDSPECIAL_HITS.slice(0, 2),
   createdAt: "2026-09-09T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

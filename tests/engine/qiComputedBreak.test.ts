@@ -14,10 +14,10 @@ import type { EngineRunOptions } from "../../src/engine/types"
 type BreakFrames = readonly (readonly [startFrame: number, endFrame: number])[]
 
 const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
-  "builtin-bellstrikeUmbra-36-bbs": [[1580, 2180]],
-  "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1756, 2356]],
-  "builtin-bellstrikeUmbra-38-bbs": [[1683, 2283]],
-  "builtin-bellstrikeUmbra-nox-1m-dh": [[1618, 2218]],
+  "builtin-bellstrikeUmbra-36-bbs": [[1544, 2144]],
+  "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1727, 2327]],
+  "builtin-bellstrikeUmbra-38-bbs": [[1680, 2280]],
+  "builtin-bellstrikeUmbra-nox-1m-dh": [[1624, 2224]],
   "builtin-bellstrikeUmbra-nox-30s-dh": [[1680, 2280]],
   "builtin-stonesplitStrength-tilla-dummy-rotation": [[1822, 2422]],
   "builtin-stonesplitStrength-windsfromcn-switch": [[1486, 2086]],

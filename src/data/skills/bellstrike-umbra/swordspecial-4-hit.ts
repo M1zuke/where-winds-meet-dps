@@ -22,14 +22,14 @@ export const swordspecial4Hit = defineSkill({
   receives: STRATEGIC_SWORD_RECEIVES,
   castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES],
   meterCosts: [INNER_BALANCE_STRIKE_III_COST],
-  // A player-ended form: castFrames is capped at the animation's own end frame, 84 — an 11-frame margin would run past it (in-game animation, 2026-09-09).
+  // In-game values as of 2026-10-16: every follow-up waits for MOVEPOST at
+  // 84 f; with Sword Horizon MOVEPOST is already reached at 63.78 f, so a
+  // follow-up pressed after the 4th hit starts one frame after it.
   castFrames: 84,
   triggerable: true,
   hits: [
     {
       ...SWORDSPECIAL_HITS[0]!,
-      // In-game cast length as of 2026-09-24: Sword Horizon cuts the
-      // animation short into the Crisscross - Inner Balance III follow-up.
       variants: [
         {
           id: "hv-swordspecial-4-hit-hit-0-sword-horizon",
@@ -39,7 +39,7 @@ export const swordspecial4Hit = defineSkill({
           attributeMultiplier: SWORDSPECIAL_HITS[0]!.attributeMultiplier,
           physFixed: SWORDSPECIAL_HITS[0]!.physFixed,
           attributeFixed: SWORDSPECIAL_HITS[0]!.attributeFixed,
-          castFrames: 77,
+          castFrames: 76.96,
         },
       ],
     },
@@ -50,5 +50,5 @@ export const swordspecial4Hit = defineSkill({
     },
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-25T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

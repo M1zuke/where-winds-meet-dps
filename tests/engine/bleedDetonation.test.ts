@@ -66,7 +66,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
       (ev) => ev.skillName === skillOf(SKILL.bleedDetonation).name,
     )
     expect(detonationEvents).toHaveLength(1)
-    expect(detonationEvents[0].frame).toBe(112)
+    expect(detonationEvents[0].frame).toBe(106)
   })
 
   it("retains 2 stacks (instead of resetting to 0) at swordHorizon tier 6 — a second detonation follows 3 hits sooner", () => {
