@@ -6,6 +6,7 @@ import { swordLightAttack } from "./sword-light-attack"
 import { swordSpecialDash } from "./sword-dash"
 import { swordSprintDash } from "./sword-sprint-dash"
 import { swordHeavyChargedTier1 } from "./swordheavycharged-tier-1"
+import { swordHeavyChargedTier1Wushuang } from "./swordheavycharged-tier-1-wushuang"
 import { swordHeavyChargedWushuang } from "./swordheavycharged-wushuang"
 import { legionCrusher } from "./legioncrusher"
 import { spearq } from "./spearq"
@@ -55,6 +56,7 @@ export const SKILLS = [
   spearDual,
   swordSpecialDash,
   swordHeavyChargedTier1,
+  swordHeavyChargedTier1Wushuang,
   swordHeavyChargedWushuang,
   swordLightAttack,
   spearLightAttack,

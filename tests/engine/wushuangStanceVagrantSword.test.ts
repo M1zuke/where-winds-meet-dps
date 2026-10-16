@@ -100,16 +100,43 @@ describe("Wushuang Stance changes Vagrant Sword's charge", () => {
     ).toBe(1)
   })
 
-  it("reaches the release 24.6 f earlier than the normal hold, with the same waves", () => {
+  it("reaches the release 24.2 f earlier than the normal hold, with the same waves", () => {
     const normal = builtinSkill(CLASS, SKILL.swordHeavyCharged)
     const faster = builtinSkill(CLASS, SKILL.swordHeavyChargedWushuang)
     const releaseFrameOf = (skill: typeof normal) =>
       skill.hits.find((skillHit) => skillHit.physMultiplier === 0)!.frame
-    expect(releaseFrameOf(normal) - releaseFrameOf(faster)).toBeCloseTo(24.6, 9)
+    expect(releaseFrameOf(normal) - releaseFrameOf(faster)).toBeCloseTo(24.2, 9)
     expect(faster.hits[0]!.variants![0]!.castFrames).toBeCloseTo(
-      normal.hits[0]!.variants![0]!.castFrames! - 24.6,
+      normal.hits[0]!.variants![0]!.castFrames! - 24.2,
       9,
     )
+  })
+
+  it("starts the charge 12.4 f in, releases on 60.4 f and lands the third wave 45.3 f later", () => {
+    const stance = builtinSkill(CLASS, SKILL.swordHeavyChargedWushuang)
+    const release = stance.hits[3]!.frame
+    expect(release).toBe(60.4)
+    expect(stance.hits[2]!.frame).toBeCloseTo(release + 45.3, 9)
+    expect(stance.meterDrains![0]!.fromFrame).toBe(12.4)
+  })
+
+  it("launches the level-1 bolt 8.09 f after the first tier and ends the cast 24.8 f after it, keeping the stance", () => {
+    const tierOne = builtinSkill(CLASS, SKILL.swordHeavyChargedTier1Wushuang)
+    const firstTier = 12.4 + 22
+    expect(tierOne.hits[0]!.frame).toBeCloseTo(firstTier + 8.09, 9)
+    expect(tierOne.castFrames).toBeCloseTo(firstTier + 24.8, 9)
+    expect(tierOne.meterDrains![0]!.fromFrame).toBe(12.4)
+    const twice = run([
+      ...WITH_STANCE,
+      SKILL.swordHeavyChargedTier1Wushuang,
+      SKILL.swordHeavyChargedTier1Wushuang,
+    ])
+    expect(twice.invalidCount).toBe(0)
+    expect(twice.hitsOf("SwordHeavyCharged Tier 1 (Wushuang Stance)")).toBe(2)
+  })
+
+  it("flags the level-1 stance form as illegal without the stance", () => {
+    expect(run([SKILL.swordq, SKILL.swordHeavyChargedTier1Wushuang]).invalidCount).toBe(1)
   })
 
   it("lands the second-wave form's waves where the three-wave form lands its first two", () => {
@@ -126,6 +153,7 @@ describe("Wushuang Stance changes Vagrant Sword's charge", () => {
       SKILL.swordHeavyCharged2Hit,
       SKILL.swordHeavyChargedWushuang,
       SKILL.swordHeavyCharged2HitWushuang,
+      SKILL.swordHeavyChargedTier1Wushuang,
     ]) {
       const waves = builtinSkill(CLASS, skillId).hits.filter(
         (skillHit) => skillHit.physMultiplier > 0 || skillHit.variants,

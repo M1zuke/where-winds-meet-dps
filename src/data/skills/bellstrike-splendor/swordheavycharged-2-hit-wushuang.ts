@@ -25,7 +25,7 @@ import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 
 // In-game values as of 2026-10-15: the Deflect-cancelled second wave of the
 // Wushuang Stance three-wave release, ended right after the wave that follows
-// the 60 f release.
+// the 60.4 f release.
 export const swordHeavyCharged2HitWushuang = defineSkill({
   id: SKILL.swordHeavyCharged2HitWushuang,
   classId: "bellstrikeSplendor",
@@ -48,14 +48,14 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 77.02,
+  castFrames: 77.42,
   meterDrains: VAGRANT_SWORD_WUSHUANG_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 66.06,
+      frame: 66.46,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
@@ -68,7 +68,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 76.02,
+      frame: 76.42,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
@@ -77,7 +77,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
       triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 60,
+      frame: 60.4,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,

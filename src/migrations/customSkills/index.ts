@@ -101,6 +101,7 @@ import { V97__umbraGameplayTimings } from "./V97__umbraGameplayTimings"
 import { V98__swordHorizonBurstStacksAtTheBurst } from "./V98__swordHorizonBurstStacksAtTheBurst"
 import { V99__burningHeartChargeStageGates } from "./V99__burningHeartChargeStageGates"
 import { V100__burningHeartLowStageReleaseTiming } from "./V100__burningHeartLowStageReleaseTiming"
+import { V101__wushuangStanceVagrantSwordStartOrder } from "./V101__wushuangStanceVagrantSwordStartOrder"
 
 export type {
   CustomSkillMigration,
@@ -270,6 +271,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V98__swordHorizonBurstStacksAtTheBurst,
   V99__burningHeartChargeStageGates,
   V100__burningHeartLowStageReleaseTiming,
+  V101__wushuangStanceVagrantSwordStartOrder,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

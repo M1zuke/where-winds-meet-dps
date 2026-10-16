@@ -22,6 +22,7 @@ export const SKILL = {
   spearDual: "bellstrikeSplendor-spear-dual",
   swordSpecialDash: "bellstrikeSplendor-swordspecial-dash",
   swordHeavyChargedTier1: "bellstrikeSplendor-swordheavycharged-tier-1",
+  swordHeavyChargedTier1Wushuang: "bellstrikeSplendor-swordheavycharged-tier-1-wushuang",
   swordHeavyChargedWushuang: "bellstrikeSplendor-swordheavycharged-wushuang",
   swordLightAttack: "bellstrikeSplendor-sword-light-attack",
   spearLightAttack: "bellstrikeSplendor-spear-light-attack",

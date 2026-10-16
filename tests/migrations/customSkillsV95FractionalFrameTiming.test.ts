@@ -8,6 +8,7 @@ import {
   V95__fractionalFrameTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { healSkill as healLaterStartOrder } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV94File from "./testCustomSkills/v94/store.json"
@@ -46,7 +47,7 @@ describe("custom-skills v94 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healLaterStartOrder(healSkill(clone(skillIn(STORE, id)))) as Skill
     const live = builtinOf(id)
     expect(healed.hits).toEqual(live.hits)
     expect(healed.castFrames).toBe(live.castFrames)
@@ -115,7 +116,8 @@ describe("V95__fractionalFrameTiming — called directly", () => {
     const after = V95__fractionalFrameTiming.migrate(clone(STORE))
     expect(after.v).toBe(95)
     for (const id of HEALED_IDS) {
-      expect(skillIn(after, id).hits, id).toEqual(builtinOf(id).hits)
+      const settled = healLaterStartOrder(skillIn(after, id)) as Skill
+      expect(settled.hits, id).toEqual(builtinOf(id).hits)
     }
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID]) {
       expect(skillIn(after, id)).toEqual(skillIn(STORE, id))
