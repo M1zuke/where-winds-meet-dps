@@ -306,8 +306,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(71410.71)
-    expect(round(result.totalDamage, 2)).toBe(4284642.43)
+    expect(round(result.dps, 2)).toBe(71410.4)
+    expect(round(result.totalDamage, 2)).toBe(4284624.23)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -316,14 +316,14 @@ describe("engine baseline — profile-v7 anchor", () => {
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
     expect(damageOf("Blood Burst")).toBe(2070730.42)
-    expect(damageOf("Bleeding (DoT)")).toBe(295160.21)
+    expect(damageOf("Bleeding (DoT)")).toBe(295160.54)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(469395.35)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(75963.4)
+    expect(damageOf("Smolder (DoT)")).toBe(469405.84)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(75961.06)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
@@ -338,17 +338,17 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(72650.89)
-    expect(round(result.totalDamage, 2)).toBe(4359053.55)
+    expect(round(result.dps, 2)).toBe(72650.59)
+    expect(round(result.totalDamage, 2)).toBe(4359035.18)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2105592.02)
-    expect(damageOf("Bleeding (DoT)")).toBe(300637.93)
-    expect(damageOf("Smolder (DoT)")).toBe(478244.78)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(77341.34)
+    expect(damageOf("Bleeding (DoT)")).toBe(300638.26)
+    expect(damageOf("Smolder (DoT)")).toBe(478255.44)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(77338.98)
     expect(damageOf("Yi River")).toBe(60237.15)
   })
 })

@@ -1,7 +1,7 @@
 // Insightful Strike's Concentration: an affinity outcome builds Focus, so its uptime is
 // a probability schedule rather than a window — the def vocabulary has no
 // stochastic per-hit proc, which is why this is a mechanic.
-import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
+import { ConcentrationTracker } from "../../engine/buffs/concentration"
 import { innerWayHasNode, slottedInnerWayTier } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { BUFF } from "../skills/buffs/ids"
@@ -11,7 +11,6 @@ import { insightfulStrike } from "./insightfulStrike"
 import type { Skill } from "../../engine/skill"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
-const AFFINITY_PROC_CAP = 0.4
 const DOT_DAMAGE_BONUS_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
 
@@ -21,9 +20,12 @@ const FOCUS_PER_AFFINITY_FROM_TIER_4 = 15
 const FASTER_FOCUS_FIRST_TIER = 4
 
 // In-game values as of 2026-10-15: one half always, the other only while the
-// player's HP percentage is above the target's.
+// target's HP percentage is below the player's. Concentration needs affinity
+// outcomes already landed on the target, so the player's untouched HP stays
+// above the target's for as long as it is up and both halves always apply.
 const DIRECT_AFFINITY_ALWAYS = 0.015
 const DIRECT_AFFINITY_WHILE_TARGET_HP_LOWER = 0.015
+const DIRECT_AFFINITY_WHILE_ACTIVE = DIRECT_AFFINITY_ALWAYS + DIRECT_AFFINITY_WHILE_TARGET_HP_LOWER
 
 // In-game text, 2026-09-10: the tier-6 rung raises "DoT and its empowered
 // effects" — a wider set than the ticks.
@@ -34,10 +36,7 @@ function takesDotDamageBoost(skill: Skill | undefined): boolean {
 
 const EFFECTS = [
   { statKey: "affinityDamageBoost" as const, amount: 0.1 },
-  {
-    statKey: "directAffinityRate" as const,
-    amount: DIRECT_AFFINITY_ALWAYS + DIRECT_AFFINITY_WHILE_TARGET_HP_LOWER,
-  },
+  { statKey: "directAffinityRate" as const, amount: DIRECT_AFFINITY_WHILE_ACTIVE },
   { statKey: "allDamageBoost" as const, amount: 0.015 },
 ]
 
@@ -48,7 +47,7 @@ export function concentrationAvailable(inputs: {
 }
 
 interface State {
-  schedule: ReturnType<typeof concentrationActiveProbSchedule>
+  tracker: ConcentrationTracker
   tier6: boolean
 }
 
@@ -70,23 +69,12 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
     prepare(setup) {
       if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
       const tier = slottedInnerWayTier(setup.inputs.mindMethods, insightfulStrike) ?? 0
-      const rollProbability =
-        Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
-        setup.inputs.directAffinityRate
-      // A DoT tick rolls the same affinity chance as a direct hit, so it builds
-      // Focus too (in-game values as of 2026-10-15).
-      const eventTimesSec = [...setup.hitTimesSec, ...setup.dotTickTimesSec].sort(
-        (left, right) => left - right,
-      )
       return {
-        schedule: concentrationActiveProbSchedule(
+        tracker: new ConcentrationTracker(
           {
-            eventTimesSec,
-            rollProbability,
             focusPerAffinity:
               tier >= FASTER_FOCUS_FIRST_TIER ? FOCUS_PER_AFFINITY_FROM_TIER_4 : FOCUS_PER_AFFINITY,
-            rollBonusWhileActive: DIRECT_AFFINITY_ALWAYS,
-            rollBonusWhileActiveAfterFirstDamage: DIRECT_AFFINITY_WHILE_TARGET_HP_LOWER,
+            chanceBonusWhileActive: DIRECT_AFFINITY_WHILE_ACTIVE,
           },
           setup.rng,
         ),
@@ -94,17 +82,19 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
       }
     },
 
+    // Direct hits and DoT ticks alike roll the affinity that builds Focus
+    // (in-game values as of 2026-10-15).
+    observeEvent(state, event) {
+      state.tracker.observe(event)
+    },
+
     contributeAt(state, frame, skill, setup) {
       const timeSec = frame / setup.fps
-      const activeProb = state.schedule.getActiveProbAtTime(timeSec)
+      const activeProb = state.tracker.activeShareNow(timeSec)
       if (activeProb <= 0) return null
-      const targetHasTakenDamage = timeSec > state.schedule.firstEventSec
-      const directAffinity =
-        DIRECT_AFFINITY_ALWAYS + (targetHasTakenDamage ? DIRECT_AFFINITY_WHILE_TARGET_HP_LOWER : 0)
       const effects = EFFECTS.map((effect) => ({
         statKey: effect.statKey,
-        amount:
-          (effect.statKey === "directAffinityRate" ? directAffinity : effect.amount) * activeProb,
+        amount: effect.amount * activeProb,
       }))
       if (state.tier6 && takesDotDamageBoost(skill))
         effects.push({ statKey: "allDamageBoost", amount: DOT_DAMAGE_BONUS_AT_TIER_6 * activeProb })
@@ -113,7 +103,7 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
 
     display(state, timeSec, prePull) {
       if (prePull) return []
-      const probability = state.schedule.getActiveProbAtTime(timeSec)
+      const probability = state.tracker.activeShareAtTime(timeSec)
       if (probability < DISPLAY_THRESHOLD) return []
       return [
         {

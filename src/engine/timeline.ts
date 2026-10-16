@@ -87,6 +87,7 @@ import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
+import { SAME_FRAME_STEP_SEC } from "./buffs/frameOrder"
 import { distanceAtCastStart } from "./distance"
 import { IN_COMBAT_STATUS } from "./combatState"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
@@ -1917,6 +1918,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       midCastExtraFrames: number
     }
 
+    const damagingHitsPerFrame = new Map<number, number>()
+    const damagingHitOrdinals = new Map<string, number[]>()
+    const damagingHitKey = (frame: number, skillId: string, hitId: string) =>
+      `${frame}|${skillId}|${hitId}`
+    const sameFrameOffsetSec = (ordinal: number) => ordinal * SAME_FRAME_STEP_SEC
+    const damagingHitOrdinalOf = (frame: number, skillId: string, hitId: string): number =>
+      damagingHitOrdinals.get(damagingHitKey(frame, skillId, hitId))?.shift() ??
+      damagingHitsPerFrame.get(frame) ??
+      0
+
     // The prepass. It walks the whole cast graph — the rotation's casts and every
     // cast they generate — in frame order, so the buff history and the consume
     // ledger are both complete before the damage loop asks anything of them.
@@ -1937,7 +1948,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           inheritedBuffIds: [],
           midCastExtraFrames: ls.midCastExtraFrames,
         }))
-        const damageHits: { frame: number; skill: Skill; generated: boolean }[] = []
+        const damageHits: { frame: number; skill: Skill; generated: boolean; hitId: string }[] = []
 
         let processed = 0
         while (pending.length > 0 && processed < EVENT_CAP) {
@@ -1989,7 +2000,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           for (const hit of performedHits) {
             const hitFrame = landingFrameOf(hit)
             if (hitDealsDamage(hit))
-              damageHits.push({ frame: hitFrame, skill: cast.skill, generated: cast.generated })
+              damageHits.push({
+                frame: hitFrame,
+                skill: cast.skill,
+                generated: cast.generated,
+                hitId: hit.id,
+              })
             for (const trigger of hit.triggers) {
               if (trigger.kind !== "castSkill") continue
               if (!castTriggerFires(trigger, hitFrame)) continue
@@ -2009,8 +2025,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
 
         damageHits.sort((left, right) => left.frame - right.frame)
-        for (const { frame, skill, generated } of damageHits)
-          engine.processDamageHit(frame / FPS, skill, generated)
+        for (const { frame, skill, generated, hitId } of damageHits) {
+          const ordinal = damagingHitsPerFrame.get(frame) ?? 0
+          damagingHitsPerFrame.set(frame, ordinal + 1)
+          const key = damagingHitKey(frame, skill.id, hitId)
+          damagingHitOrdinals.set(key, [...(damagingHitOrdinals.get(key) ?? []), ordinal])
+          engine.processDamageHit(frame / FPS + sameFrameOffsetSec(ordinal), skill, generated)
+        }
         return engine
       } catch {
         return null
@@ -2221,6 +2242,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       extraEffects?: BuffStatEffect[]
       forceGuaranteedAffinity?: boolean
     }
+    interface ResolveVariant {
+      engineOffsetSec?: number
+      withoutMechanicId?: string
+    }
     const stateMemo = new Map<string, Resolved>()
     // `statusesView` is the ledger a hit's own damage query reads — pass 1's
     // `ledger.asOf(mark)`, taken before this hit's own triggers ran, so a status
@@ -2234,6 +2259,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       castFrame = frame,
       damageSoFar = 0,
       statusesView: StatusView = ledger,
+      variant: ResolveVariant = {},
     ): Resolved & {
       forceCrit: boolean
       forceNoAbrasion: boolean
@@ -2269,7 +2295,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
         const site = buffEngine.calculateDamageEffects(
           skill,
-          frame / FPS,
+          frame / FPS + (variant.engineOffsetSec ?? 0),
           scoped,
           damageSoFar,
           statusesView,
@@ -2305,7 +2331,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       if (override?.forceGuaranteedAffinity) sig += "~forcedAffinity"
       let contextPatch: ContextPatch = {}
+      if (variant.withoutMechanicId) sig += `~without:${variant.withoutMechanicId}`
       for (const { mechanic, state } of mechanics) {
+        if (mechanic.id === variant.withoutMechanicId) continue
         const contribution = mechanic.contributeAt?.(state, frame, skill, mechanicSetup)
         if (!contribution) continue
         for (const effect of contribution.effects ?? []) effects.push(effect)
@@ -2392,6 +2420,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           onHitEffectCount: number
           forcedAffinityByOnHit: boolean
           ledgerMark: number
+          engineOffsetSec: number
         }
       | { kind: "tickLaunch"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
@@ -2573,6 +2602,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         forceGuaranteedAffinity,
         onHitEffectCount,
         forcedAffinityByOnHit,
+        engineOffsetSec: hitDealsDamage(hit)
+          ? sameFrameOffsetSec(damagingHitOrdinalOf(frame, skill.id, hit.id))
+          : 0,
       })
 
       if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
@@ -2885,7 +2917,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damage: number
       rolled: RolledHit | undefined
       st: ReturnType<typeof resolveState>
+      affinityChanceWithout: Readonly<Record<string, number>>
     }
+
+    const observers = mechanics.filter(({ mechanic }) => mechanic.observeEvent !== undefined)
+    const affinityChancesWithout = (
+      forObservers: boolean,
+      rng: (() => number) | undefined,
+      chanceWithout: (mechanicId: string) => number,
+    ): Record<string, number> =>
+      forObservers && !rng
+        ? Object.fromEntries(
+            observers.map(({ mechanic }) => [mechanic.id, chanceWithout(mechanic.id)]),
+          )
+        : {}
 
     let scoringSchedule: QiSchedule = qiSchedule
 
@@ -2907,6 +2952,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       event: Extract<MergedEvent, { kind: "hit" }>,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(event.frame, readQiAtFrame, () => {
         const { frame, skill, hit, castFrame, ledgerMark } = event
@@ -2944,11 +2990,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           castFrame,
           totalDamage,
           ledger.asOf(ledgerMark),
+          { engineOffsetSec: event.engineOffsetSec },
         )
         const hitContext: HitContext = {
           phase: buffEngine?.qiPhase(frame / FPS) ?? "normal",
           smallPhys: st.ctx.smallPhys,
-          isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+          isEngineBuffActive: (id) =>
+            buffEngine?.isBuffActiveAtTime(id, frame / FPS + event.engineOffsetSec) ?? false,
         }
         const art = behavior.buildArt(hitInput, hitContext)
         if (st.forceCrit) art.guaranteedCrit = 1
@@ -2976,7 +3024,23 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
         if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
         const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
-        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+        return {
+          damage: rolled?.damage ?? expectedDamage,
+          rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              frame,
+              skill,
+              resolveOverride,
+              castFrame,
+              totalDamage,
+              ledger.asOf(ledgerMark),
+              { engineOffsetSec: event.engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return computeSkillDamage(art, without.ctx, 1).affinityOutcomeChance
+          }),
+        }
       })
     }
 
@@ -2985,9 +3049,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
       share = 1,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(entry.frame, readQiAtFrame, () => {
-        const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
+        const engineOffsetSec = sameFrameOffsetSec(damagingHitsPerFrame.get(entry.frame) ?? 0)
+        const st = resolveState(
+          entry.frame,
+          entry.dotSkill,
+          undefined,
+          entry.frame,
+          totalDamage,
+          ledger,
+          { engineOffsetSec },
+        )
         const tick = dotTickDamage(
           tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
           st.ctx,
@@ -3000,7 +3074,31 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         // `damageFactor` is post-formula, so a tick takes it on its finished
         // number the way a regular hit takes it on its art `correction`.
         const damage = tick.damage * (entry.scale ?? 1) * entry.weight * share * st.damageFactor
-        return { damage, rolled: tick.rolled, st }
+        return {
+          damage,
+          rolled: tick.rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              entry.frame,
+              entry.dotSkill,
+              undefined,
+              entry.frame,
+              totalDamage,
+              ledger,
+              { engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return dotTickDamage(
+              tickWithResolvedMinPhysCrit(entry, without.ctx.smallPhys),
+              without.ctx,
+              computeSkillDamage,
+              without.forceCrit,
+              entry.shape,
+              undefined,
+              without.artBonuses,
+            ).affinityOutcomeChance
+          }),
+        }
       })
     }
 
@@ -3008,21 +3106,59 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       mechEvent: MechanicEvent,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(mechEvent.frame, readQiAtFrame, () => {
+        const engineOffsetSec = sameFrameOffsetSec(damagingHitsPerFrame.get(mechEvent.frame) ?? 0)
         const st = resolveState(
           mechEvent.frame,
           mechEvent.skill,
           undefined,
           mechEvent.frame,
           totalDamage,
+          ledger,
+          { engineOffsetSec },
         )
         const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
         if (st.forceCrit) art.guaranteedCrit = 1
         if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
         const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
-        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+        return {
+          damage: rolled?.damage ?? expectedDamage,
+          rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              mechEvent.frame,
+              mechEvent.skill,
+              undefined,
+              mechEvent.frame,
+              totalDamage,
+              ledger,
+              { engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return computeSkillDamage(art, without.ctx, 1).affinityOutcomeChance
+          }),
+        }
       })
+    }
+
+    function observeScoredEvent(
+      timeSec: number,
+      occurrence: number,
+      scored: Pick<ScoredEvent, "rolled" | "affinityChanceWithout">,
+    ): void {
+      for (const { mechanic, state } of observers)
+        mechanic.observeEvent!(
+          state,
+          {
+            timeSec,
+            occurrence: clamp(occurrence, 0, 1),
+            affinityChance: clamp(scored.affinityChanceWithout[mechanic.id] ?? 0, 0, 1),
+            ...(scored.rolled ? { rolledAffinity: scored.rolled.outcome === "affinity" } : {}),
+          },
+          mechanicSetup,
+        )
     }
 
     const qiBreakFrames = qiSchedule.breaks.map(({ startSec, endSec }) => ({
@@ -3073,7 +3209,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             timeSec: frame / FPS,
             stampSec: exactFrame / FPS,
           })
-        const scored = scoreHit(event, hitRng, null)
+        const scored = scoreHit(event, hitRng, null, true)
+        if (hitDealsDamage(hit)) observeScoredEvent(frame / FPS, launchShare, scored)
         const { rolled, st } = scored
         const damage = scored.damage * launchShare
         const landsInFight = inWindow(frame)
@@ -3168,7 +3305,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             skillTagsOf(entry.dotSkill),
           )
         }
-        const { damage, rolled: tickRolled, st } = scoreTick(entry, hitRng, null, tickShare)
+        const scoredTick = scoreTick(entry, hitRng, null, tickShare, true)
+        observeScoredEvent(entry.frame / FPS, entry.weight * tickShare, scoredTick)
+        const { damage, rolled: tickRolled, st } = scoredTick
         if (inWindow(entry.frame))
           recordQiEdgeDependence(entry.frame, entry.dotName, (readQiAtFrame) =>
             scoreTick(entry, undefined, readQiAtFrame, tickShare),
@@ -3217,7 +3356,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })
       } else if (event.kind === "extra") {
         const mechEvent = event.event
-        const { damage, rolled, st } = scoreExtra(mechEvent, hitRng, null)
+        const scoredExtra = scoreExtra(mechEvent, hitRng, null, true)
+        observeScoredEvent(mechEvent.frame / FPS, 1, scoredExtra)
+        const { damage, rolled, st } = scoredExtra
         if (inWindow(mechEvent.frame))
           recordQiEdgeDependence(mechEvent.frame, mechEvent.name, (readQiAtFrame) =>
             scoreExtra(mechEvent, undefined, readQiAtFrame),

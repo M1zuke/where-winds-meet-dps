@@ -176,9 +176,9 @@ export function dotTickDamage(
   // the way `timeline.ts` adds them to a regular hit's — a def reaching a tick
   // must land the same bonus a def reaching a cast does.
   artBonuses: Partial<Record<ArtBonusField, number>> = {},
-): { damage: number; rolled?: RolledHit } {
+): { damage: number; rolled?: RolledHit; affinityOutcomeChance: number } {
   const dot = debuff.dot
-  if (!dot) return { damage: 0 }
+  if (!dot) return { damage: 0, affinityOutcomeChance: 0 }
   const resolved = shape ?? {
     physMultiplier: dot.physMultiplier,
     physFixed: dot.physFixed,
@@ -190,8 +190,13 @@ export function dotTickDamage(
     const key = field as ArtBonusField
     art[key] = ((art[key] as number | undefined) ?? 0) + amount
   }
-  const { expectedDamage, rolled } = compute(art, ctx, Math.max(1, dot.count), rng)
-  return { damage: rolled?.damage ?? expectedDamage, rolled }
+  const { expectedDamage, rolled, affinityOutcomeChance } = compute(
+    art,
+    ctx,
+    Math.max(1, dot.count),
+    rng,
+  )
+  return { damage: rolled?.damage ?? expectedDamage, rolled, affinityOutcomeChance }
 }
 
 // Overlapping windows are one continuous episode: a DoT refreshed mid-window

@@ -372,11 +372,17 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
     // Qi payout cannot move which cast lands inside it and so incidentally
     // move an unrelated row.
     const options = { fixedQiBreaks: [DEFAULT_QI_BREAK_WINDOW] }
+    // Without Insightful Strike, whose Focus the poison's own ticks would build
+    // and so lift every other row.
+    const withoutAffinityTracking = (mindMethods: Inputs["mindMethods"]): Inputs["mindMethods"] =>
+      mindMethods.map((slot) =>
+        slot.name === "insightfulStrike" ? { name: "", stacks: "" } : slot,
+      ) as Inputs["mindMethods"]
     const withoutBitterSeason = runEngine(
       {
         ...defaultInputs,
         classId: "bellstrikeUmbra",
-        mindMethods: UMBRA_BASE_MIND_METHODS,
+        mindMethods: withoutAffinityTracking(UMBRA_BASE_MIND_METHODS),
         shareDebuff5HenZhi: true,
       },
       options,
@@ -385,7 +391,7 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
       {
         ...defaultInputs,
         classId: "bellstrikeUmbra",
-        mindMethods: withBitterSeasonAt("tier 6"),
+        mindMethods: withoutAffinityTracking(withBitterSeasonAt("tier 6")),
         shareDebuff5HenZhi: true,
       },
       options,

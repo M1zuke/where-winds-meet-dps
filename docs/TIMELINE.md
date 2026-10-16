@@ -589,7 +589,9 @@ for applying, `receives` for boosting — never by the module itself.
   one stack at that hit's own landing time, just after the hit's own damage —
   the cast grants nothing at its start, and a zero-damage hit grants none. Only
   `requires` and `grantRequires` gate a hit; a generated attack counts only for
-  a module that accepts one (`triggersFromGeneratedSkills`).
+  a module that accepts one (`triggersFromGeneratedSkills`). Damaging hits on
+  one frame resolve one after another: a hit reads the stacks the hits before it
+  on that frame granted, and never the one its own hit grants.
 - **A module may be blocked while other modules' windows are live**
   (`blockedWhileActive`: the grant lands neither a window nor a refresh) **and
   may end other modules' windows where it lands** (`dispelsOnGrant`). Both read

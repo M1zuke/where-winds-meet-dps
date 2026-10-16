@@ -112,6 +112,19 @@ export interface TimelineMechanic<State = unknown> {
     timeSec: number,
   ): { seconds: number | undefined } | null
   display?(state: State, timeSec: number, prePull: boolean, setup: MechanicSetup): CastBuffTag[]
+  // Once per scored damage event, in processing order and after the event is
+  // scored — docs/CALCULATION.md § "Mechanic rules".
+  observeEvent?(state: State, event: MechanicObservedEvent, setup: MechanicSetup): void
+}
+
+export interface MechanicObservedEvent {
+  timeSec: number
+  // Below 1 for a tick or a launch that only part of the run's trajectories reach.
+  occurrence: number
+  // Read without the observing mechanic's own contribution.
+  affinityChance: number
+  // Present only on a run that rolls hits.
+  rolledAffinity?: boolean
 }
 
 export interface MechanicEvent {

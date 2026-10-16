@@ -39,6 +39,7 @@ import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
 import { fixedQiSchedule, type QiReading, type QiSchedule } from "../qiBar"
 import { EXTENSION_PARTICLES, WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
+import { AFTER_HIT_SEC } from "./frameOrder"
 
 export type BuffParams = Record<string, unknown>
 
@@ -86,7 +87,6 @@ export interface DamageEffectsResult {
 
 const DEFAULT_DURATION = 15
 const COOLDOWN_TOLERANCE = 1e-9
-const AFTER_HIT_SEC = 1e-6
 // `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}

@@ -228,6 +228,15 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   found to open the window, with nothing about the rotation's own hits or
   ticks having changed. A mechanic genuinely timed off the fight's own clock,
   rather than off a hit it reacts to, is the one exception.
+- **A mechanic whose trigger is a hit's own outcome observes the run**
+  (`observeEvent`) instead of building a schedule from hit times. The engine
+  hands it every scored damage event — a hit, a DoT tick or a mechanic's extra
+  event — once, in processing order and after the event is scored, with the
+  chance the event's outcome was an affinity read **without the mechanic's own
+  contribution**, and on a run that rolls hits the outcome it rolled.
+  `contributeAt` reads the state left by every event already observed, so an
+  event resolving later on the same frame reads what an earlier one set up and
+  the event that sets a state up never reads it.
 - **A DoT tick may feed a proc schedule too**, opted into separately from a
   hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
   from the same layout pass, at each debuff's own tick interval, through the
