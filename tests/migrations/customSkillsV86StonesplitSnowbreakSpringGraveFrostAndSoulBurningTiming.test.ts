@@ -8,6 +8,7 @@ import {
   V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
+import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV85File from "./testCustomSkills/v85/store.json"
@@ -66,7 +67,9 @@ describe("custom-skills v85 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healStonesplitFractionalFrameTiming(
+      healSkill(clone(skillIn(STORE, id))),
+    ) as Skill
     expect(fieldsOf(healed)).toEqual(fieldsOf(builtinOf(id)))
   })
 
@@ -116,7 +119,10 @@ describe("V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming — calle
     const after = V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming.migrate(clone(STORE))
     expect(after.v).toBe(86)
     for (const id of HEALED_IDS)
-      expect(fieldsOf(skillIn(after, id)), id).toEqual(fieldsOf(builtinOf(id)))
+      expect(
+        fieldsOf(healStonesplitFractionalFrameTiming(skillIn(after, id)) as Skill),
+        id,
+      ).toEqual(fieldsOf(builtinOf(id)))
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)

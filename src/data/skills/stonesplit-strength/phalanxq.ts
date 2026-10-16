@@ -25,7 +25,7 @@ export const phalanxq = defineSkill({
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 26,
+      frame: 25.65,
       physMultiplier: 1.8948,
       attributeMultiplier: 2.8422,
       physFixed: 525,

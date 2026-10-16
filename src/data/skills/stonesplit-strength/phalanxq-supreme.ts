@@ -20,12 +20,12 @@ export const phalanxqSupreme = defineSkill({
   castTag: CAST.phalanxQSupreme,
   receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
   triggersBuffs: [BUFF.throatPierced, BUFF.totalAnnihilationSupremeShield, BUFF.jadeware],
-  triggersBuffsAtFrame: { [BUFF.totalAnnihilationSupremeShield]: 222, [BUFF.jadeware]: 180 },
-  castFrames: 222,
+  triggersBuffsAtFrame: { [BUFF.totalAnnihilationSupremeShield]: 221.76, [BUFF.jadeware]: 179.76 },
+  castFrames: 221.76,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 194,
+      frame: 194.12,
       physMultiplier: 3.5256,
       attributeMultiplier: 5.2884,
       physFixed: 975,

@@ -186,18 +186,18 @@ describe("Forgetfulness' Grave Frost", () => {
 describe("Total Annihilation", () => {
   it("lands 18.65 f after a 7 f lead, and ends 42 f after it", () => {
     const plain = stonesplitSkill(SKILL.phalanxq)
-    expect(plain.hits.map((hit) => hit.frame)).toEqual([26])
+    expect(plain.hits.map((hit) => hit.frame)).toEqual([25.65])
     expect(plain.castFrames).toBe(49)
     expect(plain.triggersBuffsAtFrame).toEqual({ [BUFF.jadeware]: 7 })
   })
 
   it("carries the 179.76 f Soul Burning hold of its Supreme form in its frames", () => {
     const supreme = stonesplitSkill(SKILL.phalanxqSupreme)
-    expect(supreme.hits.map((hit) => hit.frame)).toEqual([194])
-    expect(supreme.castFrames).toBe(222)
+    expect(supreme.hits.map((hit) => hit.frame)).toEqual([194.12])
+    expect(supreme.castFrames).toBe(221.76)
     expect(supreme.triggersBuffsAtFrame).toEqual({
-      [BUFF.totalAnnihilationSupremeShield]: 222,
-      [BUFF.jadeware]: 180,
+      [BUFF.totalAnnihilationSupremeShield]: 221.76,
+      [BUFF.jadeware]: 179.76,
     })
   })
 })
