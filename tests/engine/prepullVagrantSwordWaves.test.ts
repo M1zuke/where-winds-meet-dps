@@ -19,6 +19,13 @@ const swordMorph: Inputs["mindMethods"] = [
   { name: "", stacks: "" },
 ]
 
+const noSwordMorph: Inputs["mindMethods"] = [
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+]
+
 function runPrepullThenShadowStep() {
   const rotation = makeRotation(CLASS, {
     steps: [
@@ -63,5 +70,34 @@ describe("the pre-pull Vagrant Sword lands its waves after the release, in fligh
     expect(releaseEvent.damage).toBe(0)
     expect(releaseEvent.inWindow).toBe(false)
     expect(result.perSkill.find((row) => row.name === PREPULL_NAME)?.count).toBe(3)
+  })
+})
+
+describe("the pre-pull Vagrant Sword lays out at the cast length its build selects", () => {
+  const castLengthFrames = (mindMethods: Inputs["mindMethods"]): number => {
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods,
+      activeCustomRotation: makeRotation(CLASS, {
+        pingMs: 0,
+        averageFps: 250,
+        steps: [
+          makeStep({ skillId: SKILL.swordHeavyChargedPrepull }),
+          makeStep({ skillId: SKILL.swordq }),
+        ],
+      }),
+      set: null,
+    })
+    const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
+    const nextCast = result.casts!.find((cast) => cast.skillName !== PREPULL_NAME)!
+    return (nextCast.timeSec - prepullCast.timeSec) * FPS
+  }
+
+  it("ends after 37.2 f without Sword Morph and 51 f with it", () => {
+    const withoutMorph = castLengthFrames(noSwordMorph)
+    const withMorph = castLengthFrames(swordMorph)
+    expect(withoutMorph).toBeCloseTo(37.2, 0)
+    expect(withMorph).toBeCloseTo(51, 0)
   })
 })

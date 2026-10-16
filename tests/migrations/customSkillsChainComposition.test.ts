@@ -95,6 +95,7 @@ import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/mi
 import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
 import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/migrations/customSkills/V100__burningHeartLowStageReleaseTiming"
 import { healSkill as healWushuangStanceVagrantSwordStartOrder } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
+import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -203,6 +204,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [99, healBurningHeartChargeStageGates],
   [100, healBurningHeartLowStageReleaseTiming],
   [101, healWushuangStanceVagrantSwordStartOrder],
+  [102, healPrepullVagrantSwordBoltTiming],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

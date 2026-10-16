@@ -703,19 +703,53 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       )
     }
 
+    function prePullCastFrames(
+      skill: Skill,
+      nextStepSkillId: string | undefined,
+      holds: (condition: TriggerCondition) => boolean,
+    ): number {
+      const occurringHits = skill.hits.filter(
+        (skillHit) =>
+          hitConditionsHold(skillHit, holds) &&
+          (!skillHit.requiresNextStepSkillIds ||
+            (nextStepSkillId !== undefined &&
+              skillHit.requiresNextStepSkillIds.includes(nextStepSkillId))),
+      )
+      const variantCastFrames = activeVariantCastFrames(occurringHits, holds)
+      if (variantCastFrames !== null) return variantCastFrames
+      const lastHitFrame =
+        occurringHits.length > 0
+          ? Math.max(
+              ...occurringHits.map(
+                (skillHit) => selectHitVariant(skillHit, holds)?.frame ?? skillHit.frame,
+              ),
+            )
+          : -1
+      return skill.castFrames || lastHitFrame + 1
+    }
+
     // A cast's length can't be resolved from the live status ledger, because
     // that ledger needs every cast's length to size itself first. This
     // throwaway ledger breaks the cycle: sized against the worst case up front,
     // then filled incrementally as each step is laid out, so a later step's
-    // conditions see every earlier step's triggers but never its own. Prepull
-    // casts take the upper bound as their real length outright — none
-    // currently gate a hit or a variant's cast length on a condition. Every
-    // step's own worst-case latency is added too, or a heavily lagged run can
-    // land a cast past a permanent status's own bound-sized window.
+    // conditions see every earlier step's triggers but never its own. A prepull
+    // cast resolves its length like an in-fight cast, here against the
+    // parameters alone: a variant gated on a parameter is static for the run,
+    // one gated on a status falls back to the skill's own length. Every step's
+    // own worst-case latency is added too, or a heavily lagged run can land a
+    // cast past a permanent status's own bound-sized window.
+    const parameterOnlyHolds = (condition: TriggerCondition): boolean =>
+      unionConditionHolds(condition, 0, buffParams, () => false)
     const prePullBound = resolvedSteps.reduce(
-      (sum, rs) =>
+      (sum, rs, stepIndex) =>
         isPrePullSkill(rs.skill)
-          ? sum + upperBoundCastFrames(rs) + upperBoundLatencyFrames(rs)
+          ? sum +
+            prePullCastFrames(
+              rs.skill,
+              resolvedSteps[stepIndex + 1]?.skill.id,
+              parameterOnlyHolds,
+            ) +
+            upperBoundLatencyFrames(rs)
           : sum,
       0,
     )
@@ -1596,7 +1630,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const layoutHitFrame = (hit: SkillHit): number =>
           resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)) + midCastExtraFrames
         const nominalCastLen = prePull
-          ? upperBoundCastFrames(castResolution)
+          ? prePullCastFrames(castResolution.skill, nextStepSkillId, holdsHere)
           : (() => {
               const maxFrame =
                 occurringHits.length > 0 ? Math.max(...occurringHits.map(layoutHitFrame)) : -1

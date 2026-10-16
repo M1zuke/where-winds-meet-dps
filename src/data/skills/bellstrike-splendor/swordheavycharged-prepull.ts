@@ -47,14 +47,14 @@ export const swordHeavyChargedPrepull = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 37,
+  castFrames: 37.2,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 12,
+      frame: 12.14,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 3.2664,
       attributeMultiplier: 4.8996,

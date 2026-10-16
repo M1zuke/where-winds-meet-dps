@@ -14,6 +14,7 @@ import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
 import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { healSkill as healPrepullBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -54,11 +55,13 @@ describe("custom-skills v64 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands %s on the built-in's hits and cast length", (id) => {
-    const healed = healFractionalFrameTiming(
-      healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
-        healPrepullVagrantSwordWaveTiming(
-          healVagrantSwordChargeTiming(
-            healSplendorHitFrameRetiming(healSkill(clone(skillIn(STORE, id)))),
+    const healed = healPrepullBoltTiming(
+      healFractionalFrameTiming(
+        healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
+          healPrepullVagrantSwordWaveTiming(
+            healVagrantSwordChargeTiming(
+              healSplendorHitFrameRetiming(healSkill(clone(skillIn(STORE, id)))),
+            ),
           ),
         ),
       ),
@@ -93,10 +96,12 @@ describe("V65__threeWaveReleaseAndEnergySurgeInterval — called directly", () =
     for (const id of HEALED_IDS) {
       expect(
         (
-          healFractionalFrameTiming(
-            healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
-              healPrepullVagrantSwordWaveTiming(
-                healVagrantSwordChargeTiming(healSplendorHitFrameRetiming(skillIn(after, id))),
+          healPrepullBoltTiming(
+            healFractionalFrameTiming(
+              healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
+                healPrepullVagrantSwordWaveTiming(
+                  healVagrantSwordChargeTiming(healSplendorHitFrameRetiming(skillIn(after, id))),
+                ),
               ),
             ),
           ) as Skill
