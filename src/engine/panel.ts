@@ -1,4 +1,5 @@
 import type {
+  BowSet,
   Inputs,
   AttributeKey,
   Arsenal,
@@ -15,6 +16,7 @@ import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
 import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
+import { BOW_SET_DEFS } from "../data/sets/bowSets"
 import {
   arsenalScoreCap,
   arsenalStoreAttack,
@@ -102,12 +104,6 @@ export function effectiveRates(inputs: Inputs) {
   const affinityRate = inputs.affinityRate / (1 + r)
   return { precision, critRate, affinityRate, resistance: r }
 }
-
-export const BOW_SET_BONUS = {
-  affinity: 0.022,
-  crit: 0.045,
-  precision: 0.04,
-} as const
 
 // `setKey` is the set's id (`Inputs.set` value), not its display name; render
 // `name` for the label.
@@ -241,14 +237,20 @@ export function swapArsenal(inputs: Inputs, next: Arsenal): Inputs {
   return { ...inputs, arsenal: next }
 }
 
+export function bowSetValueForLevel(choice: BowSet, level: GearLevel): number {
+  if (choice === null) return 0
+  return BOW_SET_DEFS[choice]?.value[level] ?? 0
+}
+
 export function applyBowSet(inputs: Inputs): Inputs {
+  const value = bowSetValueForLevel(inputs.bowSet, gearLevelForBreakthrough(inputs.breakthrough))
   switch (inputs.bowSet) {
     case "affinity":
-      return { ...inputs, affinityRate: inputs.affinityRate + BOW_SET_BONUS.affinity }
+      return { ...inputs, affinityRate: inputs.affinityRate + value }
     case "crit":
-      return { ...inputs, critRate: inputs.critRate + BOW_SET_BONUS.crit }
+      return { ...inputs, critRate: inputs.critRate + value }
     case "precision":
-      return { ...inputs, precision: inputs.precision + BOW_SET_BONUS.precision }
+      return { ...inputs, precision: inputs.precision + value }
     default:
       return inputs
   }

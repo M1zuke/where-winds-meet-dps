@@ -1,8 +1,8 @@
 import type { Arsenal, BowSet, Inputs } from "../../../../engine/types"
 import {
   ARMOR_SET_OPTIONS,
-  BOW_SET_BONUS,
   armorSetValueForLevel,
+  bowSetValueForLevel,
   arsenalAttack,
   defaultArsenalForClass,
   swapArsenal,
@@ -40,19 +40,11 @@ const PANEL_STAT_KEYS: Readonly<Record<string, string>> = {
   physDef: "content.statLine.physDef",
 }
 
-const BOW_TILES: { choice: BowSet; labelKey: string; bonusValue: number }[] = [
-  {
-    choice: "affinity",
-    labelKey: "common.affinity",
-    bonusValue: BOW_SET_BONUS.affinity,
-  },
-  { choice: "crit", labelKey: "common.crit", bonusValue: BOW_SET_BONUS.crit },
-  {
-    choice: "precision",
-    labelKey: "common.precision",
-    bonusValue: BOW_SET_BONUS.precision,
-  },
-  { choice: null, labelKey: "common.unselected", bonusValue: 0 },
+const BOW_TILES: { choice: BowSet; labelKey: string }[] = [
+  { choice: "affinity", labelKey: "common.affinity" },
+  { choice: "crit", labelKey: "common.crit" },
+  { choice: "precision", labelKey: "common.precision" },
+  { choice: null, labelKey: "common.unselected" },
 ]
 
 const ARSENAL_TILES: { choice: Arsenal; labelKey: string; statKey: string }[] = [
@@ -159,12 +151,13 @@ function buildBowRows(
   t: (key: string, fallback?: string) => string,
 ): OptionRow[] {
   const currentDps = bowDps(inputs.bowSet, bowDpsByChoice)
+  const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
   return BOW_TILES.map((tile) => {
     const dps = bowDps(tile.choice, bowDpsByChoice)
     return {
       key: tile.choice ?? "none",
       label: t(tile.labelKey),
-      bonus: bonusValueLabel(tile.bonusValue, false),
+      bonus: bonusValueLabel(bowSetValueForLevel(tile.choice, gearLevel), false),
       delta: dps - currentDps,
       selected: inputs.bowSet === tile.choice,
       onSelect: () => onChange({ ...inputs, bowSet: tile.choice }),
