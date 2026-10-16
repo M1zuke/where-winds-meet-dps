@@ -89,6 +89,25 @@ describe("a retunable line's chances", () => {
     expect(capped.get("areaMysticBoost")).toBeUndefined()
   })
 
+  it.each([100, 105] as const)(
+    "draw All Mystic Skill DMG Boost on a level-%i helm in place of the two legacy lines",
+    (level) => {
+      const chances = tunementDrawChances(piece("helm", level), null, 1)
+      expect(chances.get("allMysticBoost")).toBeCloseTo(888 / 15238)
+      expect(chances.get("areaMysticBoost")).toBe(0)
+      expect(chances.get("singleTargetMysticBoost")).toBe(0)
+    },
+  )
+
+  it("never draw All Mystic Skill DMG Boost on a disc", () => {
+    expect(tunementDrawChances(piece("disc", 100), null, 1).get("allMysticBoost")).toBeUndefined()
+  })
+
+  it("count a held legacy mystic line against the one boost line per piece", () => {
+    const capped = tunementDrawChances(piece("helm", 100, ["", "areaMysticBoost"]), null, 2)
+    expect(capped.get("allMysticBoost")).toBeUndefined()
+  })
+
   it("allow two attack lines per piece", () => {
     const oneHeld = tunementDrawChances(piece("disc", 86, ["", "maxBellstrike"]), null, 3)
     const twoHeld = tunementDrawChances(

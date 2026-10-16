@@ -5,7 +5,12 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { graduationBuildAtLevel } from "../../src/engine/graduation"
 import { computeGearContribution, relayedCapValue } from "../../src/engine/gearStats"
 import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
-import { gearWordAtLevel, gearWordPoolRetune } from "../../src/data/stats/gearWordPools"
+import { gearPieceAtGearLevel } from "../../src/data/classes/graduationGear"
+import {
+  gearWordPoolInitial,
+  gearWordPoolRetune,
+  gearWordRelayedToLevel,
+} from "../../src/data/stats/gearWordPools"
 import { gearWordMaxRoll } from "../../src/data/stats/statLines"
 import stBurst from "../../src/data/classes/bellstrike-umbra/graduationBuilds/st-burst"
 import { builtinSkill } from "../builtins"
@@ -40,15 +45,24 @@ describe("the helm and chestpiece retune pool", () => {
   })
 
   it.each([100, 105] as GearLevel[])(
-    "rolls All Mystic Skill DMG Boost in their place at level %i",
+    "adds All Mystic Skill DMG Boost and keeps the two legacy words legal at level %i",
     (level) => {
       for (const slot of ["helm", "armor"] as const) {
         const pool = gearWordPoolRetune(level, slot, null)
         expect(pool).toContain("allMysticBoost")
-        for (const legacy of LEGACY_WORDS) expect(pool).not.toContain(legacy)
+        expect(pool).toEqual(expect.arrayContaining(LEGACY_WORDS))
       }
     },
   )
+
+  it("never offers All Mystic Skill DMG Boost on the first line or on another slot", () => {
+    for (const level of [100, 105] as GearLevel[]) {
+      expect(gearWordPoolInitial(level, "helm", null)).not.toContain("allMysticBoost")
+      for (const slot of ["disc", "pendant", "greaves", "bracer"] as const) {
+        expect(gearWordPoolRetune(level, slot, null)).not.toContain("allMysticBoost")
+      }
+    }
+  })
 
   it("keeps every other slot's pool at level 100 the same as at 96", () => {
     for (const slot of ["disc", "pendant", "greaves", "bracer"] as const) {
@@ -56,11 +70,57 @@ describe("the helm and chestpiece retune pool", () => {
     }
   })
 
-  it("maps a legacy word to the merged one from level 100 and leaves others alone", () => {
-    expect(gearWordAtLevel("singleTargetMysticBoost", 96)).toBe("singleTargetMysticBoost")
-    expect(gearWordAtLevel("singleTargetMysticBoost", 100)).toBe("allMysticBoost")
-    expect(gearWordAtLevel("areaMysticBoost", 105)).toBe("allMysticBoost")
-    expect(gearWordAtLevel("affinity", 105)).toBe("affinity")
+  it("rolls All Mystic Skill DMG Boost at the in-game ceilings", () => {
+    expect(gearWordMaxRoll("allMysticBoost", 100)).toBe(0.114)
+    expect(gearWordMaxRoll("allMysticBoost", 105)).toBe(0.134)
+    for (const level of [86, 91, 96] as GearLevel[]) {
+      expect(gearWordMaxRoll("allMysticBoost", level)).toBe(0)
+    }
+  })
+
+  it("converts a legacy word only when a level-96 piece is relayed to 100 or 105", () => {
+    expect(gearWordRelayedToLevel("singleTargetMysticBoost", 96, 96)).toBe(
+      "singleTargetMysticBoost",
+    )
+    expect(gearWordRelayedToLevel("singleTargetMysticBoost", 96, 100)).toBe("allMysticBoost")
+    expect(gearWordRelayedToLevel("areaMysticBoost", 96, 105)).toBe("allMysticBoost")
+    expect(gearWordRelayedToLevel("areaMysticBoost", 100, 100)).toBe("areaMysticBoost")
+    expect(gearWordRelayedToLevel("areaMysticBoost", 100, 105)).toBe("areaMysticBoost")
+    expect(gearWordRelayedToLevel("singleTargetMysticBoost", 105, 105)).toBe(
+      "singleTargetMysticBoost",
+    )
+    expect(gearWordRelayedToLevel("affinity", 96, 105)).toBe("affinity")
+  })
+})
+
+describe("a stored level-100 or 105 piece holding a legacy mystic word", () => {
+  function helmWithLegacyWord(level: GearLevel): GearPiece {
+    const helm = helmAndArmorOf(graduationBuildAtLevel(stBurst, "maxRolls", 96).gear)[0]
+    return {
+      ...helm,
+      level,
+      words: helm.words.map((entry) =>
+        entry.word === "singleTargetMysticBoost" ? { ...entry, value: 0.1 } : entry,
+      ) as GearPiece["words"],
+    }
+  }
+
+  it.each([100, 105] as GearLevel[])(
+    "keeps the legacy word and roll, scoring only its own categories at level %i",
+    (level) => {
+      const helm = helmWithLegacyWord(level)
+      const contribution = computeGearContribution(helm, defaultInputs)
+      expect(contribution.find((entry) => entry.path === "singleMysticBoost")?.amount).toBeCloseTo(
+        0.1,
+      )
+      expect(contribution.find((entry) => entry.path === "allMysticBoost")).toBeUndefined()
+    },
+  )
+
+  it("stays a legacy word when the piece is re-levelled from 100 to 105", () => {
+    const releveled = gearPieceAtGearLevel(helmWithLegacyWord(100), 105)
+    expect(releveled.words.map((entry) => entry.word)).toContain("singleTargetMysticBoost")
+    expect(releveled.words.map((entry) => entry.word)).not.toContain("allMysticBoost")
   })
 })
 

@@ -462,6 +462,7 @@ const RETUNE_100_TO_105: PoolByGroup = {
     "affinity",
     "agility",
     "allMysticBoost",
+    "areaMysticBoost",
     "body",
     "crit",
     "defense",
@@ -480,6 +481,7 @@ const RETUNE_100_TO_105: PoolByGroup = {
     "physDef",
     "power",
     "precision",
+    "singleTargetMysticBoost",
   ],
 }
 
@@ -505,8 +507,14 @@ const MERGED_INTO_ALL_MYSTIC_BOOST: ReadonlySet<string> = new Set([
   "areaMysticBoost",
 ])
 
-export function gearWordAtLevel(word: GearWordId, level: GearLevel): GearWordId {
-  return level >= ALL_MYSTIC_BOOST_LEVEL && MERGED_INTO_ALL_MYSTIC_BOOST.has(word)
+export function gearWordRelayedToLevel(
+  word: GearWordId,
+  fromLevel: GearLevel,
+  toLevel: GearLevel,
+): GearWordId {
+  return fromLevel < ALL_MYSTIC_BOOST_LEVEL &&
+    toLevel >= ALL_MYSTIC_BOOST_LEVEL &&
+    MERGED_INTO_ALL_MYSTIC_BOOST.has(word)
     ? "allMysticBoost"
     : word
 }

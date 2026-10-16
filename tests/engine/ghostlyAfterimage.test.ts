@@ -131,6 +131,15 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
     )
   })
 
+  it("takes All Mystic Skill DMG Boost as an uncategorised mystic skill", () => {
+    const steps = [UMBRA, "Opener", DODGE, "Idle 2000"]
+    const base = run("bellstrikeUmbra", steps, { allMysticBoost: 0 })
+    const boosted = run("bellstrikeUmbra", steps, { allMysticBoost: 0.5 })
+    expect(afterimageEvents("bellstrikeUmbra", boosted)[0]!.damage).toBeGreaterThan(
+      afterimageEvents("bellstrikeUmbra", base)[0]!.damage,
+    )
+  })
+
   it("carries the in-game row and a Qi ratio of one", () => {
     const explosion = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.ghostlyAfterimage)
     expect(explosion.hits).toHaveLength(1)

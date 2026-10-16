@@ -509,9 +509,11 @@ export function computeSkillDamage(
   const weaponBoostMap = ctx.weaponBoosts ?? {}
   const weaponBoost = weaponBoostMap[weaponOrAttributeKey]
   const mysticCategory = art.mysticCategory
+  const isMysticHit = art.skillType === "mystic" || !!mysticCategory
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
-    (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) + (ctx.allMysticBoost ?? 0) : 0)
+    (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0) +
+    (isMysticHit ? (ctx.allMysticBoost ?? 0) : 0)
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +

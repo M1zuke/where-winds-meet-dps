@@ -5,12 +5,7 @@ import {
   attunementMin,
 } from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
-import {
-  gearWordAtLevel,
-  gearWordPool,
-  gearWordPoolForLine,
-} from "../../../../data/stats/gearWordPools"
-import { isGearWordId } from "../../../../data/stats/statLines"
+import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
@@ -138,14 +133,6 @@ function scaleFor(affix: ImportedAffix, target: AffixTarget): number {
   return reported !== null && Math.abs(reported) > 1 ? 0.01 : 1
 }
 
-const WORD_KEY_PREFIX = "word:"
-
-function keyAtLevel(key: string, level: GearLevel): string {
-  if (!key.startsWith(WORD_KEY_PREFIX)) return key
-  const word = key.slice(WORD_KEY_PREFIX.length)
-  return isGearWordId(word) ? `${WORD_KEY_PREFIX}${gearWordAtLevel(word, level)}` : key
-}
-
 function resolveAffix(
   affix: ImportedAffix,
   slot: GearSlot | null,
@@ -156,8 +143,7 @@ function resolveAffix(
 ): ImportedAffix {
   const targets = legalTargets(affix, slot, inputs, level, lineIndex)
   const suggestions = suggestedTargets(affix, targets)
-  const storedKey = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
-  const mappedKey = storedKey && keyAtLevel(storedKey, level)
+  const mappedKey = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
   const target = mappedKey
     ? targets.find((candidate) => targetKey(candidate) === mappedKey)
     : undefined

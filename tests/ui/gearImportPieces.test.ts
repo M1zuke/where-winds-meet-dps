@@ -170,6 +170,41 @@ describe("the shipped affix table is the authority", () => {
     }
   })
 
+  it("maps the four All Mystic Skill DMG Boost ids and keeps the legacy mystic ids on their own words", () => {
+    for (const affixId of ["100931001", "100941001", "105931001", "105941001"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:allMysticBoost")
+    }
+    for (const affixId of ["10193122", "10194122", "10693122", "10694122"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:areaMysticBoost")
+    }
+    for (const affixId of ["10193123", "10194123", "10693123", "10694123"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:singleTargetMysticBoost")
+    }
+  })
+
+  it("leaves a legacy mystic affix on a level-100 helm as the legacy word", () => {
+    const { hp, physDef } = gearBaseStatsFor({ slot: "helm", rarity: "legendary", level: 100 })
+    const text = JSON.stringify({
+      wearEquipsDetailed: {
+        "3": {
+          exVo: {
+            baseAttrs: { W_DEF: physDef, HP_MAX: hp },
+            baseAffixes: [
+              { equipmentDetails: [10193103, 20, 0.5, 3, true] },
+              { equipmentDetails: [10193123, 0.1, 0.9, 3, true] },
+            ],
+          },
+        },
+      },
+    })
+    const helm = resolved(text).pieces[0]!
+    expect(helm.identity).toMatchObject({ level: 100 })
+    expect(helm.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "singleTargetMysticBoost" },
+    })
+  })
+
   it("maps gear-level Physical Defense, Constitution, Defense and Boost Vs. Player Units affixes to their words", () => {
     const expected: Record<string, string> = {
       "8743002": "word:physDef",
