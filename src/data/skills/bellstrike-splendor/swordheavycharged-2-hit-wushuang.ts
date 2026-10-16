@@ -48,14 +48,14 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 77,
+  castFrames: 77.02,
   meterDrains: VAGRANT_SWORD_WUSHUANG_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 66,
+      frame: 66.06,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
@@ -68,7 +68,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 76,
+      frame: 76.02,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,

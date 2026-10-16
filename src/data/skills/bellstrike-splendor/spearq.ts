@@ -57,7 +57,7 @@ export const spearq = defineSkill({
     }),
     hit(1, {
       // In-game values as of 2026-09-24: the collider frame.
-      frame: 18,
+      frame: 17.65,
       physMultiplier: 0.5732,
       attributeMultiplier: 0.8598,
       physFixed: 160,

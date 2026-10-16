@@ -8,6 +8,7 @@ import {
   V80__prepullVagrantSwordWaveTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -39,7 +40,7 @@ describe("custom-skills v79 fixture", () => {
 
 describe("healSkill", () => {
   it("lands an untouched copy on the built-in's hits", () => {
-    const healed = healSkill(clone(skillIn(STORE, PREPULL_ID))) as Skill
+    const healed = healFractionalFrameTiming(healSkill(clone(skillIn(STORE, PREPULL_ID)))) as Skill
     expect(healed.hits).toEqual(builtin(PREPULL_ID).hits)
     expect(healed.castFrames).toBe(skillIn(STORE, PREPULL_ID).castFrames)
   })
@@ -66,7 +67,9 @@ describe("V80__prepullVagrantSwordWaveTiming — called directly", () => {
   it("moves the untouched pre-pull copy onto the built-in and leaves every other skill alone", () => {
     const after = V80__prepullVagrantSwordWaveTiming.migrate(clone(STORE))
     expect(after.v).toBe(80)
-    expect(skillIn(after, PREPULL_ID).hits).toEqual(builtin(PREPULL_ID).hits)
+    expect((healFractionalFrameTiming(skillIn(after, PREPULL_ID)) as Skill).hits).toEqual(
+      builtin(PREPULL_ID).hits,
+    )
     for (const skill of STORE.skills) {
       if (skill.id === PREPULL_ID) continue
       expect(skillIn(after, skill.id), skill.id).toEqual(skill)

@@ -11,6 +11,7 @@ import {
 import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV83File from "./testCustomSkills/v83/store.json"
@@ -75,9 +76,11 @@ describe("custom-skills v83 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healJadeSpringSorrowChargesAndComboRechargeCut(
-      healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
-        healJadeAvailabilityAndRecharge(healSkill(clone(skillIn(STORE, id)))),
+    const healed = healFractionalFrameTiming(
+      healJadeSpringSorrowChargesAndComboRechargeCut(
+        healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
+          healJadeAvailabilityAndRecharge(healSkill(clone(skillIn(STORE, id)))),
+        ),
       ),
     ) as Skill
     const builtin = builtinOf(id)
@@ -133,9 +136,11 @@ describe("V84__jadeHitLandingsGrantsAndClipTimings — called directly", () => {
     for (const id of HEALED_IDS)
       expect(
         (
-          healJadeSpringSorrowChargesAndComboRechargeCut(
-            healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
-              healJadeAvailabilityAndRecharge(skillIn(after, id)),
+          healFractionalFrameTiming(
+            healJadeSpringSorrowChargesAndComboRechargeCut(
+              healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
+                healJadeAvailabilityAndRecharge(skillIn(after, id)),
+              ),
             ),
           ) as Skill
         ).hits,

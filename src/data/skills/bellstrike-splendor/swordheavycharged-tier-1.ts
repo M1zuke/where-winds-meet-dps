@@ -15,7 +15,7 @@ import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_TIER_1_PROJECTILE } from "./vagrantSwordBolts"
 
 // In-game values as of 2026-10-15: released at the earliest first-tier hold
-// (45.6 f); the single bolt launches at 58 f.
+// (45.6 f); the single bolt launches at 57.74 f.
 export const swordHeavyChargedTier1 = defineSkill({
   id: SKILL.swordHeavyChargedTier1,
   classId: "bellstrikeSplendor",
@@ -37,14 +37,14 @@ export const swordHeavyChargedTier1 = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 83,
+  castFrames: 82.8,
   meterDrains: VAGRANT_SWORD_TIER_1_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 58,
+      frame: 57.74,
       physMultiplier: 1.51032,
       attributeMultiplier: 2.26548,
       physFixed: 419,

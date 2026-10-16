@@ -100,14 +100,15 @@ describe("Wushuang Stance changes Vagrant Sword's charge", () => {
     ).toBe(1)
   })
 
-  it("reaches the release 25 f earlier than the normal hold, with the same waves", () => {
+  it("reaches the release 24.6 f earlier than the normal hold, with the same waves", () => {
     const normal = builtinSkill(CLASS, SKILL.swordHeavyCharged)
     const faster = builtinSkill(CLASS, SKILL.swordHeavyChargedWushuang)
     const releaseFrameOf = (skill: typeof normal) =>
       skill.hits.find((skillHit) => skillHit.physMultiplier === 0)!.frame
-    expect(releaseFrameOf(normal) - releaseFrameOf(faster)).toBe(25)
-    expect(faster.hits[0]!.variants![0]!.castFrames).toBe(
-      normal.hits[0]!.variants![0]!.castFrames! - 25,
+    expect(releaseFrameOf(normal) - releaseFrameOf(faster)).toBeCloseTo(24.6, 9)
+    expect(faster.hits[0]!.variants![0]!.castFrames).toBeCloseTo(
+      normal.hits[0]!.variants![0]!.castFrames! - 24.6,
+      9,
     )
   })
 

@@ -49,14 +49,14 @@ export const swordHeavyCharged = defineSkill({
   ],
   // In-game values as of 2026-10-15: without the three-wave conditions this is
   // the single-bolt level-2 release, not the three-wave one below.
-  castFrames: 122,
+  castFrames: 121.8,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 97,
+      frame: 96.74,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 3.2664,
       attributeMultiplier: 4.8996,
@@ -79,13 +79,13 @@ export const swordHeavyCharged = defineSkill({
           // Cast length to the earliest next input for a full ≥84.6 f hold to
           // the level-2 threshold plus the three-wave release's own cast
           // length (in-game values as of 2026-10-15).
-          castFrames: 136,
-          frame: 91,
+          castFrames: 135.6,
+          frame: 90.66,
         },
       ],
     }),
     hit(1, {
-      frame: 101,
+      frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
@@ -95,7 +95,7 @@ export const swordHeavyCharged = defineSkill({
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 130,
+      frame: 129.9,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
@@ -109,7 +109,7 @@ export const swordHeavyCharged = defineSkill({
     hit(3, {
       // In-game values as of 2026-10-15: the three-wave event fires at the
       // level-2 release, 84.6 f after the press, ahead of the first wave.
-      frame: 85,
+      frame: 84.6,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,

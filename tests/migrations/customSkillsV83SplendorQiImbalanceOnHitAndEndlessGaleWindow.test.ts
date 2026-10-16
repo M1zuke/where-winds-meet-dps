@@ -8,6 +8,7 @@ import {
   V83__splendorQiImbalanceOnHitAndEndlessGaleWindow,
   healSkill,
 } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -68,7 +69,7 @@ describe("custom-skills v82 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healFractionalFrameTiming(healSkill(clone(skillIn(STORE, id)))) as Skill
     const builtin = builtinOf(id)
     expect(healed.hits).toEqual(builtin.hits)
     if (HITS_ONLY_IDS.includes(id)) return
@@ -78,7 +79,7 @@ describe("healSkill", () => {
   })
 
   it("lands the untouched Energy Surge copy on the built-in", () => {
-    const healed = healSkill(clone(seededEnergySurge())) as Skill
+    const healed = healFractionalFrameTiming(healSkill(clone(seededEnergySurge()))) as Skill
     expect(healed.hits).toEqual(builtinOf(SEEDED_ENERGY_SURGE_ID).hits)
   })
 
@@ -110,7 +111,10 @@ describe("V83__splendorQiImbalanceOnHitAndEndlessGaleWindow — called directly"
   it("heals the targeted copies and nothing else", () => {
     const after = V83__splendorQiImbalanceOnHitAndEndlessGaleWindow.migrate(clone(STORE))
     expect(after.v).toBe(83)
-    for (const id of HEALED_IDS) expect(skillIn(after, id).hits, id).toEqual(builtinOf(id).hits)
+    for (const id of HEALED_IDS)
+      expect((healFractionalFrameTiming(skillIn(after, id)) as Skill).hits, id).toEqual(
+        builtinOf(id).hits,
+      )
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)

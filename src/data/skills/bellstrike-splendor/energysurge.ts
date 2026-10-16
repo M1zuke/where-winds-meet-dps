@@ -52,7 +52,7 @@ export const energySurge = defineSkill({
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 6,
+      frame: 6.06,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
@@ -61,7 +61,7 @@ export const energySurge = defineSkill({
       triggers: [BATTLE_ANTHEM_ENDURANCE_GAIN, energySurgeCooldownCut],
     }),
     hit(1, {
-      frame: 16,
+      frame: 16.02,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
@@ -70,7 +70,7 @@ export const energySurge = defineSkill({
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 45,
+      frame: 45.3,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,

@@ -28,7 +28,7 @@ const DRAIN_WITH_CHARGE_RELEASE: MeterDrain[] = VAGRANT_SWORD_DRAIN.map((drain) 
   chargeRelease: { fallbackSkillId: SKILL.swordHeavyCharged },
 }))
 
-const FIRST_WAVE_AFTER_RELEASE_FRAMES = 6
+const FIRST_WAVE_AFTER_RELEASE_FRAMES = 6.06
 
 export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
@@ -62,14 +62,14 @@ export const swordHeavyCharged2Hit = defineSkill({
   // Cast length to the earliest next input: Deflect ends the release right
   // after the second wave's own launch, after an ≥84.6 f hold to the level-2
   // threshold (in-game values as of 2026-10-15).
-  castFrames: 102,
+  castFrames: 101.62,
   meterDrains: DRAIN_WITH_CHARGE_RELEASE,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 91,
+      frame: 90.66,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
@@ -85,7 +85,7 @@ export const swordHeavyCharged2Hit = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 101,
+      frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,

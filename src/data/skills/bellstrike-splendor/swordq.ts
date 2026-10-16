@@ -26,7 +26,7 @@ export const swordq = defineSkill({
   // In-game values as of 2026-10-15: the cast runs to its 54.71 f post-move
   // frame; Energy Surge or a Deflect may cut it from the frame after the
   // flying sword launches, and the launched sword still lands.
-  castFrames: 55,
+  castFrames: 54.71,
   triggerable: true,
   // In-game values as of 2026-09-28: 12 m approach reach — a companion
   // projectile rides the swing 1 m further (13 m), not modelled separately.
@@ -34,7 +34,7 @@ export const swordq = defineSkill({
   hits: [
     hit(0, {
       // In-game values as of 2026-10-15: the flying sword launches at 17.58 f.
-      frame: 18,
+      frame: 17.58,
       projectile: DAUNTING_STRIKE_PROJECTILE,
       physMultiplier: 1.0253,
       attributeMultiplier: 1.538,
@@ -42,7 +42,7 @@ export const swordq = defineSkill({
       attributeFixed: 154.6,
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
-    energySurgeCutHit(1, 18, 19),
+    energySurgeCutHit(1, 17.58, 18.58),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

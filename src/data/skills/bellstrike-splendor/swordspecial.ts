@@ -40,7 +40,7 @@ export const swordSpecial = defineSkill({
   hits: [
     hit(0, {
       // In-game values as of 2026-10-15: the bolt launches at 17.06 f.
-      frame: 17,
+      frame: 17.06,
       projectile: SHADOW_STEP_PROJECTILE,
       physMultiplier: 1.76747,
       attributeMultiplier: 2.651205,
@@ -59,12 +59,12 @@ export const swordSpecial = defineSkill({
     hit(2, {
       // In-game values as of 2026-10-15: the Sword - Dash window opens with
       // the 17.24 f keyframe.
-      frame: 17,
+      frame: 17.24,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [shadowStepDashWindowGrantFromFrame(17)],
+      triggers: [shadowStepDashWindowGrantFromFrame(17.24)],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

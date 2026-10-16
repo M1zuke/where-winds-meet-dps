@@ -5,6 +5,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { V76__vagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -42,7 +43,7 @@ describe("V76__vagrantSwordChargeTiming — called directly", () => {
     const after = V76__vagrantSwordChargeTiming.migrate(clone(STORE))
     expect(after.v).toBe(76)
     for (const id of FORM_IDS) {
-      const healed = skillIn(after, id)
+      const healed = healFractionalFrameTiming(skillIn(after, id)) as Skill
       const live = builtin(id)
       expect(healed.castFrames, id).toBe(live.castFrames)
       expect(healed.castConditions, id).toEqual(live.castConditions)

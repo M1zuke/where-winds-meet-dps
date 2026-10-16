@@ -23,6 +23,7 @@ import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/
 import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
 import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -70,7 +71,7 @@ const builtinOf = (id: string): Skill =>
 
 // A no-op on the ids these later hops don't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
-const throughLaterHops = (skill: unknown): Skill =>
+const throughHopsBeforeV95 = (skill: unknown): Skill =>
   healSplendorQiImbalanceOnHitAndEndlessGaleWindow(
     healPrepullVagrantSwordWaveTiming(
       healVagrantSwordChargeTiming(
@@ -98,6 +99,9 @@ const throughLaterHops = (skill: unknown): Skill =>
       ),
     ),
   ) as Skill
+
+const throughLaterHops = (skill: unknown): Skill =>
+  healFractionalFrameTiming(throughHopsBeforeV95(skill)) as Skill
 
 describe("custom-skills v26 fixture", () => {
   it("is v26 and still stores the pre-V27 shape for every healed skill", () => {

@@ -30,9 +30,9 @@ export const umbdronelaunch16Hit = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      // In-game values as of 2026-10-15: the umbrella attaches at 36 f, which
-      // opens the drone's run; the throw's collider lands at 35.78 f with it.
-      frame: 36,
+      // In-game values as of 2026-10-15: the throw's collider lands at 35.78 f;
+      // the umbrella attaches at 36 f, which opens the drone's run.
+      frame: 35.78,
       physMultiplier: 0.539718,
       attributeMultiplier: 0.809577,
       // In-game values as of 2026-10-05.

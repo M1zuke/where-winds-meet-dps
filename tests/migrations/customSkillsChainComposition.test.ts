@@ -88,6 +88,7 @@ import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeBulletSkillsAsWeaponHits } from "../../src/migrations/customSkills/V93__jadeBulletSkillsAsWeaponHits"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -189,6 +190,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [92, healJadeStartlingSpringStacksAndFlurryEnduranceTiming],
   [93, healJadeBulletSkillsAsWeaponHits],
   [94, healJadeSpringSorrowChargesAndComboRechargeCut],
+  [95, healFractionalFrameTiming],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

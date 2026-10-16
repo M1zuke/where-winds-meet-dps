@@ -78,12 +78,12 @@ describe("Shadow Step's bolt lands after its flight", () => {
     expect(landingFrames(result, cast.skillName)).toEqual([Math.round(17 + flight)])
   })
 
-  it("opens the multi-wave window at the cast start and the Sword - Dash window at 17 f", () => {
+  it("opens the multi-wave window at the cast start and the Sword - Dash window on the first rendered frame after 17.24 f", () => {
     const frames = (id: string) =>
       result
         .buffWindows!.filter((window) => window.id === id)
         .map((window) => [Math.round(window.startSec * FPS), Math.round(window.endSec * FPS)])
     expect(frames(BUFF.swordMorphMultiWaveWindow)).toEqual([[0, 300]])
-    expect(frames(BUFF.shadowStepDashWindow)).toEqual([[17, 167]])
+    expect(frames(BUFF.shadowStepDashWindow)).toEqual([[18, 168]])
   })
 })

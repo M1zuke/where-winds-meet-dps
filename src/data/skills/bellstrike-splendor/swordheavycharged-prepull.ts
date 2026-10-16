@@ -22,8 +22,8 @@ import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
-// In-game values as of 2026-10-15: the release lands the three waves 6, 16 and
-// 45 f later, each flying as a projectile.
+// In-game values as of 2026-10-15: the release lands the three waves 6.06, 16.02 and
+// 45.30 f later, each flying as a projectile.
 export const swordHeavyChargedPrepull = defineSkill({
   id: SKILL.swordHeavyChargedPrepull,
   classId: "bellstrikeSplendor",
@@ -75,12 +75,12 @@ export const swordHeavyChargedPrepull = defineSkill({
           physFixed: 361.6,
           attributeFixed: 197.2,
           castFrames: 51,
-          frame: 6,
+          frame: 6.06,
         },
       ],
     }),
     hit(1, {
-      frame: 16,
+      frame: 16.02,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
@@ -90,7 +90,7 @@ export const swordHeavyChargedPrepull = defineSkill({
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 45,
+      frame: 45.3,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,

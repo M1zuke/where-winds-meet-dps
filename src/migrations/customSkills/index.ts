@@ -95,6 +95,7 @@ import { V91__draughtNightwickStanceAndVariedComboOverrides } from "./V91__draug
 import { V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming } from "./V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { V93__jadeBulletSkillsAsWeaponHits } from "./V93__jadeBulletSkillsAsWeaponHits"
 import { V94__jadeSpringSorrowChargesAndComboRechargeCut } from "./V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { V95__fractionalFrameTiming } from "./V95__fractionalFrameTiming"
 
 export type {
   CustomSkillMigration,
@@ -258,6 +259,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming,
   V93__jadeBulletSkillsAsWeaponHits,
   V94__jadeSpringSorrowChargesAndComboRechargeCut,
+  V95__fractionalFrameTiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
