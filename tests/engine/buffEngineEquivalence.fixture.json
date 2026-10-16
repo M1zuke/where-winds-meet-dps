@@ -90,7 +90,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "b30bdd243f0f5f02738cd8dab096a021fefcf1931fc6e632259164fa54cd3043"
+        "digest": "3de630fd0a48dcf4824d6c78e5473ecd6492df179149b49bb35a4cec31d8fc54"
       },
       "debuffs": {
         "count": 8,
@@ -104,7 +104,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "9ab7545ea2c3773d673b9a0de80d4234a2b61547fcb89a5f8c5e204bfd89726f"
+        "digest": "0ed130a3d5e8e85b8e2916c6780dc63cf5f9c85630b0c036b644709fbfcd62c7"
       },
       "buffs": [
         {

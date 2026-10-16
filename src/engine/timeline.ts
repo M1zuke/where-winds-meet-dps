@@ -757,6 +757,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const readsLateMeter = (condition: TriggerCondition): boolean =>
       conditionIds(condition).some((id) => lateMeterIds.has(id))
 
+    const buildView: BuildView = {
+      classId: inputs.classId,
+      innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
+      classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
+      grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
+      openingStacks: openingStacksOf,
+    }
+
     interface LayoutRun {
       laidSteps: LaidStep[]
       layoutLedger: StatusLedger
@@ -795,6 +803,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
       const layoutWriter = statusWriter(layoutLedger, layoutHolds)
       seedOpeningState(layoutWriter, Math.min(0, -prePullBound))
+      const layoutBehaviorFor = buildBehaviors(buildView)
 
       // Meters (Endurance, Blade Momentum, …) simulate once here, in the same
       // sequential cursor `castConditions` legality already reads, and are
@@ -1100,8 +1109,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // A summoned hit counts as a hit for every hit-driven schedule (proc
       // mechanics, the layout ledger), the same as a laid one — the frame it
       // lands at is all that distinguishes them. `detonateDot`'s own sub-cast
-      // stays out of the layout ledger: chasing it needs the retained-stack
-      // build param, which the buff engine alone resolves.
+      // is laid for the ledger alone, so it joins no schedule.
       const damagingHitTimesSec: number[] = []
       const weaponHitTimesSec: number[] = []
 
@@ -1114,6 +1122,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         owner: number
         prePull: boolean
         sequence: number
+        ledgerOnly?: boolean
       }
       interface PendingMeterDeltaEvent {
         kind: "meterDelta"
@@ -1159,17 +1168,42 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const ownerHolds = (condition: TriggerCondition) => layoutHolds(condition, owner)
         layoutWriter.processExpiries(hitFrame)
         const ledgerMarkBeforeHit = layoutLedger.mark()
+        const layoutHitInput: HitInput = {
+          skill,
+          hit: skillHit,
+          frame: hitFrame,
+          statuses: layoutLedger,
+          build: buildView,
+          holds: ownerHolds,
+        }
+        for (const effect of layoutBehaviorFor(skill).onHit?.(layoutHitInput) ?? []) {
+          if (effect.kind !== "setStatus") continue
+          const status = statusById.get(effect.id)
+          if (!status) continue
+          if (effect.permanent) layoutLedger.openPermanent(status.id)
+          else
+            layoutLedger.pushWindow(
+              status.id,
+              hitFrame,
+              hitFrame + Math.max(1, effect.durationFrames ?? status.durationFrames),
+              owner,
+            )
+          if (effect.stacks !== undefined)
+            layoutLedger.recordStack(status.id, hitFrame, effect.stacks, owner)
+        }
         if (hitDealsDamage(skillHit)) {
           layoutWriter.onDamagingHit(hitFrame, owner)
-          if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
-            discoveredFightStartFrame = hitFrame
-            layoutLedger.recordStack(IN_COMBAT_STATUS, hitFrame, 1)
+          if (!current.ledgerOnly) {
+            if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
+              discoveredFightStartFrame = hitFrame
+              layoutLedger.recordStack(IN_COMBAT_STATUS, hitFrame, 1)
+            }
+            if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
+              discoveredFightEndFrame = hitFrame
+            const timeSec = hitFrame / FPS
+            damagingHitTimesSec.push(timeSec)
+            if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
           }
-          if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
-            discoveredFightEndFrame = hitFrame
-          const timeSec = hitFrame / FPS
-          damagingHitTimesSec.push(timeSec)
-          if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
         }
         for (const trigger of skillHit.triggers) {
           if (trigger.kind === "detonateDot") continue
@@ -1194,14 +1228,34 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 candidate.kind === "detonateDot" && candidate.targetId === trigger.targetId,
             )
             if (detonation && detonates && next >= maxStacks) {
-              const retainsMore =
-                detonation.retainParam !== undefined &&
-                paramOnOf(buffParams, detonation.retainParam) &&
-                paramTierOf(buffParams, detonation.retainParam) >= (detonation.retainMinTier ?? 6)
-              const retained = retainsMore
-                ? (detonation.retainParamStacks ?? detonation.retainStacks ?? 0)
-                : (detonation.retainStacks ?? 0)
-              layoutLedger.recordStack(status.id, hitFrame, clamp(retained, 0, maxStacks), owner)
+              layoutLedger.recordStack(
+                status.id,
+                hitFrame,
+                clamp(detonation.retainStacks ?? 0, 0, maxStacks),
+                owner,
+              )
+              const burst = skillsById.get(detonation.skillId)
+              const burstHolds = (condition: TriggerCondition) => layoutHolds(condition, hitFrame)
+              for (const burstHit of (burst?.hits ?? []).filter((candidate) =>
+                hitConditionsHold(candidate, burstHolds),
+              )) {
+                const burstHitFrame = resolvedHitFrame(
+                  burstHit,
+                  burstHolds,
+                  targetDistanceAt(hitFrame),
+                )
+                pending.push({
+                  kind: "hit",
+                  skill: burst!,
+                  hit: burstHit,
+                  frame: hitLandingFrame(hitFrame, burstHitFrame),
+                  exactFrame: exactHitLandingFrame(hitFrame, burstHitFrame),
+                  owner,
+                  prePull,
+                  sequence: layoutHitSequence++,
+                  ledgerOnly: true,
+                })
+              }
             }
             continue
           }
@@ -1782,14 +1836,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
     const liveWriter = statusWriter(ledger, conditionHolds)
     seedOpeningState(liveWriter, spanStart)
-
-    const buildView: BuildView = {
-      classId: inputs.classId,
-      innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
-      classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
-      grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
-      openingStacks: openingStacksOf,
-    }
 
     const behaviorFor = buildBehaviors(buildView)
 
@@ -2545,13 +2591,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             det &&
             hit.triggers.some((t) => t.kind === "detonateDot" && t.targetId === trigger.targetId)
           if (flagged && next >= maxStacks) {
-            const retained =
-              det.retainParam &&
-              buffEngine &&
-              buffEngine.paramTier(det.retainParam) >= (det.retainMinTier ?? 6)
-                ? (det.retainParamStacks ?? det.retainStacks ?? 0)
-                : (det.retainStacks ?? 0)
-            recordStack(status.id, frame, clamp(retained, 0, maxStacks), stepStart)
+            recordStack(status.id, frame, clamp(det.retainStacks ?? 0, 0, maxStacks), stepStart)
             const sub = skillsById.get(det.skillId)
             if (sub) {
               const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)

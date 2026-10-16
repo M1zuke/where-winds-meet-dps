@@ -62,9 +62,6 @@ export interface DebuffDotSpec {
 export interface DotDetonationSpec {
   skillId: string
   retainStacks?: number
-  retainParam?: string
-  retainMinTier?: number
-  retainParamStacks?: number
 }
 
 export interface DebuffEchoReleaseAdjustment {

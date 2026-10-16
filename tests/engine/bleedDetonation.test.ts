@@ -7,7 +7,10 @@ import { makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { builtinSkill, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
-import { ZENITH_DETONATION_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
+import {
+  ZENITH_BAR_BUFF_ID,
+  ZENITH_DETONATION_BUFF_ID,
+} from "../../src/data/innerWays/swordHorizonZenith"
 
 const CLASS = "bellstrikeUmbra"
 const skillOf = (skillId: string) => builtinSkill(CLASS, skillId)
@@ -69,7 +72,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     expect(detonationEvents[0].frame).toBe(106)
   })
 
-  it("retains 2 stacks (instead of resetting to 0) at swordHorizon tier 6 — a second detonation follows 3 hits sooner", () => {
+  it("re-adds 2 stacks as the burst lands at swordHorizon tier 6 while Sword Spirit is banked — a second detonation follows 3 hits sooner", () => {
     const swordSpecial3 = builtinSkillsForClass("bellstrikeUmbra").find(
       (s) => s.id === SKILL.swordspecial3Hit,
     )!
@@ -79,6 +82,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
         makeStep({ skillId: swordSpecial3.id }),
         makeStep({ skillId: swordSpecial3.id }),
       ],
+      openingStacks: { [ZENITH_BAR_BUFF_ID]: 1 },
     })
     const below6: Inputs = {
       ...defaultInputs,
@@ -125,6 +129,14 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     const noneResult = simulateTimeline(noInnerWay)
     expect(
       noneResult.perSkill.find((p) => p.name === skillOf(SKILL.bleedDetonation).name)!.count,
+    ).toBe(1)
+
+    const emptySpirit = simulateTimeline({
+      ...at6,
+      activeCustomRotation: { ...rotation, openingStacks: { [ZENITH_BAR_BUFF_ID]: 0 } },
+    })
+    expect(
+      emptySpirit.perSkill.find((p) => p.name === skillOf(SKILL.bleedDetonation).name)!.count,
     ).toBe(1)
   })
 

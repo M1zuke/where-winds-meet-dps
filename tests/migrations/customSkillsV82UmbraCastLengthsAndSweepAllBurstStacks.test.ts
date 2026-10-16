@@ -5,6 +5,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { V82__umbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { HitTrigger, Skill } from "../../src/engine/skill"
 import storeV81File from "./testCustomSkills/v81/store.json"
@@ -66,7 +67,9 @@ describe("V82__umbraCastLengthsAndSweepAllBurstStacks — called directly", () =
     )
     for (const id of [SWEEP_ALL, SWEEP_ALL_CANCEL]) {
       expect(
-        skillIn(after, id).hits.map((hit) => hit.triggers),
+        (healSwordHorizonBurstStacksAtTheBurst(skillIn(after, id)) as Skill).hits.map(
+          (hit) => hit.triggers,
+        ),
         id,
       ).toEqual(builtin(id).hits.map((hit) => hit.triggers))
     }

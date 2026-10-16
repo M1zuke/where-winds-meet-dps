@@ -354,10 +354,11 @@ Rules:
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared
-duration, and the detonation rule (which skill, how many stacks retained, at
-what build tier) live entirely on the target debuff. Never re-author any of it on
-the trigger. A detonation flag without a sibling application on the same hit is
-inert by design.
+duration, and the detonation rule (which skill, how many stacks retained) live
+entirely on the target debuff. Never re-author any of it on the trigger. A
+detonation flag without a sibling application on the same hit is inert by design.
+Stacks a build returns after a detonation belong to the detonation skill's own
+hit, applied when that hit lands.
 
 ## Buffs and debuffs — two systems
 
@@ -914,7 +915,11 @@ A skill with genuinely procedural behaviour registers a **factory** against its
 id rather than being special-cased in the loop. Factories, not instances — state
 such as a charge counter must not carry between simulations. A per-hit art patch
 is the **only** sanctioned art-level adjustment, and it comes from a behaviour or
-a mechanic, never from a branch in the loop.
+a mechanic, never from a branch in the loop. A behaviour's per-hit status writes
+land in the layout ledger as well as the live one, in the same hit order, so a
+condition read at layout time sees the state the scored run has. A detonation's
+burst hits are laid out for that ledger alone: they open no fight window and
+join no hit-driven schedule.
 
 The status ledger and the buff engine are **two stores on purpose**: the ledger
 calls a status active if any recorded window covers the frame, the engine goes by

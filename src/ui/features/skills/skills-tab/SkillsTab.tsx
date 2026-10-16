@@ -23,7 +23,6 @@ import {
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
 import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
-import { innerWayName } from "../../../../definitions/innerWays/registry"
 import {
   appliesForSkill,
   receivesForSkill,
@@ -672,11 +671,6 @@ export function SkillsTab({
       const detonateSkill = resolveSkillTarget(det.skillId)
       const label = `${t("skills.causes")} ${detonateSkill?.name ?? name}`
       let effect = `${t("skills.onReaching")} ${status.maxStacks} ${t("skills.stacksConsumesThemAndAuto")} ${detonateSkill?.name ?? det.skillId}`
-      if (det.retainParam) {
-        const paramName = innerWayName(det.retainParam)
-        const retained = det.retainParamStacks ?? det.retainStacks ?? 0
-        effect += ` · ${t("skills.retains")} ${retained} ${t("skills.at")} ${paramName} ${t("common.tier")} ${det.retainMinTier ?? 6}`
-      }
       if (gate) effect += ` · ${gate}`
       return { label, effect }
     }

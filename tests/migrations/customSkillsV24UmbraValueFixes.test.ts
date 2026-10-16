@@ -26,6 +26,7 @@ import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRate
 import { healSkill as healBleedRefundLockout } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
 import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
+import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -579,8 +580,10 @@ describe("V24__umbraValueFixes migration step", () => {
       const enduranceHealed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed)
       const frameHealed = healCastLengthAndHitFrameRepairs(enduranceHealed)
       const qiRateHealed = healQiRateDefault(frameHealed)
-      const healed = healUmbraGameplayTimings(
-        healUmbraCastLengthsAndSweepAllBurstStacks(healBleedRefundLockout(qiRateHealed)),
+      const healed = healSwordHorizonBurstStacksAtTheBurst(
+        healUmbraGameplayTimings(
+          healUmbraCastLengthsAndSweepAllBurstStacks(healBleedRefundLockout(qiRateHealed)),
+        ),
       ) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)

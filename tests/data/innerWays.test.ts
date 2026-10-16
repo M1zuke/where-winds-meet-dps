@@ -16,7 +16,7 @@ import { CLASS_DEFS } from "../../src/definitions/classes/registry"
 import { PARAM } from "../../src/data/skills/buffs/ids"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
+import { bleedDetonation } from "../../src/data/skills/bellstrike-umbra/bleed-detonation"
 import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { CAST } from "../../src/data/skills/ids"
 import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
@@ -155,8 +155,11 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
 })
 
 describe("a tier-6 node resolves to 6, never undefined, feeding buffEngineEquivalence.fixture.json", () => {
-  it("Bleeding's detonation.retainMinTier is the number 6", () => {
-    expect(bleedTick.detonation?.retainMinTier).toBe(6)
+  it("Blood Burst's Bleeding re-add requires the number 6", () => {
+    const requiredTiers = bleedDetonation.hits[0]!.triggers.filter(
+      (trigger) => trigger.kind === "applyDot",
+    ).map((trigger) => trigger.requiresMinTier)
+    expect(requiredTiers).toEqual([6, 6])
   })
 
   it("Soul Shaken's Sober Sorrow grantRequires.minTier is the number 6", () => {
@@ -190,15 +193,17 @@ describe("resolveInnerWayId", () => {
 })
 
 describe("inner-way ownership — gate buffs, display gates, and the merged Zenith Bar", () => {
-  it("Sword Horizon declares exactly Zenith Bar and Zenith Detonation, by their frozen ids", () => {
+  it("Sword Horizon declares exactly Zenith Bar, Zenith Detonation and Sword Spirit Banked, by their frozen ids", () => {
     const swordHorizon = innerWayDefinition(INNER_WAY_ID.swordHorizon)!
     expect(swordHorizon.gateBuffs?.map((gate) => gate.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "buff-bellstrikeUmbra-zenith-detonation",
+      "buff-bellstrikeUmbra-zenith-spirit",
     ])
     expect(swordHorizon.gateBuffs?.map((gate) => gate.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Sword Spirit Banked",
     ])
   })
 
@@ -216,11 +221,12 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
     }
   })
 
-  it("builtinBuffsForClass('bellstrikeUmbra') returns the ten gates in pinned order, each carrying its class id", () => {
+  it("builtinBuffsForClass('bellstrikeUmbra') returns the eleven gates in pinned order, each carrying its class id", () => {
     const buffs = builtinBuffsForClass("bellstrikeUmbra")
     expect(buffs.map((buff) => buff.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Sword Spirit Banked",
       "Water Drop",
       "Spring Surge",
       "River Flow",
