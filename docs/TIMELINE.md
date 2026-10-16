@@ -816,9 +816,19 @@ There is no second simulation and no per-module distance logic.
   left: `towardTarget` shrinks by a reference amount, floored at zero;
   `toTarget` snaps to a fixed distance from the target; `selfForward` is a
   fixed dash, the resulting distance the magnitude of the difference;
+  `rootMotion` moves the player by authored metres along the facing (negative
+  is backward), keyed by cast-relative frame and interpolated linearly. It
+  stops at body contact — the one engine constant `CONTACT_METERS` — unless it
+  is marked `throughTarget`, which passes through and leaves the magnitude of
+  the difference; a backward move leaves the distance grown by its length.
   `byDistance` picks a band by the live distance at that same point and
   applies that band's own displacement, recursively, falling back to an
-  `otherwise` displacement when no band matches.
+  `otherwise` displacement when no band matches. A teleport or fixed-band
+  entry is a `byDistance` band in front of the `rootMotion` default.
+- **A `rootMotion` displacement reads its metres at the cast's end** for the
+  distance later casts start from, and **at a projectile hit's own launch
+  frame** for that hit's flight. A hit variant may carry its own
+  `displacement`, which replaces the skill's while that variant is active.
 - **A pre-pull cast never touches the distance**, the same reasoning a meter
   is never touched by one — a real-world gap of unknown length compressed
   into a few negative frames has no faithful placement for an approach. Its

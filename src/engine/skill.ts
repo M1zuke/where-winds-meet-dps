@@ -94,6 +94,8 @@ export interface HitVariant {
   frame?: number
   // Replaces the hit's own `projectile` where this variant is the active one.
   projectile?: ProjectileSpec
+  // Replaces the skill's own `displacement` where this variant is the active one.
+  displacement?: Displacement
 }
 
 export interface HitTrigger {
@@ -538,6 +540,7 @@ export function isHitVariant(x: unknown): x is HitVariant {
     if (typeof v.frame !== "number" || !Number.isFinite(v.frame)) return false
   }
   if (v.projectile !== undefined && !isProjectileSpecValue(v.projectile)) return false
+  if (v.displacement !== undefined && !isDisplacement(v.displacement)) return false
   return true
 }
 
@@ -672,18 +675,23 @@ export function selectHitVariant(
 // independent of the simulation's own render frame rate.
 const NOMINAL_FPS = 60
 
-// `distanceMeters` is the live target distance at the frame this hit resolves
-// from — absent for every reader that has none available, in which case a
-// `projectile` hit falls back to its own base frame, same as one without it.
+// `distance` is the live target distance at the frame this hit resolves from,
+// or a function of the hit's own launch frame where the cast's displacement
+// moves during the cast — absent for every reader that has none available, in
+// which case a `projectile` hit falls back to its own base frame, same as one
+// without it.
+export type HitDistance = number | ((launchFrame: number) => number)
+
 export function resolvedHitFrame(
   hit: SkillHit,
   test: (condition: TriggerCondition) => boolean,
-  distanceMeters?: number,
+  distance?: HitDistance,
 ): number {
   const variant = selectHitVariant(hit, test)
   const base = variant?.frame ?? hit.frame
   const projectile = variant?.projectile ?? hit.projectile
-  if (!projectile || distanceMeters === undefined) return base
+  if (!projectile || distance === undefined) return base
+  const distanceMeters = typeof distance === "function" ? distance(base) : distance
   return base + projectileTravelFrames(projectile, distanceMeters)
 }
 

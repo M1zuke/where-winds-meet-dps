@@ -18,6 +18,10 @@ export function isValidPreferredDistanceMeters(value: number): boolean {
   )
 }
 
+export const CONTACT_METERS = 1
+
+export type RootMotionKey = readonly [frame: number, meters: number]
+
 export interface DistanceBand {
   minMeters: number
   maxMeters: number
@@ -28,6 +32,7 @@ export type Displacement =
   | { kind: "towardTarget"; referenceMeters: number }
   | { kind: "toTarget"; meters: number }
   | { kind: "selfForward"; meters: number }
+  | { kind: "rootMotion"; metersAtFrame: readonly RootMotionKey[]; throughTarget?: boolean }
   | { kind: "byDistance"; bands: readonly DistanceBand[]; otherwise: Displacement }
 
 export interface DistanceSkill {
@@ -52,9 +57,24 @@ export function distanceAfterApproach(
     : Math.min(preferredMeters, reach)
 }
 
+export function rootMotionMetersAt(keys: readonly RootMotionKey[], frame: number): number {
+  const first = keys[0]
+  const last = keys[keys.length - 1]
+  if (!first || !last) return 0
+  if (frame <= first[0]) return first[1]
+  if (frame >= last[0]) return last[1]
+  const upperIndex = keys.findIndex(([keyFrame]) => keyFrame >= frame)
+  const [upperFrame, upperMeters] = keys[upperIndex]!
+  const [lowerFrame, lowerMeters] = keys[upperIndex - 1]!
+  if (upperFrame === lowerFrame) return upperMeters
+  const progress = (frame - lowerFrame) / (upperFrame - lowerFrame)
+  return lowerMeters + (upperMeters - lowerMeters) * progress
+}
+
 export function applyDisplacement(
   displacement: Displacement | undefined,
   distanceMeters: number,
+  atFrame = Infinity,
 ): number {
   if (!displacement) return distanceMeters
   switch (displacement.kind) {
@@ -64,12 +84,19 @@ export function applyDisplacement(
       return displacement.meters
     case "selfForward":
       return Math.abs(distanceMeters - displacement.meters)
+    case "rootMotion": {
+      const movedMeters = rootMotionMetersAt(displacement.metersAtFrame, atFrame)
+      if (displacement.throughTarget) return Math.abs(distanceMeters - movedMeters)
+      if (movedMeters > 0)
+        return Math.max(distanceMeters - movedMeters, Math.min(distanceMeters, CONTACT_METERS))
+      return distanceMeters - movedMeters
+    }
     case "byDistance": {
       const band = displacement.bands.find(
         (candidate) =>
           distanceMeters >= candidate.minMeters && distanceMeters <= candidate.maxMeters,
       )
-      return applyDisplacement(band ? band.then : displacement.otherwise, distanceMeters)
+      return applyDisplacement(band ? band.then : displacement.otherwise, distanceMeters, atFrame)
     }
   }
 }
@@ -89,6 +116,21 @@ export function distanceAtCastStart(
   return applyDisplacement(skill.displacement, afterApproach)
 }
 
+export function distanceReaderAtCast(
+  skill: DistanceSkill,
+  defaultMeleeReachMeters: number,
+  preferredMeters: number,
+  currentMeters: number,
+): (castFrame: number) => number {
+  const afterApproach = distanceAfterApproach(
+    skill,
+    defaultMeleeReachMeters,
+    preferredMeters,
+    currentMeters,
+  )
+  return (castFrame) => applyDisplacement(skill.displacement, afterApproach, castFrame)
+}
+
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value)
 }
@@ -102,6 +144,20 @@ export function isDisplacement(value: unknown): value is Displacement {
     case "toTarget":
     case "selfForward":
       return isFiniteNumber(record.meters)
+    case "rootMotion":
+      return (
+        Array.isArray(record.metersAtFrame) &&
+        record.metersAtFrame.length > 0 &&
+        record.metersAtFrame.every(
+          (key, index, keys) =>
+            Array.isArray(key) &&
+            key.length === 2 &&
+            isFiniteNumber(key[0]) &&
+            isFiniteNumber(key[1]) &&
+            (index === 0 || key[0] >= (keys[index - 1] as RootMotionKey)[0]),
+        ) &&
+        (record.throughTarget === undefined || typeof record.throughTarget === "boolean")
+      )
     case "byDistance":
       return (
         Array.isArray(record.bands) &&

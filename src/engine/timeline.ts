@@ -12,6 +12,7 @@ import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff, DebuffDotSpec } from "./debuff"
 import type {
   ConditionFailureReason,
+  HitDistance,
   HitTrigger,
   MeterCost,
   ReleaseGate,
@@ -88,7 +89,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
 import { SAME_FRAME_STEP_SEC } from "./buffs/frameOrder"
-import { distanceAtCastStart } from "./distance"
+import { distanceReaderAtCast, type Displacement } from "./distance"
 import { IN_COMBAT_STATUS } from "./combatState"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
@@ -194,6 +195,17 @@ function castEndFrame(
       ? Math.max(...skill.hits.map((hit) => resolvedHitFrame(hit, holds, distanceMeters)))
       : -1
   return castFrame + (skill.castFrames || lastHitFrame + 1)
+}
+
+function activeVariantDisplacement(
+  hits: readonly SkillHit[],
+  holds: (condition: TriggerCondition) => boolean,
+): Displacement | undefined {
+  for (const skillHit of hits) {
+    const variant = selectHitVariant(skillHit, holds)
+    if (variant?.displacement) return variant.displacement
+  }
+  return undefined
 }
 
 function activeVariantCastFrames(
@@ -388,7 +400,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // frames — every later reader of a performed hit's frame adds it, the
       // same way `hitLandingFrame` itself is shared rather than reimplemented.
       midCastExtraFrames: number
-      hitDistanceMeters: number
+      hitDistanceMeters: HitDistance
     }
 
     const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
@@ -1424,7 +1436,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         paidByMeter: Map<string, number> = new Map(),
         meterHorizonFrame = Infinity,
         midCastExtraFrames = 0,
-        hitDistanceMeters = targetDistanceAt(stepStart),
+        hitDistanceMeters: HitDistance = targetDistanceAt(stepStart),
       ): void {
         const pending: PendingLayoutEvent[] = [
           ...hits.map((hit): PendingHitEvent => {
@@ -1607,13 +1619,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           : resolveChargeRelease(resolveReleaseGates(resolvedStep, startFrame), startFrame)
         // A pre-pull cast never touches the target distance either — see the
         // meter-cost note above, the same real-world-gap reasoning applies.
+        const displacingSkill: Skill = {
+          ...castResolution.skill,
+          displacement:
+            activeVariantDisplacement(castResolution.skill.hits, holdsHere) ??
+            castResolution.skill.displacement,
+        }
+        const castDistanceReader = distanceReaderAtCast(
+          displacingSkill,
+          defaultMeleeReachMeters,
+          preferredDistanceMeters,
+          prePull ? preferredDistanceMeters : currentDistanceMeters,
+        )
         if (!prePull) {
-          currentDistanceMeters = distanceAtCastStart(
-            castResolution.skill,
-            defaultMeleeReachMeters,
-            preferredDistanceMeters,
-            currentDistanceMeters,
-          )
+          currentDistanceMeters = castDistanceReader(Infinity)
           layoutLedger.recordStack(TARGET_DISTANCE_STATUS, startFrame, currentDistanceMeters)
         }
         const nextStepSkillId = resolvedSteps[stepIndex + 1]?.skill.id
@@ -1629,14 +1648,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const midCastExtraFrames = prePull
           ? 0
           : (castResolution.skill.serverWaitsInCast ?? 0) * midCastWaitFrames
-        const hitDistanceMeters = prePull
-          ? distanceAtCastStart(
-              castResolution.skill,
-              defaultMeleeReachMeters,
-              preferredDistanceMeters,
-              preferredDistanceMeters,
-            )
-          : targetDistanceAt(startFrame)
+        const hitDistanceMeters: HitDistance = castDistanceReader
         const layoutHitFrame = (hit: SkillHit): number =>
           resolvedHitFrame(hit, holdsHere, hitDistanceMeters) + midCastExtraFrames
         const nominalCastLen = prePull
