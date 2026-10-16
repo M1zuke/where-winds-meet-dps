@@ -1,13 +1,6 @@
-import type { Displacement, MeterDrain, MeterFreeze } from "../../../../engine/skill"
+import type { MeterDrain, MeterFreeze } from "../../../../engine/skill"
 import { meterDelta } from "../../../../definitions/skills/triggers"
 import { enduranceMeter } from "../../../resources/enduranceMeter"
-
-// In-game values as of 2026-10-15: the cast scales its own root motion toward
-// the target, 1.75 m reference.
-export const VAGRANT_SWORD_DISPLACEMENT: Displacement = {
-  kind: "towardTarget",
-  referenceMeters: 1.75,
-}
 
 // In-game values as of 2026-09-25: a 20 / s charge drain from 0.21 s,
 // stopped after 1.2 s by Sword Morph (assumed slotted, the validated build's

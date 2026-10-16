@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { THREE_WAVE_FROM_CAST_START_MOTION } from "./rootMotion"
 import {
   energySurgeConsumeTrigger,
   energySurgeCooldownCut,
@@ -46,7 +47,7 @@ export const energySurge = defineSkill({
   // In-game values as of 2026-09-28: 18 m reach on its own companion
   // projectile — the longest confirmed number for this class.
   reachMeters: 18,
-  displacement: { kind: "towardTarget", referenceMeters: 1 },
+  displacement: THREE_WAVE_FROM_CAST_START_MOTION,
   hits: [
     hit(0, {
       frame: 6.06,

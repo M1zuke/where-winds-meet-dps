@@ -4,6 +4,10 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import {
+  VAGRANT_SWORD_PREPULL_SINGLE_BOLT_MOTION,
+  THREE_WAVE_FROM_CAST_START_MOTION,
+} from "./rootMotion"
+import {
   energySurgeCooldownCut,
   energySurgeReleaseTrigger,
   energySurgeEnduranceGain,
@@ -13,7 +17,6 @@ import {
   SWORD_MORPH_EQUIPPED,
 } from "./buffs/multiWaveWindowGrant"
 import {
-  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
@@ -51,7 +54,7 @@ export const swordHeavyChargedPrepull = defineSkill({
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_PREPULL_SINGLE_BOLT_MOTION,
   hits: [
     hit(0, {
       frame: 12.14,
@@ -76,6 +79,7 @@ export const swordHeavyChargedPrepull = defineSkill({
           attributeFixed: 197.2,
           castFrames: 51,
           frame: 6.06,
+          displacement: THREE_WAVE_FROM_CAST_START_MOTION,
         },
       ],
     }),

@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { VAGRANT_SWORD_SINGLE_BOLT_MOTION, VAGRANT_SWORD_THREE_WAVE_MOTION } from "./rootMotion"
 import {
   energySurgeCooldownCut,
   energySurgeReleaseTrigger,
@@ -13,7 +14,6 @@ import {
   THREE_WAVE_RELEASE_CONDITIONS,
 } from "./buffs/multiWaveWindowGrant"
 import {
-  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
@@ -53,7 +53,7 @@ export const swordHeavyCharged = defineSkill({
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_SINGLE_BOLT_MOTION,
   hits: [
     hit(0, {
       frame: 96.74,
@@ -81,6 +81,7 @@ export const swordHeavyCharged = defineSkill({
           // length (in-game values as of 2026-10-15).
           castFrames: 135.6,
           frame: 90.66,
+          displacement: VAGRANT_SWORD_THREE_WAVE_MOTION,
         },
       ],
     }),

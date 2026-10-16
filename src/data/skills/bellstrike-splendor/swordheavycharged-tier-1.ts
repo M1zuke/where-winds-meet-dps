@@ -3,11 +3,8 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import {
-  VAGRANT_SWORD_DISPLACEMENT,
-  VAGRANT_SWORD_FREEZE,
-  VAGRANT_SWORD_TIER_1_DRAIN,
-} from "./buffs/vagrantSwordEndurance"
+import { VAGRANT_SWORD_TIER_1_MOTION } from "./rootMotion"
+import { VAGRANT_SWORD_FREEZE, VAGRANT_SWORD_TIER_1_DRAIN } from "./buffs/vagrantSwordEndurance"
 import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
@@ -41,7 +38,7 @@ export const swordHeavyChargedTier1 = defineSkill({
   meterDrains: VAGRANT_SWORD_TIER_1_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_TIER_1_MOTION,
   hits: [
     hit(0, {
       frame: 57.74,

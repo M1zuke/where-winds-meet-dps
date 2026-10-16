@@ -8,6 +8,7 @@ import {
   V102__prepullVagrantSwordBoltTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV101File from "./testCustomSkills/v101/store.json"
@@ -35,7 +36,7 @@ describe("custom-skills v101 fixture", () => {
 
 describe("healSkill", () => {
   it("lands the untouched pre-pull copy on the built-in", () => {
-    const healed = healSkill(clone(skillIn(STORE, PREPULL_ID))) as Skill
+    const healed = healSplendorRootMotion(healSkill(clone(skillIn(STORE, PREPULL_ID)))) as Skill
     expect(healed.hits).toEqual(builtinPrepull().hits)
     expect(healed.castFrames).toBe(builtinPrepull().castFrames)
   })
@@ -68,7 +69,9 @@ describe("V102__prepullVagrantSwordBoltTiming — called directly", () => {
   it("heals the pre-pull copy and keeps every other skill", () => {
     const after = V102__prepullVagrantSwordBoltTiming.migrate(clone(STORE))
     expect(after.v).toBe(102)
-    expect(skillIn(after, PREPULL_ID).hits).toEqual(builtinPrepull().hits)
+    expect((healSplendorRootMotion(skillIn(after, PREPULL_ID)) as Skill).hits).toEqual(
+      builtinPrepull().hits,
+    )
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID])
       expect(skillIn(after, id)).toEqual(skillIn(STORE, id))
   })

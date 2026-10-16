@@ -3,7 +3,7 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { classDefinition } from "../../src/definitions/classes/registry"
-import { DEFAULT_PREFERRED_DISTANCE_METERS, distanceAtCastStart } from "../../src/engine/distance"
+import { DEFAULT_PREFERRED_DISTANCE_METERS, distanceReaderAtCast } from "../../src/engine/distance"
 import { projectileTravelFrames } from "../../src/engine/skill"
 import { quantiseToRenderFrame } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
@@ -31,17 +31,20 @@ const noSwordMorph: Inputs["mindMethods"] = [
   { name: "", stacks: "" },
 ]
 
-function prepullFlightMeters(): number {
+function prepullDistanceAtLaunch(launchFrame: number): number {
   const prepull = builtinSkillsForClass(CLASS).find(
     (skill) => skill.id === SKILL.swordHeavyChargedPrepull,
   )!
-  return distanceAtCastStart(
-    prepull,
+  return distanceReaderAtCast(
+    { ...prepull, displacement: prepull.hits[0]!.variants![0]!.displacement },
     classDefinition(CLASS)!.defaultMeleeReachMeters ?? 0,
     DEFAULT_PREFERRED_DISTANCE_METERS,
     DEFAULT_PREFERRED_DISTANCE_METERS,
-  )
+  )(launchFrame)
 }
+
+const flightFramesAt = (launchFrame: number): number =>
+  projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, prepullDistanceAtLaunch(launchFrame))
 
 function runPrepullThenShadowStep() {
   const rotation = makeRotation(CLASS, {
@@ -64,7 +67,6 @@ describe("the pre-pull Vagrant Sword lands its waves after the release, in fligh
   const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
   const prepullEvents = result.timeline!.filter((event) => event.skillName === PREPULL_NAME)
   const releaseFrame = Math.round(prepullCast.timeSec * FPS)
-  const flightFrames = projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, prepullFlightMeters())
 
   it("lands the three waves 6, 16 and 45 f after the release plus each wave's flight", () => {
     const waveFrames = prepullEvents.filter((event) => event.damage > 0).map((event) => event.frame)
@@ -72,20 +74,22 @@ describe("the pre-pull Vagrant Sword lands its waves after the release, in fligh
       WAVE_OFFSETS_FROM_RELEASE.map((offset) =>
         Math.round(
           prepullCast.timeSec * FPS +
-            quantiseToRenderFrame(offset + flightFrames, RENDER_PERIOD_FRAMES),
+            quantiseToRenderFrame(offset + flightFramesAt(offset), RENDER_PERIOD_FRAMES),
         ),
       ),
     )
   })
 
   it("flies from the distance its own approach and displacement leave, not from the preferred distance", () => {
-    expect(flightFrames).toBeLessThan(
+    expect(flightFramesAt(WAVE_OFFSETS_FROM_RELEASE[2]!)).toBeLessThan(
       projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, DEFAULT_PREFERRED_DISTANCE_METERS),
     )
   })
 
   it("does not write its flight distance to the distance the fight starts from", () => {
-    expect(prepullFlightMeters()).not.toBe(DEFAULT_PREFERRED_DISTANCE_METERS)
+    expect(prepullDistanceAtLaunch(WAVE_OFFSETS_FROM_RELEASE[2]!)).not.toBe(
+      DEFAULT_PREFERRED_DISTANCE_METERS,
+    )
     expect(prepullCast.distanceMeters).toBe(DEFAULT_PREFERRED_DISTANCE_METERS)
   })
 

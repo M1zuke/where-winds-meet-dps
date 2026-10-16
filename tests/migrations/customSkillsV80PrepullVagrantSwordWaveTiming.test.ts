@@ -9,11 +9,15 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
-import { healSkill as healPrepullBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import storeV79File from "./testCustomSkills/v79/store.json"
+
+const healLatestSplendorHops = (skill: unknown): unknown =>
+  healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill))
 
 const STORE = storeV79File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const PREPULL_ID = SKILL.swordHeavyChargedPrepull
@@ -41,7 +45,7 @@ describe("custom-skills v79 fixture", () => {
 
 describe("healSkill", () => {
   it("lands an untouched copy on the built-in's hits", () => {
-    const healed = healPrepullBoltTiming(
+    const healed = healLatestSplendorHops(
       healFractionalFrameTiming(healSkill(clone(skillIn(STORE, PREPULL_ID)))),
     ) as Skill
     expect(healed.hits).toEqual(builtin(PREPULL_ID).hits)
@@ -71,7 +75,7 @@ describe("V80__prepullVagrantSwordWaveTiming — called directly", () => {
     const after = V80__prepullVagrantSwordWaveTiming.migrate(clone(STORE))
     expect(after.v).toBe(80)
     expect(
-      (healPrepullBoltTiming(healFractionalFrameTiming(skillIn(after, PREPULL_ID))) as Skill).hits,
+      (healLatestSplendorHops(healFractionalFrameTiming(skillIn(after, PREPULL_ID))) as Skill).hits,
     ).toEqual(builtin(PREPULL_ID).hits)
     for (const skill of STORE.skills) {
       if (skill.id === PREPULL_ID) continue

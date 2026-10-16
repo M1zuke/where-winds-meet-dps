@@ -103,6 +103,7 @@ import { V99__burningHeartChargeStageGates } from "./V99__burningHeartChargeStag
 import { V100__burningHeartLowStageReleaseTiming } from "./V100__burningHeartLowStageReleaseTiming"
 import { V101__wushuangStanceVagrantSwordStartOrder } from "./V101__wushuangStanceVagrantSwordStartOrder"
 import { V102__prepullVagrantSwordBoltTiming } from "./V102__prepullVagrantSwordBoltTiming"
+import { V103__splendorRootMotion } from "./V103__splendorRootMotion"
 
 export type {
   CustomSkillMigration,
@@ -274,6 +275,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V100__burningHeartLowStageReleaseTiming,
   V101__wushuangStanceVagrantSwordStartOrder,
   V102__prepullVagrantSwordBoltTiming,
+  V103__splendorRootMotion,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

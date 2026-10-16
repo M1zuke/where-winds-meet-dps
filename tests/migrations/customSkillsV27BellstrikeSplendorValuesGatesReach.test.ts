@@ -12,6 +12,7 @@ import { healSkill as healSwordMorphMultiWaveWindow } from "../../src/migrations
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
+import { healSkill as healTargetDistanceReachAndDisplacement } from "../../src/migrations/customSkills/V44__targetDistanceReachAndDisplacement"
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
 import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
 import { healSkill as healRelentlessChaseSecondStrike } from "../../src/migrations/customSkills/V51__relentlessChaseSecondStrike"
@@ -24,11 +25,17 @@ import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/
 import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
 import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
-import { healSkill as healPrepullBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV26File from "./testCustomSkills/v26/store.json"
+
+const healLatestSplendorHops = (skill: unknown): unknown =>
+  healSplendorRootMotion(
+    healPrepullVagrantSwordBoltTiming(healTargetDistanceReachAndDisplacement(skill)),
+  )
 
 const CLASS = "bellstrikeSplendor"
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
@@ -102,7 +109,7 @@ const throughHopsBeforeV95 = (skill: unknown): Skill =>
   ) as Skill
 
 const throughLaterHops = (skill: unknown): Skill =>
-  healPrepullBoltTiming(healFractionalFrameTiming(throughHopsBeforeV95(skill))) as Skill
+  healLatestSplendorHops(healFractionalFrameTiming(throughHopsBeforeV95(skill))) as Skill
 
 describe("custom-skills v26 fixture", () => {
   it("is v26 and still stores the pre-V27 shape for every healed skill", () => {

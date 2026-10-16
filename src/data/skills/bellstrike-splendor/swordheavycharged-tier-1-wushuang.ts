@@ -3,8 +3,8 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { VAGRANT_SWORD_TIER_1_WUSHUANG_MOTION } from "./rootMotion"
 import {
-  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_FREEZE,
   VAGRANT_SWORD_WUSHUANG_TIER_1_DRAIN,
 } from "./buffs/vagrantSwordEndurance"
@@ -43,7 +43,7 @@ export const swordHeavyChargedTier1Wushuang = defineSkill({
   meterDrains: VAGRANT_SWORD_WUSHUANG_TIER_1_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_TIER_1_WUSHUANG_MOTION,
   hits: [
     hit(0, {
       frame: 42.49,

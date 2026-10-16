@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { SHADOW_STEP_MOTION } from "./rootMotion"
 import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
 import { multiWaveWindowGrantFromCastStart } from "./buffs/multiWaveWindowGrant"
 import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
@@ -33,10 +34,9 @@ export const swordSpecial = defineSkill({
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 44,
   triggerable: true,
-  // In-game values as of 2026-09-28: 12.8 m reach on its own companion
-  // projectile, plus a further 1 m shrink-only pull once in range.
+  // In-game values as of 2026-09-28: 12.8 m reach on its own companion projectile.
   reachMeters: 12.8,
-  displacement: { kind: "towardTarget", referenceMeters: 1 },
+  displacement: SHADOW_STEP_MOTION,
   hits: [
     hit(0, {
       // In-game values as of 2026-10-15: the bolt launches at 17.06 f.

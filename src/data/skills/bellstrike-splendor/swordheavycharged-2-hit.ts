@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { VAGRANT_SWORD_2_HIT_MOTION } from "./rootMotion"
 import {
   energySurgeCooldownCut,
   energySurgeReleaseGrantLate,
@@ -13,7 +14,6 @@ import { multiWaveWindowReleaseGrantLate } from "./buffs/multiWaveWindowGrant"
 import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import {
-  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
@@ -66,7 +66,7 @@ export const swordHeavyCharged2Hit = defineSkill({
   meterDrains: DRAIN_WITH_CHARGE_RELEASE,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_2_HIT_MOTION,
   hits: [
     hit(0, {
       frame: 90.66,
