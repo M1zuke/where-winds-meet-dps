@@ -92,6 +92,7 @@ import { V88__draughtMistwillowReach } from "./V88__draughtMistwillowReach"
 import { V89__draughtReveldriftChargesAndEmpoweredLightAttack } from "./V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { V90__draughtTipsylayAndExCooldowns } from "./V90__draughtTipsylayAndExCooldowns"
 import { V91__draughtNightwickStanceAndVariedComboOverrides } from "./V91__draughtNightwickStanceAndVariedComboOverrides"
+import { V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming } from "./V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 
 export type {
   CustomSkillMigration,
@@ -252,6 +253,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V89__draughtReveldriftChargesAndEmpoweredLightAttack,
   V90__draughtTipsylayAndExCooldowns,
   V91__draughtNightwickStanceAndVariedComboOverrides,
+  V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

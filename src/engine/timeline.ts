@@ -919,20 +919,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   )
                 : layoutLedger.isActiveAt(status.id, frame)
             if (!active) continue
-            if (modifier.tag) scoped += modifier.amount
-            else unscoped += modifier.amount
+            const amount = modifier.perStack
+              ? modifier.amount * layoutLedger.conditionStacksAt(status.id, frame)
+              : modifier.amount
+            if (modifier.tag) scoped += amount
+            else unscoped += amount
           }
         }
         return { scoped, unscoped }
       }
 
-      // A charge drain also pays whatever the meter's own unscoped `cost` layer
-      // currently charges, on top of its own dedicated `chargeCost` layer — the
-      // unscoped cost formula is defined in-game as covering every spend,
-      // continuous drains included, while the class-scoped cost layer never
-      // reaches a charge at all (docs/TIMELINE.md § "Meters").
       function meterModifierMultiplier(
-        kind: "cost" | "chargeCost" | "regen",
+        kind: "cost" | "regen",
         meterId: string,
         frame: number,
         skill?: Skill,
@@ -940,19 +938,40 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         capacity?: number,
       ): number {
         const own = meterModifierLayerSums(kind, meterId, frame, skill, currentAmount, capacity)
-        let multiplier = Math.max(0, 1 + own.scoped) * Math.max(0, 1 + own.unscoped)
-        if (kind === "chargeCost") {
+        return Math.max(0, 1 + own.scoped) * Math.max(0, 1 + own.unscoped)
+      }
+
+      // A charge drain pays the dedicated `chargeCost` layer as it stood where
+      // the charge started, and on top of it whatever the meter's own unscoped
+      // `cost` layer charges at each frame — the unscoped cost formula is
+      // defined in-game as covering every spend, continuous drains included,
+      // while the class-scoped cost layer never reaches a charge at all
+      // (docs/TIMELINE.md § "Meters").
+      function chargeDrainMultiplier(
+        meterId: string,
+        startFrame: number,
+        skill: Skill,
+      ): (frame: number) => number {
+        const dedicated = meterModifierLayerSums(
+          "chargeCost",
+          meterId,
+          startFrame,
+          skill,
+          undefined,
+          undefined,
+        )
+        const atStart = Math.max(0, 1 + dedicated.scoped) * Math.max(0, 1 + dedicated.unscoped)
+        return (frame) => {
           const costLayer = meterModifierLayerSums(
             "cost",
             meterId,
             frame,
             skill,
-            currentAmount,
-            capacity,
+            undefined,
+            undefined,
           )
-          multiplier *= Math.max(0, 1 + costLayer.unscoped)
+          return atStart * Math.max(0, 1 + costLayer.unscoped)
         }
-        return multiplier
       }
 
       function advanceMeters(frame: number): void {
@@ -1050,8 +1069,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           starts.push({
             frame: Math.round(fromFrame),
             register: () =>
-              meter.startDrain(fromFrame, toFrame, drain.perSecond, (frame) =>
-                meterModifierMultiplier("chargeCost", drain.meterId, frame, skill),
+              meter.startDrain(
+                fromFrame,
+                toFrame,
+                drain.perSecond,
+                chargeDrainMultiplier(drain.meterId, Math.round(fromFrame), skill),
               ),
           })
         }
@@ -1071,6 +1093,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         skill: Skill
         hit: SkillHit
         frame: number
+        exactFrame: number
         owner: number
         prePull: boolean
         sequence: number
@@ -1115,7 +1138,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         paidByMeter: Map<string, number>,
         laidEndFrame: number,
       ): void {
-        const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
+        const { skill, hit: skillHit, frame: hitFrame, exactFrame, owner, prePull } = current
         const ownerHolds = (condition: TriggerCondition) => layoutHolds(condition, owner)
         layoutWriter.processExpiries(hitFrame)
         const ledgerMarkBeforeHit = layoutLedger.mark()
@@ -1173,14 +1196,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             for (const subHit of sub.hits.filter((candidate) =>
               hitConditionsHold(candidate, subHolds),
             )) {
+              const subHitFrame = resolvedHitFrame(subHit, subHolds, targetDistanceAt(hitFrame))
               pending.push({
                 kind: "hit",
                 skill: sub,
                 hit: subHit,
-                frame: hitLandingFrame(
-                  hitFrame,
-                  resolvedHitFrame(subHit, subHolds, targetDistanceAt(hitFrame)),
-                ),
+                frame: hitLandingFrame(hitFrame, subHitFrame),
+                exactFrame: exactHitLandingFrame(hitFrame, subHitFrame),
                 owner,
                 prePull,
                 sequence: layoutHitSequence++,
@@ -1192,7 +1214,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             if (prePull) continue
             const effectiveFrame = trigger.appliesOnCastEnd
               ? castEndFrame(skill, owner, ownerHolds, targetDistanceAt(owner))
-              : hitFrame
+              : trigger.delayFrames !== undefined
+                ? Math.round(exactFrame + trigger.delayFrames)
+                : hitFrame
             pending.push({
               kind: "meterDelta",
               trigger,
@@ -1294,22 +1318,24 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         midCastExtraFrames = 0,
       ): void {
         const pending: PendingLayoutEvent[] = [
-          ...hits.map((hit): PendingHitEvent => ({
-            kind: "hit",
-            skill,
-            hit,
-            frame: hitLandingFrame(
-              stepStart,
+          ...hits.map((hit): PendingHitEvent => {
+            const hitFrame =
               resolvedHitFrame(
                 hit,
                 (condition) => layoutHolds(condition, stepStart),
                 targetDistanceAt(stepStart),
-              ) + midCastExtraFrames,
-            ),
-            owner: stepStart,
-            prePull,
-            sequence: layoutHitSequence++,
-          })),
+              ) + midCastExtraFrames
+            return {
+              kind: "hit",
+              skill,
+              hit,
+              frame: hitLandingFrame(stepStart, hitFrame),
+              exactFrame: exactHitLandingFrame(stepStart, hitFrame),
+              owner: stepStart,
+              prePull,
+              sequence: layoutHitSequence++,
+            }
+          }),
           ...meterIntervalStarts.map((start): PendingMeterIntervalEvent => ({
             kind: "meterInterval",
             frame: start.frame,

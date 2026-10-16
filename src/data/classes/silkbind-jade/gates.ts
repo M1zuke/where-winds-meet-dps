@@ -1,6 +1,7 @@
 import type { Buff } from "../../../engine/buff"
 import { defineGateBuff } from "../../../definitions/skills/skillDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 import { peaksSpringlessSilenceChargesMeter } from "./chargeMeters"
 
 const CLASS_ID = "silkbindJade"
@@ -92,9 +93,32 @@ export const GOURD_TOSS_SPECIAL_RECHARGE_GATE: Buff = defineGateBuff({
   updatedAt: "2026-10-15T00:00:00.000Z",
 })
 
+// In-game values as of 2026-10-15: every Moon Shatter Spring hit adds a stack,
+// up to 5, all expiring 15 s after the latest; each stack makes charging cost
+// 4% more Endurance. The +4% damage is the `pursuitChargedBoost` module on this
+// same id.
+export const STARTLING_SPRING_GATE: Buff = defineGateBuff({
+  id: BUFF.pursuitChargedBoost,
+  classId: CLASS_ID,
+  name: "Spring Shock",
+  description: "Charged skills deal 4% more damage and cost 4% more Endurance to charge per stack.",
+  scope: "player",
+  activation: "triggered",
+  durationFrames: 900,
+  effects: [],
+  maxStacks: 5,
+  stackScaling: "flat",
+  meterModifiers: [
+    { meterId: enduranceMeter.id, kind: "chargeCost", amount: 0.04, perStack: true },
+  ],
+  createdAt: "2026-10-16T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
+})
+
 export const SILKBIND_JADE_GATES: readonly Buff[] = [
   GOURD_TOSS_FLYING_TORNADO_GATE,
   WATER_CLONE_GATE,
   GOURD_TOSS_PURSUIT_CUT_WINDOW_GATE,
   GOURD_TOSS_SPECIAL_RECHARGE_GATE,
+  STARTLING_SPRING_GATE,
 ]

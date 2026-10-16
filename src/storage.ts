@@ -1623,6 +1623,8 @@ function importedTrigger(t: unknown): HitTrigger {
     )
   }
   if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
+  if (typeof c.delayFrames === "number" && Number.isFinite(c.delayFrames) && c.delayFrames >= 0)
+    trigger.delayFrames = c.delayFrames
   if (typeof c.transferFrom === "string" && c.transferFrom) trigger.transferFrom = c.transferFrom
   if (isQiPhase(c.phase)) trigger.phase = c.phase
   if (

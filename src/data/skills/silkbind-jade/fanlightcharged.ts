@@ -68,11 +68,9 @@ export const fanlightcharged = defineSkill({
       physFixed: 527,
       attributeFixed: 287,
       extraCritDamage: 0,
-      // In-game values as of 2026-09-26: +10 Endurance once per cast when the
-      // whirlwind hits a non-player, landing at the cast's own end — after
-      // the hold's own drain, not while the meter still sits at its cast-start
-      // level.
-      triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10, appliesOnCastEnd: true })],
+      // In-game values as of 2026-10-15: +10 Endurance once per cast when the
+      // whirlwind hits a non-player, 0.03 s after the hit.
+      triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10, delayFrames: 1.8 })],
       variants: [
         {
           id: "hv-fanlightcharged-hit-0-flying-tornado",

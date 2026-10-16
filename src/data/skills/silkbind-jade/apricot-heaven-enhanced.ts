@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
@@ -24,7 +25,7 @@ export const apricotHeavenEnhanced = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.apricotHeavenEnhanced,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.pursuitChargedBoost, ...VERNAL_UMBRELLA_RECEIVES],
   meterCosts: [enduranceCost(5)],
   meterDrains: APRICOT_HEAVEN_AIR_DRAIN,
   castFrames: 304,

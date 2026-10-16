@@ -104,6 +104,8 @@ export interface HitTrigger {
   // The ledger-side counterpart of a buff module's `buffAppliesOnCastEnd`: the
   // window opens where the granting cast ends, not at this hit's frame.
   appliesOnCastEnd?: boolean
+  // `meterDelta` only: lands this many frames after the hit instead of on it.
+  delayFrames?: number
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
@@ -450,6 +452,11 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     (typeof t.durationFrames !== "number" ||
       !Number.isFinite(t.durationFrames) ||
       t.durationFrames <= 0)
+  )
+    return false
+  if (
+    t.delayFrames !== undefined &&
+    (typeof t.delayFrames !== "number" || !Number.isFinite(t.delayFrames) || t.delayFrames < 0)
   )
     return false
   if (

@@ -1,4 +1,4 @@
-import { meterDelta } from "../../../definitions/skills/triggers"
+import { applyBuff, meterDelta } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
 import { BUFF, PARAM } from "../buffs/ids"
 import {
@@ -25,6 +25,8 @@ export const FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS: TriggerCondition[] = [
   ...MOON_SHATTER_SPRING_CONDITIONS,
   onEngine(BUFF.windrider, "gte"),
 ]
+
+export const STARTLING_SPRING_STACK = applyBuff({ target: BUFF.pursuitChargedBoost })
 
 // In-game values as of 2026-10-15: Gourd Toss rank 6 — inside the window a
 // Peak's Springless Silence hit opens, each strike cuts 1 s off the Special's

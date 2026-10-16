@@ -619,7 +619,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -59337,17 +59337,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.04
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.04,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -60520,17 +60515,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.12
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.12,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -61852,17 +61842,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.12
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.12,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -63370,17 +63355,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.16
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.16,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -64888,17 +64868,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -66406,17 +66381,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -67924,17 +67894,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -69442,17 +69407,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -70960,17 +70920,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -72478,17 +72433,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -73996,17 +73946,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -75514,17 +75459,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -77032,17 +76972,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -78550,17 +78485,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -79914,17 +79844,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -81092,17 +81017,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -82265,17 +82185,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -83438,17 +83353,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -84611,17 +84521,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -175217,18 +175122,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 1,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.04
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "rainwhisperShield",
             "stacks": 1,
             "maxStacks": 1,
@@ -175369,18 +175262,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 3,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.12
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "rainwhisperShield",
             "stacks": 1,
             "maxStacks": 1,
@@ -175513,18 +175394,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 3,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.12
-              }
-            ],
             "requires": null
           },
           {
@@ -175668,18 +175537,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 4,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.16
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -175817,18 +175674,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -175972,18 +175817,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176121,18 +175954,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -176276,18 +176097,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176425,18 +176234,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -176580,18 +176377,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176722,18 +176507,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -176870,18 +176643,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -177012,18 +176773,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -177160,18 +176909,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -177305,18 +177042,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177417,18 +177142,6 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
           },
           {
             "id": "vulnerabilityTeammate",
@@ -177533,18 +177246,6 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177635,18 +177336,6 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177735,18 +177424,6 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
           },
           {
             "id": "vulnerabilityTeammate",
@@ -185001,7 +184678,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -185960,7 +185637,7 @@
       ]
     },
     "dynamic": {
-      "digest": "3b7b6b6f4e4a4b942a0d84f7d9196826026139c9b54d72748466ea8863d577ec"
+      "digest": "d970a2f3f1504f13c8a357bbd96e1cb217f76bee94117574c60f7bc7fd4d5d76"
     }
   },
   "bellstrikeSplendor": {
@@ -186579,7 +186256,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -187681,7 +187358,7 @@
       ]
     },
     "dynamic": {
-      "digest": "e045ac7c8147e5030ac9896e87efa3e83b8658775b5866d2bc6684f04c6b9281"
+      "digest": "ba6ed8ad4ee51c98ed875313975ce8ccdd43261e06e9973e1ce7d47ad3b3391d"
     }
   },
   "silkbindJade": {
@@ -187773,7 +187450,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "f2aeac39b9a24671da155bb396d946b95d8bf995c77b91c8d805b008389d715f"
+        "digest": "36a79721c976ef86affd61ef552c2832097fce8a5c2f86d4a8979f83325eba06"
       },
       "debuffs": {
         "count": 12,
@@ -188510,7 +188187,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -189490,7 +189167,7 @@
       ]
     },
     "dynamic": {
-      "digest": "a4a3fb6c23c381fc583c65a22395609bf7dadb03b32b32694ce3c77b9e535ae6"
+      "digest": "6066525483c1d54500c6ea81d9c70c27b2f5e7bf350eb3f18de1235fb56eaf50"
     }
   },
   "bamboocutDraught": {
@@ -190193,7 +189870,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -191175,7 +190852,7 @@
       ]
     },
     "dynamic": {
-      "digest": "160b04518a4405a801a65b81e92d480ab97a7df1fa47bcde52e228c174672335"
+      "digest": "1acfbe48b19fd6b7761dbcd5f361e4a3b0415af9317aaaaf9f3155b3dff6ba33"
     }
   }
 }

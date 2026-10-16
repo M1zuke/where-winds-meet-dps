@@ -643,6 +643,9 @@ works unchanged.
   the status ledger as it stood before the granting hit's own triggers wrote,
   so a stack count that same hit adds is not yet visible to it. Its cooldown
   still resolves in the meter's frame order.
+- **A `meterDelta` trigger may set `delayFrames`**: it lands that many frames
+  after the hit's own exact landing frame, rounded to the meter's frame grid,
+  instead of on the hit. `appliesOnCastEnd` takes precedence.
 - **A `cooldownCut` carrying `appliesOnCastEnd` lands at the owning cast's laid
   end, in the meter's frame order beside the `meterDelta` events** — never
   eagerly while its hit is processed — so it releases a cooldown group that
@@ -680,12 +683,18 @@ works unchanged.
   event additionally multiplies in the meter's own unscoped `cost`-kind
   factor on top of its own `chargeCost`-kind one — the unscoped cost formula
   is defined as covering every spend, a running charge drain included, while
-  a class-scoped cost never reaches a charge at all.
+  a class-scoped cost never reaches a charge at all. A charge drain reads the
+  `chargeCost`-kind sums once, where the drain starts, so a status that lapses
+  or stacks mid-hold leaves the running drain alone; the unscoped `cost`-kind
+  factor keeps following the ledger at every frame.
 - **A regeneration modifier may instead declare `belowCapacityFraction`**,
   gating itself on the meter's own live level against that fraction of its
   capacity rather than on a status window — a self-referential condition read
   directly off the meter as it advances, never through the ledger, since a
   window-based read would only see the level as of its last recorded step.
+- **A modifier may declare `perStack`**: its amount is multiplied by the owning
+  status's live stack count, so a stacking status scales a meter's cost or
+  regeneration per stack.
 - **A modifier may instead declare `alwaysActive`**, skipping the ledger window
   (and `belowCapacityFraction`) check entirely — active whenever its owning
   status is present in the run at all, for a build-tier-gated modifier with no

@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 import { enduranceCost } from "../../resources/enduranceMeter"
@@ -25,7 +26,7 @@ export const glowAndFlowStage2 = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.glowAndFlowStage2,
-  receives: [...INKWELL_FAN_RECEIVES],
+  receives: [BUFF.pursuitChargedBoost, ...INKWELL_FAN_RECEIVES],
   meterCosts: [enduranceCost(10)],
   meterDrains: GLOW_AND_FLOW_CHARGE_DRAIN,
   castFrames: 108,

@@ -259,6 +259,8 @@
   "content.buff.namelessSwordAdditionalAttack": "Nameless Sword — Additional Attack Up",
   "content.buff.phalanxbaneBladeAdditionalAttack": "Phalanxbane Blade — Additional Attack Up",
   "content.buff.potentRiverFlow": "River Flow",
+  "content.buff.pursuitChargedBoost": "Spring Shock",
+  "content.buff.pursuitChargedBoost.description": "Charged skills deal 4% more damage and cost 4% more Endurance to charge per stack.",
   "content.buff.qiImbalance": "Qi Imbalance",
   "content.buff.qiImbalanceMarker": "Qi Imbalance (Endurance marker)",
   "content.buff.qiImbalanceMarker.description": "Mirrors the target's own Qi Imbalance window for the layout pass.",
