@@ -665,6 +665,7 @@ export function parseGearScreenshot(
   text: string,
   inputs: Inputs,
   fallbackSlot: GearSlot,
+  headerBarText = "",
 ): GearScreenshotParse {
   const lines = text
     .split(/\r?\n/)
@@ -689,8 +690,10 @@ export function parseGearScreenshot(
   }
 
   let slotGuess = guessSlot(titleLine!, fallbackSlot)
-  const headerLevelGuess = parseLevel(headerLine ?? "")
-  const headerRelayedGuess = headerLine ? /relaying/i.test(headerLine) : false
+  const headerBarLevel = parseLevel(headerBarText)
+  const headerLevelGuess = headerBarLevel.read ? headerBarLevel : parseLevel(headerLine ?? "")
+  const headerRelayedGuess =
+    /relaying/i.test(headerBarText) || (headerLine ? /relaying/i.test(headerLine) : false)
 
   // A gear piece always has exactly five word slots: an unread row is an
   // empty, editable slot, never a shorter array — so each index is looked up

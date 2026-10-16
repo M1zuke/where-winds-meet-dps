@@ -303,6 +303,52 @@ Power +40.0
     expect(fields.level).toBe("guessed")
   })
 
+  it("takes the level from the header-bar transcript when the panel misread the tier", () => {
+    const transcript = `
+Fathomless Armor
+2D ic 00
+Power +40.0
+`
+    const { piece, fields } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT, "Tier 100")
+
+    expect(piece.level).toBe(100)
+    expect(fields.level).toBe("read")
+  })
+
+  it("prefers the header-bar level over the panel header line", () => {
+    const transcript = `
+Fathomless Armor
+Tier 91
+Power +40.0
+`
+    const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT, "Tier 100")
+
+    expect(piece.level).toBe(100)
+  })
+
+  it("falls back to the panel header line when the header-bar transcript names no model tier", () => {
+    const transcript = `
+Fathomless Armor
+Relaying · Tier 96
+Power +40.0
+`
+    const { piece, fields } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT, "Tier 90")
+
+    expect(piece.level).toBe(96)
+    expect(fields.level).toBe("read")
+  })
+
+  it("reads relaying from the header-bar transcript", () => {
+    const transcript = `
+Fathomless Armor
+Power +40.0
+Momentum +45.5
+`
+    const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT, "Relaying - Tier 96")
+
+    expect(piece.relayed).toBe(true)
+  })
+
   it("reads relayed as false when Relaying is absent, and still keeps an out-of-cap value unclamped", () => {
     const transcript = `
 No Relay Test
