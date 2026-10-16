@@ -22,7 +22,12 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    sweep warm-starts** its own iteration from the baseline's already-converged
    schedule instead of re-seeding from the default break, carried
    down through its own request kind and hook the same way the baseline's DPS
-   already is.
+   already is. **Inside one worker request, a repeated engine pass is answered
+   from that request's memo**, keyed by an exact encoding of the pass's inputs
+   and options, bounded, and discarded when the request ends; nothing else
+   memoizes engine passes. An engine pass stays a pure function of its inputs
+   and options — no clock, no unseeded randomness, no state carried between
+   passes.
 2. **The client assigns request ids; a hook never numbers its own requests.**
    Superseded responses are recognised by id against document-lifetime state, so
    a counter that restarts — as any per-mount counter does on a route revisit —

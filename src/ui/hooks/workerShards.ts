@@ -1,5 +1,7 @@
 import { GEAR_SLOTS } from "../../engine/types"
 import type { GearSlot } from "../../engine/types"
+import type { GearSlotAnalysisRow } from "../../engine/gearAnalysis"
+import { withLeadVsMin } from "../../engine/itemRanking"
 import type {
   DpsDelta,
   ProfileMetrics,
@@ -9,6 +11,8 @@ import type {
 
 type DeltaResponse = Extract<WorkerResponse, { kind: "dpsDeltas" | "equippedDeltas" }>
 type ProfileMetricsResponse = Extract<WorkerResponse, { kind: "profileMetrics" }>
+type RankingResponse = Extract<WorkerResponse, { kind: "ranking" }>
+type GearAnalysisResponse = Extract<WorkerResponse, { kind: "gearAnalysis" }>
 
 function slotGroups<Item>(
   items: readonly Item[],
@@ -56,10 +60,35 @@ export function shardRequest(request: WorkerRequest, shardCount: number): Worker
     request.profiles.forEach((profile, index) => groups[index % groups.length].push(profile))
     return groups.map((profiles) => ({ ...request, profiles }))
   }
+  if (request.kind === "gearAnalysis") {
+    const equippedSlots = GEAR_SLOTS.filter((slot) => request.inputs.equipped[slot] !== null)
+    const groups = slotGroups(equippedSlots, (slot) => slot, shardCount)
+    if (groups.length < 2) return null
+    const emptySlots = GEAR_SLOTS.filter((slot) => request.inputs.equipped[slot] === null)
+    groups[0].push(...emptySlots)
+    return groups.map((slots) => ({ ...request, slots }))
+  }
+  if (request.kind === "ranking") {
+    return Array.from({ length: shardCount }, (_, index) => ({
+      ...request,
+      block: { index, count: shardCount },
+    }))
+  }
   return null
 }
 
 export function mergeShardResponses(parts: readonly WorkerResponse[]): WorkerResponse {
+  if (parts[0].kind === "ranking") {
+    const rows = parts.flatMap((part) => (part as RankingResponse).rows)
+    return { ...(parts[0] as RankingResponse), rows: withLeadVsMin(rows) }
+  }
+  if (parts[0].kind === "gearAnalysis") {
+    const rowBySlot = new Map<GearSlot, GearSlotAnalysisRow>()
+    for (const part of parts)
+      for (const row of (part as GearAnalysisResponse).rows) rowBySlot.set(row.slot, row)
+    const rows = GEAR_SLOTS.map((slot) => rowBySlot.get(slot) as GearSlotAnalysisRow)
+    return { ...(parts[0] as GearAnalysisResponse), rows }
+  }
   if (parts[0].kind === "profileMetrics") {
     const metricsByProfileId: Record<string, ProfileMetrics> = {}
     for (const part of parts)
