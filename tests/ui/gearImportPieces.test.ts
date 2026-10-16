@@ -464,6 +464,74 @@ describe("level and rarity inference", () => {
   })
 })
 
+describe("level implied by the mapped lines", () => {
+  function armorWithoutBaseStats(affixes: readonly (readonly [number, number])[]) {
+    return JSON.stringify({
+      wearEquipsDetailed: {
+        "4": {
+          exVo: {
+            baseAffixes: affixes.map(([affixId, value]) => ({
+              equipmentDetails: [affixId, value, 1, 3, true],
+            })),
+          },
+        },
+      },
+    })
+  }
+
+  const allMysticArmor = armorWithoutBaseStats([
+    [10141005, 0.051],
+    [100931001, 0.108],
+    [10193105, 51.8],
+    [10193119, 0.104],
+    [10193108, 83.2],
+  ])
+  const levelNinetySixArmor = armorWithoutBaseStats([
+    [10141005, 0.041],
+    [10193105, 45.9],
+    [10193119, 0.082],
+    [10193108, 73.1],
+    [10141005, 0.04],
+  ])
+
+  function importedArmor(text: string, overrides: Parameters<typeof resolveAgainstBuild>[3] = {}) {
+    const result = resolveAgainstBuild(parseDashboardGearPayload(text), inputs, {}, overrides)
+    return { result, piece: result.pieces[0]! }
+  }
+
+  it("raises an unidentified piece to the lowest level that holds every mapped line", () => {
+    const { result, piece } = importedArmor(allMysticArmor)
+
+    expect(piece.impliedLevel).toBe(100)
+    expect(effectiveIdentity(piece, result.pieces, {}).level).toBe(100)
+    expect(piece.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "allMysticBoost" },
+    })
+  })
+
+  it("resolves a piece's lines at the level the preview overrides it to", () => {
+    const { piece } = importedArmor(allMysticArmor, { "4": { level: 100 } })
+
+    expect(piece.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "allMysticBoost" },
+    })
+    expect(piece.affixes[0]!.resolution).toMatchObject({
+      kind: "resolved",
+      value: 0.051,
+      clampedFrom: null,
+    })
+  })
+
+  it("keeps an unidentified piece at the assumed level when its lines fit it", () => {
+    const { result, piece } = importedArmor(levelNinetySixArmor)
+
+    expect(piece.impliedLevel).toBeNull()
+    expect(effectiveIdentity(piece, result.pieces, {}).level).toBe(FALLBACK_LEVEL)
+  })
+})
+
 describe("toGearPieces", () => {
   it("imports only the slots that map", () => {
     const result = resolved()
