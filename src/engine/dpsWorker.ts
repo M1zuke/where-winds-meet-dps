@@ -87,6 +87,14 @@ export interface DpsWorkerResponse {
   deltas: Record<string, DpsDelta>
 }
 
+export interface SelectedPieceDeltaWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  baselineDps: number
+  pieceId: string
+  baselineQiBreaks?: BaselineQiBreaks
+}
+
 export interface EquippedDeltasWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -120,6 +128,11 @@ function computeEquippedDeltas(req: EquippedDeltasWorkerRequest): EquippedDeltas
   const { reqId, inputs, baselineDps, slots, baselineQiBreaks } = req
   const pieceIds = equippedPieceIds(inputs, slots ?? GEAR_SLOTS)
   return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds, baselineQiBreaks })
+}
+
+function computeSelectedPieceDelta(req: SelectedPieceDeltaWorkerRequest): DpsWorkerResponse {
+  const { reqId, inputs, baselineDps, pieceId, baselineQiBreaks } = req
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds: [pieceId], baselineQiBreaks })
 }
 
 function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
@@ -956,6 +969,7 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
 
 export type WorkerRequest =
   | ({ kind: "dpsDeltas" } & DpsWorkerRequest)
+  | ({ kind: "selectedPieceDelta" } & SelectedPieceDeltaWorkerRequest)
   | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerRequest)
   | ({ kind: "retunement" } & RetunementWorkerRequest)
   | ({ kind: "reattunement" } & ReattunementWorkerRequest)
@@ -972,6 +986,7 @@ export type WorkerRequest =
 
 export type WorkerResponse =
   | ({ kind: "dpsDeltas" } & DpsWorkerResponse)
+  | ({ kind: "selectedPieceDelta" } & DpsWorkerResponse)
   | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerResponse)
   | ({ kind: "retunement" } & RetunementWorkerResponse)
   | ({ kind: "reattunement" } & ReattunementWorkerResponse)
@@ -993,6 +1008,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   if (req.kind === "dpsDeltas") {
     const res = computeDpsDeltas(req)
     ;(self as unknown as Worker).postMessage({ kind: "dpsDeltas", ...res })
+  } else if (req.kind === "selectedPieceDelta") {
+    const res = computeSelectedPieceDelta(req)
+    ;(self as unknown as Worker).postMessage({ kind: "selectedPieceDelta", ...res })
   } else if (req.kind === "equippedDeltas") {
     const res = computeEquippedDeltas(req)
     ;(self as unknown as Worker).postMessage({ kind: "equippedDeltas", ...res })
@@ -1048,6 +1066,7 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
 
 export {
   computeDpsDeltas,
+  computeSelectedPieceDelta,
   computeEquippedDeltas,
   computeRetunement,
   computeReattunement,
