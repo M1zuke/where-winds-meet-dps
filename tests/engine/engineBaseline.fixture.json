@@ -2145,17 +2145,17 @@
     "digest": "b2e7ce7adcec91df1ed086850c7b8e8b04f1e64163ef73f49cbd8e17d4e087af"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 42380.74,
-    "totalDamage": 2542844.69,
+    "dps": 41078.86,
+    "totalDamage": 2464731.84,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 12.10s would be illegal in the game: needs Endurance ≥ 50 (has 15.64).",
-      "SwordSpecial 4-Hit at 22.70s would be illegal in the game: needs Endurance ≥ 50 (has 32).",
-      "SwordSpecial 4-Hit at 36.23s would be illegal in the game: needs Endurance ≥ 50 (has 39.16).",
-      "SwordSpecial 4-Hit at 48.52s would be illegal in the game: needs Endurance ≥ 50 (has 29.81).",
-      "SwordSpecial 3-Hit at 56.15s would be illegal in the game: needs Endurance ≥ 50 (has 43.34).",
-      "Spear Special (1 Hit Cancel) at 57.82s would be illegal in the game: needs Endurance ≥ 40 (has 36.01).",
-      "SwordSpecial 4-Hit at 58.40s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
+      "SwordSpecial 3-Hit at 13.72s would be illegal in the game: needs Endurance ≥ 50 (has 27.34).",
+      "SwordSpecial 4-Hit at 25.53s would be illegal in the game: needs Endurance ≥ 50 (has 44.17).",
+      "SwordSpecial 4-Hit at 39.07s would be illegal in the game: needs Endurance ≥ 50 (has 47.32).",
+      "SwordSpecial 4-Hit at 51.45s would be illegal in the game: needs Endurance ≥ 50 (has 34.98).",
+      "SwordSpecial 3-Hit at 59.08s would be illegal in the game: needs Endurance ≥ 50 (has 43.34).",
+      "Spear Special (1 Hit Cancel) at 60.73s would be illegal in the game: needs Endurance ≥ 40 (has 17.84).",
+      "SwordSpecial 4-Hit at 61.32s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
     "perSkill": [
       {
@@ -2171,7 +2171,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 64571.77,
+        "expectedDamage": 64025.9,
         "castCount": 0
       },
       {
@@ -2179,7 +2179,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 137661.6,
+        "expectedDamage": 135721.05,
         "castCount": 0
       },
       {
@@ -2187,23 +2187,23 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 24775.4,
+        "expectedDamage": 24310.53,
         "castCount": 2
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 52,
-        "expectedDamage": 160405.57,
+        "count": 54,
+        "expectedDamage": 177577.79,
         "castCount": 0
       },
       {
-        "name": "Dragon's Breath: Smolder 1 Hit",
+        "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 1,
-        "expectedDamage": 11860.76,
+        "count": 3,
+        "expectedDamage": 38755.06,
         "castCount": 1
       },
       {
@@ -2211,7 +2211,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 104,
-        "expectedDamage": 307591.99,
+        "expectedDamage": 305751.1,
         "castCount": 0
       },
       {
@@ -2219,7 +2219,15 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 13238.58,
+        "expectedDamage": 13413.37,
+        "castCount": 0
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 49994.16,
         "castCount": 0
       },
       {
@@ -2227,63 +2235,55 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 15070.53,
+        "expectedDamage": 15391.64,
         "castCount": 1
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 50096.49,
-        "castCount": 0
       },
       {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 89360.49,
+        "expectedDamage": 88700.25,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 28,
-        "expectedDamage": 1222074.1,
+        "count": 26,
+        "expectedDamage": 1123556.76,
         "castCount": 0
       },
       {
         "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
-        "count": 10,
-        "expectedDamage": 61285.52,
+        "count": 9,
+        "expectedDamage": 55154.88,
         "castCount": 10
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
         "breakdownName": "Sweep All",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 43190.97,
-        "castCount": 5
+        "count": 3,
+        "expectedDamage": 27604.91,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 44847.46,
+        "count": 12,
+        "expectedDamage": 36136.11,
         "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit (Hit 4)",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 22423.73,
+        "count": 4,
+        "expectedDamage": 18068.05,
         "castCount": 0
       },
       {
@@ -2309,6 +2309,14 @@
         "count": 8,
         "expectedDamage": 31297.29,
         "castCount": 4
+      },
+      {
+        "name": "Spear Special",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 2,
+        "expectedDamage": 16180.56,
+        "castCount": 1
       },
       {
         "name": "SpearQ",
@@ -2344,11 +2352,11 @@
       }
     ],
     "counts": {
-      "timeline": 441,
-      "buffWindows": 216,
-      "casts": 98
+      "timeline": 436,
+      "buffWindows": 203,
+      "casts": 99
     },
-    "digest": "f27b29076469193e7abd5b367306250e81149d51a29a8a8279fe17035938ceed"
+    "digest": "7347a3afa24fec94dd54097acd048604417c0cba3f2c0d3e1a8824aa0c3124d0"
   },
   "anchor:bitterSeasonT6": {
     "dps": 44345.07,
@@ -3803,44 +3811,44 @@
     "digest": "3912879c2a1c7f960f4d6ed78802404fd8b574954d3c2afe8d642d225830d1ef"
   },
   "defaults:umbra": {
-    "dps": 12199.27,
-    "totalDamage": 731956.3,
+    "dps": 12845.89,
+    "totalDamage": 770753.46,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 3.12s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 4.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 8.15s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 9.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 11.33s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 12.78s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 13.85s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 14.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 15.52s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Spear Special (1 Hit Cancel) at 16.22s would be illegal in the game: needs Endurance ≥ 40 (has 34.67).",
-      "SwordSpecial 4-Hit at 18.80s would be illegal in the game: needs Endurance ≥ 50 (has 13.83).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 21.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 23.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 26.58s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 27.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 28.25s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 29.30s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 4-Hit at 32.48s would be illegal in the game: needs Endurance ≥ 50 (has 20.66).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 35.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 37.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 38.62s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 39.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 40.28s would be illegal in the game: needs Endurance ≥ 50 (has 49.82) and needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 41.35s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Spear Special (1 Hit Cancel) at 41.95s would be illegal in the game: needs Endurance ≥ 40 (has 26.49).",
-      "SwordSpecial 4-Hit at 44.93s would be illegal in the game: needs Endurance ≥ 50 (has 17.83).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 47.55s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 49.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 51.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 52.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 52.73s would be illegal in the game: needs Endurance ≥ 50 (has 45.01) and needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 53.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Spear Special (1 Hit Cancel) at 54.40s would be illegal in the game: needs Endurance ≥ 40 (has 17.67).",
-      "SwordSpecial 4-Hit at 54.98s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
+      "SwordSpecial 3-Hit at 4.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 5.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 9.77s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 10.82s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 12.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 14.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 15.47s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 16.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 17.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special at 17.93s would be illegal in the game: needs Endurance ≥ 40 (has 35.67).",
+      "SwordSpecial 4-Hit at 21.63s would be illegal in the game: needs Endurance ≥ 50 (has 25).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 24.23s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 26.32s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 29.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 30.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 31.08s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 32.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 35.32s would be illegal in the game: needs Endurance ≥ 50 (has 20.66).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 37.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 40.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 41.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 42.52s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 43.12s would be illegal in the game: needs Endurance ≥ 50 (has 49.82) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 44.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 44.88s would be illegal in the game: needs Endurance ≥ 40 (has 27.49).",
+      "SwordSpecial 4-Hit at 47.87s would be illegal in the game: needs Endurance ≥ 50 (has 17.83).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 50.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 52.57s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 54.00s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 55.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 55.67s would be illegal in the game: needs Endurance ≥ 50 (has 45.01) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 56.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 57.33s would be illegal in the game: needs Endurance ≥ 40 (has 17.67).",
+      "SwordSpecial 4-Hit at 57.92s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
     "perSkill": [
       {
@@ -3848,7 +3856,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 13478.84,
+        "expectedDamage": 13512.52,
         "castCount": 2
       },
       {
@@ -3856,47 +3864,31 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 35848.29,
+        "expectedDamage": 35848.52,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 50,
-        "expectedDamage": 57621.49,
+        "count": 49,
+        "expectedDamage": 59726.89,
         "castCount": 0
       },
       {
-        "name": "Dragon's Breath: Smolder 1 Hit",
+        "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 1,
-        "expectedDamage": 5578.01,
+        "count": 3,
+        "expectedDamage": 18027.76,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 8,
-        "expectedDamage": 9658.35,
-        "castCount": 0
-      },
-      {
-        "name": "SpearQ 5-Hit Cancel",
-        "breakdownName": "Sober Sorrow",
-        "type": "weapon",
-        "count": 5,
-        "expectedDamage": 8294.71,
-        "castCount": 1
-      },
-      {
-        "name": "Divinecraft - Fire Explosion",
-        "breakdownName": "Divinecraft - Fire Explosion",
-        "type": "mindMethod",
-        "count": 8,
-        "expectedDamage": 7275.91,
+        "count": 23,
+        "expectedDamage": 29054.21,
         "castCount": 0
       },
       {
@@ -3904,15 +3896,31 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 80172.73,
+        "expectedDamage": 79287.09,
         "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 8,
+        "expectedDamage": 7315.7,
+        "castCount": 0
+      },
+      {
+        "name": "SpearQ 5-Hit Cancel",
+        "breakdownName": "Sober Sorrow",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 8401.38,
+        "castCount": 1
       },
       {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 47839.52,
+        "expectedDamage": 47540.1,
         "castCount": 10
       },
       {
@@ -3920,7 +3928,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 230239.68,
+        "expectedDamage": 230630.25,
         "castCount": 0
       },
       {
@@ -3928,23 +3936,23 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 30136.09,
+        "expectedDamage": 30199.24,
         "castCount": 10
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
         "breakdownName": "Sweep All",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 24017.12,
-        "castCount": 5
+        "count": 4,
+        "expectedDamage": 20462.41,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 24037.04,
+        "expectedDamage": 24073.25,
         "castCount": 5
       },
       {
@@ -3952,7 +3960,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 12035.32,
+        "expectedDamage": 12045.04,
         "castCount": 0
       },
       {
@@ -3960,7 +3968,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 13026.32,
+        "expectedDamage": 13032.12,
         "castCount": 4
       },
       {
@@ -3968,7 +3976,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52126.82,
+        "expectedDamage": 52147.63,
         "castCount": 4
       },
       {
@@ -3976,15 +3984,23 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 15471.06,
+        "expectedDamage": 15443.65,
         "castCount": 4
+      },
+      {
+        "name": "Spear Special",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 2,
+        "expectedDamage": 8954.03,
+        "castCount": 1
       },
       {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 35565.03,
+        "expectedDamage": 35551.66,
         "castCount": 3
       },
       {
@@ -3992,7 +4008,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 16940.25,
+        "expectedDamage": 16924.59,
         "castCount": 3
       },
       {
@@ -4000,7 +4016,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 4749.65,
+        "expectedDamage": 4745.87,
         "castCount": 3
       },
       {
@@ -4008,15 +4024,15 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 7844.06,
+        "expectedDamage": 7829.55,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 326,
+      "timeline": 344,
       "buffWindows": 125,
-      "casts": 96
+      "casts": 97
     },
-    "digest": "60185d77fc7ee2a8257ecc401a1d22aa2ccb9e6dd52bd3e2994f08083a489331"
+    "digest": "157754889e2f442c8066ded1edbf8b6d39b74086a910e2a3e79a692d50154ddd"
   }
 }
