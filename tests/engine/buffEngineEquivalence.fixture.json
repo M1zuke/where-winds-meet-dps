@@ -183918,7 +183918,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 78,
+        "count": 79,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -183978,6 +183978,7 @@
           "stonesplitStrength-perfect-dodge",
           "stonesplitStrength-perfect-dodge-full",
           "stonesplitStrength-phalanxcharged-s1",
+          "stonesplitStrength-phalanxcharged-s1-released",
           "stonesplitStrength-phalanxcharged-s2",
           "stonesplitStrength-phalanxcharged-s2-innerpassion",
           "stonesplitStrength-phalanxcharged-s3",
@@ -183999,7 +184000,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "39b8c787c0e6ea81dc7c74c0d1cd75b15c230aae7734528663b9dce301fcc2c1"
+        "digest": "27512a3e60da7cbfe41224acd16237711aaaeffda8275ec33af17ae435e7aeb4"
       },
       "debuffs": {
         "count": 6,

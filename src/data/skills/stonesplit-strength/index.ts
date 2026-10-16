@@ -26,6 +26,7 @@ import { snowpartingvcPrepull } from "./snowpartingvc-prepull"
 import { snowpartingvc } from "./snowpartingvc"
 import { snowpartingqSlash } from "./snowpartingq-slash"
 import { phalanxchargedS1 } from "./phalanxcharged-s1"
+import { phalanxchargedS1Released } from "./phalanxcharged-s1-released"
 import { phalanxchargedS2 } from "./phalanxcharged-s2"
 import { phalanxchargedS2Innerpassion } from "./phalanxcharged-s2-innerpassion"
 import { breakDefense } from "./break-defense"
@@ -74,6 +75,7 @@ export const SKILLS: Skill[] = [
   moBladeDual,
   snowpartingqSlash,
   phalanxchargedS1,
+  phalanxchargedS1Released,
   phalanxchargedS2,
   phalanxchargedS2Innerpassion,
   breakDefense,

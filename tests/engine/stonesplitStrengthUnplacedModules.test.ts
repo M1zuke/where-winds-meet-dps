@@ -149,7 +149,7 @@ describe("Burning Heart stages 1 and 2", () => {
       {
         atFrame: 19.32,
         requires: [{ buffId: "meter:bladeMomentum", op: "gt", stacks: 50 }],
-        fallbackSkillId: SKILL.phalanxchargedS1,
+        fallbackSkillId: SKILL.phalanxchargedS1Released,
       },
     ])
   })
@@ -167,9 +167,23 @@ describe("Burning Heart stages 1 and 2", () => {
             ],
           },
         ],
-        fallbackSkillId: SKILL.phalanxchargedS1,
+        fallbackSkillId: SKILL.phalanxchargedS1Released,
       },
     ])
+  })
+
+  it("releases stage 1 from where the charge would have started, 19.32 f after the press", () => {
+    const released = stonesplitSkill(SKILL.phalanxchargedS1Released)
+    expect(released.castFrames).toBe(79.32)
+    expect(released.hits.map((skillHit) => skillHit.frame)).toEqual([48.23, 55.83])
+    expect(released.breakdownName).toBe(stonesplitSkill(SKILL.phalanxchargedS1).name)
+    expect(
+      released.hits.map(({ id: _id, frame: _frame, ...coefficients }) => coefficients),
+    ).toEqual(
+      stonesplitSkill(SKILL.phalanxchargedS1).hits.map(
+        ({ id: _id, frame: _frame, ...coefficients }) => coefficients,
+      ),
+    )
   })
 
   const bladeMomentumAtSecondCast = (skillId: string, mindMethods: Inputs["mindMethods"]) => {

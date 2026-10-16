@@ -50,7 +50,7 @@ function bladeMomentumSpend(chargeFrames: number, speed: number, amount: number)
 export const BURNING_HEART_STAGE_2_DRAIN = enduranceDrain(
   STAGE_2_CHARGE_FRAMES,
   1,
-  SKILL.phalanxchargedS1,
+  SKILL.phalanxchargedS1Released,
 )
 export const BURNING_HEART_STAGE_3_DRAIN = enduranceDrain(
   STAGE_3_CHARGE_FRAMES,
@@ -60,7 +60,7 @@ export const BURNING_HEART_STAGE_3_DRAIN = enduranceDrain(
 export const BURNING_HEART_INNER_PASSION_STAGE_2_DRAIN = enduranceDrain(
   STAGE_2_CHARGE_FRAMES,
   IP_CHARGE_SPEED,
-  SKILL.phalanxchargedS1,
+  SKILL.phalanxchargedS1Released,
 )
 export const BURNING_HEART_INNER_PASSION_STAGE_3_DRAIN = enduranceDrain(
   STAGE_3_CHARGE_FRAMES,
@@ -85,7 +85,7 @@ export const BURNING_HEART_BLADE_MOMENTUM_GATE: ReleaseGate[] = [
   {
     atFrame: CHARGE_START_FRAME,
     requires: [bladeMomentumRequires("gt", 50)],
-    fallbackSkillId: SKILL.phalanxchargedS1,
+    fallbackSkillId: SKILL.phalanxchargedS1Released,
   },
 ]
 export const BURNING_HEART_INNER_PASSION_BLADE_MOMENTUM_GATE: ReleaseGate[] = [
@@ -94,6 +94,6 @@ export const BURNING_HEART_INNER_PASSION_BLADE_MOMENTUM_GATE: ReleaseGate[] = [
     requires: [
       { anyOf: [{ param: PARAM.steadfastDevotion, minTier: 4 }, bladeMomentumRequires("gt", 25)] },
     ],
-    fallbackSkillId: SKILL.phalanxchargedS1,
+    fallbackSkillId: SKILL.phalanxchargedS1Released,
   },
 ]

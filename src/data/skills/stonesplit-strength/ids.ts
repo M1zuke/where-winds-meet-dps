@@ -29,6 +29,7 @@ export const SKILL = {
   moBladeDual: "stonesplitStrength-mo-blade-dual",
   snowpartingqSlash: "stonesplitStrength-snowpartingq-slash",
   phalanxchargedS1: "stonesplitStrength-phalanxcharged-s1",
+  phalanxchargedS1Released: "stonesplitStrength-phalanxcharged-s1-released",
   phalanxchargedS2: "stonesplitStrength-phalanxcharged-s2",
   phalanxchargedS2Innerpassion: "stonesplitStrength-phalanxcharged-s2-innerpassion",
   breakDefense: "stonesplitStrength-break-defense",

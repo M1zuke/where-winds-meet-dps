@@ -10,6 +10,7 @@ import {
 } from "../../src/migrations/customSkills/V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
 import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
 import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
+import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/migrations/customSkills/V100__burningHeartLowStageReleaseTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV85File from "./testCustomSkills/v85/store.json"
@@ -45,7 +46,9 @@ const CHECKED_FIELDS = [
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
 const healedThroughLaterSteps = (skill: unknown): Skill =>
-  healBurningHeartChargeStageGates(healStonesplitFractionalFrameTiming(skill)) as Skill
+  healBurningHeartLowStageReleaseTiming(
+    healBurningHeartChargeStageGates(healStonesplitFractionalFrameTiming(skill)),
+  ) as Skill
 
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!

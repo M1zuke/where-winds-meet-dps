@@ -44,12 +44,14 @@ describe("Burning Heart's stage 2 charge", () => {
       "PhalanxCharged-S2",
       "PhalanxCharged-S2",
       "PhalanxCharged-S2",
-      "PhalanxCharged-S1",
-      "PhalanxCharged-S1",
+      "PhalanxCharged-S1[Released]",
+      "PhalanxCharged-S1[Released]",
     ])
     expect(result.invalidStepIds ?? []).toEqual([])
     expect(
-      result.warnings.some((warning) => warning.includes("released onto PhalanxCharged-S1")),
+      result.warnings.some((warning) =>
+        warning.includes("released onto PhalanxCharged-S1[Released]"),
+      ),
     ).toBe(true)
   })
 
@@ -98,7 +100,7 @@ describe("Burning Heart with Inner Passion", () => {
     const result = run(Array<string>(12).fill(SKILL.phalanxchargedS2Innerpassion))
     const names = result.casts!.map((cast) => cast.skillName)
     expect(names[0]).toBe("PhalanxCharged-S2[InnerPassion]")
-    expect(names).toContain("PhalanxCharged-S1")
+    expect(names).toContain("PhalanxCharged-S1[Released]")
     expect(result.invalidStepIds ?? []).toEqual([])
   })
 })

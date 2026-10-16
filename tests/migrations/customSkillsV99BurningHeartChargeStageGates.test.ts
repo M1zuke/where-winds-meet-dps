@@ -8,6 +8,7 @@ import {
   V99__burningHeartChargeStageGates,
   healSkill,
 } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
+import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/migrations/customSkills/V100__burningHeartLowStageReleaseTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV98File from "./testCustomSkills/v98/store.json"
@@ -37,6 +38,9 @@ const chargeFieldsOf = (skill: Skill) => ({
   releaseGates: skill.releaseGates,
 })
 
+const healedThroughLaterSteps = (skill: unknown): Skill =>
+  healBurningHeartLowStageReleaseTiming(skill) as Skill
+
 describe("custom-skills v98 fixture", () => {
   it("is v98 and carries the old gate and the cost at the press", () => {
     expect(STORE.v).toBe(V99__burningHeartChargeStageGates.to - 1)
@@ -52,7 +56,7 @@ describe("custom-skills v98 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in's charge fields", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healedThroughLaterSteps(healSkill(clone(skillIn(STORE, id))))
     expect(chargeFieldsOf(healed)).toEqual(chargeFieldsOf(builtinOf(id)))
     expect(healed.hits).toEqual(skillIn(STORE, id).hits)
   })
@@ -72,7 +76,7 @@ describe("healSkill", () => {
   it("keeps an edit to the hits while healing the charge fields", () => {
     const edited = clone(skillIn(STORE, HEALED_IDS[0]!))
     edited.hits[1]!.frame = 120
-    const healed = healSkill(clone(edited)) as Skill
+    const healed = healedThroughLaterSteps(healSkill(clone(edited)))
     expect(healed.hits[1]!.frame).toBe(120)
     expect(chargeFieldsOf(healed)).toEqual(chargeFieldsOf(builtinOf(HEALED_IDS[0]!)))
   })
@@ -94,7 +98,9 @@ describe("V99__burningHeartChargeStageGates — called directly", () => {
     const after = V99__burningHeartChargeStageGates.migrate(clone(STORE))
     expect(after.v).toBe(99)
     for (const id of HEALED_IDS)
-      expect(chargeFieldsOf(skillIn(after, id)), id).toEqual(chargeFieldsOf(builtinOf(id)))
+      expect(chargeFieldsOf(healedThroughLaterSteps(skillIn(after, id))), id).toEqual(
+        chargeFieldsOf(builtinOf(id)),
+      )
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID])
       expect(skillIn(after, id)).toEqual(skillIn(STORE, id))
   })
