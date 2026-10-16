@@ -65,6 +65,7 @@ import {
   isHitVariant,
   isQiPhase,
   isTriggerCondition,
+  isReleaseGate,
   isHitOrVariantCondition,
   isStatusCondition,
   isAnyOfCondition,
@@ -1799,6 +1800,7 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
     meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,
     meterFreezes: Array.isArray(c.meterFreezes) ? c.meterFreezes.filter(isMeterFreeze) : undefined,
+    releaseGates: Array.isArray(c.releaseGates) ? c.releaseGates.filter(isReleaseGate) : undefined,
     reachMeters:
       typeof c.reachMeters === "number" && Number.isFinite(c.reachMeters)
         ? c.reachMeters

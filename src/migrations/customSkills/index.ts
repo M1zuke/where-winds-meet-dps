@@ -99,6 +99,7 @@ import { V95__fractionalFrameTiming } from "./V95__fractionalFrameTiming"
 import { V96__stonesplitFractionalFrameTiming } from "./V96__stonesplitFractionalFrameTiming"
 import { V97__umbraGameplayTimings } from "./V97__umbraGameplayTimings"
 import { V98__swordHorizonBurstStacksAtTheBurst } from "./V98__swordHorizonBurstStacksAtTheBurst"
+import { V99__burningHeartChargeStageGates } from "./V99__burningHeartChargeStageGates"
 
 export type {
   CustomSkillMigration,
@@ -266,6 +267,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V96__stonesplitFractionalFrameTiming,
   V97__umbraGameplayTimings,
   V98__swordHorizonBurstStacksAtTheBurst,
+  V99__burningHeartChargeStageGates,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

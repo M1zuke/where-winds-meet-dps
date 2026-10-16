@@ -14,6 +14,7 @@ import type {
   ConditionFailureReason,
   HitTrigger,
   MeterCost,
+  ReleaseGate,
   Skill,
   SkillHit,
   StatusCondition,
@@ -1471,6 +1472,40 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         return { step: resolvedStep.step, skill: current }
       }
 
+      function resolveReleaseGates(resolvedStep: ResolvedStep, startFrame: number): ResolvedStep {
+        let current = resolvedStep.skill
+        for (let guard = 0; guard < skills.length + 1; guard++) {
+          let released: { gate: ReleaseGate; failed: TriggerCondition[]; frame: number } | null =
+            null
+          for (const gate of current.releaseGates ?? []) {
+            const frame = Math.floor(exactHitLandingFrame(startFrame, gate.atFrame))
+            flushMeterEventsUpTo(frame)
+            advanceMeters(frame)
+            const failed = gate.requires.filter(
+              (condition) => !hasBuffEngineSource(condition) && !layoutHolds(condition, frame),
+            )
+            if (failed.length === 0) continue
+            released = { gate, failed, frame }
+            break
+          }
+          if (!released) return { step: resolvedStep.step, skill: current }
+          const fallback = skillsById.get(released.gate.fallbackSkillId)
+          if (!fallback) return { step: resolvedStep.step, skill: current }
+          const releasedName = current.name || current.id
+          const fallbackName = fallback.name || fallback.id
+          const reasons = released.failed.map((condition) =>
+            describeConditionFailure(condition, released.frame),
+          )
+          warn(
+            startFrame,
+            (relSec) =>
+              `${releasedName} at ${relSec.toFixed(2)}s released onto ${fallbackName}: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+          )
+          current = fallback
+        }
+        return { step: resolvedStep.step, skill: current }
+      }
+
       const laidSteps: LaidStep[] = []
       let activeCursor = 0
       let preCursor = -prePullBound
@@ -1532,7 +1567,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           : applyMeterCosts(resolvedStep.skill, startFrame)
         const castResolution = prePull
           ? resolvedStep
-          : resolveChargeRelease(resolvedStep, startFrame)
+          : resolveChargeRelease(resolveReleaseGates(resolvedStep, startFrame), startFrame)
         // A pre-pull cast never touches the target distance either — see the
         // meter-cost note above, the same real-world-gap reasoning applies.
         if (!prePull) {
@@ -1593,7 +1628,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 startFrame,
                 startFrame + castLen,
               ),
-              ...scheduleDelayedMeterCosts(resolvedStep.skill, startFrame),
+              ...scheduleDelayedMeterCosts(castResolution.skill, startFrame),
             ]
         // A fixed window truncates every hit past its own end, pre-pull
         // included — docs/TIMELINE.md § "Fight window". `truncateAfterFrame` is

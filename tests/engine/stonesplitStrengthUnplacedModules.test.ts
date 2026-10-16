@@ -139,23 +139,35 @@ describe("Burning Heart stages 1 and 2", () => {
     }
   })
 
-  it("stage 1 costs nothing, stage 2 costs 50 and needs more than 50", () => {
+  it("stage 1 costs nothing, stage 2 spends 50 at its release and is charged only above 50", () => {
     expect(stonesplitSkill(SKILL.phalanxchargedS1).meterCosts).toBeUndefined()
     expect(stonesplitSkill(SKILL.phalanxchargedS2).meterCosts).toEqual([
-      { meterId: "bladeMomentum", amount: 50 },
+      { meterId: "bladeMomentum", amount: 50, atFrame: 76.32 },
     ])
-    expect(stonesplitSkill(SKILL.phalanxchargedS2).castConditions).toEqual([
-      { buffId: "meter:bladeMomentum", op: "gt", stacks: 50 },
+    expect(stonesplitSkill(SKILL.phalanxchargedS2).castConditions).toBeUndefined()
+    expect(stonesplitSkill(SKILL.phalanxchargedS2).releaseGates).toEqual([
+      {
+        atFrame: 19.32,
+        requires: [{ buffId: "meter:bladeMomentum", op: "gt", stacks: 50 }],
+        fallbackSkillId: SKILL.phalanxchargedS1,
+      },
     ])
   })
 
-  it("the Inner Passion form offers the charge above 25 Blade Momentum or from tier 4, with no equip gate", () => {
-    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).castConditions).toEqual([
+  it("the Inner Passion form is charged above 25 Blade Momentum or from tier 4, with no equip gate", () => {
+    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).castConditions).toBeUndefined()
+    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).releaseGates).toEqual([
       {
-        anyOf: [
-          { param: PARAM.steadfastDevotion, minTier: 4 },
-          { buffId: "meter:bladeMomentum", op: "gt", stacks: 25 },
+        atFrame: 19.32,
+        requires: [
+          {
+            anyOf: [
+              { param: PARAM.steadfastDevotion, minTier: 4 },
+              { buffId: "meter:bladeMomentum", op: "gt", stacks: 25 },
+            ],
+          },
         ],
+        fallbackSkillId: SKILL.phalanxchargedS1,
       },
     ])
   })

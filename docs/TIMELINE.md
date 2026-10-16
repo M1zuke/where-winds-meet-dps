@@ -778,6 +778,17 @@ works unchanged.
   same way, so a chain of stages steps down at most one level at a time. A
   pre-pull cast is never in reach of this, the same reasoning that keeps it
   off every other meter mechanic.
+- **A skill's `releaseGates` decide the stage a charged skill releases as when
+  the game picks it from a requirement read partway into the cast.** Each gate
+  reads its ANDed `requires` conditions, of any condition shape, at `atFrame`
+  frames after the press, against meters advanced to that frame. The first gate
+  whose requirement fails replaces the cast with its `fallbackSkillId`,
+  reported as a warning and never added to the step's legality list; the
+  fallback's own gates are read the same way, so a chain steps down and never
+  loops. The charge-release projection, the cast's distance, hits and `atFrame`
+  costs are then the resolved skill's, never the named one's. A requirement the
+  rotation can never satisfy for a stage the game does not release stays a
+  `castConditions` entry.
 - **A charged hold's own release time is quantised the same way every other
   cast length is** — through the render-frame layer, not a second formula —
   so nothing about ping or average FPS is authored per charged skill.

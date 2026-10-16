@@ -92,6 +92,7 @@ import { healSkill as healFractionalFrameTiming } from "../../src/migrations/cus
 import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
 import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
 import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
+import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -197,6 +198,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [96, healStonesplitFractionalFrameTiming],
   [97, healUmbraGameplayTimings],
   [98, healSwordHorizonBurstStacksAtTheBurst],
+  [99, healBurningHeartChargeStageGates],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
 import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
+import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV85File from "./testCustomSkills/v85/store.json"
@@ -43,6 +44,9 @@ const CHECKED_FIELDS = [
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
+const healedThroughLaterSteps = (skill: unknown): Skill =>
+  healBurningHeartChargeStageGates(healStonesplitFractionalFrameTiming(skill)) as Skill
+
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
@@ -67,9 +71,7 @@ describe("custom-skills v85 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healStonesplitFractionalFrameTiming(
-      healSkill(clone(skillIn(STORE, id))),
-    ) as Skill
+    const healed = healedThroughLaterSteps(healSkill(clone(skillIn(STORE, id))))
     expect(fieldsOf(healed)).toEqual(fieldsOf(builtinOf(id)))
   })
 
@@ -119,10 +121,9 @@ describe("V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming — calle
     const after = V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming.migrate(clone(STORE))
     expect(after.v).toBe(86)
     for (const id of HEALED_IDS)
-      expect(
-        fieldsOf(healStonesplitFractionalFrameTiming(skillIn(after, id)) as Skill),
-        id,
-      ).toEqual(fieldsOf(builtinOf(id)))
+      expect(fieldsOf(healedThroughLaterSteps(skillIn(after, id))), id).toEqual(
+        fieldsOf(builtinOf(id)),
+      )
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)

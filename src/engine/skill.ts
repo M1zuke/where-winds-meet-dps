@@ -207,6 +207,12 @@ export interface MeterFreeze {
   fromFrame: number
 }
 
+export interface ReleaseGate {
+  atFrame: number
+  requires: TriggerCondition[]
+  fallbackSkillId: string
+}
+
 export interface Skill {
   id: string
   classId: string
@@ -223,6 +229,8 @@ export interface Skill {
   meterCosts?: MeterCost[]
   meterDrains?: MeterDrain[]
   meterFreezes?: MeterFreeze[]
+  // docs/TIMELINE.md § "Meters".
+  releaseGates?: ReleaseGate[]
   // The identity this cast presents to the buff engine and to the migration
   // that backfills `receives`/`triggersBuffs` on an old save. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
@@ -807,6 +815,10 @@ export function isSkill(x: unknown): x is Skill {
         return false
     }
   }
+  if (s.releaseGates !== undefined) {
+    if (!Array.isArray(s.releaseGates)) return false
+    if (!s.releaseGates.every(isReleaseGate)) return false
+  }
   if (
     s.reachMeters !== undefined &&
     (typeof s.reachMeters !== "number" || !Number.isFinite(s.reachMeters))
@@ -833,6 +845,20 @@ export function isSkill(x: unknown): x is Skill {
   )
     return false
   return true
+}
+
+export function isReleaseGate(value: unknown): value is ReleaseGate {
+  if (!value || typeof value !== "object") return false
+  const gate = value as Record<string, unknown>
+  return (
+    typeof gate.atFrame === "number" &&
+    Number.isFinite(gate.atFrame) &&
+    Array.isArray(gate.requires) &&
+    gate.requires.length > 0 &&
+    gate.requires.every(isTriggerCondition) &&
+    typeof gate.fallbackSkillId === "string" &&
+    !!gate.fallbackSkillId
+  )
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -895,6 +921,10 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
     meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),
     meterFreezes: src.meterFreezes?.map((freeze) => ({ ...freeze })),
+    releaseGates: src.releaseGates?.map((gate) => ({
+      ...gate,
+      requires: gate.requires.map(cloneTriggerCondition),
+    })),
     reachMeters: src.reachMeters,
     approach: src.approach,
     displacement: src.displacement,
