@@ -4,6 +4,7 @@ import { statLineKey } from "../../../../i18n/contentKeys"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
 import {
   GEAR_SLOTS,
+  type GearLevel,
   type GearSlot,
   type GearWordId,
   type WeaponName,
@@ -97,6 +98,7 @@ export interface ImportedPiece {
   slot: SlotResolution
   observedBaseStats: Partial<GearBaseStats> | null
   identity: InferredGearIdentity | null
+  impliedLevel: GearLevel | null
   affixes: ImportedAffix[]
   overflowAffixes: ImportedAffix[]
   attunement: ImportedAffix | null
@@ -318,6 +320,7 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
       slot: resolveSlot(gameSlotId),
       observedBaseStats: readObservedBaseStats([exVo?.baseAttrs, detail, exVo]),
       identity: null,
+      impliedLevel: null,
       affixes: tunements.slice(0, 5),
       overflowAffixes: tunements.slice(5),
       attunement: all.find((affix) => affix.isAttunementAffix) ?? null,

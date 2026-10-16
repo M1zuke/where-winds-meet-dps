@@ -8,7 +8,7 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
-import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, GEAR_LEVELS, emptyGearWord } from "../../../../engine/types"
 import type {
   EquippedSlots,
   GearLevel,
@@ -16,6 +16,7 @@ import type {
   GearRarity,
   GearSlot,
   GearWordEntry,
+  GearWordId,
   Inputs,
   WeaponName,
 } from "../../../../engine/types"
@@ -188,6 +189,36 @@ function levelAgreedByWeapons(pieces: readonly ImportedPiece[]): GearLevel | nul
   return levels.size === 1 ? [...levels][0]! : null
 }
 
+function levelHoldingMappedLines(
+  piece: ImportedPiece,
+  slot: GearSlot,
+  classId: string,
+  choices: AffixChoices,
+  floor: GearLevel,
+): GearLevel | null {
+  const mappedWords = piece.affixes.map((affix) => {
+    const key = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
+    return key?.startsWith("word:") ? key.slice("word:".length) : null
+  })
+  const weaponType = weaponTypeForSlot(classId, slot)
+  const legalLineCount = (level: GearLevel): number =>
+    mappedWords.filter(
+      (word, lineIndex) =>
+        word !== null &&
+        gearWordPoolForLine(level, slot, lineIndex, weaponType).includes(word as GearWordId),
+    ).length
+  let bestLevel = floor
+  let bestCount = legalLineCount(floor)
+  for (const level of GEAR_LEVELS.filter((candidate) => candidate > floor)) {
+    const count = legalLineCount(level)
+    if (count > bestCount) {
+      bestLevel = level
+      bestCount = count
+    }
+  }
+  return bestLevel > floor ? bestLevel : null
+}
+
 const MAIN_ART_GAME_SLOT = "1"
 const SUB_ART_GAME_SLOT = "2"
 const WEAPON_GAME_SLOTS: readonly string[] = [MAIN_ART_GAME_SLOT, SUB_ART_GAME_SLOT]
@@ -253,6 +284,7 @@ export function resolveAgainstBuild(
   importResult: GearImportResult,
   inputs: Inputs,
   choices: AffixChoices = {},
+  overrides: IdentityOverrides = {},
 ): GearImportResult {
   const result: GearImportResult = {
     ...importResult,
@@ -267,9 +299,26 @@ export function resolveAgainstBuild(
         slot && piece.observedBaseStats ? inferGearIdentity(slot, piece.observedBaseStats) : null,
     }
   })
-  const pieces = withIdentity.map((piece) => {
+  const weaponLevel = levelAgreedByWeapons(withIdentity)
+  const withImpliedLevel = withIdentity.map((piece) => {
+    if (piece.identity?.level) return piece
     const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
-    const level = piece.identity?.level ?? levelAgreedByWeapons(withIdentity) ?? FALLBACK_LEVEL
+    return {
+      ...piece,
+      impliedLevel: slot
+        ? levelHoldingMappedLines(
+            piece,
+            slot,
+            inputs.classId,
+            choices,
+            weaponLevel ?? FALLBACK_LEVEL,
+          )
+        : null,
+    }
+  })
+  const pieces = withImpliedLevel.map((piece) => {
+    const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
+    const { level } = effectiveIdentity(piece, withImpliedLevel, overrides)
     return {
       ...piece,
       affixes: piece.affixes.map((affix, lineIndex) =>
@@ -294,7 +343,11 @@ export function effectiveIdentity(
   const override = overrides[piece.gameSlotId]
   return {
     level:
-      override?.level ?? piece.identity?.level ?? levelAgreedByWeapons(pieces) ?? FALLBACK_LEVEL,
+      override?.level ??
+      piece.identity?.level ??
+      piece.impliedLevel ??
+      levelAgreedByWeapons(pieces) ??
+      FALLBACK_LEVEL,
     rarity: override?.rarity ?? piece.identity?.rarity ?? FALLBACK_RARITY,
   }
 }

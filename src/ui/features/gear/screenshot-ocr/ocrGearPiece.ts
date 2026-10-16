@@ -324,6 +324,34 @@ function parseLevel(headerLine: string): { level: GearLevel; read: boolean } {
     : { level: FALLBACK_LEVEL, read: false }
 }
 
+function resolvedWordName(rowText: string | undefined): GearWordId | null {
+  if (rowText === undefined) return null
+  const matched = matchStatRow(stripRetuneBracket(rowText).remaining)
+  return matched ? resolveByName(matched.name, GEAR_WORD_NAME_INDEX) : null
+}
+
+function levelHoldingMostWords(
+  rowTexts: readonly (string | undefined)[],
+  slot: GearSlot,
+  classId: string,
+): GearLevel {
+  const resolvedWords = rowTexts.slice(0, 5).map(resolvedWordName)
+  const weaponType = weaponTypeForSlot(classId, slot)
+  let bestLevel = FALLBACK_LEVEL
+  let bestCount = -1
+  for (const level of VALID_LEVELS.filter((candidate) => candidate >= FALLBACK_LEVEL)) {
+    const count = resolvedWords.filter(
+      (word, lineIndex) =>
+        word !== null && gearWordPoolForLine(level, slot, lineIndex, weaponType).includes(word),
+    ).length
+    if (count > bestCount) {
+      bestLevel = level
+      bestCount = count
+    }
+  }
+  return bestLevel
+}
+
 function emptyDraft(fallbackSlot: GearSlot): GearPiece {
   const base = gearBaseStatsFor({
     slot: fallbackSlot,
@@ -661,13 +689,19 @@ export function parseGearScreenshot(
   }
 
   let slotGuess = guessSlot(titleLine!, fallbackSlot)
-  const levelGuess = parseLevel(headerLine ?? "")
+  const headerLevelGuess = parseLevel(headerLine ?? "")
   const headerRelayedGuess = headerLine ? /relaying/i.test(headerLine) : false
 
   // A gear piece always has exactly five word slots: an unread row is an
   // empty, editable slot, never a shorter array — so each index is looked up
   // explicitly rather than mapped over however many rows were recognised.
   const rowTexts = [rows[0]?.text, rows[1]?.text, rows[2]?.text, rows[3]?.text, rows[4]?.text]
+  const levelGuess = headerLevelGuess.read
+    ? headerLevelGuess
+    : {
+        level: levelHoldingMostWords(rowTexts, slotGuess.slot, inputs.classId),
+        read: false,
+      }
   const wordCandidates: [
     ParsedWordCandidate | undefined,
     ParsedWordCandidate | undefined,

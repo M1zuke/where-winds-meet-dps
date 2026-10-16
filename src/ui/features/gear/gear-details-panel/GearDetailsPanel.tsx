@@ -68,6 +68,7 @@ export function GearDetailsPanel({
 
   const heirloom = heirloomMatch(piece, profile)
   const isHeirloom = heirloom.builds.length > 0
+  const matchedBuilds = isHeirloom ? heirloom.builds : (heirloom.swap?.builds ?? [])
   const shines = isEquipped ? heirloom.followed : isHeirloom
 
   return (
@@ -109,11 +110,11 @@ export function GearDetailsPanel({
           <span className={isHeirloom ? styles.heirloomChip : styles.heirloomReadyChip}>
             {isHeirloom ? t("common.heirloom") : t("common.oneRetuneAway")}
           </span>
-          {isHeirloom && (
+          {matchedBuilds.length > 0 && (
             <span className={styles.heirloomFor}>
               {t("gear.details.matchingTheBuild")}{" "}
               <b>
-                {heirloom.builds
+                {matchedBuilds
                   .map((build) => t(graduationBuildKey(build.id), build.name))
                   .join(" · ")}
               </b>

@@ -472,6 +472,22 @@ Strategic Sword - Bleeding DMG
 Boost +5.8% epic
 `
 
+  const REAL_FATHOMLESS_ARMOR = `
+l Fathomless Armor
+BD ic 00
+/
+y Affinity Rate +5.1%
+. &
+All Mystic Skill DMG Boost
+ay +10.8% wm
+Momentum +517.8
+. &
+o L [Turn] Critical Rate +10.4%
+l Max Physical Attack +83.2 or
+A Strategic Sword - Bleeding DMG 3
+4 Boost +6.0% i rT Te
+`
+
   it("reads the title, four clean word rows, and the retuned fifth from mirageSentinel.png", () => {
     const { piece, error } = parseGearScreenshot(REAL_MIRAGE_SENTINEL, inputs, FALLBACK_SLOT)
 
@@ -601,13 +617,52 @@ Boost +5.8% epic
     expect(fields.words.every((word) => word.confidence === "read")).toBe(true)
   })
 
-  it("never throws on any of the five real transcripts", () => {
+  it("infers level 100 from an All Mystic line when the tier header is unreadable, on fathomlessArmor.png", () => {
+    const { piece, fields } = parseGearScreenshot(REAL_FATHOMLESS_ARMOR, inputs, FALLBACK_SLOT)
+
+    expect(piece.level).toBe(100)
+    expect(fields.level).toBe("guessed")
+    expect(piece.words[1]).toEqual({ word: "allMysticBoost", value: 0.108, retuned: false })
+  })
+
+  it("resolves a wrapped All Mystic Skill DMG Boost line on a tier-100 piece", () => {
+    const wrapped = `
+Fathomless Armor
+Relaying - Tier 100
+Affinity Rate +5.1%
+All Mystic Skill DMG Boost
++10.8%
+Momentum +51.8
+[Turn] Critical Rate +10.4%
+Max Physical Attack +83.2
+`
+    const { piece, fields } = parseGearScreenshot(wrapped, inputs, FALLBACK_SLOT)
+
+    expect(piece.level).toBe(100)
+    expect(fields.level).toBe("read")
+    expect(piece.words[1]).toEqual({ word: "allMysticBoost", value: 0.108, retuned: false })
+  })
+
+  it("keeps level 96 for the real transcripts whose lines all fit it", () => {
     for (const transcript of [
       REAL_MIRAGE_SENTINEL,
       REAL_MIRAGE_VEILBRIGHT,
       REAL_MIRAGE_VEILBRIGHT_UNATTUNED,
       REAL_NIGHTFARER_GREAVES,
       REAL_NIGHTFARER_BRACERS,
+    ]) {
+      expect(parseGearScreenshot(transcript, inputs, FALLBACK_SLOT).piece.level).toBe(96)
+    }
+  })
+
+  it("never throws on any of the real transcripts", () => {
+    for (const transcript of [
+      REAL_MIRAGE_SENTINEL,
+      REAL_MIRAGE_VEILBRIGHT,
+      REAL_MIRAGE_VEILBRIGHT_UNATTUNED,
+      REAL_NIGHTFARER_GREAVES,
+      REAL_NIGHTFARER_BRACERS,
+      REAL_FATHOMLESS_ARMOR,
     ]) {
       expect(() => parseGearScreenshot(transcript, inputs, FALLBACK_SLOT)).not.toThrow()
     }
