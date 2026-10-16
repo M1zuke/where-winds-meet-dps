@@ -821,7 +821,10 @@ There is no second simulation and no per-module distance logic.
   `otherwise` displacement when no band matches.
 - **A pre-pull cast never touches the distance**, the same reasoning a meter
   is never touched by one — a real-world gap of unknown length compressed
-  into a few negative frames has no faithful placement for an approach.
+  into a few negative frames has no faithful placement for an approach. Its
+  own projectile hits still fly from the distance its approach and
+  displacement would produce from the fight-start position, which is read
+  without being written.
 - **Every hit and every DoT tick reads the distance at its own frame.** It
   holds the last cast-set value until the next cast changes it, exactly as a
   meter's level does between costs.

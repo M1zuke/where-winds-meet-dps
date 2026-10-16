@@ -388,6 +388,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // frames — every later reader of a performed hit's frame adds it, the
       // same way `hitLandingFrame` itself is shared rather than reimplemented.
       midCastExtraFrames: number
+      hitDistanceMeters: number
     }
 
     const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
@@ -1423,6 +1424,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         paidByMeter: Map<string, number> = new Map(),
         meterHorizonFrame = Infinity,
         midCastExtraFrames = 0,
+        hitDistanceMeters = targetDistanceAt(stepStart),
       ): void {
         const pending: PendingLayoutEvent[] = [
           ...hits.map((hit): PendingHitEvent => {
@@ -1430,7 +1432,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               resolvedHitFrame(
                 hit,
                 (condition) => layoutHolds(condition, stepStart),
-                targetDistanceAt(stepStart),
+                hitDistanceMeters,
               ) + midCastExtraFrames
             return {
               kind: "hit",
@@ -1627,8 +1629,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const midCastExtraFrames = prePull
           ? 0
           : (castResolution.skill.serverWaitsInCast ?? 0) * midCastWaitFrames
+        const hitDistanceMeters = prePull
+          ? distanceAtCastStart(
+              castResolution.skill,
+              defaultMeleeReachMeters,
+              preferredDistanceMeters,
+              preferredDistanceMeters,
+            )
+          : targetDistanceAt(startFrame)
         const layoutHitFrame = (hit: SkillHit): number =>
-          resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)) + midCastExtraFrames
+          resolvedHitFrame(hit, holdsHere, hitDistanceMeters) + midCastExtraFrames
         const nominalCastLen = prePull
           ? prePullCastFrames(castResolution.skill, nextStepSkillId, holdsHere)
           : (() => {
@@ -1685,6 +1695,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           paidByMeter,
           prePull ? Infinity : nextCursor,
           midCastExtraFrames,
+          hitDistanceMeters,
         )
         laidSteps.push({
           resolved: castResolution,
@@ -1695,6 +1706,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           performedHits: landedHits,
           meterMarkAtStart,
           midCastExtraFrames,
+          hitDistanceMeters,
         })
       }
       const castCursorFrames = activeCursor
@@ -2497,13 +2509,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const queue = new EventQueue()
     let seq = 0
     for (const ls of laidSteps) {
-      const stepDistanceMeters = targetDistanceAt(ls.startFrame)
       for (const hit of ls.performedHits) {
         const resolvedFrame =
           resolvedHitFrame(
             hit,
             (condition) => layoutHolds(condition, ls.startFrame),
-            stepDistanceMeters,
+            ls.hitDistanceMeters,
           ) + ls.midCastExtraFrames
         queue.push({
           frame: hitLandingFrame(ls.startFrame, resolvedFrame),
@@ -2760,13 +2771,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     function buildCasts(): RotationCast[] {
       const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
         const stepHolds = (condition: TriggerCondition) => conditionHolds(condition, ls.startFrame)
-        const stepDistanceMeters = targetDistanceAt(ls.startFrame)
         const lastHitFrame =
           ls.performedHits.length > 0
             ? Math.max(
                 ...ls.performedHits.map(
                   (hit) =>
-                    resolvedHitFrame(hit, stepHolds, stepDistanceMeters) + ls.midCastExtraFrames,
+                    resolvedHitFrame(hit, stepHolds, ls.hitDistanceMeters) + ls.midCastExtraFrames,
                 ),
               )
             : 0

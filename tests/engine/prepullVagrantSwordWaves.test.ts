@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { classDefinition } from "../../src/definitions/classes/registry"
+import { DEFAULT_PREFERRED_DISTANCE_METERS, distanceAtCastStart } from "../../src/engine/distance"
 import { projectileTravelFrames } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -26,6 +29,18 @@ const noSwordMorph: Inputs["mindMethods"] = [
   { name: "", stacks: "" },
 ]
 
+function prepullFlightMeters(): number {
+  const prepull = builtinSkillsForClass(CLASS).find(
+    (skill) => skill.id === SKILL.swordHeavyChargedPrepull,
+  )!
+  return distanceAtCastStart(
+    prepull,
+    classDefinition(CLASS)!.defaultMeleeReachMeters ?? 0,
+    DEFAULT_PREFERRED_DISTANCE_METERS,
+    DEFAULT_PREFERRED_DISTANCE_METERS,
+  )
+}
+
 function runPrepullThenShadowStep() {
   const rotation = makeRotation(CLASS, {
     steps: [
@@ -47,16 +62,24 @@ describe("the pre-pull Vagrant Sword lands its waves after the release, in fligh
   const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
   const prepullEvents = result.timeline!.filter((event) => event.skillName === PREPULL_NAME)
   const releaseFrame = Math.round(prepullCast.timeSec * FPS)
-  const flightFrames = projectileTravelFrames(
-    VAGRANT_SWORD_WAVE_PROJECTILE,
-    prepullCast.distanceMeters,
-  )
+  const flightFrames = projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, prepullFlightMeters())
 
   it("lands the three waves 6, 16 and 45 f after the release plus each wave's flight", () => {
     const waveFrames = prepullEvents.filter((event) => event.damage > 0).map((event) => event.frame)
     expect(waveFrames).toEqual(
       WAVE_OFFSETS_FROM_RELEASE.map((offset) => Math.round(releaseFrame + offset + flightFrames)),
     )
+  })
+
+  it("flies from the distance its own approach and displacement leave, not from the preferred distance", () => {
+    expect(flightFrames).toBeLessThan(
+      projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, DEFAULT_PREFERRED_DISTANCE_METERS),
+    )
+  })
+
+  it("does not write its flight distance to the distance the fight starts from", () => {
+    expect(prepullFlightMeters()).not.toBe(DEFAULT_PREFERRED_DISTANCE_METERS)
+    expect(prepullCast.distanceMeters).toBe(DEFAULT_PREFERRED_DISTANCE_METERS)
   })
 
   it("opens the fight window at the first wave's landing, not at the release", () => {
