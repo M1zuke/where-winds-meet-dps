@@ -87,7 +87,7 @@ export default defineRotation({
     { skillId: "bellstrikeUmbra-spearspecial-1-hit-cancel" },
   ],
   permanentBuffIds: [],
-  openingStacks: { "buff-bellstrikeUmbra-zenith-bar": 5 },
+  openingStacks: { "buff-bellstrikeUmbra-zenith-bar": 2 },
   fixedWindowSec: 60,
   createdAt: "2026-09-10T09:39:07.776Z",
   updatedAt: "2026-10-16T15:07:52.557Z",
