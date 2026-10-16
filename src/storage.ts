@@ -66,6 +66,7 @@ import {
   isQiPhase,
   isTriggerCondition,
   isHitOrVariantCondition,
+  isStatusCondition,
   isAnyOfCondition,
   isParamCondition,
   isProjectileExtrasValid,
@@ -1404,9 +1405,16 @@ function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition 
   return { ...condition, buffId: migrateMysticId(migrateBuffId(condition.buffId)) }
 }
 
+function triggerConditionValidity(kind: HitTrigger["kind"]): (value: unknown) => boolean {
+  if (kind === "castSkill") return isTriggerCondition
+  if (kind === "meterDelta")
+    return (value) => isStatusCondition(value) || isHitOrVariantCondition(value)
+  return isHitOrVariantCondition
+}
+
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
-  const conditionIsValid = tr.kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition
+  const conditionIsValid = triggerConditionValidity(tr.kind)
   const trigger: HitTrigger = {
     ...tr,
     targetId: migrateMysticId(migrateBuffId(migrateEntityId(tr.targetId))),
@@ -1600,7 +1608,7 @@ function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondi
         ? record.op
         : "gte",
     stacks: typeof record.stacks === "number" ? record.stacks : 1,
-    ...(kind === "castSkill" && record.source === "buffEngine"
+    ...((kind === "castSkill" || kind === "meterDelta") && record.source === "buffEngine"
       ? { source: "buffEngine" as const }
       : {}),
   }
@@ -1618,9 +1626,7 @@ function importedTrigger(t: unknown): HitTrigger {
     condition,
   }
   if (Array.isArray(c.conditions)) {
-    trigger.conditions = c.conditions.filter(
-      kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition,
-    )
+    trigger.conditions = c.conditions.filter(triggerConditionValidity(kind))
   }
   if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
   if (typeof c.delayFrames === "number" && Number.isFinite(c.delayFrames) && c.delayFrames >= 0)

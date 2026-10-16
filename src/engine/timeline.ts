@@ -21,6 +21,7 @@ import type {
 } from "./skill"
 import {
   breakdownNameOf,
+  conditionIds,
   conditionSatisfiedByStacks,
   hasBuffEngineSource,
   isAnyOfCondition,
@@ -72,7 +73,12 @@ import type { ArtBonusField } from "./effects/effect"
 import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { CombatResource, type ResourceTickOutcome } from "./resources"
 import { MeterEngine } from "./meter"
-import { meterMaxParamKey, type MeterMaxContext } from "../definitions/resources/meterDef"
+import { settleLateMeters, lateMeterStatusIds, type LateMeterSettlement } from "./lateMeter"
+import {
+  inDisplayUnits,
+  meterMaxParamKey,
+  type MeterMaxContext,
+} from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
 import { EXTENSION_STREAM_OFFSET, MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
@@ -728,6 +734,29 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const weaponIdentities = weaponIdentitiesOf(skills)
     const runEffectiveRates = effectiveRates(inputs)
 
+    // Untiered (the param off entirely) reads as tier 0 rather than failing the
+    // check outright — a cost waived only from some tier up (`requiresMaxTier`)
+    // must still apply to a build that never slotted the param at all.
+    function meterCostRequirementHolds(cost: MeterCost): boolean {
+      if (!cost.requiresParam) return true
+      const tier = paramOnOf(buffParams, cost.requiresParam)
+        ? paramTierOf(buffParams, cost.requiresParam)
+        : 0
+      return tier >= (cost.requiresMinTier ?? 0) && tier <= (cost.requiresMaxTier ?? Infinity)
+    }
+
+    const meterMaxContext: MeterMaxContext = {
+      paramTier: (id) => paramTierOf(buffParams, id),
+      paramOn: (id) => paramOnOf(buffParams, id),
+      paramValue: (id) => paramNumOf(buffParams, id),
+      whiteAffinityRate: inputs.affinityRate,
+    }
+
+    const lateMeterDefs = (classDef?.meters ?? []).filter((definition) => definition.dependsOnBuffs)
+    const lateMeterIds = lateMeterStatusIds(lateMeterDefs)
+    const readsLateMeter = (condition: TriggerCondition): boolean =>
+      conditionIds(condition).some((id) => lateMeterIds.has(id))
+
     interface LayoutRun {
       laidSteps: LaidStep[]
       layoutLedger: StatusLedger
@@ -771,32 +800,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // sequential cursor `castConditions` legality already reads, and are
       // replayed onto the real ledger once it exists — see docs/TIMELINE.md §
       // "Meters".
-      const meterMaxContext: MeterMaxContext = {
-        paramTier: (id) => paramTierOf(buffParams, id),
-        paramOn: (id) => paramOnOf(buffParams, id),
-        paramValue: (id) => paramNumOf(buffParams, id),
-        whiteAffinityRate: inputs.affinityRate,
-      }
       const meterStartFrame = Math.min(0, -prePullBound)
-      const meters = (classDef?.meters ?? []).map(
-        (definition) =>
-          new MeterEngine(
-            definition,
-            meterMaxContext,
-            FPS,
-            layoutLedger,
-            meterStartFrame,
-            (frame, currentAmount, capacity) =>
-              meterModifierMultiplier(
-                "regen",
-                definition.id,
-                frame,
-                undefined,
-                currentAmount,
-                capacity,
-              ),
-          ),
-      )
+      const meters = (classDef?.meters ?? [])
+        .filter((definition) => !definition.dependsOnBuffs)
+        .map(
+          (definition) =>
+            new MeterEngine(
+              definition,
+              meterMaxContext,
+              FPS,
+              layoutLedger,
+              meterStartFrame,
+              (frame, currentAmount, capacity) =>
+                meterModifierMultiplier(
+                  "regen",
+                  definition.id,
+                  frame,
+                  undefined,
+                  currentAmount,
+                  capacity,
+                ),
+            ),
+        )
       const meterById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
       for (const meter of meters) buffParams[meterMaxParamKey(meter.def.id)] = meter.capacity
 
@@ -874,6 +899,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             op: condition.op,
             required: condition.stacks,
             actual,
+            ...(meter.def.displayUnitSize !== undefined
+              ? { unitSize: meter.def.displayUnitSize }
+              : {}),
           }
         const status = statusById.get(condition.buffId)
         return {
@@ -976,17 +1004,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
       function advanceMeters(frame: number): void {
         for (const meter of meters) meter.advanceTo(frame)
-      }
-
-      // Untiered (the param off entirely) reads as tier 0 rather than failing the
-      // check outright — a cost waived only from some tier up (`requiresMaxTier`)
-      // must still apply to a build that never slotted the param at all.
-      function meterCostRequirementHolds(cost: MeterCost): boolean {
-        if (!cost.requiresParam) return true
-        const tier = paramOnOf(buffParams, cost.requiresParam)
-          ? paramTierOf(buffParams, cost.requiresParam)
-          : 0
-        return tier >= (cost.requiresMinTier ?? 0) && tier <= (cost.requiresMaxTier ?? Infinity)
       }
 
       interface PendingMeterIntervalStart {
@@ -1438,7 +1455,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const meterMarkAtStart = layoutLedger.mark()
         const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
         const failedCastConditions = (resolvedStep.skill.castConditions ?? []).filter(
-          (condition) => !hasBuffEngineSource(condition) && !holdsHere(condition),
+          (condition) =>
+            !hasBuffEngineSource(condition) && !readsLateMeter(condition) && !holdsHere(condition),
         )
         if (failedCastConditions.length > 0) {
           const reasons = failedCastConditions.map((condition) =>
@@ -1668,6 +1686,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       discoveredFightEndFrame,
       castCursorFrames,
     } = layout
+    const meterEngineById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
 
     // docs/TIMELINE.md § "Fight window": without a fixed window, the fight ends
     // at the last damaging hit, not at the last cast's own end — a DoT tick
@@ -2595,6 +2614,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     ledger.sortWindows()
 
+    let lateMeterSettlement: LateMeterSettlement | null = null
+
     function buildCasts(): RotationCast[] {
       const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
         const stepHolds = (condition: TriggerCondition) => conditionHolds(condition, ls.startFrame)
@@ -2657,15 +2678,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           attachedToStepId: deflectCancelAttachedToStepId.get(ls.resolved.step.id),
           buffs,
           meterLevels:
-            meters.length > 0
-              ? meters.map((meter) => ({
-                  id: meter.def.id,
-                  name: meter.def.name,
-                  amount: layoutLedger
-                    .asOf(ls.meterMarkAtStart)
-                    .stacksAt(meter.statusId, ls.startFrame),
-                  capacity: meter.capacity,
-                }))
+            (classDef?.meters ?? []).length > 0
+              ? (classDef?.meters ?? []).map((definition) => {
+                  const layoutMeter = meterEngineById.get(definition.id)
+                  return {
+                    id: definition.id,
+                    name: definition.name,
+                    amount: layoutMeter
+                      ? layoutLedger
+                          .asOf(ls.meterMarkAtStart)
+                          .stacksAt(layoutMeter.statusId, ls.startFrame)
+                      : (lateMeterSettlement?.levelBeforeCast
+                          .get(ls.resolved.step.id)
+                          ?.get(definition.id) ?? 0),
+                    capacity:
+                      layoutMeter?.capacity ??
+                      lateMeterSettlement?.capacities.get(definition.id) ??
+                      0,
+                    ...(definition.displayUnitSize !== undefined
+                      ? { unitSize: definition.displayUnitSize }
+                      : {}),
+                  }
+                })
               : undefined,
           distanceMeters: layoutLedger.stacksAt(TARGET_DISTANCE_STATUS, ls.startFrame),
         }
@@ -3184,6 +3218,55 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     scoringSchedule = qiSchedule
     buffEngine?.attachQiSchedule(qiSchedule)
 
+    if (lateMeterDefs.length > 0) {
+      const lateMeterGate = triggerGate(conditionHolds)
+      lateMeterSettlement = settleLateMeters({
+        defs: lateMeterDefs,
+        fps: FPS,
+        startFrame: spanStart,
+        maxContext: meterMaxContext,
+        particleCount: buffEngine?.extensionParticleCount ?? 1,
+        steps: laidSteps.map((laidStep) => ({
+          stepId: laidStep.resolved.step.id,
+          skill: laidStep.resolved.skill,
+          startFrame: laidStep.startFrame,
+          prePull: laidStep.prePull,
+        })),
+        hits: mergedEvents.flatMap((event) =>
+          event.kind === "hit"
+            ? [
+                {
+                  skill: event.skill,
+                  hit: event.hit,
+                  stepStart: event.stepStart,
+                  frame: event.frame,
+                  exactFrame: event.exactFrame,
+                },
+              ]
+            : [],
+        ),
+        costApplies: meterCostRequirementHolds,
+        delayedCostFrame: (startFrame, atFrame) => hitLandingFrame(startFrame, atFrame),
+        castEndFrame: (landed) =>
+          castEndFrame(
+            landed.skill,
+            landed.stepStart,
+            (condition) => conditionHolds(condition, landed.stepStart),
+            targetDistanceAt(landed.stepStart),
+          ),
+        guardsHold: (trigger, frame) => lateMeterGate.fires(trigger, frame),
+        liveParticles: (buffId, frame) =>
+          buffEngine ? buffEngine.liveParticles(buffId, (frame - 1) / FPS) : false,
+      })
+      for (const { stepId, reasons } of lateMeterSettlement.illegalCasts) {
+        const laidStep = laidSteps.find((candidate) => candidate.resolved.step.id === stepId)!
+        recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+        warnings.push(
+          `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+        )
+      }
+    }
+
     const resourceResults = resources.map((resource) => resource.finish(windowFrames))
     for (const resource of resources) {
       const latestEndByStart = new Map<number, number>()
@@ -3331,6 +3414,8 @@ function englishConditionFailure(reason: ConditionFailureReason): string {
         reason.actualOn ? `tier ${reason.actualTier}` : notVerb
       })`
     }
+    case "meter":
+      return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${inDisplayUnits(reason.required, reason.unitSize)} (has ${inDisplayUnits(reason.actual, reason.unitSize)})`
     default:
       return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${reason.required} (has ${reason.actual})`
   }

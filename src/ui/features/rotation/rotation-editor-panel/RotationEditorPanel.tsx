@@ -32,6 +32,7 @@ import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../eng
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { classDefinition } from "../../../../definitions/classes/registry"
+import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
 import { buildReadsTargetDistance, hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
@@ -157,9 +158,11 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
 
 function MeterLevelChip({ level }: { level: CastMeterLevel }) {
   const { t } = useI18n()
+  const shown = (amount: number) =>
+    level.unitSize === undefined ? Math.round(amount) : inDisplayUnits(amount, level.unitSize)
   return (
     <span className={styles.meterLevel}>
-      {t(meterKey(level.id), level.name)} {Math.round(level.amount)}/{Math.round(level.capacity)}
+      {t(meterKey(level.id), level.name)} {shown(level.amount)}/{shown(level.capacity)}
     </span>
   )
 }

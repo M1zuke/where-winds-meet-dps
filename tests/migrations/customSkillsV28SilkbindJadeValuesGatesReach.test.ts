@@ -22,6 +22,7 @@ import { healSkill as healSpringAwayReach } from "../../src/migrations/customSki
 import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
 import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -75,19 +76,21 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids a given later hop doesn't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
-    healJadeAvailabilityAndRecharge(
-      healJadeHitLandingsGrantsAndClipTimings(
-        healSpringAwayReach(
-          healSpringAwayHoverCueTiming(
-            healSpringAwayBulletsExtendMarkPerHit(
-              healComboExtendMarkReach(
-                healBoundvesselSpringAwayToadAfterimageTiming(
-                  healInGameCoefficientCorrections(
-                    healSwallowcallColorfulPhoenixReach(
-                      healGourdTossFlyingTornado(
-                        healPerGrantSiteDelayAndSetReach(
-                          healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+  healJadeSpringSorrowChargesAndComboRechargeCut(
+    healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
+      healJadeAvailabilityAndRecharge(
+        healJadeHitLandingsGrantsAndClipTimings(
+          healSpringAwayReach(
+            healSpringAwayHoverCueTiming(
+              healSpringAwayBulletsExtendMarkPerHit(
+                healComboExtendMarkReach(
+                  healBoundvesselSpringAwayToadAfterimageTiming(
+                    healInGameCoefficientCorrections(
+                      healSwallowcallColorfulPhoenixReach(
+                        healGourdTossFlyingTornado(
+                          healPerGrantSiteDelayAndSetReach(
+                            healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+                          ),
                         ),
                       ),
                     ),

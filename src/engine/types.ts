@@ -439,6 +439,7 @@ export interface CastMeterLevel {
   name: string
   amount: number
   capacity: number
+  unitSize?: number
 }
 
 export interface RotationCast {

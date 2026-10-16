@@ -308,9 +308,10 @@ Rules:
   `requiresParam` or a condition exactly like an inner way's own param — the
   class-buff engine's own set gate reaches a module only, never a hit-level
   trigger or condition, which is what this exists for.
-- **Only a `castSkill` trigger's condition and a `castConditions` entry may read
-  the class-buff engine instead of the status ledger** (`source: "buffEngine"` on
-  a `TriggerCondition`): the two are separate stores (see § "Procedural
+- **Only a `castSkill` trigger's condition, a `meterDelta` trigger's own status
+  condition and a `castConditions` entry may read the class-buff engine instead
+  of the status ledger** (`source: "buffEngine"` on a `TriggerCondition`): the
+  two are separate stores (see § "Procedural
   behaviour"), and gating a generated cast on a class-buff module's active
   window — something the ledger never records — sets this on its condition
   rather than duplicating that module as a ledger status. Every other
@@ -707,6 +708,23 @@ works unchanged.
 - **A meter's own capacity may be a function of the build**, resolved once and
   exposed through the same generic build-param accessor every other
   build-level number uses — never a bespoke context field.
+- **A meter may declare `displayUnitSize`**: the meter units that make one unit
+  of the game's own display. Every readout of its level, its capacity, a cost
+  or a failed condition shows the amount divided by it; the engine keeps
+  counting in meter units.
+- **A meter may declare `dependsOnBuffs`: it simulates after the buff engine
+  and the damage pass instead of in the layout pass**, because a gain of its
+  own reads a class buff's window. A `meterDelta` trigger on it may carry a
+  `source: "buffEngine"` status condition, which holds in the share of the
+  extension ensemble's trajectories where the buff is live one frame before the
+  hit; the meter splits into one state per differing set of trajectories and
+  merges states that become identical. A gain's cooldown counts per
+  trajectory. Costs, `atFrame` costs, gains with `delayFrames` or
+  `appliesOnCastEnd`, and `castConditions` on the meter all apply as for any
+  meter, and a cast that lacks the amount in any trajectory is flagged with the
+  expected level. Such a meter takes no `meterModifiers`, drains, freezes,
+  `chargeRelease`, spend caps or refunds, and a pre-pull cast never touches
+  it.
 - **A meter's per-cast level is reported on the cast it belongs to**, read
   before that cast's own cost or drain applies — "the level available when
   the cast was placed", not the level once it resolved.

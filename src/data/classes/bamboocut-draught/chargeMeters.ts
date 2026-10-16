@@ -8,10 +8,11 @@ export const UNITS_PER_CHARGE = 900
 // In-game values as of 2026-10-15: two charges, 15 s each.
 export const reveldriftChargesMeter = defineMeter({
   id: "reveldriftCharges",
-  name: "Reveldrift recharge",
+  name: "Reveldrift charges",
   capacity: 2 * UNITS_PER_CHARGE,
   start: "full",
   regenPerSecond: UNITS_PER_CHARGE / 15,
+  displayUnitSize: UNITS_PER_CHARGE,
 })
 
 export const reveldriftChargeCost: MeterCost = {

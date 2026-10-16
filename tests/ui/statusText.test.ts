@@ -86,6 +86,30 @@ describe("conditionFailureReasonsText", () => {
   })
 })
 
+describe("a failed meter condition", () => {
+  const reason = (unitSize?: number): ConditionFailureReason => ({
+    kind: "meter",
+    id: "someCharges",
+    name: "Some charges",
+    op: "gte",
+    required: 900,
+    actual: 600,
+    ...(unitSize === undefined ? {} : { unitSize }),
+  })
+
+  it("reads in the meter's own display unit when it declares one", () => {
+    expect(conditionFailureReasonsText([reason(900)], fakeT)).toBe(
+      "needs Some charges ≥ 1 (has 0.67)",
+    )
+  })
+
+  it("reads in raw meter units when it declares none", () => {
+    expect(conditionFailureReasonsText([reason()], fakeT)).toBe(
+      "needs Some charges ≥ 900 (has 600)",
+    )
+  })
+})
+
 describe("statusTooltip", () => {
   it("with a duration, contains the name, the formatted window, and 'remaining time' wording", () => {
     const tip = statusTooltip("Example Buff", fakeT, 1080)

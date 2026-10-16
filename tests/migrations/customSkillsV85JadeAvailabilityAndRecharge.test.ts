@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV84File from "./testCustomSkills/v84/store.json"
@@ -58,8 +59,8 @@ describe("custom-skills v84 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
-      healSkill(clone(skillIn(STORE, id))),
+    const healed = healJadeSpringSorrowChargesAndComboRechargeCut(
+      healJadeStartlingSpringStacksAndFlurryEnduranceTiming(healSkill(clone(skillIn(STORE, id)))),
     ) as Skill
     const builtin = builtinOf(id)
     for (const field of CHECKED_FIELDS) {
@@ -109,7 +110,11 @@ describe("V85__jadeAvailabilityAndRecharge — called directly", () => {
     expect(after.v).toBe(85)
     for (const id of HEALED_IDS)
       expect(
-        (healJadeStartlingSpringStacksAndFlurryEnduranceTiming(skillIn(after, id)) as Skill).hits,
+        (
+          healJadeSpringSorrowChargesAndComboRechargeCut(
+            healJadeStartlingSpringStacksAndFlurryEnduranceTiming(skillIn(after, id)),
+          ) as Skill
+        ).hits,
         id,
       ).toEqual(builtinOf(id).hits)
     for (const skill of STORE.skills) {

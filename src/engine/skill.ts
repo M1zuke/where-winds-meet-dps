@@ -59,7 +59,15 @@ export type ParamSourceKind = "innerWay" | "set" | "script"
 export type ConditionFailureReason =
   | { kind: "buff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
   | { kind: "debuff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
-  | { kind: "meter"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | {
+      kind: "meter"
+      id: string
+      name: string
+      op: TriggerOp
+      required: number
+      actual: number
+      unitSize?: number
+    }
   | { kind: "weapon"; id: string; name: string; actualId: string; actualName: string }
   | {
       kind: "param"
@@ -367,8 +375,9 @@ export function isTriggerCondition(value: unknown): value is TriggerCondition {
 }
 
 // `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
-// condition and on a `castConditions` entry — a hit's or a variant's condition
-// never reads the buff engine.
+// condition, on a `meterDelta` trigger's own status condition and on a
+// `castConditions` entry — a hit's or a variant's condition never reads the
+// buff engine.
 export function hasBuffEngineSource(value: unknown): boolean {
   if (!value || typeof value !== "object") return false
   const record = value as Record<string, unknown>
@@ -432,8 +441,12 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     }
   }
   if (t.kind !== "castSkill") {
-    if (hasBuffEngineSource(t.condition)) return false
-    if (Array.isArray(t.conditions) && t.conditions.some(hasBuffEngineSource)) return false
+    const readsBuffEngine = (condition: unknown) =>
+      t.kind === "meterDelta" && isStatusCondition(condition)
+        ? false
+        : hasBuffEngineSource(condition)
+    if (readsBuffEngine(t.condition)) return false
+    if (Array.isArray(t.conditions) && t.conditions.some(readsBuffEngine)) return false
   }
   if (t.transferFrom !== undefined) {
     if (typeof t.transferFrom !== "string" || !t.transferFrom) return false

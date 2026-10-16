@@ -197,6 +197,16 @@ describe("isHitTrigger — the new fields", () => {
     expect(isHitTrigger(applyBuffTrigger)).toBe(false)
   })
 
+  it("accepts source: buffEngine on a meterDelta trigger's own status condition only", () => {
+    const engineCondition = { buffId: "bf-1", op: "gte", stacks: 1, source: "buffEngine" }
+    const meterTrigger = makeTrigger({ kind: "meterDelta", targetId: "some-meter" })
+    expect(isHitTrigger({ ...meterTrigger, condition: engineCondition })).toBe(true)
+    expect(isHitTrigger({ ...meterTrigger, condition: null, conditions: [engineCondition] })).toBe(
+      true,
+    )
+    expect(isHitTrigger({ ...meterTrigger, condition: { anyOf: [engineCondition] } })).toBe(false)
+  })
+
   it("isTriggerCondition alone still accepts source: buffEngine — the kind check lives in isHitTrigger", () => {
     expect(isTriggerCondition({ buffId: "bf-1", op: "gte", stacks: 1, source: "buffEngine" })).toBe(
       true,

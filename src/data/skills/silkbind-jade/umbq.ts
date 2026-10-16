@@ -1,11 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import {
+  UNITS_PER_SECOND_OF_RECHARGE,
   chargeAvailable,
-  springSorrowChargeCost,
+  chargeCost,
   springSorrowChargesMeter,
 } from "../../classes/silkbind-jade/chargeMeters"
 
@@ -16,6 +18,17 @@ const SPRING_SORROW_PROJECTILE = {
   contactAdvanceMeters: 0.5,
   maxTravelFrames: 300,
 }
+
+// In-game values as of 2026-10-15: Blossom Barrage rank 6 — a hit that finds your
+// Combo on the target cuts 5 s off the recharge, at most once per second.
+const COMBO_RECHARGE_CUT = meterDelta({
+  target: springSorrowChargesMeter.id,
+  stacks: 5 * UNITS_PER_SECOND_OF_RECHARGE,
+  conditions: [{ buffId: BUFF.combo, op: "gte", stacks: 1, source: "buffEngine" }],
+  cooldownFrames: 60,
+  requiresParam: PARAM.blossomBarrage,
+  requiresMinTier: 6,
+})
 
 export const umbq = defineSkill({
   id: SKILL.umbq,
@@ -51,7 +64,7 @@ export const umbq = defineSkill({
     BUFF.comboSpringAwayBonus,
     BUFF.springThunder,
   ],
-  meterCosts: [springSorrowChargeCost],
+  meterCosts: [chargeCost(springSorrowChargesMeter)],
   castConditions: [chargeAvailable(springSorrowChargesMeter)],
   // Cast length to the earliest next input and the bullet's launch frame: the
   // slow clip below Blossom Barrage rank 3, the fast one from it (in-game
@@ -72,6 +85,7 @@ export const umbq = defineSkill({
       physFixed: 648,
       attributeFixed: 353,
       extraCritDamage: 1,
+      triggers: [COMBO_RECHARGE_CUT],
       variants: [
         {
           id: "hv-umbq-hit-0-fast-clip",

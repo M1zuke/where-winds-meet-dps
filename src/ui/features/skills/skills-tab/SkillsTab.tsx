@@ -22,6 +22,7 @@ import {
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
+import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
 import { innerWayName } from "../../../../definitions/innerWays/registry"
 import {
   appliesForSkill,
@@ -689,10 +690,13 @@ export function SkillsTab({
     }
     if (kind === "meterDelta") {
       const meterName = t(meterKey(trigger.targetId), trigger.targetId)
+      const unitSize = getSchool(classId).meters?.find(
+        (meter) => meter.id === trigger.targetId,
+      )?.displayUnitSize
       const amount =
         trigger.refundFractionOfCastCost !== undefined
           ? `+${Math.round(trigger.refundFractionOfCastCost * 100)}% ${t("skills.ofCastCost")}`
-          : `${trigger.stacks >= 0 ? "+" : "−"}${Math.abs(trigger.stacks)}`
+          : `${trigger.stacks >= 0 ? "+" : "−"}${inDisplayUnits(Math.abs(trigger.stacks), unitSize)}`
       return { label: `${meterName} ${amount}`, effect: gate }
     }
     if (kind === "cooldownCut") {
