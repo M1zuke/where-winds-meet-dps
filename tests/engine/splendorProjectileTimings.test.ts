@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { simulateTimeline } from "../../src/engine/timeline"
+import { quantiseToRenderFrame, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { projectileTravelFrames } from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
@@ -45,9 +45,9 @@ describe("Energy Surge's waves fly after the press", () => {
   const press = result.casts![0]!
   const flight = projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, press.distanceMeters)
 
-  it("lands the waves 6, 16 and 45 f after the press plus each wave's flight", () => {
+  it("lands the waves 6.06, 16.02 and 45.3 f after the press plus each wave's flight", () => {
     expect(landingFrames(result, press.skillName)).toEqual(
-      [6, 16, 45].map((offset) => Math.round(offset + flight)),
+      [6.06, 16.02, 45.3].map((offset) => Math.round(quantiseToRenderFrame(offset + flight, 1))),
     )
   })
 

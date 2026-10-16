@@ -10,10 +10,7 @@ import {
   energySurgeEnduranceGain,
 } from "./buffs/energySurgeGrant"
 import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
-import {
-  SWORD_MORPH_ENDURANCE_SPEND,
-  VAGRANT_SWORD_DISPLACEMENT,
-} from "./buffs/vagrantSwordEndurance"
+import { SWORD_MORPH_ENDURANCE_SPEND } from "./buffs/vagrantSwordEndurance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { enduranceMeter } from "../../resources/enduranceMeter"
@@ -49,7 +46,7 @@ export const energySurge = defineSkill({
   // In-game values as of 2026-09-28: 18 m reach on its own companion
   // projectile — the longest confirmed number for this class.
   reachMeters: 18,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
       frame: 6.06,

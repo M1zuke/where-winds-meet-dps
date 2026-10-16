@@ -5,6 +5,7 @@ import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { DEFAULT_PREFERRED_DISTANCE_METERS, distanceAtCastStart } from "../../src/engine/distance"
 import { projectileTravelFrames } from "../../src/engine/skill"
+import { quantiseToRenderFrame } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "../../src/data/skills/bellstrike-splendor/vagrantSwordBolts"
@@ -13,7 +14,8 @@ import type { Inputs } from "../../src/engine/types"
 const CLASS = "bellstrikeSplendor"
 const FPS = 60
 const PREPULL_NAME = "SwordHeavyCharged[Prepull]"
-const WAVE_OFFSETS_FROM_RELEASE = [6, 16, 45]
+const WAVE_OFFSETS_FROM_RELEASE = [6.06, 16.02, 45.3]
+const RENDER_PERIOD_FRAMES = FPS / 250
 
 const swordMorph: Inputs["mindMethods"] = [
   { name: "Sword Morph", stacks: "tier 6" },
@@ -67,7 +69,12 @@ describe("the pre-pull Vagrant Sword lands its waves after the release, in fligh
   it("lands the three waves 6, 16 and 45 f after the release plus each wave's flight", () => {
     const waveFrames = prepullEvents.filter((event) => event.damage > 0).map((event) => event.frame)
     expect(waveFrames).toEqual(
-      WAVE_OFFSETS_FROM_RELEASE.map((offset) => Math.round(releaseFrame + offset + flightFrames)),
+      WAVE_OFFSETS_FROM_RELEASE.map((offset) =>
+        Math.round(
+          prepullCast.timeSec * FPS +
+            quantiseToRenderFrame(offset + flightFrames, RENDER_PERIOD_FRAMES),
+        ),
+      ),
     )
   })
 
