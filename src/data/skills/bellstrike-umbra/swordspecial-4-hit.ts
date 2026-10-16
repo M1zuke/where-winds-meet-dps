@@ -5,6 +5,7 @@ import { PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDSPECIAL_4_HIT_MOTION } from "./rootMotion"
 import { INNER_BALANCE_STRIKE_III_COST, INNER_BALANCE_STRIKE_III_REQUIRES } from "./buffs/enduranceGates"
 
 // In-game values as of 2026-09-24: the Special attunement reaches hits 1–3
@@ -27,6 +28,7 @@ export const swordspecial4Hit = defineSkill({
   // follow-up pressed after the 4th hit starts one frame after it.
   castFrames: 84,
   triggerable: true,
+  displacement: SWORDSPECIAL_4_HIT_MOTION,
   hits: [
     {
       ...SWORDSPECIAL_HITS[0]!,

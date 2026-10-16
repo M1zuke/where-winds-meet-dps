@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORD_HEAVY_3_MOTION } from "./rootMotion"
 
 // In-game values as of 2026-10-06.
 export const swordHeavy3 = defineSkill({
@@ -17,6 +18,7 @@ export const swordHeavy3 = defineSkill({
   receives: STRATEGIC_SWORD_RECEIVES,
   castFrames: 73,
   triggerable: true,
+  displacement: SWORD_HEAVY_3_MOTION,
   reachMeters: 3,
   hits: [
     hit(0, {

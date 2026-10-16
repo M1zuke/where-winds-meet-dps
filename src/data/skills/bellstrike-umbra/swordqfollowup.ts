@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDQ_FOLLOW_UP_MOTION, SWORDQ_FOLLOW_UP_61_F_MOTION } from "./rootMotion"
 
 export const swordqfollowup = defineSkill({
   id: SKILL.swordqfollowup,
@@ -20,6 +21,7 @@ export const swordqfollowup = defineSkill({
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 64,
   triggerable: true,
+  displacement: SWORDQ_FOLLOW_UP_MOTION,
   // In-game values as of 2026-09-28: 4 m approach reach.
   reachMeters: 4,
   hits: [
@@ -42,6 +44,7 @@ export const swordqfollowup = defineSkill({
           physFixed: 150.6,
           attributeFixed: 82,
           castFrames: 61,
+          displacement: SWORDQ_FOLLOW_UP_61_F_MOTION,
         },
       ],
     }),

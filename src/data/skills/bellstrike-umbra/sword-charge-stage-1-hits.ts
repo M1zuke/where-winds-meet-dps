@@ -1,19 +1,7 @@
 import { hit } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { DEBUFF } from "./ids"
-import type { Displacement, SkillHit } from "../../../engine/skill"
-
-// In-game values as of 2026-09-28: melee, assumed — the cast's own segment
-// teleports 1 m short of the target under 9 m live distance, or dashes
-// exactly 8 m forward from self between 9 and 20 m.
-export const SWORD_CHARGE_STAGE_1_DISPLACEMENT: Displacement = {
-  kind: "byDistance",
-  bands: [
-    { minMeters: 0, maxMeters: 8.999, then: { kind: "toTarget", meters: 1 } },
-    { minMeters: 9, maxMeters: 100, then: { kind: "selfForward", meters: 8 } },
-  ],
-  otherwise: { kind: "towardTarget", referenceMeters: 0 },
-}
+import type { SkillHit } from "../../../engine/skill"
 
 // Every frame below is press-relative: the 31 f minimum hold to reach stage 1
 // (a charge node that starts at 12.6 f plus 0.3 s of charge, rounded up), the

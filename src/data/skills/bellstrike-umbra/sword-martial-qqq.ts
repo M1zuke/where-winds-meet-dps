@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORD_MARTIAL_QQQ_MOTION } from "./rootMotion"
 import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
 import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
@@ -24,6 +25,7 @@ export const swordMartialQqq = defineSkill({
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 86,
   triggerable: true,
+  displacement: SWORD_MARTIAL_QQQ_MOTION,
   hits: [
     hit(0, {
       frame: 32,

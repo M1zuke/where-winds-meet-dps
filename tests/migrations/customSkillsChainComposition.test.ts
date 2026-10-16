@@ -97,6 +97,7 @@ import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/mi
 import { healSkill as healWushuangStanceVagrantSwordStartOrder } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
 import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healUmbraRootMotion } from "../../src/migrations/customSkills/V104__umbraRootMotion"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -207,6 +208,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [101, healWushuangStanceVagrantSwordStartOrder],
   [102, healPrepullVagrantSwordBoltTiming],
   [103, healSplendorRootMotion],
+  [104, healUmbraRootMotion],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
