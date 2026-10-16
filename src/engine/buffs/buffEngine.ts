@@ -120,6 +120,7 @@ export class BuffEngine {
   private maxStacksById = new Map<string, number>()
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
+  private historyByBuffId = new Map<string, HistoryEntry[]>()
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
   private statuses: TimelineStatuses | null = null
@@ -551,7 +552,7 @@ export class BuffEngine {
       ...(stacks !== undefined && { stacks }),
     }
     this.activeBuffs.set(id, entry)
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
@@ -568,7 +569,14 @@ export class BuffEngine {
     const live = this.activeBuffs.get(id)
     if (live && time >= live.appliedAt && time < live.expiresAt)
       this.activeBuffs.set(id, { ...live, expiresAt: time })
-    this.buffHistory.push({ time, buffType: id, action: "apply", expiresAt: time })
+    this.recordHistory({ time, buffType: id, action: "apply", expiresAt: time })
+  }
+
+  private recordHistory(entry: HistoryEntry): void {
+    this.buffHistory.push(entry)
+    const entriesForId = this.historyByBuffId.get(entry.buffType)
+    if (entriesForId) entriesForId.push(entry)
+    else this.historyByBuffId.set(entry.buffType, [entry])
   }
 
   private triggerPhaseHolds(module: BuffModule, time: number, reading: QiReading): boolean {
@@ -613,7 +621,7 @@ export class BuffEngine {
       expiresAt: time + duration,
       ...(cur.stacks !== undefined && { stacks: cur.stacks }),
     })
-    this.buffHistory.push({ time, buffType: id, action: "refresh", expiresAt: time + duration })
+    this.recordHistory({ time, buffType: id, action: "refresh", expiresAt: time + duration })
   }
 
   moduleName(id: string): string | undefined {
@@ -694,8 +702,8 @@ export class BuffEngine {
   // sit last and reads a live window as expired.
   private latestApplyAt(id: string, time: number): HistoryEntry | null {
     let latest: HistoryEntry | null = null
-    for (const historyEntry of this.buffHistory) {
-      if (historyEntry.buffType !== id || historyEntry.action !== "apply") continue
+    for (const historyEntry of this.historyByBuffId.get(id) ?? []) {
+      if (historyEntry.action !== "apply") continue
       if (historyEntry.time > time) continue
       if (!latest || historyEntry.time >= latest.time) latest = historyEntry
     }
@@ -704,8 +712,8 @@ export class BuffEngine {
 
   private latestGrantAt(id: string, time: number): HistoryEntry | null {
     let latest: HistoryEntry | null = null
-    for (const historyEntry of this.buffHistory) {
-      if (historyEntry.buffType !== id || historyEntry.grant !== true) continue
+    for (const historyEntry of this.historyByBuffId.get(id) ?? []) {
+      if (historyEntry.grant !== true) continue
       if (historyEntry.time > time) continue
       if (!latest || historyEntry.time >= latest.time) latest = historyEntry
     }
@@ -726,13 +734,8 @@ export class BuffEngine {
     const rule = module.activeAfterBuffEnds
     if (!rule) return false
     const duration = this.resolveDuration(module, time)
-    const applies = this.buffHistory
-      .filter(
-        (historyEntry) =>
-          historyEntry.buffType === rule.buffId &&
-          historyEntry.action === "apply" &&
-          historyEntry.time <= time,
-      )
+    const applies = (this.historyByBuffId.get(rule.buffId) ?? [])
+      .filter((historyEntry) => historyEntry.action === "apply" && historyEntry.time <= time)
       .sort((a, b) => a.time - b.time)
     if (applies.length === 0) return false
     if (rule.cancelledByReapply) {
@@ -985,7 +988,7 @@ export class BuffEngine {
     const before = window.stacks ?? 1
     if (before <= 0 || before >= (this.maxStacksOf(module.id) ?? 1)) return
     if (!this.canGrantDamageStack(module, time)) return
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: module.id,
       action: "apply",
@@ -1010,7 +1013,7 @@ export class BuffEngine {
     if (!window || time >= window.expiresAt) return false
     const before = window.stacks ?? 1
     if (before <= 0) return false
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
@@ -1075,7 +1078,7 @@ export class BuffEngine {
     if (before <= 0) return false
     const next = Math.max(0, before - 1)
     this.activeBuffs.set(id, { ...active, stacks: next })
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
