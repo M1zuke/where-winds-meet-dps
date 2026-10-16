@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  SKYSTRIKE_GAUNTLETS_RECEIVES,
+} from "./receives"
 import {
   lightAttackMarkTriggers,
   lightAttackStageFiveSecondColliderTriggers,
@@ -36,12 +40,17 @@ export const lightAttack = defineSkill({
   classId: "bamboocutDraught",
   name: "Gauntlet Light Attack",
   breakdownName: "Gauntlets Light Attack",
-  tags: [WEAPON.gauntlets],
+  tags: [WEAPON.gauntlets, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.lightAttack,
-  receives: [BUFF.swallowcallLightAttackBoost, ...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
+  receives: [
+    BUFF.swallowcallLightAttackBoost,
+    ...CLASS_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  ],
   triggerable: false,
   castFrames: 187,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
@@ -49,7 +58,7 @@ export const lightAttack = defineSkill({
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    stage(0, 13, 0.35636, 100, 54),
+    stage(0, 17, 0.35636, 100, 54),
     stage(1, 37, 0.156852, 44, 23.6),
     hit(2, {
       frame: 47,
@@ -73,5 +82,5 @@ export const lightAttack = defineSkill({
     stage(7, 147, 0.8202, 228, 124, true),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

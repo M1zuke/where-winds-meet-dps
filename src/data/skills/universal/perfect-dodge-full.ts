@@ -16,6 +16,7 @@ export const perfectDodgeFull = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.perfectDodgeFull,
+  startLatency: "serverRoundTrip",
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 50,
   triggerable: true,

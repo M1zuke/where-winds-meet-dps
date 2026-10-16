@@ -17,6 +17,7 @@ import {
 import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { reveldriftChargesMeter } from "./chargeMeters"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
 const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
@@ -54,7 +55,7 @@ export const bamboocutDraught = defineClass({
   // weapon (Bloombreak / the Nightwick family) — an assumption for every
   // skill with no reach of its own.
   defaultMeleeReachMeters: 4,
-  meters: [enduranceMeter],
+  meters: [enduranceMeter, reveldriftChargesMeter],
   critBoostWeaponTypes: [],
   skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,

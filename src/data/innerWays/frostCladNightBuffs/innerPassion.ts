@@ -7,7 +7,8 @@ export const innerPassion = defineBuff({
   id: BUFF.innerPassion,
   name: "Inner Passion",
   affectsAll: true,
-  duration: 12,
+  // In-game values as of 2026-10-15.
+  duration: 14,
   maxStacks: 4,
   buffAppliesOnCastEnd: true,
   stacks: (ctx) =>

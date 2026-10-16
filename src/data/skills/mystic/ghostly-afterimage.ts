@@ -4,7 +4,7 @@ import { CAST } from "../ids"
 import { SKILL } from "./ids"
 
 // In-game values as of 2026-10-06: fired from the dodge, so no mystic category
-// boost reaches it.
+// boost reaches it. All Mystic Skill DMG Boost does (as of 2026-10-15).
 export const ghostlyAfterimage = defineSkill({
   id: SKILL.ghostlyAfterimage,
   classId: MYSTIC_ARTS_CLASS_ID,

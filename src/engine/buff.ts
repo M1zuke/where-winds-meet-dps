@@ -19,6 +19,7 @@ export interface MeterModifier {
   tag?: string
   belowCapacityFraction?: number
   alwaysActive?: boolean
+  perStack?: boolean
 }
 
 export interface Buff {
@@ -139,6 +140,8 @@ export function isBuff(x: unknown): x is Buff {
         meterModifier.alwaysActive !== undefined &&
         typeof meterModifier.alwaysActive !== "boolean"
       )
+        return false
+      if (meterModifier.perStack !== undefined && typeof meterModifier.perStack !== "boolean")
         return false
     }
   }

@@ -17,6 +17,13 @@ import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRate
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
+import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
+import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
+import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
+import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
+import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -82,7 +89,14 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withQiRate = healQiRateDefault(withDrawnGates) as Skill
   const withTiming = healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
   const withDrink = healBoundvesselDrinkAccumulation(withTiming) as Skill
-  return healGhostlyAfterimagePerDodge(withDrink) as Skill
+  const withPerDodge = healGhostlyAfterimagePerDodge(withDrink) as Skill
+  const withGauntletRetiming = healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge)
+  const withReviewedTimings = healReviewedTimingsGrantsAndNames(withGauntletRetiming)
+  const withGrantTiming = healDraughtGrantTimingAndAbrasionTalent(withReviewedTimings)
+  const withMistwillow = healDraughtMistwillowReach(withGrantTiming)
+  const withCharges = healDraughtReveldriftChargesAndEmpoweredLightAttack(withMistwillow)
+  const withCooldowns = healDraughtTipsylayAndExCooldowns(withCharges)
+  return healDraughtNightwickStanceAndVariedComboOverrides(withCooldowns) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
@@ -100,7 +114,7 @@ describe("custom-skills v24 fixture", () => {
 
   it("stores rows the built-ins no longer carry", () => {
     expect(builtinOf("bamboocutDraught-light-attack").hits).toHaveLength(8)
-    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(15)
+    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(16)
   })
 })
 
@@ -156,8 +170,11 @@ describe("V25__bamboocutDraughtValuesGatesReach — through the chain", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 25 })!
     expect(result.applied).toEqual(["V25__bamboocutDraughtValuesGatesReach"])
     expect(result.blob.v).toBe(25)
-    expect(skillIn(result.blob, "bamboocutDraught-light-attack").hits).toEqual(
-      builtinOf("bamboocutDraught-light-attack").hits,
-    )
+    expect(
+      throughLaterHops(
+        "bamboocutDraught-light-attack",
+        skillIn(result.blob, "bamboocutDraught-light-attack"),
+      ).hits,
+    ).toEqual(builtinOf("bamboocutDraught-light-attack").hits)
   })
 })

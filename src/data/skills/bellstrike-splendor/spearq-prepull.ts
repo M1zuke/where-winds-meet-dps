@@ -5,15 +5,16 @@ import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 import { QIANKUNS_LOCK_GAIN, MOUNTAINS_MIGHT_GAIN } from "./buffs/qiankunsLockEnduranceGains"
 import {
+  endlessGaleAtStartDispel,
   endlessGaleAtStartGrant,
+  endlessGaleAtStartRestart,
   endlessGaleGrant,
   endlessGaleMountainsMightExtend,
   endlessGaleCostReductionEndTrigger,
 } from "./buffs/endlessGaleCostReductionGrant"
-import { qiankunsLockQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 
-// Cast before the pull, so it lands no damage of its own — it is in the
-// rotation for the Endless Gale window and the Qi Imbalance it applies.
+// Cast before the pull, so it lands no hit and applies no Qi Imbalance — it is in
+// the rotation for the Endless Gale window it opens.
 export const spearqPrepull = defineSkill({
   id: SKILL.spearqPrepull,
   classId: "bellstrikeSplendor",
@@ -24,7 +25,7 @@ export const spearqPrepull = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
-  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
+  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight],
   receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 0,
   triggerable: true,
@@ -48,13 +49,14 @@ export const spearqPrepull = defineSkill({
         QIANKUNS_LOCK_GAIN,
         MOUNTAINS_MIGHT_GAIN,
         endlessGaleAtStartGrant,
+        endlessGaleAtStartRestart,
         endlessGaleGrant,
         endlessGaleMountainsMightExtend,
         endlessGaleCostReductionEndTrigger,
-        qiankunsLockQiImbalanceMarkerGrant,
+        endlessGaleAtStartDispel,
       ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

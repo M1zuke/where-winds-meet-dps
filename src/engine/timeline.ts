@@ -12,15 +12,20 @@ import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff, DebuffDotSpec } from "./debuff"
 import type {
   ConditionFailureReason,
+  HitDistance,
   HitTrigger,
   MeterCost,
+  ReleaseGate,
   Skill,
   SkillHit,
+  StatusCondition,
   TriggerCondition,
 } from "./skill"
 import {
   breakdownNameOf,
+  conditionIds,
   conditionSatisfiedByStacks,
+  hasBuffEngineSource,
   isAnyOfCondition,
   isParamCondition,
   isPrePullSkill,
@@ -68,17 +73,23 @@ import {
 import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
 import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
-import { CombatResource } from "./resources"
+import { CombatResource, type ResourceTickOutcome } from "./resources"
 import { MeterEngine } from "./meter"
-import { meterMaxParamKey, type MeterMaxContext } from "../definitions/resources/meterDef"
+import { settleLateMeters, lateMeterStatusIds, type LateMeterSettlement } from "./lateMeter"
+import {
+  inDisplayUnits,
+  meterMaxParamKey,
+  type MeterMaxContext,
+} from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
-import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
+import { EXTENSION_STREAM_OFFSET, MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
-import { distanceAtCastStart } from "./distance"
+import { SAME_FRAME_STEP_SEC } from "./buffs/frameOrder"
+import { distanceReaderAtCast, type Displacement } from "./distance"
 import { IN_COMBAT_STATUS } from "./combatState"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
@@ -123,6 +134,7 @@ import {
 import { resolveAverageFps, resolvePingMs, resolveServerProcessingMs } from "./pingFps"
 
 export const FPS = 60
+const ENGINE_READ_LEAD_SEC = 1e-9
 
 // In-game values as of 2026-09-28: every art's own swap-in cast shares one
 // 3 s cooldown, gating every class's Dual-Weapon Skill alike.
@@ -139,7 +151,7 @@ const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
 
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.
-function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
+export function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
   if (renderPeriodFrames <= 0) return value
   return Math.ceil(value / renderPeriodFrames - 1e-9) * renderPeriodFrames
 }
@@ -148,6 +160,11 @@ const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affi
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
+
+interface ConditionReader {
+  stacksOf(condition: StatusCondition, frame: number): number
+  nameOf?(buffId: string): string | undefined
+}
 
 type Ctx = ReturnType<typeof buildContext>
 type EchoFeed = DamageEffectsResult["echoFeeds"][number]
@@ -180,8 +197,33 @@ function castEndFrame(
   return castFrame + (skill.castFrames || lastHitFrame + 1)
 }
 
+function activeVariantDisplacement(
+  hits: readonly SkillHit[],
+  holds: (condition: TriggerCondition) => boolean,
+): Displacement | undefined {
+  for (const skillHit of hits) {
+    const variant = selectHitVariant(skillHit, holds)
+    if (variant?.displacement) return variant.displacement
+  }
+  return undefined
+}
+
+function activeVariantCastFrames(
+  hits: readonly SkillHit[],
+  holds: (condition: TriggerCondition) => boolean,
+): number | null {
+  for (const skillHit of hits) {
+    const variant = selectHitVariant(skillHit, holds)
+    if (variant?.castFrames !== undefined && variant.castFrames > 0) return variant.castFrames
+  }
+  return null
+}
+
 interface HitEvent {
   frame: number
+  // The landing time before it is rounded to a whole 60 fps frame, for the one
+  // reader that compares two hits' wall-clock stamps.
+  exactFrame?: number
   seq: number
   skill: Skill
   hit: SkillHit
@@ -244,6 +286,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     options?.seed === undefined
       ? undefined
       : mulberry32((options.seed ^ MECHANIC_STREAM_OFFSET) | 0)
+  const extensionRng =
+    options?.seed === undefined
+      ? undefined
+      : mulberry32((options.seed ^ EXTENSION_STREAM_OFFSET) | 0)
   const rotation = inputs.activeCustomRotation
   if (!rotation || rotation.classId !== inputs.classId) {
     return emptyResult(["Timeline rotation not available for this class."])
@@ -262,24 +308,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
   const qiTargetHpMaxValue = qiTargetHpMax(qiTargetId, inputs.breakthrough)
 
-  // The fixed-point iteration below seeds from the rotation's own authored
-  // window (or a prior run's own converged breaks) and re-runs until the
-  // break frames stop moving (docs/TIMELINE.md § "Qi bar").
-  const qiSeedWindow = rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
   const qiWarmStartBreaks = options?.qiScheduleSeedBreaks
   const fixedQiBreaks = options?.fixedQiBreaks
   let qiSchedule: QiSchedule = fixedQiBreaks
     ? fixedQiScheduleFromWindows(fixedQiBreaks, FPS)
     : qiWarmStartBreaks
       ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
-      : fixedQiSchedule(qiSeedWindow, FPS)
-  // Every built-in rotation settles within 5 runs; 6 leaves one run of margin.
+      : fixedQiSchedule(DEFAULT_QI_BREAK_WINDOW, FPS)
   const QI_MAX_ITERATIONS = 6
   // A warm-started seed is a prior run's own converged schedule, so if this
   // build's first pass reproduces it exactly, that pass already is the fixed
-  // point — docs/UI.md § "The rules", "one verifying run". The rotation's own
-  // authored window seeding a cold run carries no such guarantee, and keeps
-  // requiring a real second pass to confirm.
+  // point — docs/UI.md § "The rules", "one verifying run". The default window
+  // seeding a cold run carries no such guarantee, and keeps requiring a real
+  // second pass to confirm.
   let qiPreviousBreaksFrames: readonly QiBreak[] | null = qiWarmStartBreaks ?? null
 
   for (let qiIteration = 1; ; qiIteration++) {
@@ -289,7 +330,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
     for (const s of inputs.customSkills ?? []) skillsMap.set(s.id, s)
     const skills = [...skillsMap.values()]
-    const buffParams = paramsFromInputs(inputs, rotation.qiBreak)
+    const buffParams = paramsFromInputs(inputs)
     const buffsMap = new Map<string, Buff>()
     for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
     for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)
@@ -359,6 +400,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // frames — every later reader of a performed hit's frame adds it, the
       // same way `hitLandingFrame` itself is shared rather than reimplemented.
       midCastExtraFrames: number
+      hitDistanceMeters: HitDistance
     }
 
     const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
@@ -636,22 +678,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           renderPeriodFrames,
         )
       : 0
-    const renderFrameOnlyFrames = hasPing
-      ? quantiseToRenderFrame(oneRenderFrameFrames, renderPeriodFrames)
-      : 0
     // A skill's own further in-cast server wait lands mid-graph, not at a
     // fresh input, so it skips the extra render frame `roundTripFrames` pays.
     const midCastWaitFrames = hasPing
       ? quantiseToRenderFrame(pingRoundTripFrames + serverProcessingFrames, renderPeriodFrames)
       : 0
-    const startLatencyFrames = (skill: Skill): number => {
-      const latency = skill.startLatency ?? "serverRoundTrip"
-      if (latency === "none") return 0
-      if (latency === "noWaitOnDummy" && inputs.dummyMode) return renderFrameOnlyFrames
-      return roundTripFrames
-    }
+    const startLatencyFrames = (skill: Skill): number =>
+      skill.startLatency === "serverRoundTrip" ? roundTripFrames : 0
+    const exactHitLandingFrame = (stepStart: number, hitFrame: number): number =>
+      stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames)
     const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
-      Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
+      Math.round(exactHitLandingFrame(stepStart, hitFrame))
 
     // The largest cast length any of a step's hit variants could select.
     function upperBoundCastFrames(rs: ResolvedStep): number {
@@ -669,31 +706,63 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return bound
     }
 
-    // The largest start-wait plus in-cast-wait a step could pay — the worst
-    // case a dummy-mode skip could still be waived, so every reader of this
-    // bound stays a true upper bound regardless of `inputs.dummyMode`. Rounded
-    // up to a whole frame: this bound also sizes the meter engine's own
-    // starting frame, and a render-quantised fraction there would desync its
-    // internal cursor from every (already-rounded) hit-derived frame it is
+    // Rounded up to a whole frame: this bound also sizes the meter engine's
+    // own starting frame, and a render-quantised fraction there would desync
+    // its internal cursor from every (already-rounded) hit-derived frame it is
     // later compared against.
     function upperBoundLatencyFrames(rs: ResolvedStep): number {
-      const start = (rs.skill.startLatency ?? "serverRoundTrip") === "none" ? 0 : roundTripFrames
-      return Math.ceil(start + (rs.skill.serverWaitsInCast ?? 0) * midCastWaitFrames)
+      return Math.ceil(
+        startLatencyFrames(rs.skill) + (rs.skill.serverWaitsInCast ?? 0) * midCastWaitFrames,
+      )
+    }
+
+    function prePullCastFrames(
+      skill: Skill,
+      nextStepSkillId: string | undefined,
+      holds: (condition: TriggerCondition) => boolean,
+    ): number {
+      const occurringHits = skill.hits.filter(
+        (skillHit) =>
+          hitConditionsHold(skillHit, holds) &&
+          (!skillHit.requiresNextStepSkillIds ||
+            (nextStepSkillId !== undefined &&
+              skillHit.requiresNextStepSkillIds.includes(nextStepSkillId))),
+      )
+      const variantCastFrames = activeVariantCastFrames(occurringHits, holds)
+      if (variantCastFrames !== null) return variantCastFrames
+      const lastHitFrame =
+        occurringHits.length > 0
+          ? Math.max(
+              ...occurringHits.map(
+                (skillHit) => selectHitVariant(skillHit, holds)?.frame ?? skillHit.frame,
+              ),
+            )
+          : -1
+      return skill.castFrames || lastHitFrame + 1
     }
 
     // A cast's length can't be resolved from the live status ledger, because
     // that ledger needs every cast's length to size itself first. This
     // throwaway ledger breaks the cycle: sized against the worst case up front,
     // then filled incrementally as each step is laid out, so a later step's
-    // conditions see every earlier step's triggers but never its own. Prepull
-    // casts take the upper bound as their real length outright — none
-    // currently gate a hit or a variant's cast length on a condition. Every
-    // step's own worst-case latency is added too, or a heavily lagged run can
-    // land a cast past a permanent status's own bound-sized window.
+    // conditions see every earlier step's triggers but never its own. A prepull
+    // cast resolves its length like an in-fight cast, here against the
+    // parameters alone: a variant gated on a parameter is static for the run,
+    // one gated on a status falls back to the skill's own length. Every step's
+    // own worst-case latency is added too, or a heavily lagged run can land a
+    // cast past a permanent status's own bound-sized window.
+    const parameterOnlyHolds = (condition: TriggerCondition): boolean =>
+      unionConditionHolds(condition, 0, buffParams, () => false)
     const prePullBound = resolvedSteps.reduce(
-      (sum, rs) =>
+      (sum, rs, stepIndex) =>
         isPrePullSkill(rs.skill)
-          ? sum + upperBoundCastFrames(rs) + upperBoundLatencyFrames(rs)
+          ? sum +
+            prePullCastFrames(
+              rs.skill,
+              resolvedSteps[stepIndex + 1]?.skill.id,
+              parameterOnlyHolds,
+            ) +
+            upperBoundLatencyFrames(rs)
           : sum,
       0,
     )
@@ -714,6 +783,37 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const weaponIdentities = weaponIdentitiesOf(skills)
     const runEffectiveRates = effectiveRates(inputs)
 
+    // Untiered (the param off entirely) reads as tier 0 rather than failing the
+    // check outright — a cost waived only from some tier up (`requiresMaxTier`)
+    // must still apply to a build that never slotted the param at all.
+    function meterCostRequirementHolds(cost: MeterCost): boolean {
+      if (!cost.requiresParam) return true
+      const tier = paramOnOf(buffParams, cost.requiresParam)
+        ? paramTierOf(buffParams, cost.requiresParam)
+        : 0
+      return tier >= (cost.requiresMinTier ?? 0) && tier <= (cost.requiresMaxTier ?? Infinity)
+    }
+
+    const meterMaxContext: MeterMaxContext = {
+      paramTier: (id) => paramTierOf(buffParams, id),
+      paramOn: (id) => paramOnOf(buffParams, id),
+      paramValue: (id) => paramNumOf(buffParams, id),
+      whiteAffinityRate: inputs.affinityRate,
+    }
+
+    const lateMeterDefs = (classDef?.meters ?? []).filter((definition) => definition.dependsOnBuffs)
+    const lateMeterIds = lateMeterStatusIds(lateMeterDefs)
+    const readsLateMeter = (condition: TriggerCondition): boolean =>
+      conditionIds(condition).some((id) => lateMeterIds.has(id))
+
+    const buildView: BuildView = {
+      classId: inputs.classId,
+      innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
+      classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
+      grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
+      openingStacks: openingStacksOf,
+    }
+
     interface LayoutRun {
       laidSteps: LaidStep[]
       layoutLedger: StatusLedger
@@ -726,6 +826,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       discoveredFightStartFrame: number | null
       discoveredFightEndFrame: number | null
       castCursorFrames: number
+      describeConditionFailure: (
+        condition: TriggerCondition,
+        frame: number,
+        reader?: ConditionReader,
+      ) => ConditionFailureReason
     }
 
     // Lays out every step, its hits and its trigger cascade once, truncating
@@ -747,37 +852,34 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
       const layoutWriter = statusWriter(layoutLedger, layoutHolds)
       seedOpeningState(layoutWriter, Math.min(0, -prePullBound))
+      const layoutBehaviorFor = buildBehaviors(buildView)
 
       // Meters (Endurance, Blade Momentum, …) simulate once here, in the same
       // sequential cursor `castConditions` legality already reads, and are
       // replayed onto the real ledger once it exists — see docs/TIMELINE.md §
       // "Meters".
-      const meterMaxContext: MeterMaxContext = {
-        paramTier: (id) => paramTierOf(buffParams, id),
-        paramOn: (id) => paramOnOf(buffParams, id),
-        paramValue: (id) => paramNumOf(buffParams, id),
-        whiteAffinityRate: inputs.affinityRate,
-      }
       const meterStartFrame = Math.min(0, -prePullBound)
-      const meters = (classDef?.meters ?? []).map(
-        (definition) =>
-          new MeterEngine(
-            definition,
-            meterMaxContext,
-            FPS,
-            layoutLedger,
-            meterStartFrame,
-            (frame, currentAmount, capacity) =>
-              meterModifierMultiplier(
-                "regen",
-                definition.id,
-                frame,
-                undefined,
-                currentAmount,
-                capacity,
-              ),
-          ),
-      )
+      const meters = (classDef?.meters ?? [])
+        .filter((definition) => !definition.dependsOnBuffs)
+        .map(
+          (definition) =>
+            new MeterEngine(
+              definition,
+              meterMaxContext,
+              FPS,
+              layoutLedger,
+              meterStartFrame,
+              (frame, currentAmount, capacity) =>
+                meterModifierMultiplier(
+                  "regen",
+                  definition.id,
+                  frame,
+                  undefined,
+                  currentAmount,
+                  capacity,
+                ),
+            ),
+        )
       const meterById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
       for (const meter of meters) buffParams[meterMaxParamKey(meter.def.id)] = meter.capacity
 
@@ -807,11 +909,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       function describeConditionFailure(
         condition: TriggerCondition,
         frame: number,
+        reader: ConditionReader = {
+          stacksOf: (status, atFrame) => layoutLedger.conditionStacksAt(status.buffId, atFrame),
+        },
       ): ConditionFailureReason {
         if (isAnyOfCondition(condition))
           return {
             kind: "anyOf",
-            reasons: condition.anyOf.map((clause) => describeConditionFailure(clause, frame)),
+            reasons: condition.anyOf.map((clause) =>
+              describeConditionFailure(clause, frame, reader),
+            ),
           }
         if (isParamCondition(condition)) {
           const on = paramOnOf(buffParams, condition.param)
@@ -840,7 +947,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             actualName: actualWeapon,
           }
         }
-        const actual = layoutLedger.conditionStacksAt(condition.buffId, frame)
+        const actual = reader.stacksOf(condition, frame)
         const meter = meters.find((candidate) => candidate.statusId === condition.buffId)
         if (meter)
           return {
@@ -850,12 +957,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             op: condition.op,
             required: condition.stacks,
             actual,
+            ...(meter.def.displayUnitSize !== undefined
+              ? { unitSize: meter.def.displayUnitSize }
+              : {}),
           }
         const status = statusById.get(condition.buffId)
         return {
           kind: status && isDebuffStatus(status) ? "debuff" : "buff",
           id: condition.buffId,
-          name: status?.name ?? condition.buffId,
+          name: status?.name ?? reader.nameOf?.(condition.buffId) ?? condition.buffId,
           op: condition.op,
           required: condition.stacks,
           actual,
@@ -895,20 +1005,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   )
                 : layoutLedger.isActiveAt(status.id, frame)
             if (!active) continue
-            if (modifier.tag) scoped += modifier.amount
-            else unscoped += modifier.amount
+            const amount = modifier.perStack
+              ? modifier.amount * layoutLedger.conditionStacksAt(status.id, frame)
+              : modifier.amount
+            if (modifier.tag) scoped += amount
+            else unscoped += amount
           }
         }
         return { scoped, unscoped }
       }
 
-      // A charge drain also pays whatever the meter's own unscoped `cost` layer
-      // currently charges, on top of its own dedicated `chargeCost` layer — the
-      // unscoped cost formula is defined in-game as covering every spend,
-      // continuous drains included, while the class-scoped cost layer never
-      // reaches a charge at all (docs/TIMELINE.md § "Meters").
       function meterModifierMultiplier(
-        kind: "cost" | "chargeCost" | "regen",
+        kind: "cost" | "regen",
         meterId: string,
         frame: number,
         skill?: Skill,
@@ -916,34 +1024,44 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         capacity?: number,
       ): number {
         const own = meterModifierLayerSums(kind, meterId, frame, skill, currentAmount, capacity)
-        let multiplier = Math.max(0, 1 + own.scoped) * Math.max(0, 1 + own.unscoped)
-        if (kind === "chargeCost") {
+        return Math.max(0, 1 + own.scoped) * Math.max(0, 1 + own.unscoped)
+      }
+
+      // A charge drain pays the dedicated `chargeCost` layer as it stood where
+      // the charge started, and on top of it whatever the meter's own unscoped
+      // `cost` layer charges at each frame — the unscoped cost formula is
+      // defined in-game as covering every spend, continuous drains included,
+      // while the class-scoped cost layer never reaches a charge at all
+      // (docs/TIMELINE.md § "Meters").
+      function chargeDrainMultiplier(
+        meterId: string,
+        startFrame: number,
+        skill: Skill,
+      ): (frame: number) => number {
+        const dedicated = meterModifierLayerSums(
+          "chargeCost",
+          meterId,
+          startFrame,
+          skill,
+          undefined,
+          undefined,
+        )
+        const atStart = Math.max(0, 1 + dedicated.scoped) * Math.max(0, 1 + dedicated.unscoped)
+        return (frame) => {
           const costLayer = meterModifierLayerSums(
             "cost",
             meterId,
             frame,
             skill,
-            currentAmount,
-            capacity,
+            undefined,
+            undefined,
           )
-          multiplier *= Math.max(0, 1 + costLayer.unscoped)
+          return atStart * Math.max(0, 1 + costLayer.unscoped)
         }
-        return multiplier
       }
 
       function advanceMeters(frame: number): void {
         for (const meter of meters) meter.advanceTo(frame)
-      }
-
-      // Untiered (the param off entirely) reads as tier 0 rather than failing the
-      // check outright — a cost waived only from some tier up (`requiresMaxTier`)
-      // must still apply to a build that never slotted the param at all.
-      function meterCostRequirementHolds(cost: MeterCost): boolean {
-        if (!cost.requiresParam) return true
-        const tier = paramOnOf(buffParams, cost.requiresParam)
-          ? paramTierOf(buffParams, cost.requiresParam)
-          : 0
-        return tier >= (cost.requiresMinTier ?? 0) && tier <= (cost.requiresMaxTier ?? Infinity)
       }
 
       interface PendingMeterIntervalStart {
@@ -1016,40 +1134,31 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         for (const drain of skill.meterDrains ?? []) {
           const meter = meterById.get(drain.meterId)
           if (!meter) continue
-          const fromFrame = hitLandingFrame(startFrame, drain.fromFrame)
+          const fromFrame = exactHitLandingFrame(startFrame, drain.fromFrame)
           // Never outlives its own cast — the graph node driving it is torn down
           // the moment the cast ends, however long its own stop timer still had.
           const toFrame =
             drain.stopAfterSec !== undefined
-              ? Math.min(fromFrame + Math.round(drain.stopAfterSec * FPS), castEndFrame)
+              ? Math.min(fromFrame + drain.stopAfterSec * FPS, castEndFrame)
               : castEndFrame
           starts.push({
-            frame: fromFrame,
+            frame: Math.round(fromFrame),
             register: () =>
-              meter.startDrain(fromFrame, toFrame, drain.perSecond, (frame) =>
-                meterModifierMultiplier("chargeCost", drain.meterId, frame, skill),
+              meter.startDrain(
+                fromFrame,
+                toFrame,
+                drain.perSecond,
+                chargeDrainMultiplier(drain.meterId, Math.round(fromFrame), skill),
               ),
           })
         }
         return starts
       }
 
-      const activeVariantCastFrames = (
-        hits: readonly SkillHit[],
-        holds: (condition: TriggerCondition) => boolean,
-      ): number | null => {
-        for (const skillHit of hits) {
-          const variant = selectHitVariant(skillHit, holds)
-          if (variant?.castFrames !== undefined && variant.castFrames > 0) return variant.castFrames
-        }
-        return null
-      }
-
       // A summoned hit counts as a hit for every hit-driven schedule (proc
       // mechanics, the layout ledger), the same as a laid one — the frame it
       // lands at is all that distinguishes them. `detonateDot`'s own sub-cast
-      // stays out of the layout ledger: chasing it needs the retained-stack
-      // build param, which the buff engine alone resolves.
+      // is laid for the ledger alone, so it joins no schedule.
       const damagingHitTimesSec: number[] = []
       const weaponHitTimesSec: number[] = []
 
@@ -1058,9 +1167,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         skill: Skill
         hit: SkillHit
         frame: number
+        exactFrame: number
         owner: number
         prePull: boolean
         sequence: number
+        ledgerOnly?: boolean
       }
       interface PendingMeterDeltaEvent {
         kind: "meterDelta"
@@ -1102,21 +1213,46 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         paidByMeter: Map<string, number>,
         laidEndFrame: number,
       ): void {
-        const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
+        const { skill, hit: skillHit, frame: hitFrame, exactFrame, owner, prePull } = current
         const ownerHolds = (condition: TriggerCondition) => layoutHolds(condition, owner)
         layoutWriter.processExpiries(hitFrame)
         const ledgerMarkBeforeHit = layoutLedger.mark()
+        const layoutHitInput: HitInput = {
+          skill,
+          hit: skillHit,
+          frame: hitFrame,
+          statuses: layoutLedger,
+          build: buildView,
+          holds: ownerHolds,
+        }
+        for (const effect of layoutBehaviorFor(skill).onHit?.(layoutHitInput) ?? []) {
+          if (effect.kind !== "setStatus") continue
+          const status = statusById.get(effect.id)
+          if (!status) continue
+          if (effect.permanent) layoutLedger.openPermanent(status.id)
+          else
+            layoutLedger.pushWindow(
+              status.id,
+              hitFrame,
+              hitFrame + Math.max(1, effect.durationFrames ?? status.durationFrames),
+              owner,
+            )
+          if (effect.stacks !== undefined)
+            layoutLedger.recordStack(status.id, hitFrame, effect.stacks, owner)
+        }
         if (hitDealsDamage(skillHit)) {
           layoutWriter.onDamagingHit(hitFrame, owner)
-          if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
-            discoveredFightStartFrame = hitFrame
-            layoutLedger.recordStack(IN_COMBAT_STATUS, hitFrame, 1)
+          if (!current.ledgerOnly) {
+            if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
+              discoveredFightStartFrame = hitFrame
+              layoutLedger.recordStack(IN_COMBAT_STATUS, hitFrame, 1)
+            }
+            if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
+              discoveredFightEndFrame = hitFrame
+            const timeSec = hitFrame / FPS
+            damagingHitTimesSec.push(timeSec)
+            if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
           }
-          if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
-            discoveredFightEndFrame = hitFrame
-          const timeSec = hitFrame / FPS
-          damagingHitTimesSec.push(timeSec)
-          if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
         }
         for (const trigger of skillHit.triggers) {
           if (trigger.kind === "detonateDot") continue
@@ -1141,14 +1277,34 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 candidate.kind === "detonateDot" && candidate.targetId === trigger.targetId,
             )
             if (detonation && detonates && next >= maxStacks) {
-              const retainsMore =
-                detonation.retainParam !== undefined &&
-                paramOnOf(buffParams, detonation.retainParam) &&
-                paramTierOf(buffParams, detonation.retainParam) >= (detonation.retainMinTier ?? 6)
-              const retained = retainsMore
-                ? (detonation.retainParamStacks ?? detonation.retainStacks ?? 0)
-                : (detonation.retainStacks ?? 0)
-              layoutLedger.recordStack(status.id, hitFrame, clamp(retained, 0, maxStacks), owner)
+              layoutLedger.recordStack(
+                status.id,
+                hitFrame,
+                clamp(detonation.retainStacks ?? 0, 0, maxStacks),
+                owner,
+              )
+              const burst = skillsById.get(detonation.skillId)
+              const burstHolds = (condition: TriggerCondition) => layoutHolds(condition, hitFrame)
+              for (const burstHit of (burst?.hits ?? []).filter((candidate) =>
+                hitConditionsHold(candidate, burstHolds),
+              )) {
+                const burstHitFrame = resolvedHitFrame(
+                  burstHit,
+                  burstHolds,
+                  targetDistanceAt(hitFrame),
+                )
+                pending.push({
+                  kind: "hit",
+                  skill: burst!,
+                  hit: burstHit,
+                  frame: hitLandingFrame(hitFrame, burstHitFrame),
+                  exactFrame: exactHitLandingFrame(hitFrame, burstHitFrame),
+                  owner,
+                  prePull,
+                  sequence: layoutHitSequence++,
+                  ledgerOnly: true,
+                })
+              }
             }
             continue
           }
@@ -1160,14 +1316,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             for (const subHit of sub.hits.filter((candidate) =>
               hitConditionsHold(candidate, subHolds),
             )) {
+              const subHitFrame = resolvedHitFrame(subHit, subHolds, targetDistanceAt(hitFrame))
               pending.push({
                 kind: "hit",
                 skill: sub,
                 hit: subHit,
-                frame: hitLandingFrame(
-                  hitFrame,
-                  resolvedHitFrame(subHit, subHolds, targetDistanceAt(hitFrame)),
-                ),
+                frame: hitLandingFrame(hitFrame, subHitFrame),
+                exactFrame: exactHitLandingFrame(hitFrame, subHitFrame),
                 owner,
                 prePull,
                 sequence: layoutHitSequence++,
@@ -1179,7 +1334,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             if (prePull) continue
             const effectiveFrame = trigger.appliesOnCastEnd
               ? castEndFrame(skill, owner, ownerHolds, targetDistanceAt(owner))
-              : hitFrame
+              : trigger.delayFrames !== undefined
+                ? Math.round(exactFrame + trigger.delayFrames)
+                : hitFrame
             pending.push({
               kind: "meterDelta",
               trigger,
@@ -1279,24 +1436,27 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         paidByMeter: Map<string, number> = new Map(),
         meterHorizonFrame = Infinity,
         midCastExtraFrames = 0,
+        hitDistanceMeters: HitDistance = targetDistanceAt(stepStart),
       ): void {
         const pending: PendingLayoutEvent[] = [
-          ...hits.map((hit): PendingHitEvent => ({
-            kind: "hit",
-            skill,
-            hit,
-            frame: hitLandingFrame(
-              stepStart,
+          ...hits.map((hit): PendingHitEvent => {
+            const hitFrame =
               resolvedHitFrame(
                 hit,
                 (condition) => layoutHolds(condition, stepStart),
-                targetDistanceAt(stepStart),
-              ) + midCastExtraFrames,
-            ),
-            owner: stepStart,
-            prePull,
-            sequence: layoutHitSequence++,
-          })),
+                hitDistanceMeters,
+              ) + midCastExtraFrames
+            return {
+              kind: "hit",
+              skill,
+              hit,
+              frame: hitLandingFrame(stepStart, hitFrame),
+              exactFrame: exactHitLandingFrame(stepStart, hitFrame),
+              owner: stepStart,
+              prePull,
+              sequence: layoutHitSequence++,
+            }
+          }),
           ...meterIntervalStarts.map((start): PendingMeterIntervalEvent => ({
             kind: "meterInterval",
             frame: start.frame,
@@ -1361,6 +1521,40 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         return { step: resolvedStep.step, skill: current }
       }
 
+      function resolveReleaseGates(resolvedStep: ResolvedStep, startFrame: number): ResolvedStep {
+        let current = resolvedStep.skill
+        for (let guard = 0; guard < skills.length + 1; guard++) {
+          let released: { gate: ReleaseGate; failed: TriggerCondition[]; frame: number } | null =
+            null
+          for (const gate of current.releaseGates ?? []) {
+            const frame = Math.floor(exactHitLandingFrame(startFrame, gate.atFrame))
+            flushMeterEventsUpTo(frame)
+            advanceMeters(frame)
+            const failed = gate.requires.filter(
+              (condition) => !hasBuffEngineSource(condition) && !layoutHolds(condition, frame),
+            )
+            if (failed.length === 0) continue
+            released = { gate, failed, frame }
+            break
+          }
+          if (!released) return { step: resolvedStep.step, skill: current }
+          const fallback = skillsById.get(released.gate.fallbackSkillId)
+          if (!fallback) return { step: resolvedStep.step, skill: current }
+          const releasedName = current.name || current.id
+          const fallbackName = fallback.name || fallback.id
+          const reasons = released.failed.map((condition) =>
+            describeConditionFailure(condition, released.frame),
+          )
+          warn(
+            startFrame,
+            (relSec) =>
+              `${releasedName} at ${relSec.toFixed(2)}s released onto ${fallbackName}: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+          )
+          current = fallback
+        }
+        return { step: resolvedStep.step, skill: current }
+      }
+
       const laidSteps: LaidStep[] = []
       let activeCursor = 0
       let preCursor = -prePullBound
@@ -1399,7 +1593,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const meterMarkAtStart = layoutLedger.mark()
         const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
         const failedCastConditions = (resolvedStep.skill.castConditions ?? []).filter(
-          (condition) => !holdsHere(condition),
+          (condition) =>
+            !hasBuffEngineSource(condition) && !readsLateMeter(condition) && !holdsHere(condition),
         )
         if (failedCastConditions.length > 0) {
           const reasons = failedCastConditions.map((condition) =>
@@ -1421,16 +1616,23 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           : applyMeterCosts(resolvedStep.skill, startFrame)
         const castResolution = prePull
           ? resolvedStep
-          : resolveChargeRelease(resolvedStep, startFrame)
+          : resolveChargeRelease(resolveReleaseGates(resolvedStep, startFrame), startFrame)
         // A pre-pull cast never touches the target distance either — see the
         // meter-cost note above, the same real-world-gap reasoning applies.
+        const displacingSkill: Skill = {
+          ...castResolution.skill,
+          displacement:
+            activeVariantDisplacement(castResolution.skill.hits, holdsHere) ??
+            castResolution.skill.displacement,
+        }
+        const castDistanceReader = distanceReaderAtCast(
+          displacingSkill,
+          defaultMeleeReachMeters,
+          preferredDistanceMeters,
+          prePull ? preferredDistanceMeters : currentDistanceMeters,
+        )
         if (!prePull) {
-          currentDistanceMeters = distanceAtCastStart(
-            castResolution.skill,
-            defaultMeleeReachMeters,
-            preferredDistanceMeters,
-            currentDistanceMeters,
-          )
+          currentDistanceMeters = castDistanceReader(Infinity)
           layoutLedger.recordStack(TARGET_DISTANCE_STATUS, startFrame, currentDistanceMeters)
         }
         const nextStepSkillId = resolvedSteps[stepIndex + 1]?.skill.id
@@ -1446,10 +1648,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const midCastExtraFrames = prePull
           ? 0
           : (castResolution.skill.serverWaitsInCast ?? 0) * midCastWaitFrames
+        const hitDistanceMeters: HitDistance = castDistanceReader
         const layoutHitFrame = (hit: SkillHit): number =>
-          resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)) + midCastExtraFrames
+          resolvedHitFrame(hit, holdsHere, hitDistanceMeters) + midCastExtraFrames
         const nominalCastLen = prePull
-          ? upperBoundCastFrames(castResolution)
+          ? prePullCastFrames(castResolution.skill, nextStepSkillId, holdsHere)
           : (() => {
               const maxFrame =
                 occurringHits.length > 0 ? Math.max(...occurringHits.map(layoutHitFrame)) : -1
@@ -1462,7 +1665,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   (castResolution.skill.castFrames || maxFrame + 1)) + midCastExtraFrames
               )
             })()
-        const castLen = quantiseToRenderFrame(nominalCastLen, renderPeriodFrames)
+        const castLen = Math.max(
+          0,
+          quantiseToRenderFrame(nominalCastLen, renderPeriodFrames) -
+            (!prePull && castResolution.skill.keyframesLeadByRenderFrame ? renderPeriodFrames : 0),
+        )
         const nextCursor = exactStart + castLen
         if (prePull) preCursor = nextCursor
         else activeCursor = nextCursor
@@ -1478,7 +1685,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 startFrame,
                 startFrame + castLen,
               ),
-              ...scheduleDelayedMeterCosts(resolvedStep.skill, startFrame),
+              ...scheduleDelayedMeterCosts(castResolution.skill, startFrame),
             ]
         // A fixed window truncates every hit past its own end, pre-pull
         // included — docs/TIMELINE.md § "Fight window". `truncateAfterFrame` is
@@ -1500,6 +1707,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           paidByMeter,
           prePull ? Infinity : nextCursor,
           midCastExtraFrames,
+          hitDistanceMeters,
         )
         laidSteps.push({
           resolved: castResolution,
@@ -1510,6 +1718,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           performedHits: landedHits,
           meterMarkAtStart,
           midCastExtraFrames,
+          hitDistanceMeters,
         })
       }
       const castCursorFrames = activeCursor
@@ -1527,6 +1736,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         discoveredFightStartFrame,
         discoveredFightEndFrame,
         castCursorFrames,
+        describeConditionFailure,
       }
     }
 
@@ -1556,6 +1766,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           dot,
           windows,
           stacksAt: (frame) => ledger.stacksAt(buffId, frame),
+          distanceAt: (frame) => ledger.stacksAt(TARGET_DISTANCE_STATUS, frame),
           inWindow: () => true,
           weightAt: () => 1,
         })) {
@@ -1573,7 +1784,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       timedWarnings.push({ frame, build })
     }
     const recordInvalidStep = (stepId: string, reasons: ConditionFailureReason[]): void => {
-      invalidStepIds.push(stepId)
+      if (!invalidStepIds.includes(stepId)) invalidStepIds.push(stepId)
       invalidStepReasons[stepId] = reasons
     }
 
@@ -1623,6 +1834,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       discoveredFightEndFrame,
       castCursorFrames,
     } = layout
+    const meterEngineById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
 
     // docs/TIMELINE.md § "Fight window": without a fixed window, the fight ends
     // at the last damaging hit, not at the last cast's own end — a DoT tick
@@ -1719,14 +1931,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const liveWriter = statusWriter(ledger, conditionHolds)
     seedOpeningState(liveWriter, spanStart)
 
-    const buildView: BuildView = {
-      classId: inputs.classId,
-      innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
-      classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
-      grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
-      openingStacks: openingStacksOf,
-    }
-
     const behaviorFor = buildBehaviors(buildView)
 
     const hitInputAt = (
@@ -1772,6 +1976,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       midCastExtraFrames: number
     }
 
+    const damagingHitsPerFrame = new Map<number, number>()
+    const damagingHitOrdinals = new Map<string, number[]>()
+    const damagingHitKey = (frame: number, skillId: string, hitId: string) =>
+      `${frame}|${skillId}|${hitId}`
+    const sameFrameOffsetSec = (ordinal: number) => ordinal * SAME_FRAME_STEP_SEC
+    const damagingHitOrdinalOf = (frame: number, skillId: string, hitId: string): number =>
+      damagingHitOrdinals.get(damagingHitKey(frame, skillId, hitId))?.shift() ??
+      damagingHitsPerFrame.get(frame) ??
+      0
+
     // The prepass. It walks the whole cast graph — the rotation's casts and every
     // cast they generate — in frame order, so the buff history and the consume
     // ledger are both complete before the damage loop asks anything of them.
@@ -1780,6 +1994,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
         engine.attachStatuses({ view: ledger, fps: FPS })
         engine.attachQiSchedule(qiSchedule)
+        if (extensionRng) engine.attachExtensionGenerator(extensionRng)
         const castTriggerFires = triggerGate(castConditionHoldsFor(engine)).fires
         let sequence = 0
         const pending: PendingCast[] = laidSteps.map((ls) => ({
@@ -1791,7 +2006,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           inheritedBuffIds: [],
           midCastExtraFrames: ls.midCastExtraFrames,
         }))
-        const damageHits: { frame: number; skill: Skill }[] = []
+        const damageHits: { frame: number; skill: Skill; generated: boolean; hitId: string }[] = []
 
         let processed = 0
         while (pending.length > 0 && processed < EVENT_CAP) {
@@ -1800,6 +2015,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           processed++
           const castTag = castTagOf(cast.skill)
           let propagated = [...cast.inheritedBuffIds]
+          const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
+          const castDistanceMeters = targetDistanceAt(cast.frame)
+          const performedHits = cast.skill.hits.filter((candidate) =>
+            hitConditionsHold(candidate, castHolds),
+          )
+          const landingFrameOf = (hit: SkillHit) =>
+            hitLandingFrame(
+              cast.frame,
+              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
+            )
+          const lastHitFrame =
+            performedHits.length > 0 ? Math.max(...performedHits.map(landingFrameOf)) : null
+          const variantCastFrames = activeVariantCastFrames(performedHits, castHolds)
           if (castTag) {
             const grantAtSec = cast.skill.triggersBuffsAtFrame
               ? new Map(
@@ -1812,7 +2040,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const result = engine.processSkillCast(
               castTag,
               cast.frame / FPS,
-              propsOfSkill(cast.skill, cast.hitCount),
+              {
+                ...propsOfSkill(cast.skill, cast.hitCount),
+                ...(variantCastFrames !== null && { castTime: variantCastFrames / FPS }),
+                ...(lastHitFrame !== null && { lastHitSec: (lastHitFrame - cast.frame) / FPS }),
+              },
               cast.generated,
               cast.skill.triggersBuffs ?? [],
               skillTagsOf(cast.skill),
@@ -1823,16 +2055,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const key = castScopedKey(cast.frame, cast.skill.id)
             castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
           }
-          const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
-          const castDistanceMeters = targetDistanceAt(cast.frame)
-          for (const hit of cast.skill.hits.filter((candidate) =>
-            hitConditionsHold(candidate, castHolds),
-          )) {
-            const hitFrame = hitLandingFrame(
-              cast.frame,
-              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
-            )
-            if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
+          for (const hit of performedHits) {
+            const hitFrame = landingFrameOf(hit)
+            if (hitDealsDamage(hit))
+              damageHits.push({
+                frame: hitFrame,
+                skill: cast.skill,
+                generated: cast.generated,
+                hitId: hit.id,
+              })
             for (const trigger of hit.triggers) {
               if (trigger.kind !== "castSkill") continue
               if (!castTriggerFires(trigger, hitFrame)) continue
@@ -1852,7 +2083,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
 
         damageHits.sort((left, right) => left.frame - right.frame)
-        for (const { frame, skill } of damageHits) engine.processDamageHit(frame / FPS, skill)
+        for (const { frame, skill, generated, hitId } of damageHits) {
+          const ordinal = damagingHitsPerFrame.get(frame) ?? 0
+          damagingHitsPerFrame.set(frame, ordinal + 1)
+          const key = damagingHitKey(frame, skill.id, hitId)
+          damagingHitOrdinals.set(key, [...(damagingHitOrdinals.get(key) ?? []), ordinal])
+          engine.processDamageHit(frame / FPS + sameFrameOffsetSec(ordinal), skill, generated)
+        }
         return engine
       } catch {
         return null
@@ -1860,6 +2097,37 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     })()
 
     const castSkillFiresInPass1 = triggerGate(castConditionHoldsFor(buffEngine)).fires
+
+    // docs/TIMELINE.md § "Cast legality": a `castConditions` entry that reads the
+    // buff engine can only be decided once the engine's history exists, and reads
+    // it just before the step's own start so the step's own grants never count.
+    if (buffEngine) {
+      const engineStacks = (status: StatusCondition, atFrame: number): number =>
+        status.source === "buffEngine"
+          ? buffEngine.getHistoricalBuffStacks(status.buffId, atFrame / FPS - ENGINE_READ_LEAD_SEC)
+          : layoutLedger.conditionStacksAt(status.buffId, atFrame)
+      for (const laidStep of laidSteps) {
+        const failed = (laidStep.resolved.skill.castConditions ?? []).filter(
+          (condition) =>
+            hasBuffEngineSource(condition) &&
+            !unionConditionHolds(condition, laidStep.startFrame, buffParams, (status, atFrame) =>
+              conditionSatisfiedByStacks(status, engineStacks(status, atFrame)),
+            ),
+        )
+        if (failed.length === 0) continue
+        const reasons = failed.map((condition) =>
+          layout.describeConditionFailure(condition, laidStep.startFrame, {
+            stacksOf: engineStacks,
+            nameOf: (buffId) => buffEngine.moduleName(buffId),
+          }),
+        )
+        const stepId = laidStep.resolved.step.id
+        recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+        warnings.push(
+          `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+        )
+      }
+    }
 
     const resources = (classDefinition(inputs.classId)?.resources ?? [])
       .filter((definition) =>
@@ -1871,7 +2139,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             fps: FPS,
             startFrame: 0,
             collect: collectDetail,
-            buffActive: (id, frame) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+            particleCount: buffEngine?.extensionParticleCount ?? 1,
+            buffLive: (id, frame) => buffEngine?.liveParticles(id, frame / FPS) ?? false,
             exhausted: (frame) => qiSchedule.isBroken(frame / FPS),
             paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
           }),
@@ -1882,6 +2151,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const resourceByLaunch = new Map(
       resources.map((resource) => [resource.definition.launchSkillId, resource]),
     )
+
+    const recallDebuffs = (target: StatusLedger): void => {
+      for (const status of statusById.values()) {
+        if (!isDebuffStatus(status) || !status.recall || resourceByDebuff.has(status.id)) continue
+        const { tag, exemptSkillIds } = status.recall
+        for (const laidStep of laidSteps) {
+          const { skill } = laidStep.resolved
+          if (skill.isDotTick || !skill.tags?.includes(tag) || exemptSkillIds?.includes(skill.id))
+            continue
+          target.cutWindowsAt(status.id, laidStep.startFrame, UNOWNED)
+        }
+      }
+    }
+    recallDebuffs(layoutLedger)
 
     const qiBreakWindow = buffEngine
       ? (() => {
@@ -1918,6 +2201,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       ledgerEntries: Iterable<[string, readonly StatusWindow[]]>,
       stacksAt: (buffId: string, frame: number) => number,
       weightAt: (buffId: string, frame: number) => number,
+      distanceAt: (frame: number) => number,
     ): PlannedDotTick[] {
       const planned: PlannedDotTick[] = []
       for (const [buffId, arr] of ledgerEntries) {
@@ -1947,6 +2231,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             dot,
             windows: episode,
             stacksAt: (frame) => stacksAt(buffId, frame),
+            distanceAt,
             inWindow: (frame) => frame <= windowFrames,
             weightAt: (frame) => weightAt(buffId, frame),
           })) {
@@ -1972,6 +2257,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       layoutLedger.entries(),
       (buffId, frame) => layoutLedger.stacksAt(buffId, frame),
       () => 1,
+      targetDistanceAt,
     )) {
       if (
         plan.requiresBuff &&
@@ -2014,6 +2300,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       extraEffects?: BuffStatEffect[]
       forceGuaranteedAffinity?: boolean
     }
+    interface ResolveVariant {
+      engineOffsetSec?: number
+      withoutMechanicId?: string
+    }
     const stateMemo = new Map<string, Resolved>()
     // `statusesView` is the ledger a hit's own damage query reads — pass 1's
     // `ledger.asOf(mark)`, taken before this hit's own triggers ran, so a status
@@ -2027,6 +2317,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       castFrame = frame,
       damageSoFar = 0,
       statusesView: StatusView = ledger,
+      variant: ResolveVariant = {},
     ): Resolved & {
       forceCrit: boolean
       forceNoAbrasion: boolean
@@ -2062,7 +2353,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
         const site = buffEngine.calculateDamageEffects(
           skill,
-          frame / FPS,
+          frame / FPS + (variant.engineOffsetSec ?? 0),
           scoped,
           damageSoFar,
           statusesView,
@@ -2098,7 +2389,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       if (override?.forceGuaranteedAffinity) sig += "~forcedAffinity"
       let contextPatch: ContextPatch = {}
+      if (variant.withoutMechanicId) sig += `~without:${variant.withoutMechanicId}`
       for (const { mechanic, state } of mechanics) {
+        if (mechanic.id === variant.withoutMechanicId) continue
         const contribution = mechanic.contributeAt?.(state, frame, skill, mechanicSetup)
         if (!contribution) continue
         for (const effect of contribution.effects ?? []) effects.push(effect)
@@ -2133,7 +2426,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       let r = stateMemo.get(sig)
       if (!r) {
         const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
-        const ctx = buildContext(effInputs, targetOverride, contextPatch.hawkwingPhysBonus)
+        const ctx = buildContext(effInputs, targetOverride, contextPatch)
         if (override?.forceGuaranteedAffinity) {
           ctx.affinityPanel = 0
           ctx.directAffinityPanel = 1
@@ -2174,6 +2467,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       | {
           kind: "hit"
           frame: number
+          exactFrame: number
           seq: number
           skill: Skill
           hit: SkillHit
@@ -2184,7 +2478,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           onHitEffectCount: number
           forcedAffinityByOnHit: boolean
           ledgerMark: number
+          engineOffsetSec: number
         }
+      | { kind: "tickLaunch"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "extra"; frame: number; seq: number; event: MechanicEvent }
       | { kind: "echoRelease"; frame: number; seq: number; debuffId: string }
@@ -2193,6 +2489,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const MERGED_KIND_PRIORITY: Record<MergedEvent["kind"], number> = {
       recall: -1,
       hit: 0,
+      tickLaunch: 0.5,
       tick: 1,
       extra: 2,
       echoRelease: 3,
@@ -2224,17 +2521,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const queue = new EventQueue()
     let seq = 0
     for (const ls of laidSteps) {
-      const stepDistanceMeters = targetDistanceAt(ls.startFrame)
       for (const hit of ls.performedHits) {
+        const resolvedFrame =
+          resolvedHitFrame(
+            hit,
+            (condition) => layoutHolds(condition, ls.startFrame),
+            ls.hitDistanceMeters,
+          ) + ls.midCastExtraFrames
         queue.push({
-          frame: hitLandingFrame(
-            ls.startFrame,
-            resolvedHitFrame(
-              hit,
-              (condition) => layoutHolds(condition, ls.startFrame),
-              stepDistanceMeters,
-            ) + ls.midCastExtraFrames,
-          ),
+          frame: hitLandingFrame(ls.startFrame, resolvedFrame),
+          exactFrame: exactHitLandingFrame(ls.startFrame, resolvedFrame),
           seq: seq++,
           skill: ls.resolved.skill,
           hit,
@@ -2304,7 +2600,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       const ev = queue.pop()!
       processed++
-      const { frame, skill, hit, castFrame, stepStart } = ev
+      const { frame, exactFrame, skill, hit, castFrame, stepStart } = ev
       chainEndFrameByStepStart.set(
         stepStart,
         Math.max(frame, chainEndFrameByStepStart.get(stepStart) ?? frame),
@@ -2352,6 +2648,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       mergedEvents.push({
         kind: "hit",
         frame,
+        exactFrame: exactFrame ?? frame,
         seq: mergedSeq++,
         skill,
         hit,
@@ -2362,6 +2659,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         forceGuaranteedAffinity,
         onHitEffectCount,
         forcedAffinityByOnHit,
+        engineOffsetSec: hitDealsDamage(hit)
+          ? sameFrameOffsetSec(damagingHitOrdinalOf(frame, skill.id, hit.id))
+          : 0,
       })
 
       if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
@@ -2415,13 +2715,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             det &&
             hit.triggers.some((t) => t.kind === "detonateDot" && t.targetId === trigger.targetId)
           if (flagged && next >= maxStacks) {
-            const retained =
-              det.retainParam &&
-              buffEngine &&
-              buffEngine.paramTier(det.retainParam) >= (det.retainMinTier ?? 6)
-                ? (det.retainParamStacks ?? det.retainStacks ?? 0)
-                : (det.retainStacks ?? 0)
-            recordStack(status.id, frame, clamp(retained, 0, maxStacks), stepStart)
+            recordStack(status.id, frame, clamp(det.retainStacks ?? 0, 0, maxStacks), stepStart)
             const sub = skillsById.get(det.skillId)
             if (sub) {
               const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
@@ -2465,6 +2759,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
 
     liveWriter.processExpiries(windowFrames)
+    recallDebuffs(ledger)
 
     // Zenith extension events only exist for a Sword Horizon build (the only
     // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
@@ -2483,16 +2778,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     ledger.sortWindows()
 
+    let lateMeterSettlement: LateMeterSettlement | null = null
+
     function buildCasts(): RotationCast[] {
       const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
         const stepHolds = (condition: TriggerCondition) => conditionHolds(condition, ls.startFrame)
-        const stepDistanceMeters = targetDistanceAt(ls.startFrame)
         const lastHitFrame =
           ls.performedHits.length > 0
             ? Math.max(
                 ...ls.performedHits.map(
                   (hit) =>
-                    resolvedHitFrame(hit, stepHolds, stepDistanceMeters) + ls.midCastExtraFrames,
+                    resolvedHitFrame(hit, stepHolds, ls.hitDistanceMeters) + ls.midCastExtraFrames,
                 ),
               )
             : 0
@@ -2545,15 +2841,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           attachedToStepId: deflectCancelAttachedToStepId.get(ls.resolved.step.id),
           buffs,
           meterLevels:
-            meters.length > 0
-              ? meters.map((meter) => ({
-                  id: meter.def.id,
-                  name: meter.def.name,
-                  amount: layoutLedger
-                    .asOf(ls.meterMarkAtStart)
-                    .stacksAt(meter.statusId, ls.startFrame),
-                  capacity: meter.capacity,
-                }))
+            (classDef?.meters ?? []).length > 0
+              ? (classDef?.meters ?? []).map((definition) => {
+                  const layoutMeter = meterEngineById.get(definition.id)
+                  return {
+                    id: definition.id,
+                    name: definition.name,
+                    amount: layoutMeter
+                      ? layoutLedger
+                          .asOf(ls.meterMarkAtStart)
+                          .stacksAt(layoutMeter.statusId, ls.startFrame)
+                      : (lateMeterSettlement?.levelBeforeCast
+                          .get(ls.resolved.step.id)
+                          ?.get(definition.id) ?? 0),
+                    capacity:
+                      layoutMeter?.capacity ??
+                      lateMeterSettlement?.capacities.get(definition.id) ??
+                      0,
+                    ...(definition.displayUnitSize !== undefined
+                      ? { unitSize: definition.displayUnitSize }
+                      : {}),
+                  }
+                })
               : undefined,
           distanceMeters: layoutLedger.stacksAt(TARGET_DISTANCE_STATUS, ls.startFrame),
         }
@@ -2585,6 +2894,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         return 1
       },
+      targetDistanceAt,
     )) {
       const entry: DotTickEntry = {
         ...plan,
@@ -2600,6 +2910,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         dotType: dot.skillType || "sustain",
       }
       dotTickEntries.push(entry)
+      mergedEvents.push({ kind: "tickLaunch", frame: entry.launchFrame, seq: mergedSeq++, entry })
       mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
     }
 
@@ -2662,7 +2973,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damage: number
       rolled: RolledHit | undefined
       st: ReturnType<typeof resolveState>
+      affinityChanceWithout: Readonly<Record<string, number>>
     }
+
+    const observers = mechanics.filter(({ mechanic }) => mechanic.observeEvent !== undefined)
+    const affinityChancesWithout = (
+      forObservers: boolean,
+      rng: (() => number) | undefined,
+      chanceWithout: (mechanicId: string) => number,
+    ): Record<string, number> =>
+      forObservers && !rng
+        ? Object.fromEntries(
+            observers.map(({ mechanic }) => [mechanic.id, chanceWithout(mechanic.id)]),
+          )
+        : {}
 
     let scoringSchedule: QiSchedule = qiSchedule
 
@@ -2684,6 +3008,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       event: Extract<MergedEvent, { kind: "hit" }>,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(event.frame, readQiAtFrame, () => {
         const { frame, skill, hit, castFrame, ledgerMark } = event
@@ -2721,11 +3046,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           castFrame,
           totalDamage,
           ledger.asOf(ledgerMark),
+          { engineOffsetSec: event.engineOffsetSec },
         )
         const hitContext: HitContext = {
           phase: buffEngine?.qiPhase(frame / FPS) ?? "normal",
           smallPhys: st.ctx.smallPhys,
-          isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+          isEngineBuffActive: (id) =>
+            buffEngine?.isBuffActiveAtTime(id, frame / FPS + event.engineOffsetSec) ?? false,
         }
         const art = behavior.buildArt(hitInput, hitContext)
         if (st.forceCrit) art.guaranteedCrit = 1
@@ -2753,7 +3080,23 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
         if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
         const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
-        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+        return {
+          damage: rolled?.damage ?? expectedDamage,
+          rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              frame,
+              skill,
+              resolveOverride,
+              castFrame,
+              totalDamage,
+              ledger.asOf(ledgerMark),
+              { engineOffsetSec: event.engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return computeSkillDamage(art, without.ctx, 1).affinityOutcomeChance
+          }),
+        }
       })
     }
 
@@ -2761,9 +3104,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       entry: DotTickEntry,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      share = 1,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(entry.frame, readQiAtFrame, () => {
-        const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
+        const engineOffsetSec = sameFrameOffsetSec(damagingHitsPerFrame.get(entry.frame) ?? 0)
+        const st = resolveState(
+          entry.frame,
+          entry.dotSkill,
+          undefined,
+          entry.frame,
+          totalDamage,
+          ledger,
+          { engineOffsetSec },
+        )
         const tick = dotTickDamage(
           tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
           st.ctx,
@@ -2775,8 +3129,32 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
         // `damageFactor` is post-formula, so a tick takes it on its finished
         // number the way a regular hit takes it on its art `correction`.
-        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
-        return { damage, rolled: tick.rolled, st }
+        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * share * st.damageFactor
+        return {
+          damage,
+          rolled: tick.rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              entry.frame,
+              entry.dotSkill,
+              undefined,
+              entry.frame,
+              totalDamage,
+              ledger,
+              { engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return dotTickDamage(
+              tickWithResolvedMinPhysCrit(entry, without.ctx.smallPhys),
+              without.ctx,
+              computeSkillDamage,
+              without.forceCrit,
+              entry.shape,
+              undefined,
+              without.artBonuses,
+            ).affinityOutcomeChance
+          }),
+        }
       })
     }
 
@@ -2784,21 +3162,59 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       mechEvent: MechanicEvent,
       rng: (() => number) | undefined,
       readQiAtFrame: number | null,
+      forObservers = false,
     ): ScoredEvent {
       return withQiReadAtFrame(mechEvent.frame, readQiAtFrame, () => {
+        const engineOffsetSec = sameFrameOffsetSec(damagingHitsPerFrame.get(mechEvent.frame) ?? 0)
         const st = resolveState(
           mechEvent.frame,
           mechEvent.skill,
           undefined,
           mechEvent.frame,
           totalDamage,
+          ledger,
+          { engineOffsetSec },
         )
         const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
         if (st.forceCrit) art.guaranteedCrit = 1
         if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
         const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
-        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+        return {
+          damage: rolled?.damage ?? expectedDamage,
+          rolled,
+          st,
+          affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
+            const without = resolveState(
+              mechEvent.frame,
+              mechEvent.skill,
+              undefined,
+              mechEvent.frame,
+              totalDamage,
+              ledger,
+              { engineOffsetSec, withoutMechanicId: mechanicId },
+            )
+            return computeSkillDamage(art, without.ctx, 1).affinityOutcomeChance
+          }),
+        }
       })
+    }
+
+    function observeScoredEvent(
+      timeSec: number,
+      occurrence: number,
+      scored: Pick<ScoredEvent, "rolled" | "affinityChanceWithout">,
+    ): void {
+      for (const { mechanic, state } of observers)
+        mechanic.observeEvent!(
+          state,
+          {
+            timeSec,
+            occurrence: clamp(occurrence, 0, 1),
+            affinityChance: clamp(scored.affinityChanceWithout[mechanic.id] ?? 0, 0, 1),
+            ...(scored.rolled ? { rolledAffinity: scored.rolled.outcome === "affinity" } : {}),
+          },
+          mechanicSetup,
+        )
     }
 
     const qiBreakFrames = qiSchedule.breaks.map(({ startSec, endSec }) => ({
@@ -2828,6 +3244,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // last release. `totalDamage` accumulates as each one is scored, so a buff
     // module's `target.remainingHealthFraction` reads the true running total.
     mergedEvents.sort(byMergedOrder)
+    const launchedTicks = new Map<DotTickEntry, ResourceTickOutcome>()
     for (const event of mergedEvents) {
       if (buffEngine && !fixedQiBreaks) {
         scoringSchedule = qiScheduleReadingLiveBar(qiSchedule, qiBar, event.frame, FPS)
@@ -2838,12 +3255,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (event.kind === "recall") {
         event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
       } else if (event.kind === "hit") {
-        const { frame, skill, hit, castFrame } = event
+        const { frame, exactFrame, skill, hit } = event
         const launchResource = resourceByLaunch.get(skill.id)
-        if (launchResource && inWindow(frame) && !launchResource.launch(frame)) {
-          continue
-        }
-        const { damage, rolled, st } = scoreHit(event, hitRng, null)
+        const launchShare = launchResource && inWindow(frame) ? launchResource.launch(frame) : 1
+        if (launchShare <= 0) continue
+        if (hitDealsDamage(hit))
+          buffEngine?.processDamagingEvent({
+            skill,
+            timeSec: frame / FPS,
+            stampSec: exactFrame / FPS,
+          })
+        const scored = scoreHit(event, hitRng, null, true)
+        if (hitDealsDamage(hit)) observeScoredEvent(frame / FPS, launchShare, scored)
+        const { rolled, st } = scored
+        const damage = scored.damage * launchShare
         const landsInFight = inWindow(frame)
         if (landsInFight && hitDealsDamage(hit))
           recordQiEdgeDependence(frame, skill.name, (readQiAtFrame) =>
@@ -2866,8 +3291,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             "direct",
           )
         if (landsInFight) {
-          if (hitDealsDamage(hit))
-            for (const resource of resources) resource.hit(skill, frame, castFrame)
+          if (hitDealsDamage(hit)) for (const resource of resources) resource.hit(skill, frame)
           totalDamage += damage
           if (rolled) tallyRoll(rolled, damage)
           // A hit that carries no coefficient exists to fire its triggers, and
@@ -2893,24 +3317,40 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           damage,
           inWindow: landsInFight,
         })
-      } else if (event.kind === "tick") {
+      } else if (event.kind === "tickLaunch") {
         const { entry } = event
         const resource = resourceByDebuff.get(entry.debuff.id)
         if (
           entry.requiresBuff &&
           !buffEngine?.isBuffActiveAtTime(
             entry.requiresBuff,
-            (entry.requiresBuffAtFrame ?? entry.frame) / FPS,
+            (entry.requiresBuffAtFrame ?? entry.launchFrame) / FPS,
           )
         )
           continue
-        if (resource && !resource.tick(entry.frame, entry.resourceOwner!)) continue
+        const resourceTick = resource?.tick(entry.launchFrame, entry.resourceOwner!)
+        if (resourceTick && resourceTick.share <= 0) continue
         if (
           resource &&
           entry.enhancedBy &&
-          buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.frame / FPS)
+          buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.launchFrame / FPS)
         )
-          resource.chargeEnhancedRun(entry.frame)
+          resource.chargeEnhancedRun(entry.launchFrame, entry.resourceOwner!)
+        launchedTicks.set(entry, resourceTick ?? { share: 1, particles: null })
+      } else if (event.kind === "tick") {
+        const { entry } = event
+        const resource = resourceByDebuff.get(entry.debuff.id)
+        const launched = launchedTicks.get(entry)
+        if (!launched) continue
+        const tickShare = launched.share
+        resource?.creditHit(entry.frame, launched.particles)
+        buffEngine?.processDamagingEvent({
+          skill: entry.dotSkill,
+          timeSec: entry.frame / FPS,
+          stampSec: (entry.frame + (entry.stampLatenessFrames ?? 0)) / FPS,
+          runKey: `${entry.debuff.id}|${entry.runFrame}`,
+          particles: launched.particles,
+        })
         if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
           buffEngine?.triggerDeclaredBuffs(
             entry.debuff.triggersBuffs,
@@ -2921,10 +3361,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             skillTagsOf(entry.dotSkill),
           )
         }
-        const { damage, rolled: tickRolled, st } = scoreTick(entry, hitRng, null)
+        const scoredTick = scoreTick(entry, hitRng, null, tickShare, true)
+        observeScoredEvent(entry.frame / FPS, entry.weight * tickShare, scoredTick)
+        const { damage, rolled: tickRolled, st } = scoredTick
         if (inWindow(entry.frame))
           recordQiEdgeDependence(entry.frame, entry.dotName, (readQiAtFrame) =>
-            scoreTick(entry, undefined, readQiAtFrame),
+            scoreTick(entry, undefined, readQiAtFrame, tickShare),
           )
         // The target takes this tick whether or not it falls inside the DPS
         // window, so its Qi bar accrues and a debuff it declares reaches
@@ -2970,7 +3412,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })
       } else if (event.kind === "extra") {
         const mechEvent = event.event
-        const { damage, rolled, st } = scoreExtra(mechEvent, hitRng, null)
+        const scoredExtra = scoreExtra(mechEvent, hitRng, null, true)
+        observeScoredEvent(mechEvent.frame / FPS, 1, scoredExtra)
+        const { damage, rolled, st } = scoredExtra
         if (inWindow(mechEvent.frame))
           recordQiEdgeDependence(mechEvent.frame, mechEvent.name, (readQiAtFrame) =>
             scoreExtra(mechEvent, undefined, readQiAtFrame),
@@ -3046,16 +3490,69 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     scoringSchedule = qiSchedule
     buffEngine?.attachQiSchedule(qiSchedule)
 
+    if (lateMeterDefs.length > 0) {
+      const lateMeterGate = triggerGate(conditionHolds)
+      lateMeterSettlement = settleLateMeters({
+        defs: lateMeterDefs,
+        fps: FPS,
+        startFrame: spanStart,
+        maxContext: meterMaxContext,
+        particleCount: buffEngine?.extensionParticleCount ?? 1,
+        steps: laidSteps.map((laidStep) => ({
+          stepId: laidStep.resolved.step.id,
+          skill: laidStep.resolved.skill,
+          startFrame: laidStep.startFrame,
+          prePull: laidStep.prePull,
+        })),
+        hits: mergedEvents.flatMap((event) =>
+          event.kind === "hit"
+            ? [
+                {
+                  skill: event.skill,
+                  hit: event.hit,
+                  stepStart: event.stepStart,
+                  frame: event.frame,
+                  exactFrame: event.exactFrame,
+                },
+              ]
+            : [],
+        ),
+        costApplies: meterCostRequirementHolds,
+        delayedCostFrame: (startFrame, atFrame) => hitLandingFrame(startFrame, atFrame),
+        castEndFrame: (landed) =>
+          castEndFrame(
+            landed.skill,
+            landed.stepStart,
+            (condition) => conditionHolds(condition, landed.stepStart),
+            targetDistanceAt(landed.stepStart),
+          ),
+        guardsHold: (trigger, frame) => lateMeterGate.fires(trigger, frame),
+        liveParticles: (buffId, frame) =>
+          buffEngine ? buffEngine.liveParticles(buffId, (frame - 1) / FPS) : false,
+      })
+      for (const { stepId, reasons } of lateMeterSettlement.illegalCasts) {
+        const laidStep = laidSteps.find((candidate) => candidate.resolved.step.id === stepId)!
+        recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+        warnings.push(
+          `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+        )
+      }
+    }
+
     const resourceResults = resources.map((resource) => resource.finish(windowFrames))
     for (const resource of resources) {
+      const latestEndByStart = new Map<number, number>()
+      for (const launch of resource.result.launches) {
+        if (launch.reason === "insufficient") continue
+        const start = Math.round(launch.timeSec * FPS)
+        latestEndByStart.set(
+          start,
+          Math.max(latestEndByStart.get(start) ?? 0, Math.round(launch.endSec * FPS)),
+        )
+      }
       ledger.constrainWindows(
         resource.definition.debuffId,
-        resource.result.launches
-          .filter((launch) => launch.reason !== "insufficient")
-          .map((launch) => ({
-            start: Math.round(launch.timeSec * FPS),
-            end: Math.round(launch.endSec * FPS),
-          })),
+        [...latestEndByStart].map(([start, end]) => ({ start, end })),
       )
     }
 
@@ -3189,6 +3686,8 @@ function englishConditionFailure(reason: ConditionFailureReason): string {
         reason.actualOn ? `tier ${reason.actualTier}` : notVerb
       })`
     }
+    case "meter":
+      return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${inDisplayUnits(reason.required, reason.unitSize)} (has ${inDisplayUnits(reason.actual, reason.unitSize)})`
     default:
       return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${reason.required} (has ${reason.actual})`
   }

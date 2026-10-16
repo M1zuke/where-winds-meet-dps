@@ -12,6 +12,7 @@ import {
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import {
   ZENITH_DETONATION_BUFF_ID,
+  ZENITH_SPIRIT_BUFF_ID,
   ZENITH_DETONATION_FRAMES,
   ZENITH_BAR_BUFF_ID,
 } from "../../src/data/innerWays/swordHorizonZenith"
@@ -108,7 +109,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     ])
   })
 
-  it("each damage hit's six triggers: 1×applyDot(bleed) on River Flow alone, 2×applyDot(bleed) + 1×castSkill(Blood Burst) + 1×applyBuff(cooldown, sets the marker) + 1×meterDelta(Endurance) on Empowered — never detonateDot", () => {
+  it("each damage hit's four triggers: 1×applyDot(bleed) on River Flow alone, 1×castSkill(Blood Burst) + 1×applyBuff(cooldown, sets the marker) + 1×meterDelta(Endurance) on Empowered — never detonateDot", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
     const riverFlowCondition = { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }
@@ -117,7 +118,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     for (const s of [spearSpecial[0], cancel[0]]) {
       const [, damageHit] = s.hits
       const triggers = damageHit.triggers
-      expect(triggers).toHaveLength(6)
+      expect(triggers).toHaveLength(4)
       expect(triggers.some((trigger) => trigger.kind === "detonateDot")).toBe(false)
 
       const [firstBleed, ...rest] = triggers
@@ -137,9 +138,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       for (const trigger of statusMarkerGated)
         expect(trigger.conditions).toEqual([cooldownCondition])
 
-      const applyDots = rest.filter((trigger) => trigger.kind === "applyDot")
-      expect(applyDots).toHaveLength(2)
-      for (const trigger of applyDots) expect(trigger.targetId).toBe(bleedId)
+      expect(rest.some((trigger) => trigger.kind === "applyDot")).toBe(false)
       const casts = rest.filter((trigger) => trigger.kind === "castSkill")
       expect(casts).toHaveLength(1)
       expect(casts[0].targetId).toBe(detonationId)
@@ -263,16 +262,17 @@ describe("built-in data — one file per skill", () => {
 })
 
 describe("builtinBuffsForClass", () => {
-  it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
+  it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar, Zenith Detonation and Sword Spirit Banked as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
-    expect(buffs).toHaveLength(10)
+    expect(buffs).toHaveLength(11)
     const waterDrop = buffs.find((b) => b.id === WATER_DROP_BUFF_ID)!
     const springSurge = buffs.find((b) => b.id === SPRING_SURGE_BUFF_ID)!
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
     const empowered = buffs.find((b) => b.id === EMPOWERED_RIVER_FLOW_BUFF_ID)!
     const cooldown = buffs.find((b) => b.id === SPEAR_SPECIAL_COOLDOWN_BUFF_ID)!
     const zenith = buffs.find((b) => b.id === ZENITH_DETONATION_BUFF_ID)!
-    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith])
+    const spirit = buffs.find((b) => b.id === ZENITH_SPIRIT_BUFF_ID)!
+    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith, spirit])
       expect(b).toBeTruthy()
     expect(waterDrop.name).toBe("Water Drop")
     expect(springSurge.name).toBe("Spring Surge")
@@ -280,16 +280,17 @@ describe("builtinBuffsForClass", () => {
     expect(empowered.name).toBe("Empowered River Flow")
     expect(cooldown.name).toBe("Spear Special Cooldown")
     expect(zenith.name).toBe("Zenith Detonation")
+    expect(spirit.name).toBe("Sword Spirit Banked")
     // Each tier carries only its own additional amount on top of the tier
     // below it, so the sum matches the tier actually reached: 10 / 15 / 20 / 25 %.
     expect(waterDrop.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.1 }])
     expect(springSurge.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
     expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
     expect(empowered.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
-    for (const b of [cooldown, zenith]) {
+    for (const b of [cooldown, zenith, spirit]) {
       expect(b.effects).toEqual([])
     }
-    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith]) {
+    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith, spirit]) {
       expect(b.maxStacks).toBe(1)
       expect(b.activation).toBe("triggered")
       expect(b.scope).toBe("player")

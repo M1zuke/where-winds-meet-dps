@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
@@ -19,13 +20,13 @@ export const apricotHeavenNormal = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.apricotHeavenNormal,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.pursuitChargedBoost, ...VERNAL_UMBRELLA_RECEIVES],
   // In-game values as of 2026-09-24: -5 at the cast's own start.
   meterCosts: [enduranceCost(5)],
   castFrames: 214,
   triggerable: true,
-  // In-game values as of 2026-09-28: 3 m approach reach (the cast is Heavy
-  // Attack 20601005); the rise is a vertical AoE with no further scripted
+  // In-game values as of 2026-09-28: 3 m approach reach (the cast is its
+  // Heavy Attack); the rise is a vertical AoE with no further scripted
   // displacement.
   reachMeters: 3,
   hits: [
@@ -38,9 +39,9 @@ export const apricotHeavenNormal = defineSkill({
     }),
     hit(1, {
       // Hit frames with only a window (docs/TIMELINE.md, this class's own
-      // evidence): the fall's own collider has no table row, only a bound
-      // window from the release clip's own start — authored at that floor,
-      // 72.00 f from the press.
+      // evidence): the fall has no known frame of its own, only the window it
+      // lands in from the release — authored at that window's start, 72.00 f
+      // from the press.
       frame: 72,
       physMultiplier: 1.565095,
       attributeMultiplier: 2.347643,

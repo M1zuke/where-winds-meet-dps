@@ -1,8 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 
 const COEFFICIENTS = {
   physMultiplier: 0.22542,
@@ -18,7 +22,7 @@ export const dualBladesLightAttack2 = defineSkill({
   classId: "bamboocutDraught",
   name: "Dual Blades - Light Attack (2nd Stage)",
   breakdownName: "Dual Blades - Light Attack",
-  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack],
+  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -28,11 +32,11 @@ export const dualBladesLightAttack2 = defineSkill({
     BUFF.swallowcallLightAttackBoost,
     ...CLASS_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   ],
   castFrames: 28,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — no approach field found.
-  startLatency: "noWaitOnDummy",
   hits: [hit(0, { frame: 15, ...COEFFICIENTS }), hit(1, { frame: 21, ...COEFFICIENTS })],
   createdAt: "2026-09-29T00:00:00.000Z",
   updatedAt: "2026-09-29T00:00:00.000Z",

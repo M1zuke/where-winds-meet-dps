@@ -22,7 +22,7 @@ import {
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
-import { innerWayName } from "../../../../definitions/innerWays/registry"
+import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
 import {
   appliesForSkill,
   receivesForSkill,
@@ -671,11 +671,6 @@ export function SkillsTab({
       const detonateSkill = resolveSkillTarget(det.skillId)
       const label = `${t("skills.causes")} ${detonateSkill?.name ?? name}`
       let effect = `${t("skills.onReaching")} ${status.maxStacks} ${t("skills.stacksConsumesThemAndAuto")} ${detonateSkill?.name ?? det.skillId}`
-      if (det.retainParam) {
-        const paramName = innerWayName(det.retainParam)
-        const retained = det.retainParamStacks ?? det.retainStacks ?? 0
-        effect += ` · ${t("skills.retains")} ${retained} ${t("skills.at")} ${paramName} ${t("common.tier")} ${det.retainMinTier ?? 6}`
-      }
       if (gate) effect += ` · ${gate}`
       return { label, effect }
     }
@@ -689,10 +684,13 @@ export function SkillsTab({
     }
     if (kind === "meterDelta") {
       const meterName = t(meterKey(trigger.targetId), trigger.targetId)
+      const unitSize = getSchool(classId).meters?.find(
+        (meter) => meter.id === trigger.targetId,
+      )?.displayUnitSize
       const amount =
         trigger.refundFractionOfCastCost !== undefined
           ? `+${Math.round(trigger.refundFractionOfCastCost * 100)}% ${t("skills.ofCastCost")}`
-          : `${trigger.stacks >= 0 ? "+" : "−"}${Math.abs(trigger.stacks)}`
+          : `${trigger.stacks >= 0 ? "+" : "−"}${inDisplayUnits(Math.abs(trigger.stacks), unitSize)}`
       return { label: `${meterName} ${amount}`, effect: gate }
     }
     if (kind === "cooldownCut") {

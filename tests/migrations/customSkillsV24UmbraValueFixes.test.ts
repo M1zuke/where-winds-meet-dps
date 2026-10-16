@@ -24,6 +24,9 @@ import { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "../../src/
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
 import { healSkill as healBleedRefundLockout } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
+import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
+import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -545,12 +548,12 @@ describe("V24__umbraValueFixes migration step", () => {
       "bellstrikeUmbra-spearheavy",
       "bellstrikeUmbra-spearspecial-1-hit-cancel",
     ]) {
-      // V45 later corrects a further round of cast lengths and hit frames on
-      // some of these same ids — a no-op on every id it does not target.
-      const healed = healCastLengthAndHitFrameRepairs(skillIn(result.blob, id)) as Record<
-        string,
-        unknown
-      >
+      // V45 and V82 later correct further rounds of cast lengths and hit
+      // frames on some of these same ids — a no-op on every id they do not
+      // target.
+      const healed = healUmbraCastLengthsAndSweepAllBurstStacks(
+        healCastLengthAndHitFrameRepairs(skillIn(result.blob, id)),
+      ) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.tags, id).toEqual(builtin.tags)
       expect(healed.castFrames, id).toEqual(builtin.castFrames)
@@ -570,13 +573,18 @@ describe("V24__umbraValueFixes migration step", () => {
       // V38 later adds an Endurance gain to Crosswind Blade's one hit, V39 a
       // Bleeding refund to the same hit, V41 Wolfchaser's Art's own Endurance
       // gain to Sweep All's own hit, V48 Blood Burst's own Qi rate and V67 the
-      // shared Bleeding refund lockout — each a no-op on every other id here.
+      // shared Bleeding refund lockout and V82 Sweep All's Sword Horizon
+      // gated burst stacks — each a no-op on every other id here.
       const meterHealed = healMeterFieldsAndGains(skillIn(result.blob, id))
       const modifierHealed = healMeterModifierGains(meterHealed)
       const enduranceHealed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed)
       const frameHealed = healCastLengthAndHitFrameRepairs(enduranceHealed)
       const qiRateHealed = healQiRateDefault(frameHealed)
-      const healed = healBleedRefundLockout(qiRateHealed) as Record<string, unknown>
+      const healed = healSwordHorizonBurstStacksAtTheBurst(
+        healUmbraGameplayTimings(
+          healUmbraCastLengthsAndSweepAllBurstStacks(healBleedRefundLockout(qiRateHealed)),
+        ),
+      ) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)
     }

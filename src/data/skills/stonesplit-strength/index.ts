@@ -20,12 +20,14 @@ import { moBladeDual } from "./mo-blade-dual"
 import { snowpartingqStab } from "./snowpartingq-stab"
 import { snowpartingslidePrepullHit } from "./snowpartingslide-prepull-hit"
 import { snowpartingslidePrepull } from "./snowpartingslide-prepull"
+import { snowpartingslideReslidePrepull } from "./snowpartingslide-reslide-prepull"
 import { snowpartingslide } from "./snowpartingslide"
 import { snowpartingspecial } from "./snowpartingspecial"
 import { snowpartingvcPrepull } from "./snowpartingvc-prepull"
 import { snowpartingvc } from "./snowpartingvc"
 import { snowpartingqSlash } from "./snowpartingq-slash"
 import { phalanxchargedS1 } from "./phalanxcharged-s1"
+import { phalanxchargedS1Released } from "./phalanxcharged-s1-released"
 import { phalanxchargedS2 } from "./phalanxcharged-s2"
 import { phalanxchargedS2Innerpassion } from "./phalanxcharged-s2-innerpassion"
 import { breakDefense } from "./break-defense"
@@ -67,6 +69,7 @@ export const SKILLS: Skill[] = [
   snowpartingqStab,
   snowpartingslidePrepullHit,
   snowpartingslidePrepull,
+  snowpartingslideReslidePrepull,
   snowpartingslide,
   snowpartingspecial,
   snowpartingvcPrepull,
@@ -74,6 +77,7 @@ export const SKILLS: Skill[] = [
   moBladeDual,
   snowpartingqSlash,
   phalanxchargedS1,
+  phalanxchargedS1Released,
   phalanxchargedS2,
   phalanxchargedS2Innerpassion,
   breakDefense,

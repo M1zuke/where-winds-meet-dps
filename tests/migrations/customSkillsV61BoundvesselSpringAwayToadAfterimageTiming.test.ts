@@ -8,6 +8,8 @@ import {
   V61__boundvesselSpringAwayToadAfterimageTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
+import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
+import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV60File from "./testCustomSkills/v60/store.json"
@@ -26,6 +28,9 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 
 const builtin = (classId: string, id: string): Skill =>
   builtinSkillsForClass(classId).find((skill) => skill.id === id)!
+
+const throughLaterHops = (skill: unknown): Skill =>
+  healDraughtGrantTimingAndAbrasionTalent(healBoundvesselDrinkAccumulation(skill)) as Skill
 
 const frames = (skill: Skill) => skill.hits.map((hit) => hit.frame)
 const hitIds = (skill: Skill) => skill.hits.map((hit) => hit.id)
@@ -64,7 +69,7 @@ describe("healSkill — Boundvessel", () => {
   const seeded = () => clone(skillIn(STORE, BOUNDVESSEL_ID))
 
   it("gives a seeded copy 11 rapid slashes at the new frames, the new finisher frame and drain start", () => {
-    const healed = healSkill(seeded()) as Skill
+    const healed = throughLaterHops(healSkill(seeded()))
     const live = builtin("bamboocutDraught", BOUNDVESSEL_ID)
     expect(hitIds(healed)).toEqual(hitIds(live))
     expect(frames(healed)).toEqual(frames(live))
@@ -110,11 +115,13 @@ describe("healSkill — Spring Away", () => {
   it("re-times a seeded copy onto the built-in's bullets, lift trigger, cast length and drain", () => {
     const healed = healSkill(seeded()) as Skill
     const live = builtin("silkbindJade", SPRING_AWAY_ID)
-    expect(frames(healed)).toEqual(frames(live))
+    expect(frames(healed)).toEqual([58, 68, 78, 88, 98, 108])
     expect(healed.hits.map(rowOf)).toEqual(live.hits.map(rowOf))
     expect(healed.hits.map((hit) => hit.triggers)).toEqual(live.hits.map((hit) => hit.triggers))
-    expect(healed.castFrames).toBe(live.castFrames)
-    expect(healed.meterDrains).toEqual(live.meterDrains)
+    expect(healed.castFrames).toBe(140)
+    expect(healed.meterDrains).toEqual(
+      live.meterDrains!.map((drain) => ({ ...drain, fromFrame: 44, stopAfterSec: 1 })),
+    )
   })
 
   it("keeps every other field of the copy", () => {
@@ -207,7 +214,7 @@ describe("V61__boundvesselSpringAwayToadAfterimageTiming — through the chain",
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 61 })!
     expect(result.applied).toEqual(["V61__boundvesselSpringAwayToadAfterimageTiming"])
     expect(result.blob.v).toBe(61)
-    expect(frames(skillIn(result.blob, BOUNDVESSEL_ID))).toEqual(
+    expect(frames(throughLaterHops(skillIn(result.blob, BOUNDVESSEL_ID)))).toEqual(
       frames(builtin("bamboocutDraught", BOUNDVESSEL_ID)),
     )
     expect(skillIn(result.blob, USER_AUTHORED_ID)).toEqual(skillIn(STORE, USER_AUTHORED_ID))

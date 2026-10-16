@@ -21,12 +21,13 @@ export const poetFinalHitCancelExplosion = defineSkill({
   cancelledBy: "deflectCancel",
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.70166,
-      attributeMultiplier: 1.05249,
-      physFixed: 105.48,
+      physMultiplier: 0.701728,
+      attributeMultiplier: 1.052591,
+      physFixed: 110.3386,
       attributeFixed: 0,
       conditions: [
         { buffId: DEBUFF.combustion, op: "gte", stacks: 1 },
@@ -35,13 +36,13 @@ export const poetFinalHitCancelExplosion = defineSkill({
     }),
     hit(1, {
       frame: 0,
-      physMultiplier: 1.60796,
-      attributeMultiplier: 2.41194,
-      physFixed: 241.72,
+      physMultiplier: 1.608126,
+      attributeMultiplier: 2.412189,
+      physFixed: 252.8592,
       attributeFixed: 0,
       conditions: [{ buffId: DEBUFF.smolder, op: "gte", stacks: 1 }],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

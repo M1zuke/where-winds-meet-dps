@@ -1,6 +1,7 @@
 import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
 import type { BuffParams } from "./buffEngine"
+import type { WindowExtensionSpec } from "./windowExtension"
 
 // A phase, or a genuine target-Qi-fraction threshold — for a gate the game
 // keys to a real percentage rather than to the compatibility phase window
@@ -74,6 +75,10 @@ export type BuffMeta = BuffGate & {
   // instead of at the trigger hit's own frame. Ignored when
   // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
   buffAppliesAfterSec?: number
+  // Opens the window this many seconds after the triggering cast's last landed
+  // hit instead of at its start. Yields to `buffAppliesOnCastEnd` and to a
+  // per-site delay; a cast with no landed hit grants at its start.
+  buffAppliesAfterLastHitSec?: number
   // Unlike `duration`/`cooldown`, a function here resolves once at
   // registration rather than being re-read per event.
   maxStacks?: number | ((params: BuffParams) => number)
@@ -81,6 +86,10 @@ export type BuffMeta = BuffGate & {
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
+  // One stack per damaging hit of a cast whose skill lists this def in
+  // `triggersBuffs`, landing just after that hit's own damage. The cast
+  // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
+  stackOnGrantingHit?: boolean
   stackOnDamage?: boolean
   // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
@@ -100,7 +109,11 @@ export type BuffMeta = BuffGate & {
   triggersFromGeneratedSkills?: boolean
   // Restricts the trigger to one Qi phase; a cast in any other phase is not a
   // trigger for this def at all, so no stack and no refresh.
-  triggerPhase?: QiPhase
+  triggerPhase?: QiPhase | readonly QiPhase[]
+  // The listed modules' windows must be down for this grant to land.
+  blockedWhileActive?: readonly string[]
+  // The listed modules' windows end where this grant lands.
+  dispelsOnGrant?: readonly string[]
   seedAtStart?: boolean
   refreshOnAnyCast?: boolean
   requiresBuffActive?: string
@@ -110,6 +123,7 @@ export type BuffMeta = BuffGate & {
   // window, never open one. A trigger without the property is unaffected, so
   // one def can have both an opening source and an extending source.
   extendedOnlyByProperty?: string
+  extendsBuffs?: WindowExtensionSpec
   activeAfterBuffEnds?: ActiveAfterBuffEnds
   conditionalFinalCrit?: ConditionalFinalCrit
   perCastConsume?: PerCastConsume

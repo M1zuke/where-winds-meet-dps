@@ -42,7 +42,7 @@ export const deflect = defineSkill({
           attributeMultiplier: 0,
           physFixed: 0,
           attributeFixed: 0,
-          castFrames: 18,
+          castFrames: 18.06,
         },
       ],
     }),

@@ -24,12 +24,12 @@ const hitValues = (skillId: string) =>
 
 describe.each([
   [SKILL.swordSpecialDash, CAST.swordSpecialDash, "Sword - Dash", 46],
-  [SKILL.swordHeavyChargedTier1, CAST.swordHeavyChargedTier1, "Vagrant Sword", 82],
+  [SKILL.swordHeavyChargedTier1, CAST.swordHeavyChargedTier1, "Vagrant Sword", 82.8],
   [SKILL.swordLightAttack, CAST.splendorSwordLightChain, "Sword - Light Attack", 133],
   [SKILL.spearLightAttack, CAST.splendorSpearLightChain, "Spear - Light Attack", 153],
   [SKILL.swordHeavyAttack, CAST.splendorSwordHeavyChain, "Sword - Heavy Attack", 174],
   [SKILL.swordSprintDash, CAST.splendorSwordSprintDash, "Sword - Dash (sprint)", 41],
-  [SKILL.cloudstep, CAST.splendorCloudstep, "Cloudstep", 43],
+  [SKILL.cloudstep, CAST.splendorCloudstep, "Cloudstep", 36],
 ])("%s", (skillId, castTag, breakdownName, castFrames) => {
   it("is a triggerable Splendor weapon skill with its own cast tag", () => {
     expect(splendorSkill(skillId)).toMatchObject({
@@ -83,18 +83,12 @@ describe("Sword - Dash after Shadow Step", () => {
     ])
   })
 
-  it.each([
-    [SKILL.swordSpecial, 144],
-    [SKILL.swordSpecial2nd, 167],
-    [SKILL.swordSpecialDeflect, 167],
-  ])("is granted by %s so the window closes 167 f after the cast starts", (skillId, duration) => {
-    expect(splendorSkill(skillId).hits[0]!.triggers).toContainEqual(
-      expect.objectContaining({
-        kind: "applyBuff",
-        targetId: BUFF.shadowStepDashWindow,
-        durationFrames: duration,
-      }),
-    )
+  it("is granted by Shadow Step's launch so the window closes 167 f after the cast starts", () => {
+    const grants = splendorSkill(SKILL.swordSpecial)
+      .hits.flatMap((skillHit) => skillHit.triggers.map((trigger) => ({ skillHit, trigger })))
+      .filter(({ trigger }) => trigger.targetId === BUFF.shadowStepDashWindow)
+    expect(grants).toHaveLength(1)
+    expect(grants[0]!.skillHit.frame + grants[0]!.trigger.durationFrames!).toBe(167)
   })
 
   const illegalDashWarnings = (skillIds: string[]) =>
@@ -121,8 +115,8 @@ describe("Sword - Dash after Shadow Step", () => {
 describe("Vagrant Sword - first charge tier", () => {
   const tier1 = splendorSkill(SKILL.swordHeavyChargedTier1)
 
-  it("launches one bolt at 57 at 36 m/s", () => {
-    expect(hitValues(SKILL.swordHeavyChargedTier1)).toEqual([[57, 1.51032, 2.26548, 419, 228]])
+  it("launches one bolt at 57.74 at 36 m/s", () => {
+    expect(hitValues(SKILL.swordHeavyChargedTier1)).toEqual([[57.74, 1.51032, 2.26548, 419, 228]])
     expect(tier1.hits[0]!.projectile).toEqual({ speedMetersPerSecond: 36, maxTravelFrames: 24 })
   })
 
@@ -151,9 +145,9 @@ describe("Vagrant Sword - first charge tier", () => {
     expect(cuts.map((trigger) => trigger.targetId)).toEqual(["energySurgeGrant"])
   })
 
-  it("drains 11 Endurance over its 45 f hold", () => {
+  it("drains 11 Endurance over its 45.6 f hold", () => {
     expect(tier1.meterDrains).toEqual([
-      { meterId: "endurance", perSecond: 20, fromFrame: 12, stopAfterSec: 0.55 },
+      { meterId: "endurance", perSecond: 20, fromFrame: 12.6, stopAfterSec: 0.55 },
     ])
   })
 })
@@ -161,7 +155,7 @@ describe("Vagrant Sword - first charge tier", () => {
 describe("light-attack chains", () => {
   it("Sword - Light Attack lands six hits totalling 0.925 of the row", () => {
     expect(hitValues(SKILL.swordLightAttack).map((row) => row[0])).toEqual([
-      22, 43, 63, 75, 88, 112,
+      22, 43, 63, 75, 87, 112,
     ])
     const physTotal = hitValues(SKILL.swordLightAttack).reduce((sum, row) => sum + row[1]!, 0)
     expect(physTotal).toBeCloseTo(0.925 * 2.15224, 5)
@@ -205,8 +199,8 @@ describe("sprint attacks", () => {
     ])
   })
 
-  it("Cloudstep hits once at 29", () => {
-    expect(hitValues(SKILL.cloudstep)).toEqual([[29, 0.591504, 0.887256, 164.4, 89.4]])
+  it("Cloudstep hits once at 25", () => {
+    expect(hitValues(SKILL.cloudstep)).toEqual([[25, 0.591504, 0.887256, 164.4, 89.4]])
   })
 
   it("carry no cast condition", () => {

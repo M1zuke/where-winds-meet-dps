@@ -3,7 +3,7 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
-import { drinkGrants } from "./whaledraft"
+import { DRINK_CONVERSION_FRAME, drinkGrants } from "./whaledraft"
 
 // The drink at the perfect moment after a skill also unleashes Falcon's
 // Pursuit (in-game skill text, 2026-09-05).
@@ -12,10 +12,11 @@ export const perfectQuickDrinkTriggers = [
   castSkill({ target: SKILL.falconsPursuit }),
 ]
 
-// The falcon launches 0.3 s in; cast length to the earliest next input
-// (in-game animation, 2026-09-05).
+// The drink converts on frame 19. The falcon launches on frame 18 and its
+// flight time is unknown, so it lands with the conversion. Cast length to the
+// earliest next input: in-game animation, 2026-10-15.
 export const perfectQuickDrinkHit = hit(0, {
-  frame: 18,
+  frame: DRINK_CONVERSION_FRAME,
   physMultiplier: 0,
   attributeMultiplier: 0,
   physFixed: 0,

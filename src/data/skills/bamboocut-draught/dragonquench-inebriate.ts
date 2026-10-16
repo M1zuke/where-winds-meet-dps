@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
-import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
+import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  SKYSTRIKE_GAUNTLETS_RECEIVES,
+} from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", stacks: 1 }]
 
@@ -48,17 +52,20 @@ export const DRAGONQUENCH_TAGS = [
   WEAPON.gauntlets,
   ATTUNE.driftcleaveDeepdaze,
   ROLE.dragonquenchInebriate,
+  ROLE.inebriateEnhanced,
+  ATTACK.heavy,
 ]
 export const DRAGONQUENCH_RECEIVES = [
   ...INEBRIATE_ENHANCED_RECEIVES,
   ...SKYSTRIKE_GAUNTLETS_RECEIVES,
   BUFF.nonPlayerBaseDamage40,
+  BUFF.bingePointGainNoAbrasion,
+  ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
 ]
 
 export const dragonquenchStages = dragonquenchStagesAt([18, 41, 69, 91, 98, 105])
 
-// Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
-// length (the four stages to their earliest next input) and hit frames:
+// Cast length (the four stages to their earliest next input) and hit frames:
 // in-game animation, 2026-09-05.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
@@ -69,8 +76,6 @@ export const dragonquenchInebriate = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriate,
-  startLatency: "noWaitOnDummy",
-  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 143,

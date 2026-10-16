@@ -1,0 +1,1351 @@
+{
+  "v": 88,
+  "skills": [
+    {
+      "id": "bamboocutDraught-reveldrift",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Q",
+      "breakdownName": "Reveldrift",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:reveldrift",
+      "receives": ["starweaveMartialBoost", "eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 66,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.2640125,
+          "attributeMultiplier": 0.39601875,
+          "physFixed": 73.25,
+          "attributeFixed": 40,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.2640125,
+          "attributeMultiplier": 0.39601875,
+          "physFixed": 73.25,
+          "attributeFixed": 40,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-reveldrift-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Q [1-hit cancel]",
+      "breakdownName": "Reveldrift",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:reveldriftCancel",
+      "cancelledBy": "deflectCancel",
+      "receives": ["starweaveMartialBoost", "eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 21,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.2640125,
+          "attributeMultiplier": 0.39601875,
+          "physFixed": 73.25,
+          "attributeFixed": 40,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-realmplay",
+      "classId": "bamboocutDraught",
+      "name": "Realmplay",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:realmplay",
+      "receives": ["starweaveMartialBoost", "eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 28,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.402,
+          "attributeMultiplier": 0.603,
+          "physFixed": 111.5,
+          "attributeFixed": 61,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 10,
+          "physMultiplier": 0.402,
+          "attributeMultiplier": 0.603,
+          "physFixed": 111.5,
+          "attributeFixed": 61,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-blade-against-waves",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Light Attack - Blade Against Waves",
+      "breakdownName": "Blade Against Waves",
+      "tags": ["weapon:Twin Blades", "role:inebriateEnhanced", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:bladeAgainstWaves",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "rivenTwinbladesAdditionalAttack",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff"
+      ],
+      "castConditions": [
+        {
+          "buffId": "buff-bamboocutDraught-binge-points",
+          "op": "gt",
+          "stacks": 49
+        }
+      ],
+      "triggerable": false,
+      "castFrames": 54,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 1.499,
+            "then": {
+              "kind": "towardTarget",
+              "referenceMeters": 0
+            }
+          },
+          {
+            "minMeters": 1.5,
+            "maxMeters": 6,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "selfForward",
+          "meters": 4
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 11,
+          "physMultiplier": 0.315462,
+          "attributeMultiplier": 0.473193,
+          "physFixed": 87.6,
+          "attributeFixed": 47.7,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 38,
+          "physMultiplier": 0.736078,
+          "attributeMultiplier": 1.104117,
+          "physFixed": 204.4,
+          "attributeFixed": 111.3,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 38,
+          "physMultiplier": 0.736078,
+          "attributeMultiplier": 1.104117,
+          "physFixed": 204.4,
+          "attributeFixed": 111.3,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-tidepour",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Heavy Attack - Tidepour",
+      "breakdownName": "Tidepour",
+      "tags": ["weapon:Twin Blades", "role:inebriateEnhanced", "attack:heavy"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:tidepour",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "rivenTwinbladesAdditionalAttack",
+        "mistwillowLightBuff",
+        "mistwillowBuff"
+      ],
+      "castConditions": [
+        {
+          "buffId": "buff-bamboocutDraught-binge-points",
+          "op": "gt",
+          "stacks": 49
+        }
+      ],
+      "triggerable": false,
+      "castFrames": 42,
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.36636,
+          "attributeMultiplier": 0.54954,
+          "physFixed": 102,
+          "attributeFixed": 55.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 32,
+            "maxTravelFrames": 24
+          }
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.36636,
+          "attributeMultiplier": 0.54954,
+          "physFixed": 102,
+          "attributeFixed": 55.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 32,
+            "maxTravelFrames": 24
+          }
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-boundvessel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Heavy Attack",
+      "breakdownName": "Boundvessel",
+      "tags": ["weapon:Twin Blades", "role:inebriateEnhanced", "attack:heavy"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:boundvessel",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "rivenTwinbladesAdditionalAttack",
+        "nonPlayerBaseDamage50",
+        "mistwillowLightBuff",
+        "mistwillowBuff"
+      ],
+      "triggerable": false,
+      "castFrames": 208,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 40,
+          "stopAfterSec": 1.6
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-14",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 47,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 56,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 65,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 74,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 83,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-6",
+          "frame": 91,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-7",
+          "frame": 100,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-8",
+          "frame": 109,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-9",
+          "frame": 118,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-10",
+          "frame": 127,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-11",
+          "frame": 135,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-12",
+          "frame": 144,
+          "physMultiplier": 0.11544,
+          "attributeMultiplier": 0.17316,
+          "physFixed": 32.2,
+          "attributeFixed": 17.4,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-15",
+          "frame": 159,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "param": "skyspeak",
+                  "minTier": 4
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "param": "skyspeak",
+                  "minTier": 4
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-13",
+          "frame": 161,
+          "physMultiplier": 0.23088,
+          "attributeMultiplier": 0.34632,
+          "physFixed": 64.4,
+          "attributeFixed": 34.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-cloudvault",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-boundvessel-drink-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Heavy Attack [drink cancel]",
+      "breakdownName": "Boundvessel",
+      "tags": ["weapon:Twin Blades", "role:inebriateEnhanced", "attack:heavy"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:boundvesselDrinkCancel",
+      "cancelledBy": "nextSkill",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "rivenTwinbladesAdditionalAttack",
+        "nonPlayerBaseDamage50",
+        "mistwillowLightBuff",
+        "mistwillowBuff"
+      ],
+      "triggerable": false,
+      "castFrames": 175,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 40,
+          "stopAfterSec": 1.6
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-14",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 47,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 56,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 65,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 74,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 83,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-6",
+          "frame": 91,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-7",
+          "frame": 100,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-8",
+          "frame": 109,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-9",
+          "frame": 118,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-10",
+          "frame": 127,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-11",
+          "frame": 135,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-12",
+          "frame": 144,
+          "physMultiplier": 0.11544,
+          "attributeMultiplier": 0.17316,
+          "physFixed": 32.2,
+          "attributeFixed": 17.4,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-15",
+          "frame": 159,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "param": "skyspeak",
+                  "minTier": 4
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "param": "skyspeak",
+                  "minTier": 4
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-13",
+          "frame": 161,
+          "physMultiplier": 0.23088,
+          "attributeMultiplier": 0.34632,
+          "physFixed": 64.4,
+          "attributeFixed": 34.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-cloudvault",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-peakfall",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Q",
+      "breakdownName": "Peakfall",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:peakfall",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40",
+        "starweaveMartialBoost"
+      ],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 38,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.91934,
+          "attributeMultiplier": 1.37901,
+          "physFixed": 255,
+          "attributeFixed": 139,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-drunkslay",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted",
+              "extendFrames": 360,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-points",
+              "stacks": 200,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted",
+              "durationFrames": 600
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-consecutive-punches",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-peakfall-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-peakfall-jadeflush",
+              "label": "Gauntlet Q - Jadeflush",
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 100
+                }
+              ],
+              "physMultiplier": 0.78782,
+              "attributeMultiplier": 1.18173,
+              "physFixed": 218.5,
+              "attributeFixed": 119,
+              "castFrames": 52
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 34,
+          "physMultiplier": 0.78782,
+          "attributeMultiplier": 1.18173,
+          "physFixed": 218.5,
+          "attributeFixed": 119,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            },
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T22:00:00.000Z",
+      "updatedAt": "2026-10-15T22:00:00.000Z"
+    }
+  ]
+}

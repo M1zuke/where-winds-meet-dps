@@ -12,15 +12,24 @@ const maxContext: MeterMaxContext = {
   whiteAffinityRate: 0,
 }
 
-function makeEngine(): MeterEngine {
+function makeEngine(regenPerSecond = 10): MeterEngine {
   const ledger = new StatusLedger(-600, 6000)
   return new MeterEngine(
-    { id: "test", name: "Test", capacity: 100, start: "full", regenPerSecond: 10 },
+    { id: "test", name: "Test", capacity: 100, start: "full", regenPerSecond },
     maxContext,
     FPS,
     ledger,
   )
 }
+
+describe("a drain that starts and stops between frames", () => {
+  it("drains each frame in proportion to the part of it the interval covers", () => {
+    const meter = makeEngine(0)
+    meter.startDrain(10.25, 12.5, 60)
+    meter.advanceTo(20)
+    expect(meter.value()).toBeCloseTo(100 - 60 * (2.25 / FPS), 9)
+  })
+})
 
 describe("a meter cursor that has already advanced past a requested frame", () => {
   it("apply processes at the cursor's own frame instead of rewinding it, and warns", () => {

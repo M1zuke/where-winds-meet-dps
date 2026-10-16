@@ -4,6 +4,7 @@ import { CAST, WEAPON } from "../ids"
 import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORD_R_CHARGE_FOLLOW_UP_1_HIT_CANCEL_MOTION } from "./rootMotion"
 import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
 import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
@@ -24,6 +25,7 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
   // A cancel form ends where the animation opens its interrupt window — 16 frames in (in-game animation, 2026-09-24); the parry that ends it is the next rotation step.
   castFrames: 16,
   triggerable: true,
+  displacement: SWORD_R_CHARGE_FOLLOW_UP_1_HIT_CANCEL_MOTION,
   hits: [
     hit(0, {
       frame: 14,

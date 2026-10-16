@@ -38,7 +38,9 @@ function receivedBuffIds(): Set<string> {
 // `swiftGaleAirborneHeavyBoost` boosts an airborne Heavy Attack, a skill no
 // class in this app models — authored for the set it belongs to, unreachable
 // until one exists. `totalAnnihilationSupremeShield` is a defensive marker
-// only, same as `rainwhisperShield`.
+// only, same as `rainwhisperShield`. `windrider` and `moonShatterSpringLockout`
+// are states a `castConditions` entry reads, and `gourdTossMoonShatterReset`
+// only ends the second one.
 const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mirage",
   "rainwhisperShield",
@@ -47,6 +49,9 @@ const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "cleftpeakDeflectGrant",
   "swiftGaleAirborneHeavyBoost",
   "totalAnnihilationSupremeShield",
+  "windrider",
+  "moonShatterSpringLockout",
+  "gourdTossMoonShatterReset",
 ])
 
 describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {

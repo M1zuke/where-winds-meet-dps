@@ -6,7 +6,7 @@ const LOCKOUT_GROUP = "bleedMechanismEnhancement"
 const LOCKOUT_FRAMES = 180
 
 // In-game values as of 2026-10-07: a direct hit of Inner Balance Strike III,
-// Sword Martial QQQ, either Sword R Charge follow-up or Crosswind Blade gains
+// Sword Martial QQQ, either Sword R Charge follow-up or Zenith Sword gains
 // +10 Endurance when the target already held 4 Bleeding stacks before that
 // hit's own stack. One lockout is shared by all four skills; only the end of
 // an Inner Balance Strike III releases it early.

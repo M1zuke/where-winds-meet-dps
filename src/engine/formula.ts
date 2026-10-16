@@ -104,6 +104,7 @@ export interface FormulaContext {
   allMartialBoost?: number
   weaponBoosts?: Record<string, number>
   mysticTypeBoosts?: Record<string, number>
+  allMysticBoost?: number
   generalDamageBoost: number
   chargeBonus: number
   effectiveDefense: number
@@ -125,6 +126,8 @@ export interface FormulaContext {
   critDamageReduction?: number
   affinityDamageReduction?: number
   hawkwingPhysBonus?: number
+  bellstrikeAttackPctBonus?: number
+  formlessAttack?: { min: number; max: number }
   attributeFlatMultiplier?: number
 }
 
@@ -146,6 +149,7 @@ interface SkillResult {
   expectedDamage: number
   cells: Record<string, number>
   rolled?: RolledHit
+  affinityOutcomeChance: number
 }
 
 export function computeSkillDamage(
@@ -226,17 +230,17 @@ export function computeSkillDamage(
       ) + ctx.directAffinityPanel
 
   const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
+  const setBellstrikeAttackPct =
+    ctx.bellstrikeAttackPctBonus ?? setFormulaBonus(ctx.set, "bellstrikeAttackPct")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
   const physMin =
-    (effectivePhys.min + numberOrZero(art.minPhysFlatBonus)) *
-      (1 + numberOrZero(art.minPhysPctBonus)) *
-      (1 + setPhysBoost) -
+    effectivePhys.min * (1 + numberOrZero(art.minPhysPctBonus) + setPhysBoost) +
+    numberOrZero(art.minPhysFlatBonus) -
     ctx.effectiveDefense
 
   const physMaxRaw =
-    (effectivePhys.max + numberOrZero(art.maxPhysFlatBonus)) *
-      (1 + numberOrZero(art.maxPhysPctBonus)) *
-      (1 + setPhysBoost) -
+    effectivePhys.max * (1 + numberOrZero(art.maxPhysPctBonus) + setPhysBoost) +
+    numberOrZero(art.maxPhysFlatBonus) -
     ctx.effectiveDefense
   const physMax = Math.max(physMaxRaw, physMin)
 
@@ -361,9 +365,17 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const attackScale = 1 + numberOrZero(art.attributeAttackPctBonus)
-    const minAttack = block.min * attackScale
-    const maxAttack = Math.max(block.max * attackScale, minAttack)
+    const sharedRate = numberOrZero(art.attributeAttackPctBonus)
+    const steadyScale = 1 + sharedRate + (attribute === "Bellstrike" ? setBellstrikeAttackPct : 0)
+    const formlessScale = 1 + sharedRate
+    const formless =
+      attribute === ctx.primaryAttribute ? (ctx.formlessAttack ?? { min: 0, max: 0 }) : null
+    const minAttack =
+      (block.min - (formless?.min ?? 0)) * steadyScale + (formless?.min ?? 0) * formlessScale
+    const maxAttack = Math.max(
+      (block.max - (formless?.max ?? 0)) * steadyScale + (formless?.max ?? 0) * formlessScale,
+      minAttack,
+    )
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0
@@ -498,9 +510,11 @@ export function computeSkillDamage(
   const weaponBoostMap = ctx.weaponBoosts ?? {}
   const weaponBoost = weaponBoostMap[weaponOrAttributeKey]
   const mysticCategory = art.mysticCategory
+  const isMysticHit = art.skillType === "mystic" || !!mysticCategory
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
-    (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
+    (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0) +
+    (isMysticHit ? (ctx.allMysticBoost ?? 0) : 0)
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
@@ -571,6 +585,7 @@ export function computeSkillDamage(
   return {
     expectedDamage,
     rolled: rng ? rollHit(rng) : undefined,
+    affinityOutcomeChance: guaranteedNormal || guaranteedCrit ? 0 : affinityChance,
     cells: {
       X: critDamageBoost,
       Y: affinityDamageBoost,

@@ -8,6 +8,7 @@ import type {
   GearLevelValues,
 } from "./types"
 import type { FormulaContext } from "./formula"
+import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
@@ -286,11 +287,11 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const typeBoosts: Record<string, number> = {
     Boss: effectiveBossBoost,
-    control: inputs.singleMysticBoost,
-    burst: inputs.singleMysticBoost,
-    area: inputs.areaMysticBoost,
-    "area-debuff": inputs.areaMysticBoost,
-    "area-damage": inputs.areaMysticBoost,
+    control: inputs.singleMysticBoost + inputs.allMysticBoost,
+    burst: inputs.singleMysticBoost + inputs.allMysticBoost,
+    area: inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-debuff": inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-damage": inputs.areaMysticBoost + inputs.allMysticBoost,
   }
 
   return {
@@ -315,7 +316,7 @@ export interface TargetOverride {
 export function buildContext(
   inputs: Inputs,
   targetOverride?: TargetOverride,
-  hawkwingPhysBonus?: number,
+  contextPatch?: ContextPatch,
 ): FormulaContext {
   const school = getSchool(inputs.classId)
   const baseTarget = getBreakthrough(inputs.breakthrough)
@@ -432,6 +433,7 @@ export function buildContext(
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
+    allMysticBoost: inputs.allMysticBoost,
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     damageReduction: targetDamageReduction,
@@ -439,7 +441,9 @@ export function buildContext(
     attrDamageBoostReduction: targetAttrDamageBoostReduction,
     critDamageReduction: targetCritDamageReduction,
     affinityDamageReduction: targetAffinityDamageReduction,
-    hawkwingPhysBonus,
+    hawkwingPhysBonus: contextPatch?.hawkwingPhysBonus,
+    bellstrikeAttackPctBonus: contextPatch?.bellstrikeAttackPctBonus,
+    formlessAttack: inputs.formlessAttack,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

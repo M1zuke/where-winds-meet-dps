@@ -17,11 +17,12 @@ export const swordspecial4HitFinal = defineSkill({
   receives: STRATEGIC_SWORD_RECEIVES,
   castFrames: 0,
   triggerable: true,
+  // Hit 4 lands 75.96 f into the cast, 32.52 f after the hit that casts this.
   hits: [
     {
       ...SWORDSPECIAL_HITS[3]!,
       id: "hit-0",
-      frame: SWORDSPECIAL_HITS[3]!.frame - SWORDSPECIAL_HITS[2]!.frame,
+      frame: 32.52,
     },
   ],
   createdAt: "2026-09-25T00:00:00.000Z",

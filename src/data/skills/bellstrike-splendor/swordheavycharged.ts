@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { VAGRANT_SWORD_SINGLE_BOLT_MOTION, VAGRANT_SWORD_THREE_WAVE_MOTION } from "./rootMotion"
 import {
   energySurgeCooldownCut,
   energySurgeReleaseTrigger,
@@ -13,11 +14,12 @@ import {
   THREE_WAVE_RELEASE_CONDITIONS,
 } from "./buffs/multiWaveWindowGrant"
 import {
-  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
 } from "./buffs/vagrantSwordEndurance"
+import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
+import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
@@ -31,10 +33,10 @@ export const swordHeavyCharged = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyCharged,
-  startLatency: "noWaitOnDummy",
   // In-game values as of 2026-09-30: this press locks onto its target online,
   // a second server wait beyond the input's own before the release plays.
   serverWaitsInCast: 1,
+  castConditions: [WUSHUANG_STANCE_ABSENT],
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.swordSlashDamageBoost,
@@ -45,16 +47,17 @@ export const swordHeavyCharged = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  // In-game values as of 2026-10-06: without the three-wave conditions this is
+  // In-game values as of 2026-10-15: without the three-wave conditions this is
   // the single-bolt level-2 release, not the three-wave one below.
-  castFrames: 121,
+  castFrames: 121.8,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_SINGLE_BOLT_MOTION,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 96.74,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 3.2664,
       attributeMultiplier: 4.8996,
       physFixed: 904,
@@ -73,16 +76,18 @@ export const swordHeavyCharged = defineSkill({
           attributeMultiplier: 1.9598,
           physFixed: 361.6,
           attributeFixed: 197.2,
-          // Cast length to the earliest next input for a full ≥84 f hold to
+          // Cast length to the earliest next input for a full ≥84.6 f hold to
           // the level-2 threshold plus the three-wave release's own cast
-          // length (in-game values as of 2026-09-24).
-          castFrames: 135,
-          frame: 90,
+          // length (in-game values as of 2026-10-15).
+          castFrames: 135.6,
+          frame: 90.66,
+          displacement: VAGRANT_SWORD_THREE_WAVE_MOTION,
         },
       ],
     }),
     hit(1, {
-      frame: 100,
+      frame: 100.62,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
@@ -91,7 +96,8 @@ export const swordHeavyCharged = defineSkill({
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
-      frame: 129,
+      frame: 129.9,
+      projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
@@ -102,9 +108,9 @@ export const swordHeavyCharged = defineSkill({
       triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
     }),
     hit(3, {
-      // In-game values as of 2026-10-06: the three-wave event fires at the
-      // level-2 release, 84 f after the press, ahead of the first wave.
-      frame: 84,
+      // In-game values as of 2026-10-15: the three-wave event fires at the
+      // level-2 release, 84.6 f after the press, ahead of the first wave.
+      frame: 84.6,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,
@@ -118,5 +124,5 @@ export const swordHeavyCharged = defineSkill({
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

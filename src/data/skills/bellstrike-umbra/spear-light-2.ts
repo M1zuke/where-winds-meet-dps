@@ -4,7 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-16.
 export const spearLight2 = defineSkill({
   id: SKILL.spearLight2,
   classId: "bellstrikeUmbra",
@@ -21,7 +21,7 @@ export const spearLight2 = defineSkill({
   reachMeters: 4.5,
   hits: [
     hit(0, {
-      frame: 14,
+      frame: 14.24,
       physMultiplier: 0.3287865,
       attributeMultiplier: 0.49317975,
       physFixed: 91.05,
@@ -29,5 +29,5 @@ export const spearLight2 = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

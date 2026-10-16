@@ -32,7 +32,8 @@ function resource(opening = 60) {
       fps: 60,
       startFrame: 0,
       collect: true,
-      buffActive: () => false,
+      particleCount: 1,
+      buffLive: () => false,
       exhausted: (frame) => frame >= 60 && frame < 180,
       paramTier: () => 0,
     },
@@ -41,6 +42,12 @@ function resource(opening = 60) {
 
 function amount(simulation: CombatResource) {
   return simulation.result.samples.at(-1)!.amount
+}
+
+function tickAndLand(simulation: CombatResource, frame: number, owner = 0) {
+  const outcome = simulation.tick(frame, owner)
+  if (outcome.share > 0) simulation.creditHit(frame, outcome.particles)
+  return outcome
 }
 
 describe("resource refund on exhausted-target projectile hits", () => {
@@ -63,7 +70,8 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        particleCount: 1,
+        buffLive: () => false,
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -72,15 +80,15 @@ describe("resource refund on exhausted-target projectile hits", () => {
       id: "fictional-combo",
       hits: [makeHit(), makeHit(), makeHit()],
     })
-    simulation.hit(skill, 0, 0)
+    simulation.hit(skill, 0)
     expect(amount(simulation)).toBe(12)
-    simulation.hit(skill, 20, 0)
+    simulation.hit(skill, 20)
     expect(amount(simulation)).toBe(24)
     simulation.advance(60)
     expect(amount(simulation)).toBe(24)
-    simulation.hit(skill, 80, 80)
-    simulation.hit(skill, 100, 80)
-    simulation.hit(skill, 120, 80)
+    simulation.hit(skill, 80)
+    simulation.hit(skill, 100)
+    simulation.hit(skill, 120)
     expect(amount(simulation)).toBe(60)
   })
   it("adds per-hit base gains separately from a gated once-per-cast refund", () => {
@@ -94,7 +102,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
             name: "Bonus",
             defaultAmount: 20,
             skillIds: ["fictional-builder"],
-            oncePerCast: true,
+            cooldownSeconds: 1,
             requiresBuff: "fictional-mark",
           },
         ],
@@ -104,25 +112,26 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: (_id, frame) => frame >= 60,
+        particleCount: 1,
+        buffLive: (_id: string, frame: number) => frame >= 60,
         exhausted: () => false,
         paramTier: () => 0,
       },
     )
     const skill = makeSkill("fictional", { id: "fictional-builder" })
-    simulation.hit(skill, 0, 0)
-    simulation.hit(skill, 20, 0)
+    simulation.hit(skill, 0)
+    simulation.hit(skill, 20)
     expect(amount(simulation)).toBe(16)
-    simulation.hit(skill, 80, 80)
-    simulation.hit(skill, 100, 80)
-    simulation.hit(skill, 120, 80)
+    simulation.hit(skill, 80)
+    simulation.hit(skill, 100)
+    simulation.hit(skill, 120)
     expect(amount(simulation)).toBe(60)
-    simulation.hit({ ...skill, isDotTick: true }, 130, 130)
-    simulation.hit({ ...skill, id: "fictional-other" }, 140, 140)
+    simulation.hit({ ...skill, isDotTick: true }, 130)
+    simulation.hit({ ...skill, id: "fictional-other" }, 140)
     expect(amount(simulation)).toBe(60)
-    simulation.hit(skill, 160, 160)
-    simulation.hit(skill, 180, 160)
-    simulation.hit(skill, 200, 160)
+    simulation.hit(skill, 160)
+    simulation.hit(skill, 180)
+    simulation.hit(skill, 200)
     expect(amount(simulation)).toBe(100)
   })
   it("gates cast gains by tier and own mark, gives one proc per cast and excludes DoT", () => {
@@ -137,7 +146,7 @@ describe("resource refund on exhausted-target projectile hits", () => {
             name: "Cast",
             defaultAmount: 25,
             skillIds: ["fictional-hit"],
-            oncePerCast: true,
+            cooldownSeconds: 1,
             requiresParam: "test-param",
             minTier: 6,
             requiresBuff: "test-mark",
@@ -149,40 +158,134 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => marked,
+        particleCount: 1,
+        buffLive: () => marked,
         exhausted: () => false,
         paramTier: () => tier,
       },
     )
     const skill = makeSkill("fictional", { id: "fictional-hit" })
-    simulation.hit(skill, 0, 0)
+    simulation.hit(skill, 0)
     expect(amount(simulation)).toBe(0)
     tier = 6
     marked = false
-    simulation.hit(skill, 60, 60)
+    simulation.hit(skill, 60)
     expect(amount(simulation)).toBe(0)
     marked = true
-    simulation.hit({ ...skill, id: "unrelated-hit" }, 90, 90)
+    simulation.hit({ ...skill, id: "unrelated-hit" }, 90)
     expect(amount(simulation)).toBe(0)
-    simulation.hit(skill, 120, 120)
-    simulation.hit(skill, 130, 120)
+    simulation.hit(skill, 120)
+    simulation.hit(skill, 130)
     expect(amount(simulation)).toBe(25)
-    simulation.hit({ ...skill, isDotTick: true }, 140, 140)
+    simulation.hit({ ...skill, isDotTick: true }, 140)
     expect(amount(simulation)).toBe(25)
-    simulation.hit(skill, 180, 180)
+    simulation.hit(skill, 180)
     expect(amount(simulation)).toBe(50)
+  })
+  describe("when a gain gate holds in only some trajectories", () => {
+    const PARTICLES = 10
+    const LIVE_PARTICLES = 4
+    const liveMask = Uint8Array.from({ length: PARTICLES }, (_, index) =>
+      index < LIVE_PARTICLES ? 1 : 0,
+    )
+    const gatedGain = {
+      id: "cast",
+      name: "Cast",
+      defaultAmount: 25,
+      skillIds: ["fictional-hit"],
+      requiresBuff: "test-mark",
+      cooldownSeconds: 1,
+    }
+    const castSkill = makeSkill("fictional", { id: "fictional-hit" })
+
+    function branched(
+      opening: number,
+      gain: typeof gatedGain | Omit<typeof gatedGain, "cooldownSeconds"> = gatedGain,
+    ) {
+      return new CombatResource(
+        { ...definition, gains: [gain] },
+        { opening, exhaustedGainPerTick: 0 },
+        {
+          fps: 60,
+          startFrame: 0,
+          collect: true,
+          particleCount: PARTICLES,
+          buffLive: () => liveMask,
+          exhausted: () => false,
+          paramTier: () => 0,
+        },
+      )
+    }
+
+    it("credits the gain in the live trajectories only and reports the mean", () => {
+      const simulation = branched(0)
+      simulation.hit(castSkill, 0)
+      expect(amount(simulation)).toBeCloseTo(10)
+    })
+
+    it("decides the launch minimum per trajectory", () => {
+      const simulation = branched(30)
+      simulation.hit(castSkill, 0)
+      expect(simulation.launch(10)).toBeCloseTo(0.4)
+      const launches = simulation.result.launches
+      expect(launches).toHaveLength(2)
+      expect(launches).toContainEqual(
+        expect.objectContaining({ reason: "fightEnd", share: 0.4, opening: 55 }),
+      )
+      expect(launches).toContainEqual(
+        expect.objectContaining({ reason: "insufficient", share: 0.6, opening: 30 }),
+      )
+    })
+
+    it("scales a tick by the share of trajectories whose launch is active and names them", () => {
+      const simulation = branched(30)
+      simulation.hit(castSkill, 0)
+      simulation.launch(10)
+      const outcome = simulation.tick(20, 10)
+      expect(outcome.share).toBeCloseTo(0.4)
+      expect([...outcome.particles!]).toEqual([1, 1, 1, 1, 0, 0, 0, 0, 0, 0])
+    })
+
+    it("merges trajectories whose state became identical", () => {
+      const { cooldownSeconds: _cooldown, ...uncooledGain } = gatedGain
+      const simulation = branched(100, uncooledGain)
+      simulation.hit(castSkill, 0)
+      expect(simulation.launch(10)).toBe(1)
+      expect(simulation.result.launches).toHaveLength(1)
+      expect(simulation.result.launches[0].share).toBe(1)
+    })
+
+    it("arms the cooldown only in the trajectories that were credited", () => {
+      const simulation = branched(0)
+      simulation.hit(castSkill, 0)
+      simulation.hit(castSkill, 30)
+      expect(amount(simulation)).toBeCloseTo(10)
+      simulation.hit(castSkill, 60)
+      expect(amount(simulation)).toBeCloseTo(10 + 0.4 * 25 + 0.6 * 0 + 0)
+    })
   })
   it("credits only accepted projectile ticks within the half-open exhausted phase", () => {
     const simulation = resource()
     simulation.launch(0)
-    expect(simulation.tick(30, 0)).toBe(true)
+    expect(tickAndLand(simulation, 30).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(55)
-    expect(simulation.tick(60, 0)).toBe(true)
+    expect(tickAndLand(simulation, 60).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(58)
-    expect(simulation.tick(120, 0)).toBe(true)
+    expect(tickAndLand(simulation, 120).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(56)
-    expect(simulation.tick(180, 0)).toBe(true)
+    expect(tickAndLand(simulation, 180).share).toBe(1)
     expect(amount(simulation)).toBeCloseTo(46)
+  })
+
+  it("credits a bullet's refund against the phase it lands in, not the one it was launched in", () => {
+    const simulation = resource()
+    simulation.launch(0)
+    const launchedBefore = simulation.tick(54, 0)
+    simulation.creditHit(72, launchedBefore.particles)
+    expect(amount(simulation)).toBeCloseTo(60 - (10 * 72) / 60 + 8)
+    const launchedInside = simulation.tick(174, 0)
+    simulation.creditHit(186, launchedInside.particles)
+    expect(amount(simulation)).toBeCloseTo(60 - (10 * 186) / 60 + 8)
   })
 
   it("does not refill merely because time passes during exhaustion", () => {
@@ -195,15 +298,15 @@ describe("resource refund on exhausted-target projectile hits", () => {
   it("charges an enhanced run's cost once, on top of the drain and the hit refund", () => {
     const simulation = resource(100)
     simulation.launch(0)
-    simulation.tick(60, 0)
-    simulation.chargeEnhancedRun(60)
+    tickAndLand(simulation, 60)
+    simulation.chargeEnhancedRun(60, 0)
     expect(amount(simulation)).toBeCloseTo(93)
   })
 
   it("ends the launch when an enhanced run's cost empties the bar", () => {
     const simulation = resource(50)
     simulation.launch(0)
-    simulation.chargeEnhancedRun(270)
+    simulation.chargeEnhancedRun(270, 0)
     expect(simulation.result.launches[0].reason).toBe("depleted")
   })
 
@@ -220,12 +323,12 @@ describe("resource refund on exhausted-target projectile hits", () => {
   it("does not refill from stale ticks after recall or a rejected launch", () => {
     const simulation = resource()
     simulation.launch(0)
-    expect(simulation.launch(60)).toBe(false)
-    expect(simulation.tick(120, 0)).toBe(false)
+    expect(simulation.launch(60)).toBe(0)
+    expect(simulation.tick(120, 0).share).toBe(0)
     expect(amount(simulation)).toBeCloseTo(65)
     const rejected = resource(49)
-    expect(rejected.launch(0)).toBe(false)
-    expect(rejected.tick(120, 0)).toBe(false)
+    expect(rejected.launch(0)).toBe(0)
+    expect(rejected.tick(120, 0).share).toBe(0)
     expect(amount(rejected)).toBe(49)
   })
 
@@ -233,10 +336,10 @@ describe("resource refund on exhausted-target projectile hits", () => {
     const simulation = resource(100)
     simulation.settings.exhaustedGainPerTick = 100
     simulation.launch(0)
-    simulation.tick(60, 0)
+    tickAndLand(simulation, 60)
     expect(amount(simulation)).toBe(100)
     simulation.advance(660)
-    expect(simulation.tick(660, 0)).toBe(false)
+    expect(simulation.tick(660, 0).share).toBe(0)
     expect(amount(simulation)).toBe(15)
     expect(simulation.result.launches[0].reason).toBe("depleted")
   })
@@ -249,7 +352,8 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        particleCount: 1,
+        buffLive: () => false,
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -268,7 +372,8 @@ describe("resource refund on exhausted-target projectile hits", () => {
         fps: 60,
         startFrame: 0,
         collect: true,
-        buffActive: () => false,
+        particleCount: 1,
+        buffLive: () => false,
         exhausted: () => false,
         paramTier: () => 0,
       },
@@ -289,5 +394,68 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(
       resolveResourceSettings(definition, { exhaustedGainPerTick: 900 }).exhaustedGainPerTick,
     ).toBe(100)
+  })
+})
+
+describe("a launch with a cost, a lifetime and a delayed refund", () => {
+  const timed = {
+    ...definition,
+    drainPerSecond: 0,
+    launchCost: 10,
+    maxRunSeconds: 2,
+    refundDelaySeconds: 0.5,
+  }
+
+  function timedResource(opening: number) {
+    return new CombatResource(
+      timed,
+      { opening },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        particleCount: 1,
+        buffLive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+  }
+
+  it("takes its cost from a funded launch and none from a rejected one", () => {
+    const funded = timedResource(60)
+    funded.launch(0)
+    expect(amount(funded)).toBe(50)
+    const rejected = timedResource(40)
+    rejected.launch(0)
+    expect(amount(rejected)).toBe(40)
+    expect(rejected.result.launches[0].reason).toBe("insufficient")
+  })
+
+  it("keeps the opening balance in the launch record", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    expect(simulation.result.launches[0].opening).toBe(60)
+  })
+
+  it("ends the launch when its lifetime runs out and pays the refund after the delay", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    simulation.advance(119)
+    expect(simulation.result.launches[0].reason).not.toBe("expired")
+    simulation.advance(120)
+    expect(simulation.result.launches[0].reason).toBe("expired")
+    expect(amount(simulation)).toBe(50)
+    simulation.advance(149)
+    expect(amount(simulation)).toBe(50)
+    simulation.advance(150)
+    expect(amount(simulation)).toBe(65)
+  })
+
+  it("pays no refund for a launch that is still running when the fight ends", () => {
+    const simulation = timedResource(60)
+    simulation.launch(0)
+    simulation.finish(60)
+    expect(amount(simulation)).toBe(50)
   })
 })

@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
-import { makeHit, makeSkill, resolvedHitFrame } from "../../src/engine/skill"
+import {
+  makeHit,
+  makeSkill,
+  projectileTravelFrames,
+  resolvedHitFrame,
+} from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
 import type { Inputs } from "../../src/engine/types"
@@ -85,5 +90,50 @@ describe("a projectile hit inside the full timeline", () => {
 
   it("caps the landing frame at the launch frame plus its own maximum travel time", () => {
     expect(landingFrameAt(90)).toBe(20 + MAX_TRAVEL_FRAMES)
+  })
+})
+
+describe("projectileTravelFrames - contact advance", () => {
+  it("shortens the flown distance by the advance and never below zero", () => {
+    const base = { speedMetersPerSecond: 30, maxTravelFrames: 300 }
+    const advanced = { ...base, contactAdvanceMeters: 0.5 }
+    expect(projectileTravelFrames(advanced, 10)).toBeCloseTo((9.5 / 30) * 60, 9)
+    expect(projectileTravelFrames(base, 9.5)).toBeCloseTo(projectileTravelFrames(advanced, 10), 9)
+    expect(projectileTravelFrames(advanced, 0.2)).toBe(0)
+  })
+})
+
+describe("projectileTravelFrames - an accelerating projectile", () => {
+  const projectile = {
+    speedMetersPerSecond: 80,
+    acceleration: { initialSpeedMetersPerSecond: 10, metersPerSecondSquared: 700 },
+    collisionDelayFrames: 2.4,
+    maxTravelFrames: 300,
+  }
+
+  it("travels d / 80 + 0.04375 s once past the 4.5 m ramp", () => {
+    expect(projectileTravelFrames(projectile, 9)).toBeCloseTo((9 / 80 + 0.04375) * 60, 9)
+    expect(projectileTravelFrames(projectile, 4.5)).toBeCloseTo(0.1 * 60, 9)
+  })
+
+  it("solves the ramp itself for a shorter travel", () => {
+    const meters = 2
+    const seconds = projectileTravelFrames(projectile, meters) / 60
+    expect(10 * seconds + 350 * seconds ** 2).toBeCloseTo(meters, 9)
+  })
+
+  it("lands no earlier than the collision delay", () => {
+    expect(projectileTravelFrames(projectile, 0)).toBe(2.4)
+    expect(projectileTravelFrames(projectile, 0.5)).toBe(2.4)
+  })
+
+  it("is capped by its lifetime", () => {
+    expect(projectileTravelFrames(projectile, 100000)).toBe(300)
+  })
+
+  it("keeps the constant-speed form when no acceleration is declared", () => {
+    expect(
+      projectileTravelFrames({ speedMetersPerSecond: 10, maxTravelFrames: 300 }, 5),
+    ).toBeCloseTo(30, 9)
   })
 })

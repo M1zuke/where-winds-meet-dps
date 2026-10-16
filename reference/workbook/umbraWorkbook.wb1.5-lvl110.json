@@ -17,7 +17,7 @@
   "devOnly": "Contains Chinese verbatim — must never be imported from src/ or tests/ (CLAUDE.md: the app is English-only). The curated app-facing subset is umbraSkillCoefficients.wb1.5-lvl110.json."
  },
  "_translation": {
-  "method": "Labels resolved by exact lookup against scripts/i18n/zhToEnOfficial.json (official ZH<->EN pairs from the game client). enSource='official' means the exact key exists there; 'composed' means it was built only from official component terms because the spreadsheet shorthand has no in-game key; 'untranslated' means neither applied and the Chinese is kept.",
+  "method": "Labels resolved by exact lookup against scripts/i18n/zhToEnOfficial.json (official in-game ZH<->EN text pairs). enSource='official' means the exact key exists there; 'composed' means it was built only from official component terms because the spreadsheet shorthand has no in-game key; 'untranslated' means neither applied and the Chinese is kept.",
   "changelogNote": "更新日志 descriptions are free prose with no official keys and are kept in Chinese verbatim, untranslated by design."
  },
  "sheets": {

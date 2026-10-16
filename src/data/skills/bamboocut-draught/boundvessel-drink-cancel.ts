@@ -1,9 +1,13 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
-import { boundvesselHits } from "./boundvessel"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
+import { BOUNDVESSEL_CAST_CONDITIONS, boundvesselHits } from "./boundvessel"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 // Ends at the first frame the drink may interrupt the finish, which is the
@@ -13,7 +17,7 @@ export const boundvesselDrinkCancel = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack [drink cancel]",
   breakdownName: "Boundvessel",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ROLE.inebriateEnhanced, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -23,7 +27,9 @@ export const boundvesselDrinkCancel = defineSkill({
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.nonPlayerBaseDamage50,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
+  castConditions: BOUNDVESSEL_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 175,
   reachMeters: 4,

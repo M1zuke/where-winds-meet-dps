@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { SWORD_CHARGE_STAGE_1_DISPLACEMENT } from "./sword-charge-stage-1-hits"
+import { SWORD_CHARGE_STAGE_1_LEVEL_0_DISPLACEMENT } from "./rootMotion"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 // A release past the 0.2 s tap window but short of stage 1's own 0.3 s
@@ -24,7 +24,7 @@ export const swordChargeStage1Level0 = defineSkill({
   receives: STRATEGIC_SWORD_RECEIVES,
   castFrames: 50,
   triggerable: true,
-  displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
+  displacement: SWORD_CHARGE_STAGE_1_LEVEL_0_DISPLACEMENT,
   hits: [
     hit(0, {
       frame: 37,

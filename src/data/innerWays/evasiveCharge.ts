@@ -45,7 +45,7 @@ export const evasiveCharge = defineInnerWay({
   id: INNER_WAY_ID.evasiveCharge,
   name: "Evasive Charge",
   selectableTiers: [6, 5, 4, 3, 2, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.evasiveCharge,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.precisionFourStar },

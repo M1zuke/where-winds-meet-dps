@@ -1,4 +1,4 @@
-import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
+import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
@@ -154,6 +154,7 @@ export function graduationInputs(
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
   }))
+  const equipped = equippedSlots(build)
   return standardizedGraduationInputs(
     {
       ...onBuiltinRotation(inputs, build.rotationId),
@@ -163,7 +164,7 @@ export function graduationInputs(
       qiRateAdd: 0,
       qiDamageIndexMultiplier: 0,
       inventory,
-      equipped: equippedSlots(build),
+      equipped,
       set: build.set,
       bowSet: build.bowSet,
       arsenal: build.arsenal,
@@ -174,7 +175,7 @@ export function graduationInputs(
         }),
       ),
       unclaimedOddityNodes: {},
-      enhancements: { ...DEFAULT_ENHANCEMENTS },
+      enhancements: defaultEnhancementLevels(inputs.breakthrough, { inventory, equipped }),
     },
     build,
   )

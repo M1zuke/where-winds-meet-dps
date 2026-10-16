@@ -3,6 +3,7 @@ import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { SWORD_HEAVY_ATTACK_MOTION } from "./rootMotion"
 
 const TWENTY_PERCENT_OF_ROW = {
   physMultiplier: 0.479274,
@@ -34,7 +35,7 @@ export const swordHeavyAttack = defineSkill({
   castFrames: 174,
   triggerable: true,
   reachMeters: 3,
-  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
+  displacement: SWORD_HEAVY_ATTACK_MOTION,
   hits: [
     hit(0, { frame: 26, ...TWENTY_PERCENT_OF_ROW }),
     hit(1, { frame: 48, ...FIFTEEN_PERCENT_OF_ROW }),

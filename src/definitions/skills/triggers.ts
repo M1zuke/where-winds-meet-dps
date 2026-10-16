@@ -10,6 +10,7 @@ interface TriggerSpec {
   extendOnly?: boolean
   maxExtendedDurationFrames?: number
   appliesOnCastEnd?: boolean
+  delayFrames?: number
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
@@ -45,6 +46,7 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
       ? { maxExtendedDurationFrames: spec.maxExtendedDurationFrames }
       : {}),
     ...(spec.appliesOnCastEnd !== undefined ? { appliesOnCastEnd: spec.appliesOnCastEnd } : {}),
+    ...(spec.delayFrames !== undefined ? { delayFrames: spec.delayFrames } : {}),
     ...(spec.requiresParam !== undefined ? { requiresParam: spec.requiresParam } : {}),
     ...(spec.requiresMinTier !== undefined ? { requiresMinTier: spec.requiresMinTier } : {}),
     ...(spec.meterSpendCapToCurrent !== undefined

@@ -76,9 +76,10 @@ export class MeterEngine {
     let total = 0
     let active = false
     for (const interval of this.intervals) {
-      if (frame < interval.fromFrame) continue
-      if (interval.toFrame !== null && frame >= interval.toFrame) continue
-      total += interval.baseRate * interval.multiplierAt(frame)
+      const overlapStart = Math.max(frame, interval.fromFrame)
+      const overlapEnd = Math.min(frame + 1, interval.toFrame ?? frame + 1)
+      if (overlapEnd <= overlapStart) continue
+      total += interval.baseRate * interval.multiplierAt(frame) * (overlapEnd - overlapStart)
       active = true
     }
     return { rate: total, active }
@@ -164,8 +165,13 @@ export class MeterEngine {
     baseRate: number,
     multiplierAt: (frame: number) => number = () => 1,
   ): void {
-    const appliedFrom = this.clampToCursor(fromFrame)
-    this.advanceTo(appliedFrom)
-    this.intervals.push({ fromFrame: appliedFrom, toFrame, baseRate, multiplierAt })
+    const cursorFrame = this.clampToCursor(Math.floor(fromFrame))
+    this.advanceTo(cursorFrame)
+    this.intervals.push({
+      fromFrame: Math.max(fromFrame, cursorFrame),
+      toFrame,
+      baseRate,
+      multiplierAt,
+    })
   }
 }

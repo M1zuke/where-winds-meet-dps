@@ -12,7 +12,7 @@ export const steadfastDevotion = defineInnerWay({
   name: "Steadfast Devotion",
   legacyNames: ["Lone Loyalty"],
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.steadfastDevotion,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.critRateFourStar },

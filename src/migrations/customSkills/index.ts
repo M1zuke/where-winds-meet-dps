@@ -68,6 +68,43 @@ import { V64__inGameTimingCorrections } from "./V64__inGameTimingCorrections"
 import { V65__threeWaveReleaseAndEnergySurgeInterval } from "./V65__threeWaveReleaseAndEnergySurgeInterval"
 import { V66__ghostlyAfterimagePerDodge } from "./V66__ghostlyAfterimagePerDodge"
 import { V67__bleedRefundLockoutAndSecondTrackSlashEndurance } from "./V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
+import { V68__mysticArtLevelCap } from "./V68__mysticArtLevelCap"
+import { V69__lightAttackThreeHitFrames } from "./V69__lightAttackThreeHitFrames"
+import { V70__splendorHitFrameRetiming } from "./V70__splendorHitFrameRetiming"
+import { V71__comboExtendMarkReach } from "./V71__comboExtendMarkReach"
+import { V72__stonesplitHitFrameRetiming } from "./V72__stonesplitHitFrameRetiming"
+import { V73__draughtGauntletRetimingAndReveldriftNerf } from "./V73__draughtGauntletRetimingAndReveldriftNerf"
+import { V74__springAwayBulletsExtendMarkPerHit } from "./V74__springAwayBulletsExtendMarkPerHit"
+import { V75__springAwayHoverCueTiming } from "./V75__springAwayHoverCueTiming"
+import { V76__vagrantSwordChargeTiming } from "./V76__vagrantSwordChargeTiming"
+import { V77__mysticFreeMorphWolflikeFrenzyTiming } from "./V77__mysticFreeMorphWolflikeFrenzyTiming"
+import { V78__reviewedTimingsGrantsAndNames } from "./V78__reviewedTimingsGrantsAndNames"
+import { V79__springAwayReach } from "./V79__springAwayReach"
+import { V80__prepullVagrantSwordWaveTiming } from "./V80__prepullVagrantSwordWaveTiming"
+import { V81__startWithoutServerWait } from "./V81__startWithoutServerWait"
+import { V82__umbraCastLengthsAndSweepAllBurstStacks } from "./V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { V83__splendorQiImbalanceOnHitAndEndlessGaleWindow } from "./V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
+import { V84__jadeHitLandingsGrantsAndClipTimings } from "./V84__jadeHitLandingsGrantsAndClipTimings"
+import { V85__jadeAvailabilityAndRecharge } from "./V85__jadeAvailabilityAndRecharge"
+import { V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "./V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
+import { V87__draughtGrantTimingAndAbrasionTalent } from "./V87__draughtGrantTimingAndAbrasionTalent"
+import { V88__draughtMistwillowReach } from "./V88__draughtMistwillowReach"
+import { V89__draughtReveldriftChargesAndEmpoweredLightAttack } from "./V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { V90__draughtTipsylayAndExCooldowns } from "./V90__draughtTipsylayAndExCooldowns"
+import { V91__draughtNightwickStanceAndVariedComboOverrides } from "./V91__draughtNightwickStanceAndVariedComboOverrides"
+import { V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming } from "./V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { V93__jadeBulletSkillsAsWeaponHits } from "./V93__jadeBulletSkillsAsWeaponHits"
+import { V94__jadeSpringSorrowChargesAndComboRechargeCut } from "./V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { V95__fractionalFrameTiming } from "./V95__fractionalFrameTiming"
+import { V96__stonesplitFractionalFrameTiming } from "./V96__stonesplitFractionalFrameTiming"
+import { V97__umbraGameplayTimings } from "./V97__umbraGameplayTimings"
+import { V98__swordHorizonBurstStacksAtTheBurst } from "./V98__swordHorizonBurstStacksAtTheBurst"
+import { V99__burningHeartChargeStageGates } from "./V99__burningHeartChargeStageGates"
+import { V100__burningHeartLowStageReleaseTiming } from "./V100__burningHeartLowStageReleaseTiming"
+import { V101__wushuangStanceVagrantSwordStartOrder } from "./V101__wushuangStanceVagrantSwordStartOrder"
+import { V102__prepullVagrantSwordBoltTiming } from "./V102__prepullVagrantSwordBoltTiming"
+import { V103__splendorRootMotion } from "./V103__splendorRootMotion"
+import { V104__umbraRootMotion } from "./V104__umbraRootMotion"
 
 export type {
   CustomSkillMigration,
@@ -204,6 +241,43 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V65__threeWaveReleaseAndEnergySurgeInterval,
   V66__ghostlyAfterimagePerDodge,
   V67__bleedRefundLockoutAndSecondTrackSlashEndurance,
+  V68__mysticArtLevelCap,
+  V69__lightAttackThreeHitFrames,
+  V70__splendorHitFrameRetiming,
+  V71__comboExtendMarkReach,
+  V72__stonesplitHitFrameRetiming,
+  V73__draughtGauntletRetimingAndReveldriftNerf,
+  V74__springAwayBulletsExtendMarkPerHit,
+  V75__springAwayHoverCueTiming,
+  V76__vagrantSwordChargeTiming,
+  V77__mysticFreeMorphWolflikeFrenzyTiming,
+  V78__reviewedTimingsGrantsAndNames,
+  V79__springAwayReach,
+  V80__prepullVagrantSwordWaveTiming,
+  V81__startWithoutServerWait,
+  V82__umbraCastLengthsAndSweepAllBurstStacks,
+  V83__splendorQiImbalanceOnHitAndEndlessGaleWindow,
+  V84__jadeHitLandingsGrantsAndClipTimings,
+  V85__jadeAvailabilityAndRecharge,
+  V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming,
+  V87__draughtGrantTimingAndAbrasionTalent,
+  V88__draughtMistwillowReach,
+  V89__draughtReveldriftChargesAndEmpoweredLightAttack,
+  V90__draughtTipsylayAndExCooldowns,
+  V91__draughtNightwickStanceAndVariedComboOverrides,
+  V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming,
+  V93__jadeBulletSkillsAsWeaponHits,
+  V94__jadeSpringSorrowChargesAndComboRechargeCut,
+  V95__fractionalFrameTiming,
+  V96__stonesplitFractionalFrameTiming,
+  V97__umbraGameplayTimings,
+  V98__swordHorizonBurstStacksAtTheBurst,
+  V99__burningHeartChargeStageGates,
+  V100__burningHeartLowStageReleaseTiming,
+  V101__wushuangStanceVagrantSwordStartOrder,
+  V102__prepullVagrantSwordBoltTiming,
+  V103__splendorRootMotion,
+  V104__umbraRootMotion,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

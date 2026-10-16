@@ -110,7 +110,9 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
   })
 
   it("lands one afterimage per perfect dodge even when the dodges are inside 48 frames of each other", () => {
-    const result = run("bellstrikeUmbra", [UMBRA, "Opener", DODGE, "Idle 10", DODGE, "Idle 2000"])
+    const result = run("bellstrikeUmbra", [UMBRA, "Opener", DODGE, "Idle 10", DODGE, "Idle 2000"], {
+      set: null,
+    })
     const dodges = dodgeFrames(result, "Perfect Dodge")
     const events = afterimageEvents("bellstrikeUmbra", result)
     expect(dodges[1]! - dodges[0]!).toBeLessThan(AFTERIMAGE_DELAY_FRAMES)
@@ -125,6 +127,15 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
     const base = run("bellstrikeUmbra", steps, { areaMysticBoost: 0, singleMysticBoost: 0 })
     const boosted = run("bellstrikeUmbra", steps, { areaMysticBoost: 0.5, singleMysticBoost: 0.5 })
     expect(afterimageEvents("bellstrikeUmbra", boosted)[0]!.damage).toBe(
+      afterimageEvents("bellstrikeUmbra", base)[0]!.damage,
+    )
+  })
+
+  it("takes All Mystic Skill DMG Boost as an uncategorised mystic skill", () => {
+    const steps = [UMBRA, "Opener", DODGE, "Idle 2000"]
+    const base = run("bellstrikeUmbra", steps, { allMysticBoost: 0 })
+    const boosted = run("bellstrikeUmbra", steps, { allMysticBoost: 0.5 })
+    expect(afterimageEvents("bellstrikeUmbra", boosted)[0]!.damage).toBeGreaterThan(
       afterimageEvents("bellstrikeUmbra", base)[0]!.damage,
     )
   })

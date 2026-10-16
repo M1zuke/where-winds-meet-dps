@@ -1,8 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { BLADE_VESSEL_NOT_REPLACED } from "./empowered-light-attack"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const RAPID_SLASH = {
@@ -16,8 +21,8 @@ const RAPID_SLASH = {
 // (in-game values as of 2026-09-24, level 100). The press lands at 22 f; the
 // hold drains Endurance from 12 f later (0.2 s), 15/s for up to 1.6 s
 // (3 per 0.2 s); the finishing two-hit slash plays into the
-// drain's own end, its two hits 15 f and 37 f into that clip. The rapid-slash
-// loop's own per-hit cycle length is not in any table; seven hits (0.143 =
+// drain's own end, its two hits 15 f and 37 f into that slash. The rapid-slash
+// loop's own per-hit cycle length is not known; seven hits (0.143 =
 // 1/7 of the total) at the same 8-frame cadence the sibling Boundvessel hold
 // already uses is the best-supported reading.
 export const bladeVessel = defineSkill({
@@ -25,12 +30,18 @@ export const bladeVessel = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack (outside Tipsy)",
   breakdownName: "Blade Vessel",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.bladeVessel,
-  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES, BUFF.nonPlayerBaseDamage50],
+  receives: [
+    ...CLASS_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    BUFF.nonPlayerBaseDamage50,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  ],
+  castConditions: BLADE_VESSEL_NOT_REPLACED,
   triggerable: false,
   castFrames: 205,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

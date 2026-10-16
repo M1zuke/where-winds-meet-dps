@@ -37,6 +37,8 @@ export const SKILL = {
   fanqcancel: "silkbindJade-fanqcancel",
   fanlightcharged: "silkbindJade-fanlightcharged",
   fanspecial: "silkbindJade-fanspecial",
+  fanspecialReturn: "silkbindJade-fanspecial-return",
+  fanspecialWindriderGrant: "silkbindJade-fanspecial-windrider-grant",
   fanheavypursuit3Hit: "silkbindJade-fanheavypursuit-3-hit",
   fanheavypursuit5Hit: "silkbindJade-fanheavypursuit-5-hit",
   deflectCancel: "silkbindJade-deflect-cancel",

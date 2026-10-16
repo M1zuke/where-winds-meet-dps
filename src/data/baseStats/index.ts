@@ -4,7 +4,15 @@ export { ARSENAL_STORES } from "./arsenal"
 export { BASE_STAT_LEVELS } from "./levels"
 export { BREAKTHROUGH_TIER_DEFS } from "./breakthroughTiers"
 export { CLASS_SKILL_BOOSTS } from "./classSkillBoosts"
-export { ODDITIES, ODDITY_CHAPTERS, ODDITY_REGIONS, type OddityRegionKey } from "./oddities"
+export {
+  ODDITIES,
+  ODDITY_CHAPTERS,
+  ODDITY_REGION_LABELS,
+  ODDITY_REGIONS,
+  ODDITY_REGION_RELEASED,
+  ODDITY_RESOURCE_CAPS,
+  type OddityRegionKey,
+} from "./oddities"
 export {
   AVERAGE_ENHANCEMENT_BONUS_LEVELS,
   CHEST_GREAVES_ENHANCEMENT_LEVELS,

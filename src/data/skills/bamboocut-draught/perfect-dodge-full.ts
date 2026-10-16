@@ -17,6 +17,7 @@ export const perfectDodgeFull = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Bamboocut",
   castTag: CAST.perfectDodgeFull,
+  startLatency: "serverRoundTrip",
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   // Cast length to the earliest next input: in-game animation, 2026-09-24.
   castFrames: 25,

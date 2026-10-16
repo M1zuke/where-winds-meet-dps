@@ -20,22 +20,23 @@ export const soaring = defineSkill({
   // range — confirmed no scripted displacement despite the visible dash-in.
   reachMeters: 15,
   approach: "stationary",
+  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 48,
-      physMultiplier: 3.19609,
-      attributeMultiplier: 4.794135,
-      physFixed: 481.53,
+      physMultiplier: 3.196543,
+      attributeMultiplier: 4.794815,
+      physFixed: 504.027,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 122,
-      physMultiplier: 3.90633,
-      attributeMultiplier: 5.859495,
-      physFixed: 588.53,
+      physMultiplier: 3.906886,
+      attributeMultiplier: 5.860329,
+      physFixed: 616.033,
       attributeFixed: 0,
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

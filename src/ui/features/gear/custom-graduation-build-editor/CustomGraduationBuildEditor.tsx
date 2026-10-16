@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react"
-import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
+import { GRADUATION_LEVEL } from "../../../../data/classes/graduationGear"
+import { gearWordPoolForLine, gearWordRelayedToLevel } from "../../../../data/stats/gearWordPools"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { classDefinition, weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import type { GraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
@@ -284,7 +285,7 @@ export function CustomGraduationBuildEditor({
               {entry.words.map((word, lineIndex) => (
                 <Combobox
                   key={lineIndex}
-                  value={word}
+                  value={word ? gearWordRelayedToLevel(word, GRADUATION_LEVEL, level) : word}
                   options={wordOptions(entry.slot, lineIndex)}
                   onChange={(value) => patchWord(entry.slot, lineIndex, value as GearWordId)}
                   aria-label={`${t(gearSlotLabelKey(entry.slot, classId))} ${lineIndex + 1}`}

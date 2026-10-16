@@ -1,21 +1,21 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
-import { ODDITY_BOARD } from "../../src/definitions/baseStats"
+import { RELEASED_ODDITY_BOARD } from "../../src/definitions/baseStats"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
-import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmDialog"
+import { ConfirmContext } from "../../src/ui/components/confirm-dialog/confirmContext"
 import { OdditiesTab } from "../../src/ui/features/talents/oddities-tab/OdditiesTab"
 
-const NEWEST = ODDITY_BOARD[ODDITY_BOARD.length - 1]
-const OLDEST = ODDITY_BOARD[0]
+const NEWEST = RELEASED_ODDITY_BOARD[RELEASED_ODDITY_BOARD.length - 1]
+const OLDEST = RELEASED_ODDITY_BOARD[0]
 
 function renderTab(inputs: Inputs = defaultInputs, onChange = vi.fn()) {
   render(
     <I18nProvider>
-      <ConfirmProvider>
+      <ConfirmContext.Provider value={() => Promise.resolve(true)}>
         <OdditiesTab inputs={inputs} onChange={onChange} />
-      </ConfirmProvider>
+      </ConfirmContext.Provider>
     </I18nProvider>,
   )
   return onChange
@@ -36,6 +36,21 @@ describe("OdditiesTab", () => {
     expect(headers[0]).toHaveAttribute("aria-expanded", "true")
     expect(headers[0].textContent).toContain(NEWEST.key)
     expect(headers[headers.length - 1].textContent).toContain(OLDEST.key)
+  })
+
+  it("does not list an unreleased region", () => {
+    renderTab()
+    expect(document.body.textContent).not.toContain("Jiangnan")
+  })
+
+  it("keeps the stored entry of an unreleased region when everything is reset", async () => {
+    const onChange = renderTab({
+      ...defaultInputs,
+      unclaimedOddityNodes: { Jiangnan: [700], [NEWEST.key]: [NEWEST.nodes[0].id] },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
+    await waitFor(() => expect(onChange).toHaveBeenCalled())
+    expect(unclaimedFrom(onChange)).toEqual({ Jiangnan: [700] })
   })
 
   it("draws only the open region's board", () => {
@@ -68,8 +83,8 @@ describe("OdditiesTab", () => {
     const onChange = renderTab({ ...defaultInputs, unclaimedOddityNodes: released })
     fireEvent.click(nodes()[NEWEST.nodes.length - 1])
     const unclaimed = unclaimedFrom(onChange)
-    expect(unclaimed[NEWEST.key]).not.toContain(last.id)
-    expect(unclaimed[NEWEST.key]).not.toContain(last.requires)
+    expect(unclaimed[NEWEST.key] ?? []).not.toContain(last.id)
+    expect(unclaimed[NEWEST.key] ?? []).not.toContain(last.requires)
   })
 
   it("draws a claimed melody the same whether or not the calculator reads it", () => {

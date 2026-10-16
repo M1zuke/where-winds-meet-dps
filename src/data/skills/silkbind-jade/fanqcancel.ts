@@ -3,6 +3,11 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import {
+  chargeAvailable,
+  chargeCost,
+  emeraldBarrierChargesMeter,
+} from "../../classes/silkbind-jade/chargeMeters"
 
 export const fanqcancel = defineSkill({
   id: SKILL.fanqcancel,
@@ -15,8 +20,12 @@ export const fanqcancel = defineSkill({
   castTag: CAST.fanQCancel,
   cancelledBy: "nextSkill",
   receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
-  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.springThunder],
-  // Cast length to the earliest next input (in-game values as of 2026-09-24;
+  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
+  // In-game values as of 2026-10-15: Jadebreak lands with the wind wall at 10 f.
+  triggersBuffsAtFrame: { [BUFF.windWall]: 10, [BUFF.windWallPursuit]: 10 },
+  meterCosts: [chargeCost(emeraldBarrierChargesMeter)],
+  castConditions: [chargeAvailable(emeraldBarrierChargesMeter)],
+  // Cast length to the earliest next input (in-game values as of 2026-10-15;
   // collider + 1).
   castFrames: 10,
   triggerable: true,
@@ -25,7 +34,7 @@ export const fanqcancel = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 9,
       physMultiplier: 0.9271,
       attributeMultiplier: 1.3907,
       physFixed: 257,

@@ -20,7 +20,7 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    its several internal passes inside that one engine pass — it is not a
    second call, in this rule's count or in the worker's. **Every repeated
    sweep warm-starts** its own iteration from the baseline's already-converged
-   schedule instead of re-seeding from the rotation's authored window, carried
+   schedule instead of re-seeding from the default break, carried
    down through its own request kind and hook the same way the baseline's DPS
    already is.
 2. **The client assigns request ids; a hook never numbers its own requests.**

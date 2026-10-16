@@ -64,6 +64,7 @@ const NUMERIC_PATHS = [
   "bossBoost",
   "singleMysticBoost",
   "areaMysticBoost",
+  "allMysticBoost",
 ] as const
 
 export type PanelStatPath =

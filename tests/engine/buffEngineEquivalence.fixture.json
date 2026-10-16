@@ -90,7 +90,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "9db3ec58d30c2b3847dee71a4d8da7b071609864b47a0389a9b12d0ff65d104c"
+        "digest": "1cd74ac8a9f093f490df16daddcad12f00274ab6393bf57d870e95975dabbada"
       },
       "debuffs": {
         "count": 8,
@@ -104,7 +104,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "de4c1e62c683bc1c7e95eecdb174301457a7f1376464df38e7a322765055d2da"
+        "digest": "0ed130a3d5e8e85b8e2916c6780dc63cf5f9c85630b0c036b644709fbfcd62c7"
       },
       "buffs": [
         {
@@ -619,7 +619,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -648,7 +648,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -854,8 +854,8 @@
           "summary": "allDamageBoost +10% on Hero's Blood - Inebriate at 2 Cloudvault stacks"
         },
         {
-          "id": "herosBloodInebriateNoAbrasion",
-          "name": "Hero's Blood - Inebriate: No Abrasion",
+          "id": "bingePointGainNoAbrasion",
+          "name": "Increased Binge Point Gain: No Abrasion",
           "classBuff": false,
           "requires": {
             "classId": "bamboocutDraught"
@@ -1323,7 +1323,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -1348,7 +1348,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -1450,7 +1450,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physPen +15, bellstrikePen +15"
+          "summary": "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)"
         },
         {
           "id": "bellstrikeUmbraBleedingDamage",
@@ -1473,7 +1473,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%"
+          "summary": "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)"
         },
         {
           "id": "bellstrikeUmbraBleedCoefficient",
@@ -1582,6 +1582,7 @@
         "probe:bellstrikeUmbraBleedCoefficient",
         "probe:bellstrikeUmbraBleedPen",
         "probe:bellstrikeUmbraBleedingDamage",
+        "probe:bingePointGainNoAbrasion",
         "probe:buff-bellstrikeUmbra-zenith-bar",
         "probe:clashToastDamage",
         "probe:cleftpeakDeflectGrant",
@@ -1596,7 +1597,6 @@
         "probe:fluteDistanceBonus",
         "probe:healerBuff",
         "probe:heavenquakerSpearAdditionalAttack",
-        "probe:herosBloodInebriateNoAbrasion",
         "probe:inebriateCritDamage",
         "probe:ivorybloomFullHpBonus",
         "probe:jadeware",
@@ -2120,7 +2120,7 @@
             "divinecraftFire": 0.015
           }
         },
-        "0|receives:herosBloodInebriateNoAbrasion": {
+        "0|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -2953,7 +2953,7 @@
             "divinecraftFire": 0.015
           }
         },
-        "1|receives:herosBloodInebriateNoAbrasion": {
+        "1|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -3786,7 +3786,7 @@
             "divinecraftFire": 0.015
           }
         },
-        "2|receives:herosBloodInebriateNoAbrasion": {
+        "2|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -4814,7 +4814,7 @@
             "wineGu": 0.05
           }
         },
-        "3|receives:herosBloodInebriateNoAbrasion": {
+        "3|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -5987,7 +5987,7 @@
             "wineGu": 0.05
           }
         },
-        "4|receives:herosBloodInebriateNoAbrasion": {
+        "4|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -7160,7 +7160,7 @@
             "wineGu": 0.05
           }
         },
-        "5|receives:herosBloodInebriateNoAbrasion": {
+        "5|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -8333,7 +8333,7 @@
             "wineGu": 0.05
           }
         },
-        "6|receives:herosBloodInebriateNoAbrasion": {
+        "6|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -9506,7 +9506,7 @@
             "wineGu": 0.05
           }
         },
-        "7|receives:herosBloodInebriateNoAbrasion": {
+        "7|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -11030,7 +11030,7 @@
             "wineGu": 0.05
           }
         },
-        "8|receives:herosBloodInebriateNoAbrasion": {
+        "8|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -12806,7 +12806,7 @@
             "wineGu": 0.05
           }
         },
-        "9|receives:herosBloodInebriateNoAbrasion": {
+        "9|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -14582,7 +14582,7 @@
             "wineGu": 0.05
           }
         },
-        "10|receives:herosBloodInebriateNoAbrasion": {
+        "10|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -16358,7 +16358,7 @@
             "wineGu": 0.05
           }
         },
-        "11|receives:herosBloodInebriateNoAbrasion": {
+        "11|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -18134,7 +18134,7 @@
             "wineGu": 0.05
           }
         },
-        "12|receives:herosBloodInebriateNoAbrasion": {
+        "12|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -19559,7 +19559,7 @@
             "wineGu": 0.05
           }
         },
-        "13|receives:herosBloodInebriateNoAbrasion": {
+        "13|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -20927,7 +20927,7 @@
             "wineGu": 0.05
           }
         },
-        "14|receives:herosBloodInebriateNoAbrasion": {
+        "14|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -22435,7 +22435,7 @@
             "wineGu": 0.05
           }
         },
-        "15|receives:herosBloodInebriateNoAbrasion": {
+        "15|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -23943,7 +23943,7 @@
             "wineGu": 0.05
           }
         },
-        "16|receives:herosBloodInebriateNoAbrasion": {
+        "16|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -25451,7 +25451,7 @@
             "wineGu": 0.05
           }
         },
-        "17|receives:herosBloodInebriateNoAbrasion": {
+        "17|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -26959,7 +26959,7 @@
             "wineGu": 0.05
           }
         },
-        "18|receives:herosBloodInebriateNoAbrasion": {
+        "18|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -28467,7 +28467,7 @@
             "wineGu": 0.05
           }
         },
-        "19|receives:herosBloodInebriateNoAbrasion": {
+        "19|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -29975,7 +29975,7 @@
             "wineGu": 0.05
           }
         },
-        "20|receives:herosBloodInebriateNoAbrasion": {
+        "20|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -31288,7 +31288,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "21|receives:herosBloodInebriateNoAbrasion": {
+        "21|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -32461,7 +32461,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "22|receives:herosBloodInebriateNoAbrasion": {
+        "22|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -33829,7 +33829,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "23|receives:herosBloodInebriateNoAbrasion": {
+        "23|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -35337,7 +35337,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "24|receives:herosBloodInebriateNoAbrasion": {
+        "24|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -37586,7 +37586,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "25|receives:herosBloodInebriateNoAbrasion": {
+        "25|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -40362,7 +40362,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "26|receives:herosBloodInebriateNoAbrasion": {
+        "26|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -42787,7 +42787,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "27|receives:herosBloodInebriateNoAbrasion": {
+        "27|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -44965,7 +44965,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "28|receives:herosBloodInebriateNoAbrasion": {
+        "28|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -47143,7 +47143,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "29|receives:herosBloodInebriateNoAbrasion": {
+        "29|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -49321,7 +49321,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "30|receives:herosBloodInebriateNoAbrasion": {
+        "30|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -51304,7 +51304,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "31|receives:herosBloodInebriateNoAbrasion": {
+        "31|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -53152,7 +53152,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "32|receives:herosBloodInebriateNoAbrasion": {
+        "32|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -55000,7 +55000,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "33|receives:herosBloodInebriateNoAbrasion": {
+        "33|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -56853,7 +56853,7 @@
             "wraithstrikeScript": 0.1
           }
         },
-        "34|receives:herosBloodInebriateNoAbrasion": {
+        "34|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
@@ -58316,7 +58316,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "35|receives:herosBloodInebriateNoAbrasion": {
+        "35|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -59337,17 +59337,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.04
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.04,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -59504,7 +59499,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "36|receives:herosBloodInebriateNoAbrasion": {
+        "36|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -60520,17 +60515,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.12
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.12,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -60687,7 +60677,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "37|receives:herosBloodInebriateNoAbrasion": {
+        "37|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -61852,17 +61842,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.12
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.12,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -62065,7 +62050,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "38|receives:herosBloodInebriateNoAbrasion": {
+        "38|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -63370,17 +63355,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.16
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.16,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -63583,7 +63563,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "39|receives:herosBloodInebriateNoAbrasion": {
+        "39|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -64888,17 +64868,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -65101,7 +65076,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "40|receives:herosBloodInebriateNoAbrasion": {
+        "40|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -66406,17 +66381,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -66619,7 +66589,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "41|receives:herosBloodInebriateNoAbrasion": {
+        "41|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -67924,17 +67894,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -68137,7 +68102,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "42|receives:herosBloodInebriateNoAbrasion": {
+        "42|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -69442,17 +69407,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -69655,7 +69615,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "43|receives:herosBloodInebriateNoAbrasion": {
+        "43|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -70960,17 +70920,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -71173,7 +71128,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "44|receives:herosBloodInebriateNoAbrasion": {
+        "44|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -72478,17 +72433,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -72691,7 +72641,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "45|receives:herosBloodInebriateNoAbrasion": {
+        "45|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -73996,17 +73946,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -74209,7 +74154,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "46|receives:herosBloodInebriateNoAbrasion": {
+        "46|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -75514,17 +75459,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -75727,7 +75667,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "47|receives:herosBloodInebriateNoAbrasion": {
+        "47|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -77032,17 +76972,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -77245,7 +77180,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "48|receives:herosBloodInebriateNoAbrasion": {
+        "48|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -78550,17 +78485,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "vulnerabilityTeammate": 0.08
           }
@@ -78763,7 +78693,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "49|receives:herosBloodInebriateNoAbrasion": {
+        "49|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -79914,17 +79844,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -80081,7 +80006,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "50|receives:herosBloodInebriateNoAbrasion": {
+        "50|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -81092,17 +81017,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -81259,7 +81179,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "51|receives:herosBloodInebriateNoAbrasion": {
+        "51|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -82265,17 +82185,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -82432,7 +82347,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "52|receives:herosBloodInebriateNoAbrasion": {
+        "52|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -83438,17 +83353,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -83605,7 +83515,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "53|receives:herosBloodInebriateNoAbrasion": {
+        "53|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -84611,17 +84521,12 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
-            "pursuitChargedBoost": 0.2,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -84778,7 +84683,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "54|receives:herosBloodInebriateNoAbrasion": {
+        "54|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -85946,7 +85851,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "55|receives:herosBloodInebriateNoAbrasion": {
+        "55|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -87114,7 +87019,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "56|receives:herosBloodInebriateNoAbrasion": {
+        "56|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -88282,7 +88187,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "57|receives:herosBloodInebriateNoAbrasion": {
+        "57|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -89450,7 +89355,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "58|receives:herosBloodInebriateNoAbrasion": {
+        "58|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -90618,7 +90523,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "59|receives:herosBloodInebriateNoAbrasion": {
+        "59|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -91786,7 +91691,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "60|receives:herosBloodInebriateNoAbrasion": {
+        "60|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -92954,7 +92859,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "61|receives:herosBloodInebriateNoAbrasion": {
+        "61|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -94122,7 +94027,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "62|receives:herosBloodInebriateNoAbrasion": {
+        "62|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -95290,7 +95195,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "63|receives:herosBloodInebriateNoAbrasion": {
+        "63|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -96458,7 +96363,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "64|receives:herosBloodInebriateNoAbrasion": {
+        "64|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -97626,7 +97531,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "65|receives:herosBloodInebriateNoAbrasion": {
+        "65|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -98794,7 +98699,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "66|receives:herosBloodInebriateNoAbrasion": {
+        "66|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -99962,7 +99867,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "67|receives:herosBloodInebriateNoAbrasion": {
+        "67|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -101130,7 +101035,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "68|receives:herosBloodInebriateNoAbrasion": {
+        "68|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -102298,7 +102203,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "69|receives:herosBloodInebriateNoAbrasion": {
+        "69|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -103466,7 +103371,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "70|receives:herosBloodInebriateNoAbrasion": {
+        "70|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -104634,7 +104539,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "71|receives:herosBloodInebriateNoAbrasion": {
+        "71|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -105802,7 +105707,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "72|receives:herosBloodInebriateNoAbrasion": {
+        "72|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -106975,7 +106880,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "73|receives:herosBloodInebriateNoAbrasion": {
+        "73|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -108148,7 +108053,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "74|receives:herosBloodInebriateNoAbrasion": {
+        "74|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -109321,7 +109226,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "75|receives:herosBloodInebriateNoAbrasion": {
+        "75|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -110494,7 +110399,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "76|receives:herosBloodInebriateNoAbrasion": {
+        "76|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -111667,7 +111572,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "77|receives:herosBloodInebriateNoAbrasion": {
+        "77|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -112840,7 +112745,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "78|receives:herosBloodInebriateNoAbrasion": {
+        "78|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -114013,7 +113918,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "79|receives:herosBloodInebriateNoAbrasion": {
+        "79|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -115381,7 +115286,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "80|receives:herosBloodInebriateNoAbrasion": {
+        "80|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -116884,7 +116789,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "81|receives:herosBloodInebriateNoAbrasion": {
+        "81|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -118387,7 +118292,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "82|receives:herosBloodInebriateNoAbrasion": {
+        "82|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -119890,7 +119795,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "83|receives:herosBloodInebriateNoAbrasion": {
+        "83|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -121393,7 +121298,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "84|receives:herosBloodInebriateNoAbrasion": {
+        "84|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -122896,7 +122801,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "85|receives:herosBloodInebriateNoAbrasion": {
+        "85|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -124399,7 +124304,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "86|receives:herosBloodInebriateNoAbrasion": {
+        "86|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -125902,7 +125807,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "87|receives:herosBloodInebriateNoAbrasion": {
+        "87|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -127405,7 +127310,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "88|receives:herosBloodInebriateNoAbrasion": {
+        "88|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -128908,7 +128813,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "89|receives:herosBloodInebriateNoAbrasion": {
+        "89|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -130411,7 +130316,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "90|receives:herosBloodInebriateNoAbrasion": {
+        "90|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -131914,7 +131819,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "91|receives:herosBloodInebriateNoAbrasion": {
+        "91|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -133417,7 +133322,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "92|receives:herosBloodInebriateNoAbrasion": {
+        "92|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -134920,7 +134825,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "93|receives:herosBloodInebriateNoAbrasion": {
+        "93|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -136423,7 +136328,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "94|receives:herosBloodInebriateNoAbrasion": {
+        "94|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -137731,7 +137636,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "95|receives:herosBloodInebriateNoAbrasion": {
+        "95|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -138899,7 +138804,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "96|receives:herosBloodInebriateNoAbrasion": {
+        "96|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -140067,7 +139972,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "97|receives:herosBloodInebriateNoAbrasion": {
+        "97|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -141235,7 +141140,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "98|receives:herosBloodInebriateNoAbrasion": {
+        "98|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -142403,7 +142308,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "99|receives:herosBloodInebriateNoAbrasion": {
+        "99|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -143571,7 +143476,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "100|receives:herosBloodInebriateNoAbrasion": {
+        "100|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -144739,7 +144644,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "101|receives:herosBloodInebriateNoAbrasion": {
+        "101|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -145907,7 +145812,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "102|receives:herosBloodInebriateNoAbrasion": {
+        "102|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -147075,7 +146980,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "103|receives:herosBloodInebriateNoAbrasion": {
+        "103|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -148243,7 +148148,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "104|receives:herosBloodInebriateNoAbrasion": {
+        "104|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -149411,7 +149316,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "105|receives:herosBloodInebriateNoAbrasion": {
+        "105|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -150579,7 +150484,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "106|receives:herosBloodInebriateNoAbrasion": {
+        "106|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -151747,7 +151652,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "107|receives:herosBloodInebriateNoAbrasion": {
+        "107|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -152915,7 +152820,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "108|receives:herosBloodInebriateNoAbrasion": {
+        "108|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -154083,7 +153988,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "109|receives:herosBloodInebriateNoAbrasion": {
+        "109|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -155251,7 +155156,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "110|receives:herosBloodInebriateNoAbrasion": {
+        "110|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -156614,7 +156519,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "111|receives:herosBloodInebriateNoAbrasion": {
+        "111|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -158117,7 +158022,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "112|receives:herosBloodInebriateNoAbrasion": {
+        "112|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -159620,7 +159525,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "113|receives:herosBloodInebriateNoAbrasion": {
+        "113|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -161123,7 +161028,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "114|receives:herosBloodInebriateNoAbrasion": {
+        "114|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -162626,7 +162531,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "115|receives:herosBloodInebriateNoAbrasion": {
+        "115|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -164129,7 +164034,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "116|receives:herosBloodInebriateNoAbrasion": {
+        "116|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -165632,7 +165537,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "117|receives:herosBloodInebriateNoAbrasion": {
+        "117|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -167135,7 +167040,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "118|receives:herosBloodInebriateNoAbrasion": {
+        "118|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -168638,7 +168543,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "119|receives:herosBloodInebriateNoAbrasion": {
+        "119|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -170141,7 +170046,7 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "120|receives:herosBloodInebriateNoAbrasion": {
+        "120|receives:bingePointGainNoAbrasion": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -175217,18 +175122,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 1,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.04
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "rainwhisperShield",
             "stacks": 1,
             "maxStacks": 1,
@@ -175369,18 +175262,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 3,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.12
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "rainwhisperShield",
             "stacks": 1,
             "maxStacks": 1,
@@ -175513,18 +175394,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 3,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.12
-              }
-            ],
             "requires": null
           },
           {
@@ -175668,18 +175537,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 4,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.16
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -175806,22 +175663,17 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "mirage",
+            "id": "lingeringBone",
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
+            "id": "mirage",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
             "requires": null
           },
           {
@@ -175965,18 +175817,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176117,18 +175957,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176255,22 +176083,17 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "mirage",
+            "id": "lingeringBone",
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
+            "id": "mirage",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
             "requires": null
           },
           {
@@ -176400,22 +176223,17 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "mirage",
+            "id": "lingeringBone",
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
+            "id": "mirage",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
             "requires": null
           },
           {
@@ -176545,22 +176363,17 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "mirage",
+            "id": "lingeringBone",
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
+            "id": "mirage",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [],
             "requires": null
           },
           {
@@ -176697,18 +176510,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -176839,18 +176640,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -176987,18 +176776,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -177129,18 +176906,6 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
-            "requires": null
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
             "requires": null
           },
           {
@@ -177277,18 +177042,6 @@
             "requires": null
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177389,18 +177142,6 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
           },
           {
             "id": "vulnerabilityTeammate",
@@ -177505,18 +177246,6 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177607,18 +177336,6 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "vulnerabilityTeammate",
             "stacks": 1,
             "maxStacks": 1,
@@ -177707,18 +177424,6 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "pursuitChargedBoost",
-            "stacks": 5,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
           },
           {
             "id": "vulnerabilityTeammate",
@@ -184213,7 +183918,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 78,
+        "count": 80,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184273,6 +183978,7 @@
           "stonesplitStrength-perfect-dodge",
           "stonesplitStrength-perfect-dodge-full",
           "stonesplitStrength-phalanxcharged-s1",
+          "stonesplitStrength-phalanxcharged-s1-released",
           "stonesplitStrength-phalanxcharged-s2",
           "stonesplitStrength-phalanxcharged-s2-innerpassion",
           "stonesplitStrength-phalanxcharged-s3",
@@ -184290,11 +183996,12 @@
           "stonesplitStrength-snowpartingslide",
           "stonesplitStrength-snowpartingslide-prepull",
           "stonesplitStrength-snowpartingslide-prepull-hit",
+          "stonesplitStrength-snowpartingslide-reslide-prepull",
           "stonesplitStrength-snowpartingspecial",
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "8faccaf0df2c94956538c4582a2daa3b0c2f061981e6c4a38e23a3c70cf7e6d9"
+        "digest": "ccba4bc22772deb6306cd7b4b7a8bda15ea9b5afa1cb72ade07e6eb22a8e5dda"
       },
       "debuffs": {
         "count": 6,
@@ -184306,7 +184013,7 @@
           "debuff-mystic-toad-poison-fury",
           "debuff-stonesplitStrength-bitter-season-tick"
         ],
-        "digest": "ad4dada25c6e27b4fc3bbeb8553ed6a81f37ee89100fde3e18db670b7be7c0f6"
+        "digest": "aed5b64ecc896c7475c4b58c52b1b982904b683e7e049be232296ae74f2b05cf"
       },
       "buffs": [
         {
@@ -184327,7 +184034,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": true,
-          "duration": 12,
+          "duration": 14,
           "maxStacks": 4,
           "effects": [],
           "summary": null
@@ -184459,7 +184166,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 70% final crit rate or higher, else +15% crit rate"
+          "summary": "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 75% final crit rate or higher, else +15% crit rate"
         },
         {
           "id": "chargeEnhancement",
@@ -184472,7 +184179,7 @@
           "grantRequires": null,
           "affectsAll": true,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": 30,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -184571,7 +184278,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -184973,7 +184680,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -185002,7 +184709,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -185208,8 +184915,8 @@
           "summary": "allDamageBoost +10% on Hero's Blood - Inebriate at 2 Cloudvault stacks"
         },
         {
-          "id": "herosBloodInebriateNoAbrasion",
-          "name": "Hero's Blood - Inebriate: No Abrasion",
+          "id": "bingePointGainNoAbrasion",
+          "name": "Increased Binge Point Gain: No Abrasion",
           "classBuff": false,
           "requires": {
             "classId": "bamboocutDraught"
@@ -185677,7 +185384,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -185702,7 +185409,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -185932,13 +185639,13 @@
       ]
     },
     "dynamic": {
-      "digest": "0e6764767811f2bd2d8dbb0f24b0c202da3a87a1b97d82ed7db4392869fa105d"
+      "digest": "d970a2f3f1504f13c8a357bbd96e1cb217f76bee94117574c60f7bc7fd4d5d76"
     }
   },
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 64,
+        "count": 65,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-cloudstep",
@@ -185970,15 +185677,16 @@
           "bellstrikeSplendor-sword-sprint-dash",
           "bellstrikeSplendor-swordheavycharged",
           "bellstrikeSplendor-swordheavycharged-2-hit",
+          "bellstrikeSplendor-swordheavycharged-2-hit-wushuang",
           "bellstrikeSplendor-swordheavycharged-prepull",
           "bellstrikeSplendor-swordheavycharged-tier-1",
+          "bellstrikeSplendor-swordheavycharged-tier-1-wushuang",
+          "bellstrikeSplendor-swordheavycharged-wushuang",
           "bellstrikeSplendor-swordq",
           "bellstrikeSplendor-swordq-2nd",
           "bellstrikeSplendor-swordq-3rd",
           "bellstrikeSplendor-swordspecial",
-          "bellstrikeSplendor-swordspecial-2nd",
           "bellstrikeSplendor-swordspecial-dash",
-          "bellstrikeSplendor-swordspecial-deflect",
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
           "mystic-dragon-head",
@@ -186005,7 +185713,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "0455b6a87506c428aecf57245990d9e08b0ff9e4ecbdb89ea56330bc9a8cd1dc"
+        "digest": "9af05efd9efd36ad03656184627464fdcf0e31fbb693964d492fc1f6ae83b459"
       },
       "debuffs": {
         "count": 6,
@@ -186017,7 +185725,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "1c019330f26a1b9dd5ae6a32f14cb8651ab242ade0c553d80a5b716670a5b9fe"
+        "digest": "5ec1d8cdfbeb0a89a72f14fad3a56d8114a62d7c619ec1df1dcae58878f5aa23"
       },
       "buffs": [
         {
@@ -186113,7 +185821,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -186551,7 +186259,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -186580,7 +186288,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -186786,8 +186494,8 @@
           "summary": "allDamageBoost +10% on Hero's Blood - Inebriate at 2 Cloudvault stacks"
         },
         {
-          "id": "herosBloodInebriateNoAbrasion",
-          "name": "Hero's Blood - Inebriate: No Abrasion",
+          "id": "bingePointGainNoAbrasion",
+          "name": "Increased Binge Point Gain: No Abrasion",
           "classBuff": false,
           "requires": {
             "classId": "bamboocutDraught"
@@ -187255,7 +186963,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -187280,7 +186988,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -187484,7 +187192,7 @@
           "grantRequires": null,
           "affectsAll": true,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187498,6 +187206,36 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "+10% Qi damage taken; +10% HP damage and +10% Bellstrike damage taken while Exhausted"
+        },
+        {
+          "id": "qiankunsLockQiImbalance",
+          "name": "Qi Imbalance (Qiankun's Lock)",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "applyBuff",
+              "id": "qiImbalance",
+              "stacks": 1,
+              "durationSec": 15
+            }
+          ],
+          "summary": null
         },
         {
           "id": "qiStruggleEnhancement",
@@ -187623,13 +187361,13 @@
       ]
     },
     "dynamic": {
-      "digest": "c839670ab9a01cfb6ea2f87dc030e97f7dbb67c9cdca312057b0e73450279e6c"
+      "digest": "ba6ed8ad4ee51c98ed875313975ce8ccdd43261e06e9973e1ce7d47ad3b3391d"
     }
   },
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 81,
+        "count": 83,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187674,6 +187412,8 @@
           "silkbindJade-fanq-prepull",
           "silkbindJade-fanqcancel",
           "silkbindJade-fanspecial",
+          "silkbindJade-fanspecial-return",
+          "silkbindJade-fanspecial-windrider-grant",
           "silkbindJade-ghostly-steps",
           "silkbindJade-ghostly-steps-umbra",
           "silkbindJade-glow-and-flow-stage-1",
@@ -187713,7 +187453,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "6846b46b667a98b0281fdaee15ccdce9bf333ddd315d0d04f4f4a2c9b35f06ab"
+        "digest": "0ba1a509745a27d4f47c3f807d668b963819c5684f6921672e8a52ca92cda554"
       },
       "debuffs": {
         "count": 12,
@@ -187731,7 +187471,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "4a02480c64de47b5868b8ba8184a216057fab9229f95890c61b89a97bf2b6f08"
+        "digest": "e4e216b81b89bb12e92138fbea77db465eda174c4fc516e1f796f8bb3a2d2dc8"
       },
       "buffs": [
         {
@@ -187767,6 +187507,32 @@
           "summary": "allDamageBoost +30% on the next Peak's Springless Silence"
         },
         {
+          "id": "gourdTossMoonShatterReset",
+          "name": "Moon Shatter Spring Reset",
+          "classBuff": false,
+          "requires": {
+            "param": "gourdToss",
+            "minTier": 6
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 1,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
+        },
+        {
           "id": "combo",
           "name": "Combo",
           "classBuff": false,
@@ -187776,7 +187542,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187786,7 +187552,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 15,
+          "duration": "[fn]",
           "maxStacks": null,
           "effects": [
             {
@@ -187808,7 +187574,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187821,7 +187587,7 @@
           "duration": 15,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+5% damage against your Combo target while Exhausted (PvE)"
+          "summary": "+5% floating umbrella damage against your Combo target; +10% while Exhausted (PvE)"
         },
         {
           "id": "comboSpringAwayBonus",
@@ -187834,7 +187600,7 @@
           "grantRequires": null,
           "affectsAll": false,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -187847,7 +187613,33 @@
           "duration": 15,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+10% Spring Away damage against your Combo target; +15% while Exhausted (PvE)"
+          "summary": "+5% Spring Away damage against your Combo target; +10% while Exhausted (PvE)"
+        },
+        {
+          "id": "comboExtendMark",
+          "name": "Combo - Extend Mark",
+          "classBuff": false,
+          "requires": {
+            "param": "blossomBarrage",
+            "minTier": 4
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 0.5,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 0,
+          "maxStacks": null,
+          "effects": [],
+          "summary": "Spring Away bullets and floating umbrella bullets extend your Combo by 1 s (up to 15 s) while the target is Exhausted, at most once per 0.5 s"
         },
         {
           "id": "starReacher",
@@ -187855,6 +187647,80 @@
           "classBuff": false,
           "requires": {
             "param": "starReacher"
+          },
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": "lingeringBone",
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "artBonus",
+              "field": "minPhysPctBonus",
+              "amount": 0.075
+            },
+            {
+              "kind": "artBonus",
+              "field": "maxPhysPctBonus",
+              "amount": 0.075
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "starReacherSupreme",
+          "name": "Star Reacher (Supreme)",
+          "classBuff": false,
+          "requires": {
+            "param": "starReacher",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 1,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": "lingeringBone",
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "artBonus",
+              "field": "minPhysPctBonus",
+              "amount": 0.15
+            },
+            {
+              "kind": "artBonus",
+              "field": "maxPhysPctBonus",
+              "amount": 0.15
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "starReacherMarkedTarget",
+          "name": "Star Reacher (Marked Target)",
+          "classBuff": false,
+          "requires": {
+            "param": "starReacher",
+            "minTier": 6
           },
           "grantRequires": null,
           "affectsAll": true,
@@ -187872,7 +187738,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Physical Attack +7.5% (normal), +15% (<30% Qi or Qi exhausted)"
+          "summary": "+3% damage on direct hits against a target carrying your Lingering Bone"
         },
         {
           "id": "springThunder",
@@ -188324,7 +188190,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -188353,7 +188219,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -188559,8 +188425,8 @@
           "summary": "allDamageBoost +10% on Hero's Blood - Inebriate at 2 Cloudvault stacks"
         },
         {
-          "id": "herosBloodInebriateNoAbrasion",
-          "name": "Hero's Blood - Inebriate: No Abrasion",
+          "id": "bingePointGainNoAbrasion",
+          "name": "Increased Binge Point Gain: No Abrasion",
           "classBuff": false,
           "requires": {
             "classId": "bamboocutDraught"
@@ -189028,7 +188894,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -189053,7 +188919,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -189229,6 +189095,52 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+        },
+        {
+          "id": "windrider",
+          "name": "Windrider",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 3,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
+        },
+        {
+          "id": "moonShatterSpringLockout",
+          "name": "Moon Shatter Spring Cooldown",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
         }
       ],
       "group": [
@@ -189258,7 +189170,7 @@
       ]
     },
     "dynamic": {
-      "digest": "cca93b0d50645bee155f2966571a2185704e23686dad140bd30c063c70d3c708"
+      "digest": "6066525483c1d54500c6ea81d9c70c27b2f5e7bf350eb3f18de1235fb56eaf50"
     }
   },
   "bamboocutDraught": {
@@ -189346,7 +189258,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "eb3680eac0d2eda3a16f4ef831aa0f49e4faa33398163f0235467b94b1e40afd"
+        "digest": "61c4f1f17c3ea9c3dd8338133799d5a95dc06671785972d2aa9317f7f79bf57f"
       },
       "debuffs": {
         "count": 9,
@@ -189361,7 +189273,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "a4e289f6d619feef4862e3bfd524d721d18d6c27ed3c63505967e9dc52043385"
+        "digest": "46324b052c4a7ba69b943a6c2a500631469fcb455d3a0122051cd207a8ed9824"
       },
       "buffs": [
         {
@@ -189961,7 +189873,7 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -189990,7 +189902,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 2,
+          "duration": 5,
           "maxStacks": null,
           "effects": [],
           "summary": null
@@ -190196,8 +190108,8 @@
           "summary": "allDamageBoost +10% on Hero's Blood - Inebriate at 2 Cloudvault stacks"
         },
         {
-          "id": "herosBloodInebriateNoAbrasion",
-          "name": "Hero's Blood - Inebriate: No Abrasion",
+          "id": "bingePointGainNoAbrasion",
+          "name": "Increased Binge Point Gain: No Abrasion",
           "classBuff": false,
           "requires": {
             "classId": "bamboocutDraught"
@@ -190665,7 +190577,7 @@
           "duration": 8.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physical/attribute attack +1%/stack (max 5)"
+          "summary": "physical/attribute attack +1.2%/stack (max 5)"
         },
         {
           "id": "etherwrathPenetrationBoost",
@@ -190690,7 +190602,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "+4% attribute penetration (all four types) at 5 Etherwrath stacks"
+          "summary": "+6% physical and attribute penetration (all types) at 5 Etherwrath stacks"
         },
         {
           "id": "swallowcallLightAttackBoost",
@@ -190792,7 +190704,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "critDamageBoost up to +30% on Inebriate-enhanced skills while Inebriate, full at 750 Min Phys"
+          "summary": "critDamageBoost up to +30% on Inebriate-enhanced hits, full at 750 Min Phys"
         },
         {
           "id": "inebriateDamageScaling",
@@ -190943,7 +190855,7 @@
       ]
     },
     "dynamic": {
-      "digest": "204b5756b67153b8391c41d8e5b92c0558627819e261590c6c50f17348c88648"
+      "digest": "1acfbe48b19fd6b7761dbcd5f361e4a3b0415af9317aaaaf9f3155b3dff6ba33"
     }
   }
 }

@@ -94,6 +94,10 @@ export interface Inputs {
   // stake (docs/TIMELINE.md § "Qi bar").
   qiTarget?: QiTargetId
 
+  // The Formless share inside the primary attribute block. Derived with the
+  // stat paths below and never persisted.
+  formlessAttack?: { min: number; max: number }
+
   phys: AttackBlock
   bellstrike: AttackBlock
   stonesplit: AttackBlock
@@ -134,6 +138,7 @@ export interface Inputs {
   bossBoost: number
   singleMysticBoost: number
   areaMysticBoost: number
+  allMysticBoost: number
 
   classSpecificAttunement: Record<string, number>
 
@@ -434,6 +439,7 @@ export interface CastMeterLevel {
   name: string
   amount: number
   capacity: number
+  unitSize?: number
 }
 
 export interface RotationCast {

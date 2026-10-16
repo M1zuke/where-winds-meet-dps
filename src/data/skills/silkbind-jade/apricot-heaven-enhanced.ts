@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
@@ -24,13 +25,13 @@ export const apricotHeavenEnhanced = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.apricotHeavenEnhanced,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.pursuitChargedBoost, ...VERNAL_UMBRELLA_RECEIVES],
   meterCosts: [enduranceCost(5)],
   meterDrains: APRICOT_HEAVEN_AIR_DRAIN,
   castFrames: 304,
   triggerable: true,
-  // In-game values as of 2026-09-28: 3 m approach reach (the cast is Heavy
-  // Attack 20601005); the rise is a vertical AoE with no further scripted
+  // In-game values as of 2026-09-28: 3 m approach reach (the cast is its
+  // Heavy Attack); the rise is a vertical AoE with no further scripted
   // displacement.
   reachMeters: 3,
   hits: [

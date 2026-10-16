@@ -29,7 +29,7 @@ const hitValues = (skillId: string) =>
   ])
 
 describe.each([
-  [SKILL.snowpartingqSlash, CAST.snowpartingQSlash, 40, [14, 30]],
+  [SKILL.snowpartingqSlash, CAST.snowpartingQSlash, 40, [14, 29]],
   [SKILL.phalanxchargedS1, CAST.phalanxChargedS1, 79, [48, 55]],
   [SKILL.phalanxchargedS2, CAST.phalanxChargedS2, 137, [76, 115, 124]],
   [SKILL.phalanxchargedS2Innerpassion, CAST.phalanxChargedS2InnerPassion, 118, [57, 96, 105]],
@@ -42,11 +42,11 @@ describe.each([
   [SKILL.hengHeavyAttack2, CAST.hengHeavyAttack2, 43, [11, 28]],
   [SKILL.hengHeavyAttack3, CAST.hengHeavyAttack3, 26, [18]],
   [SKILL.hengHeavyAttack4, CAST.hengHeavyAttack4, 54, [28]],
-  [SKILL.hengDash, CAST.hengDash, 40, [22]],
+  [SKILL.hengDash, CAST.hengDash, 40, [24]],
   [SKILL.moLightAttack1, CAST.moLightAttack1, 38, [17]],
   [SKILL.moLightAttack2, CAST.moLightAttack2, 65, [43]],
   [SKILL.moLightAttack3, CAST.moLightAttack3, 142, [44, 87]],
-  [SKILL.moDash, CAST.moDash, 52, [25]],
+  [SKILL.moDash, CAST.moDash, 52, [24]],
 ])("%s", (skillId, castTag, castFrames, hitFrames) => {
   it("is a triggerable Stonesplit weapon skill with its own cast tag, length and hit frames", () => {
     const skill = stonesplitSkill(skillId)
@@ -79,16 +79,16 @@ describe.each([
 describe("SnowpartingQ-Slash", () => {
   const slash = stonesplitSkill(SKILL.snowpartingqSlash)
 
-  it("carries the Snowparting Q attunement and none of the Stab's triggers", () => {
+  it("carries the Snowparting Q attunement, fires Jadeware, and none of the Stab's triggers", () => {
     expect(slash.tags).toEqual([WEAPON.hengBlade, ATTUNE.snowpartingQ])
-    expect(slash.triggersBuffs).toEqual([])
+    expect(slash.triggersBuffs).toEqual([BUFF.jadeware])
     expect(slash.hits.flatMap((skillHit) => skillHit.triggers)).toEqual([])
   })
 
   it("hits twice with the 0.4 / 0.6 split", () => {
     expect(hitValues(SKILL.snowpartingqSlash)).toEqual([
       [14, 0.596352, 0.894528, 165.2, 90],
-      [30, 0.894528, 1.341792, 247.8, 135],
+      [29, 0.894528, 1.341792, 247.8, 135],
     ])
     expect(slash.reachMeters).toBe(4.5)
   })
@@ -139,25 +139,51 @@ describe("Burning Heart stages 1 and 2", () => {
     }
   })
 
-  it("stage 1 costs nothing, stage 2 costs 50 and needs more than 50", () => {
+  it("stage 1 costs nothing, stage 2 spends 50 at its release and is charged only above 50", () => {
     expect(stonesplitSkill(SKILL.phalanxchargedS1).meterCosts).toBeUndefined()
     expect(stonesplitSkill(SKILL.phalanxchargedS2).meterCosts).toEqual([
-      { meterId: "bladeMomentum", amount: 50 },
+      { meterId: "bladeMomentum", amount: 50, atFrame: 76.32 },
     ])
-    expect(stonesplitSkill(SKILL.phalanxchargedS2).castConditions).toEqual([
-      { buffId: "meter:bladeMomentum", op: "gt", stacks: 50 },
+    expect(stonesplitSkill(SKILL.phalanxchargedS2).castConditions).toBeUndefined()
+    expect(stonesplitSkill(SKILL.phalanxchargedS2).releaseGates).toEqual([
+      {
+        atFrame: 19.32,
+        requires: [{ buffId: "meter:bladeMomentum", op: "gt", stacks: 50 }],
+        fallbackSkillId: SKILL.phalanxchargedS1Released,
+      },
     ])
   })
 
-  it("the Inner Passion form offers the charge above 25 Blade Momentum or from tier 4, with no equip gate", () => {
-    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).castConditions).toEqual([
+  it("the Inner Passion form is charged above 25 Blade Momentum or from tier 4, with no equip gate", () => {
+    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).castConditions).toBeUndefined()
+    expect(stonesplitSkill(SKILL.phalanxchargedS2Innerpassion).releaseGates).toEqual([
       {
-        anyOf: [
-          { param: PARAM.steadfastDevotion, minTier: 4 },
-          { buffId: "meter:bladeMomentum", op: "gt", stacks: 25 },
+        atFrame: 19.32,
+        requires: [
+          {
+            anyOf: [
+              { param: PARAM.steadfastDevotion, minTier: 4 },
+              { buffId: "meter:bladeMomentum", op: "gt", stacks: 25 },
+            ],
+          },
         ],
+        fallbackSkillId: SKILL.phalanxchargedS1Released,
       },
     ])
+  })
+
+  it("releases stage 1 from where the charge would have started, 19.32 f after the press", () => {
+    const released = stonesplitSkill(SKILL.phalanxchargedS1Released)
+    expect(released.castFrames).toBe(79.32)
+    expect(released.hits.map((skillHit) => skillHit.frame)).toEqual([48.23, 55.83])
+    expect(released.breakdownName).toBe(stonesplitSkill(SKILL.phalanxchargedS1).name)
+    expect(
+      released.hits.map(({ id: _id, frame: _frame, ...coefficients }) => coefficients),
+    ).toEqual(
+      stonesplitSkill(SKILL.phalanxchargedS1).hits.map(
+        ({ id: _id, frame: _frame, ...coefficients }) => coefficients,
+      ),
+    )
   })
 
   const bladeMomentumAtSecondCast = (skillId: string, mindMethods: Inputs["mindMethods"]) => {
@@ -319,8 +345,8 @@ describe("the basic attack and dash modules", () => {
   })
 
   it("the dashes hit once and shrink or dash by distance", () => {
-    expect(hitValues(SKILL.hengDash)).toEqual([[22, 0.43723, 0.655845, 122, 66]])
-    expect(hitValues(SKILL.moDash)).toEqual([[25, 1.01266, 1.51899, 281, 153]])
+    expect(hitValues(SKILL.hengDash)).toEqual([[24, 0.43723, 0.655845, 122, 66]])
+    expect(hitValues(SKILL.moDash)).toEqual([[24, 1.01266, 1.51899, 281, 153]])
     expect(stonesplitSkill(SKILL.hengDash).displacement).toEqual({
       kind: "byDistance",
       bands: [{ minMeters: 7, maxMeters: 100, then: { kind: "selfForward", meters: 6 } }],

@@ -14,3 +14,16 @@ export const gourdTossThunderBuffDef = defineBuff({
   summary: "allDamageBoost +30% on the next Peak's Springless Silence",
   effects: [stat("allDamageBoost", 0.3)],
 })
+
+// In-game values as of 2026-10-15: rank 6 — a Peak's Springless Silence hit on
+// a non-player ends the Moon Shatter Spring cooldown, once per second.
+export const gourdTossMoonShatterResetBuffDef = defineBuff({
+  id: BUFF.gourdTossMoonShatterReset,
+  name: "Moon Shatter Spring Reset",
+  requires: { param: PARAM.gourdToss, minTier: 6 },
+  duration: 1,
+  cooldown: 1,
+  buffAppliesAfterLastHitSec: 0,
+  dispelsOnGrant: [BUFF.moonShatterSpringLockout],
+  effects: [],
+})

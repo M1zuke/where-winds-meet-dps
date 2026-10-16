@@ -8,6 +8,7 @@ import {
   V58__inGameCoefficientCorrections,
   healSkill,
 } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV57File from "./testCustomSkills/v57/store.json"
@@ -82,7 +83,9 @@ describe("V58__inGameCoefficientCorrections — through the chain", () => {
     expect(result.applied).toEqual(["V58__inGameCoefficientCorrections"])
     expect(result.blob.v).toBe(58)
     expect("elevatedAttributeMultiplier" in skillIn(result.blob, DRONE_TICK_ID)).toBe(false)
-    expect(skillIn(result.blob, SEEDED_THROW_ID).hits).toEqual(builtinOf(SEEDED_THROW_ID).hits)
+    expect(
+      (healFractionalFrameTiming(skillIn(result.blob, SEEDED_THROW_ID)) as Skill).hits,
+    ).toEqual(builtinOf(SEEDED_THROW_ID).hits)
     expect(skillIn(result.blob, USER_AUTHORED_ID).elevatedAttributeMultiplier).toBe(false)
   })
 })

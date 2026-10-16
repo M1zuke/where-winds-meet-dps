@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { breakthroughDataRequestFor } from "../../src/ui/layout/breakthrough-data-dialog/breakthroughDataRequest"
 import {
   BREAKTHROUGH_RELEASES,
-  defaultBreakthrough,
+  BREAKTHROUGH_TIERS,
 } from "../../src/definitions/baseStats/breakthroughs"
 import { CLASS_DEFS, CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { INNER_WAYS } from "../../src/definitions/innerWays/registry"
@@ -11,9 +11,15 @@ const LATEST_RELEASE = BREAKTHROUGH_RELEASES[BREAKTHROUGH_RELEASES.length - 1]
 
 const HIGHEST_CONFIRMED = Math.max(...INNER_WAYS.map((innerWay) => innerWay.confirmedBreakthrough))
 
+const HIGHEST_MODELLED = BREAKTHROUGH_TIERS[BREAKTHROUGH_TIERS.length - 1]!.breakthrough
+
 const FIRST_SUPERSEDING_RELEASE = BREAKTHROUGH_RELEASES.find(
   (release) => release.breakthrough > HIGHEST_CONFIRMED,
-)!
+)
+
+const CLOCK_WHILE_ALL_CONFIRMED = FIRST_SUPERSEDING_RELEASE
+  ? FIRST_SUPERSEDING_RELEASE.at - 1
+  : LATEST_RELEASE.at
 
 // Read off the registry rather than listed here: which inner ways still carry
 // pre-release figures is data that moves as captures land.
@@ -29,7 +35,7 @@ const CLASSES_WITH_PENDING_DATA = CLASS_IDS().filter((classId) => pendingIdsFor(
 describe("breakthroughDataRequestFor", () => {
   it("asks for nothing while every inner way is confirmed at the live breakthrough", () => {
     for (const classId of CLASS_IDS())
-      expect(breakthroughDataRequestFor(classId, FIRST_SUPERSEDING_RELEASE.at - 1)).toBeNull()
+      expect(breakthroughDataRequestFor(classId, CLOCK_WHILE_ALL_CONFIRMED)).toBeNull()
   })
 
   it("names the class it is asking, and the breakthrough that superseded its data", () => {
@@ -72,8 +78,14 @@ describe("breakthroughDataRequestFor", () => {
     expect(breakthroughDataRequestFor("noSuchClass", LATEST_RELEASE.at)).toBeNull()
   })
 
-  it("never claims a breakthrough that has not been released", () => {
+  it("confirms no breakthrough beyond the ones the app models", () => {
     for (const innerWay of INNER_WAYS)
-      expect(innerWay.confirmedBreakthrough).toBeLessThanOrEqual(defaultBreakthrough())
+      expect(innerWay.confirmedBreakthrough).toBeLessThanOrEqual(HIGHEST_MODELLED)
+  })
+
+  it("asks for nothing while the live breakthrough is below the confirmed one", () => {
+    const beforeEveryRelease = BREAKTHROUGH_RELEASES[0]!.at - 1
+    for (const classId of CLASS_IDS())
+      expect(breakthroughDataRequestFor(classId, beforeEveryRelease)).toBeNull()
   })
 })

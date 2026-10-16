@@ -101,6 +101,12 @@ describe("every healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === TARGET_ID)!
-    expect(grantsWindow(skill)).toBe(true)
+    expect(
+      skill.hits
+        .flatMap((hit) => hit.triggers)
+        .some(
+          (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "relentlessChaseWindow",
+        ),
+    ).toBe(true)
   })
 })

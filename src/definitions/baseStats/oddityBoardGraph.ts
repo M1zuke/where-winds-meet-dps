@@ -1,7 +1,10 @@
 import {
   ODDITIES,
   ODDITY_CHAPTERS,
+  ODDITY_REGION_LABELS,
   ODDITY_REGIONS,
+  ODDITY_REGION_RELEASED,
+  ODDITY_RESOURCE_CAPS,
   type OddityRegionKey,
 } from "../../data/baseStats"
 import type { UnclaimedOddityNodes } from "../../engine/types"
@@ -9,6 +12,8 @@ import type { OddityNodeDef, OddityStat } from "./oddityNodeDef"
 
 export interface OddityBoardRegion {
   key: OddityRegionKey
+  label: string
+  released: boolean
   chapters: readonly string[]
   nodes: readonly OddityNodeDef[]
   cost: number
@@ -18,11 +23,17 @@ export const ODDITY_BOARD: readonly OddityBoardRegion[] = ODDITY_REGIONS.map((ke
   const nodes = ODDITIES[key]
   return {
     key,
+    label: ODDITY_REGION_LABELS[key],
+    released: ODDITY_REGION_RELEASED[key],
     chapters: ODDITY_CHAPTERS[key],
     nodes,
     cost: nodes.reduce((sum, node) => sum + node.cost, 0),
   }
 })
+
+export const RELEASED_ODDITY_BOARD: readonly OddityBoardRegion[] = ODDITY_BOARD.filter(
+  (region) => region.released,
+)
 
 const NODES_BY_REGION = new Map<string, ReadonlyMap<number, OddityNodeDef>>(
   ODDITY_BOARD.map((region) => [region.key, new Map(region.nodes.map((node) => [node.id, node]))]),
@@ -122,18 +133,71 @@ export function claimedOddityCost(
   return claimedOddityNodes(unclaimed, region).reduce((sum, node) => sum + node.cost, 0)
 }
 
-export function oddityBoardTotals(
+export interface OddityBoardAccounting {
+  totals: Readonly<Partial<Record<OddityStat, number>>>
+  converted: ReadonlySet<string>
+}
+
+function convertedNodeKey(region: string, id: number): string {
+  return `${region}:${id}`
+}
+
+export function accountOddityBoard(
+  regions: readonly OddityBoardRegion[],
   unclaimed: UnclaimedOddityNodes | undefined,
-): Readonly<Partial<Record<OddityStat, number>>> {
+): OddityBoardAccounting {
   const totals: Partial<Record<OddityStat, number>> = {}
-  for (const region of ODDITY_BOARD) {
+  const converted = new Set<string>()
+  for (const region of regions) {
     for (const node of region.nodes) {
       if (!node.stat || !node.value) continue
       if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
+      if (
+        (node.stat === "endurance" || node.stat === "vitality") &&
+        node.fallbackMaxHp !== undefined &&
+        (totals[node.stat] ?? 0) >= ODDITY_RESOURCE_CAPS[node.stat]
+      ) {
+        totals.maxHp = (totals.maxHp ?? 0) + node.fallbackMaxHp
+        converted.add(convertedNodeKey(region.key, node.id))
+        continue
+      }
       totals[node.stat] = (totals[node.stat] ?? 0) + node.value
     }
   }
-  return totals
+  return { totals, converted }
+}
+
+export function oddityBoardTotals(
+  unclaimed: UnclaimedOddityNodes | undefined,
+): Readonly<Partial<Record<OddityStat, number>>> {
+  return accountOddityBoard(RELEASED_ODDITY_BOARD, unclaimed).totals
+}
+
+export function convertedOddityNodes(
+  unclaimed: UnclaimedOddityNodes | undefined,
+): ReadonlySet<string> {
+  return accountOddityBoard(RELEASED_ODDITY_BOARD, unclaimed).converted
+}
+
+export function isOddityNodeConverted(
+  converted: ReadonlySet<string>,
+  region: string,
+  id: number,
+): boolean {
+  return converted.has(convertedNodeKey(region, id))
+}
+
+export function withReleasedOddityRegionsReset(
+  unclaimed: UnclaimedOddityNodes,
+): UnclaimedOddityNodes {
+  const releasedKeys = new Set<string>(RELEASED_ODDITY_BOARD.map((region) => region.key))
+  return Object.fromEntries(
+    Object.entries(unclaimed).filter(([region]) => !releasedKeys.has(region)),
+  )
+}
+
+export function hasUnclaimedReleasedOddityNodes(unclaimed: UnclaimedOddityNodes): boolean {
+  return RELEASED_ODDITY_BOARD.some((region) => (unclaimed[region.key]?.length ?? 0) > 0)
 }
 
 export function oddityEnduranceTotal(unclaimed: UnclaimedOddityNodes | undefined): number {

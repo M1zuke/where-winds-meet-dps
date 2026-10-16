@@ -71,7 +71,7 @@ export function collectContentKeys(): Record<string, string> {
       add(innerWayTierKey(`tier ${tier}`), `tier ${tier}`)
   }
   for (const region of ODDITY_BOARD) {
-    add(oddityRegionKey(region.key), region.key)
+    add(oddityRegionKey(region.key), region.label)
     for (const chapter of region.chapters) add(oddityChapterKey(chapter), chapter)
     for (const node of region.nodes) {
       add(oddityNodeKey(node), node.name)

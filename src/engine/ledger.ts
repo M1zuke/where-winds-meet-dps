@@ -140,6 +140,11 @@ export class StatusLedger implements StatusView {
     if (amount > 0) (window.extensions ??= []).push({ frame, amount, owner })
   }
 
+  cutWindowsAt(id: string, frame: number, owner: number): void {
+    for (const window of this.windows.get(id) ?? [])
+      if (window.start < frame && frame < window.end) this.cutWindow(window, frame, owner)
+  }
+
   cutWindow(window: StatusWindow, frame: number, owner: number): void {
     const amount = window.end - frame
     window.end = frame

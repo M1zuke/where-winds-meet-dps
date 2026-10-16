@@ -1,11 +1,16 @@
 import type { GearPiece, Inputs } from "./types"
 import { GEAR_SLOTS } from "./types"
 import { listKnownPaths, sumContributions } from "./gearStats"
-import { getConfiguredBase, getMindMethodContributions } from "../definitions/baseStats"
+import {
+  getConfiguredBase,
+  getMindMethodContributions,
+  totalFormlessAttack,
+} from "../definitions/baseStats"
 
 export const DERIVED_STAT_FIELDS: readonly string[] = [
   ...new Set(listKnownPaths().map((path) => path.split(".")[0])),
   "classSpecificAttunement",
+  "formlessAttack",
   // The previous shape held the same tag map under this key.
   "dingYinByTag",
 ]
@@ -33,6 +38,7 @@ export function withZeroedDerivedStats(inputs: Inputs): Inputs {
         : { ...ZERO_ATTACK_BLOCK }
   }
   next.classSpecificAttunement = {}
+  delete next.formlessAttack
   return next as unknown as Inputs
 }
 
@@ -87,6 +93,7 @@ export function withDerivedStats(inputs: Inputs): Inputs {
 
   const derive = (scaleSource: Inputs): Inputs => {
     const next = clone(inputs)
+    next.formlessAttack = totalFormlessAttack(inputs, equipped)
     const base = getConfiguredBase(scaleSource, equipped)
     for (const path of listKnownPaths()) {
       const sum = (base[path] ?? 0) + (mind[path] ?? 0) + (gearByPath.get(path) ?? 0)

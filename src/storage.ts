@@ -33,7 +33,7 @@ import {
   arsenalScoreCap,
   closeDisabledTalentNodes,
   closeUnclaimedOddityNodes,
-  DEFAULT_ENHANCEMENT_LEVEL,
+  defaultEnhancementLevels,
   resyncDefaultTalentsForBreakthrough,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
@@ -65,9 +65,12 @@ import {
   isHitVariant,
   isQiPhase,
   isTriggerCondition,
+  isReleaseGate,
   isHitOrVariantCondition,
+  isStatusCondition,
   isAnyOfCondition,
   isParamCondition,
+  isProjectileExtrasValid,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, cancelledByOf, seedSkillFromBuiltin } from "./engine/skill"
@@ -125,7 +128,6 @@ import {
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
-  readQiBreakWindow,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -241,11 +243,6 @@ function migrateRotationIds<T>(rotation: T): T {
     )
   }
   if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
-  if (r.qiBreak !== undefined) {
-    const window = readQiBreakWindow(r.qiBreak)
-    if (window) next.qiBreak = window
-    else delete next.qiBreak
-  }
   if (r.fixedWindowSec !== undefined) {
     const windowSec = readFixedWindowSec(r.fixedWindowSec)
     if (windowSec === undefined) delete next.fixedWindowSec
@@ -542,13 +539,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
       : stored && typeof stored === "object"
         ? (stored as Record<string, unknown>)
         : {}
+    const defaults = defaultEnhancementLevels(next.breakthrough as number, next)
     const healed = {} as EnhancementLevels
     for (const slot of GEAR_SLOTS) {
       const value = bySlot[slot]
       healed[slot] =
         typeof value === "number" && Number.isFinite(value) && value >= 0
           ? Math.round(value)
-          : DEFAULT_ENHANCEMENT_LEVEL
+          : defaults[slot]
     }
     next.enhancements = healed
   }
@@ -899,8 +897,6 @@ export function importCustomRotation(text: string): Rotation {
     createdAt: now,
     updatedAt: now,
   }
-  const importedQiBreak = readQiBreakWindow(candidate.qiBreak)
-  if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
   }
@@ -1043,6 +1039,19 @@ function builtinServerWaitsInCastFor(id: string): number | undefined {
           builtinServerWaitsInCastById.set(skill.id, skill.serverWaitsInCast)
   }
   return builtinServerWaitsInCastById.get(id)
+}
+
+// `keyframesLeadByRenderFrame` is authored on the built-in module, never edited
+// in the Skill Editor, the same reasoning as `startLatency` above.
+let builtinKeyframesLeadById: Map<string, boolean> | null = null
+function builtinKeyframesLeadFor(id: string): boolean | undefined {
+  if (!builtinKeyframesLeadById) {
+    builtinKeyframesLeadById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.keyframesLeadByRenderFrame) builtinKeyframesLeadById.set(skill.id, true)
+  }
+  return builtinKeyframesLeadById.get(id)
 }
 
 // `cancelledBy` is authored on the built-in module, never edited in the
@@ -1318,11 +1327,12 @@ function hydrateSkill(s: Skill): Skill {
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
+    keyframesLeadByRenderFrame: builtinKeyframesLeadFor(id) ?? s.keyframesLeadByRenderFrame,
     cancelledBy:
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
     castConditions: Array.isArray(s.castConditions)
-      ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      ? s.castConditions.filter(isTriggerCondition).map(migrateTriggerCondition)
       : s.castConditions,
     ...healSkillReach(id, s, reachTags),
   }
@@ -1385,7 +1395,8 @@ function isProjectileSpec(value: unknown): value is SkillHit["projectile"] {
     typeof projectile.speedMetersPerSecond === "number" &&
     projectile.speedMetersPerSecond > 0 &&
     typeof projectile.maxTravelFrames === "number" &&
-    Number.isFinite(projectile.maxTravelFrames)
+    Number.isFinite(projectile.maxTravelFrames) &&
+    isProjectileExtrasValid(projectile)
   )
 }
 
@@ -1395,9 +1406,16 @@ function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition 
   return { ...condition, buffId: migrateMysticId(migrateBuffId(condition.buffId)) }
 }
 
+function triggerConditionValidity(kind: HitTrigger["kind"]): (value: unknown) => boolean {
+  if (kind === "castSkill") return isTriggerCondition
+  if (kind === "meterDelta")
+    return (value) => isStatusCondition(value) || isHitOrVariantCondition(value)
+  return isHitOrVariantCondition
+}
+
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
-  const conditionIsValid = tr.kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition
+  const conditionIsValid = triggerConditionValidity(tr.kind)
   const trigger: HitTrigger = {
     ...tr,
     targetId: migrateMysticId(migrateBuffId(migrateEntityId(tr.targetId))),
@@ -1591,7 +1609,7 @@ function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondi
         ? record.op
         : "gte",
     stacks: typeof record.stacks === "number" ? record.stacks : 1,
-    ...(kind === "castSkill" && record.source === "buffEngine"
+    ...((kind === "castSkill" || kind === "meterDelta") && record.source === "buffEngine"
       ? { source: "buffEngine" as const }
       : {}),
   }
@@ -1609,11 +1627,11 @@ function importedTrigger(t: unknown): HitTrigger {
     condition,
   }
   if (Array.isArray(c.conditions)) {
-    trigger.conditions = c.conditions.filter(
-      kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition,
-    )
+    trigger.conditions = c.conditions.filter(triggerConditionValidity(kind))
   }
   if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
+  if (typeof c.delayFrames === "number" && Number.isFinite(c.delayFrames) && c.delayFrames >= 0)
+    trigger.delayFrames = c.delayFrames
   if (typeof c.transferFrom === "string" && c.transferFrom) trigger.transferFrom = c.transferFrom
   if (isQiPhase(c.phase)) trigger.phase = c.phase
   if (
@@ -1777,11 +1795,12 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
       : undefined,
     triggersBuffsAtFrame: sanitizedFrameRecord(c.triggersBuffsAtFrame),
     castConditions: Array.isArray(c.castConditions)
-      ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      ? c.castConditions.filter(isTriggerCondition).map(migrateTriggerCondition)
       : undefined,
     meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
     meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,
     meterFreezes: Array.isArray(c.meterFreezes) ? c.meterFreezes.filter(isMeterFreeze) : undefined,
+    releaseGates: Array.isArray(c.releaseGates) ? c.releaseGates.filter(isReleaseGate) : undefined,
     reachMeters:
       typeof c.reachMeters === "number" && Number.isFinite(c.reachMeters)
         ? c.reachMeters

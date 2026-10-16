@@ -1,9 +1,10 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-15.
 export const snowpartingqSlash = defineSkill({
   id: SKILL.snowpartingqSlash,
   classId: "stonesplitStrength",
@@ -14,7 +15,7 @@ export const snowpartingqSlash = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQSlash,
   receives: SNOWPARTING_BLADE_RECEIVES,
-  triggersBuffs: [],
+  triggersBuffs: [BUFF.jadeware],
   castFrames: 40,
   triggerable: true,
   reachMeters: 4.5,
@@ -28,7 +29,7 @@ export const snowpartingqSlash = defineSkill({
       attributeFixed: 90,
     }),
     hit(1, {
-      frame: 30,
+      frame: 29,
       physMultiplier: 0.894528,
       attributeMultiplier: 1.341792,
       physFixed: 247.8,
@@ -36,5 +37,5 @@ export const snowpartingqSlash = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

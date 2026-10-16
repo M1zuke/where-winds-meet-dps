@@ -1,7 +1,15 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
-import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
+import { SKILL } from "./ids"
+import {
+  EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
+  empoweredLightAttackSpent,
+} from "./empowered-light-attack"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 
 // In-game values as of 2026-10-06. Castable within 1.1 s of Realmplay with
 // Binge Points above 49.99; the second slash is two colliders of 0.736078
@@ -12,13 +20,17 @@ export const bladeAgainstWaves = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Light Attack - Blade Against Waves",
   breakdownName: "Blade Against Waves",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ROLE.inebriateEnhanced, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.bladeAgainstWaves,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
-  castConditions: [{ buffId: STATUS.bingePoints, op: "gt", stacks: 49 }],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  ],
+  castConditions: EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 54,
   reachMeters: 4,
@@ -56,6 +68,7 @@ export const bladeAgainstWaves = defineSkill({
       physFixed: 204.4,
       attributeFixed: 111.3,
     }),
+    empoweredLightAttackSpent(3),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",

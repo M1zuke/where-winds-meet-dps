@@ -1,15 +1,22 @@
 import { defineResource } from "../../../definitions/resources/resourceDef"
 import { SKILL, DEBUFF } from "../../skills/silkbind-jade/ids"
+import { DRONE_RECALL } from "../../skills/silkbind-jade/droneTick"
 import { WEAPON } from "../../skills/ids"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 
 // In-game resource and Unfading Flower text: reference/locale/zhToEnOfficial.json.
+// In-game values as of 2026-10-15: the throw takes 10 on top of the 50 it needs,
+// the floating umbrella lasts 30 s, and the 15 refund lands 0.2 s after the
+// umbrella leaves.
 export const BLOSSOMS = {
   capacity: 100,
   launchMinimum: 50,
+  launchCost: 10,
+  maxRunSeconds: 30,
   drainPerSecond: 10,
   lingeringBoneRunCost: 5,
   endRefund: 15,
+  endRefundDelaySeconds: 0.2,
   endRefundCooldownSeconds: 5,
 } as const
 
@@ -22,23 +29,16 @@ export const blossomResource = defineResource({
   // In-game values as of 2026-09-24.
   regenPerSecond: 0.3,
   launchMinimum: BLOSSOMS.launchMinimum,
+  launchCost: BLOSSOMS.launchCost,
   launchSkillId: SKILL.umbdronelaunch,
   debuffId: DEBUFF.umbdrone,
+  maxRunSeconds: BLOSSOMS.maxRunSeconds,
   drainPerSecond: BLOSSOMS.drainPerSecond,
   enhancedRunCost: BLOSSOMS.lingeringBoneRunCost,
-  recallTag: WEAPON.umbrella,
-  recallExemptSkillIds: [
-    SKILL.hiddenSwordLight1,
-    SKILL.hiddenSwordLight2,
-    SKILL.hiddenSwordLight3,
-    SKILL.hiddenSwordLight4,
-    SKILL.hiddenSwordLight5,
-    SKILL.hiddenSwordHeavy1,
-    SKILL.hiddenSwordHeavy2,
-    SKILL.hiddenSwordHeavy3,
-    SKILL.hiddenSwordHeavyAlt,
-  ],
+  recallTag: DRONE_RECALL.tag,
+  recallExemptSkillIds: DRONE_RECALL.exemptSkillIds,
   endRefund: BLOSSOMS.endRefund,
+  refundDelaySeconds: BLOSSOMS.endRefundDelaySeconds,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,
   gains: [
     // Every umbrella hit that grants Blossoms is already tied to its own named
@@ -118,7 +118,7 @@ export const blossomResource = defineResource({
       name: "Blossom Barrage T6",
       defaultAmount: 25,
       skillIds: [SKILL.umbq],
-      oncePerCast: true,
+      cooldownSeconds: 1,
       requiresParam: PARAM.blossomBarrage,
       minTier: 6,
       requiresBuff: BUFF.combo,

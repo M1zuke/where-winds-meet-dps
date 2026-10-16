@@ -1,0 +1,137 @@
+import { describe, expect, it } from "vitest"
+import { runEngine } from "../../src/engine/dps"
+import { defaultInputs } from "../../src/engine/defaults"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { classDefinition } from "../../src/definitions/classes/registry"
+import { DEFAULT_PREFERRED_DISTANCE_METERS, distanceReaderAtCast } from "../../src/engine/distance"
+import { projectileTravelFrames } from "../../src/engine/skill"
+import { quantiseToRenderFrame } from "../../src/engine/timeline"
+import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
+import { VAGRANT_SWORD_WAVE_PROJECTILE } from "../../src/data/skills/bellstrike-splendor/vagrantSwordBolts"
+import type { Inputs } from "../../src/engine/types"
+
+const CLASS = "bellstrikeSplendor"
+const FPS = 60
+const PREPULL_NAME = "SwordHeavyCharged[Prepull]"
+const WAVE_OFFSETS_FROM_RELEASE = [6.06, 16.02, 45.3]
+const RENDER_PERIOD_FRAMES = FPS / 250
+
+const swordMorph: Inputs["mindMethods"] = [
+  { name: "Sword Morph", stacks: "tier 6" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+]
+
+const noSwordMorph: Inputs["mindMethods"] = [
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+  { name: "", stacks: "" },
+]
+
+function prepullDistanceAtLaunch(launchFrame: number): number {
+  const prepull = builtinSkillsForClass(CLASS).find(
+    (skill) => skill.id === SKILL.swordHeavyChargedPrepull,
+  )!
+  return distanceReaderAtCast(
+    { ...prepull, displacement: prepull.hits[0]!.variants![0]!.displacement },
+    classDefinition(CLASS)!.defaultMeleeReachMeters ?? 0,
+    DEFAULT_PREFERRED_DISTANCE_METERS,
+    DEFAULT_PREFERRED_DISTANCE_METERS,
+  )(launchFrame)
+}
+
+const flightFramesAt = (launchFrame: number): number =>
+  projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, prepullDistanceAtLaunch(launchFrame))
+
+function runPrepullThenShadowStep() {
+  const rotation = makeRotation(CLASS, {
+    steps: [
+      makeStep({ skillId: SKILL.swordHeavyChargedPrepull }),
+      makeStep({ skillId: SKILL.swordq }),
+    ],
+  })
+  return runEngine({
+    ...defaultInputs,
+    classId: CLASS,
+    mindMethods: swordMorph,
+    activeCustomRotation: rotation,
+    set: null,
+  })
+}
+
+describe("the pre-pull Vagrant Sword lands its waves after the release, in flight", () => {
+  const result = runPrepullThenShadowStep()
+  const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
+  const prepullEvents = result.timeline!.filter((event) => event.skillName === PREPULL_NAME)
+  const releaseFrame = Math.round(prepullCast.timeSec * FPS)
+
+  it("lands the three waves 6, 16 and 45 f after the release plus each wave's flight", () => {
+    const waveFrames = prepullEvents.filter((event) => event.damage > 0).map((event) => event.frame)
+    expect(waveFrames).toEqual(
+      WAVE_OFFSETS_FROM_RELEASE.map((offset) =>
+        Math.round(
+          prepullCast.timeSec * FPS +
+            quantiseToRenderFrame(offset + flightFramesAt(offset), RENDER_PERIOD_FRAMES),
+        ),
+      ),
+    )
+  })
+
+  it("flies from the distance its own approach and displacement leave, not from the preferred distance", () => {
+    expect(flightFramesAt(WAVE_OFFSETS_FROM_RELEASE[2]!)).toBeLessThan(
+      projectileTravelFrames(VAGRANT_SWORD_WAVE_PROJECTILE, DEFAULT_PREFERRED_DISTANCE_METERS),
+    )
+  })
+
+  it("does not write its flight distance to the distance the fight starts from", () => {
+    expect(prepullDistanceAtLaunch(WAVE_OFFSETS_FROM_RELEASE[2]!)).not.toBe(
+      DEFAULT_PREFERRED_DISTANCE_METERS,
+    )
+    expect(prepullCast.distanceMeters).toBe(DEFAULT_PREFERRED_DISTANCE_METERS)
+  })
+
+  it("opens the fight window at the first wave's landing, not at the release", () => {
+    const firstWave = prepullEvents.find((event) => event.damage > 0)!
+    expect(result.fightStartSec).toBeCloseTo(firstWave.frame / FPS, 6)
+    expect(firstWave.frame).toBeGreaterThan(releaseFrame)
+  })
+
+  it("counts nothing before the first wave: the release event deals no damage and the breakdown holds three hits", () => {
+    const releaseEvent = prepullEvents.find((event) => event.frame === releaseFrame)!
+    expect(releaseEvent.damage).toBe(0)
+    expect(releaseEvent.inWindow).toBe(false)
+    expect(result.perSkill.find((row) => row.name === PREPULL_NAME)?.count).toBe(3)
+  })
+})
+
+describe("the pre-pull Vagrant Sword lays out at the cast length its build selects", () => {
+  const castLengthFrames = (mindMethods: Inputs["mindMethods"]): number => {
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods,
+      activeCustomRotation: makeRotation(CLASS, {
+        pingMs: 0,
+        averageFps: 250,
+        steps: [
+          makeStep({ skillId: SKILL.swordHeavyChargedPrepull }),
+          makeStep({ skillId: SKILL.swordq }),
+        ],
+      }),
+      set: null,
+    })
+    const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
+    const nextCast = result.casts!.find((cast) => cast.skillName !== PREPULL_NAME)!
+    return (nextCast.timeSec - prepullCast.timeSec) * FPS
+  }
+
+  it("ends after 37.2 f without Sword Morph and 51 f with it", () => {
+    const withoutMorph = castLengthFrames(noSwordMorph)
+    const withMorph = castLengthFrames(swordMorph)
+    expect(withoutMorph).toBeCloseTo(37.2, 0)
+    expect(withMorph).toBeCloseTo(51, 0)
+  })
+})

@@ -1,4 +1,10 @@
-import type { EnhancementLevels, EnhancementStat, GearSlot } from "../../engine/types"
+import type {
+  EnhancementLevels,
+  EnhancementStat,
+  EquippedSlots,
+  GearPiece,
+  GearSlot,
+} from "../../engine/types"
 import { GEAR_SLOTS } from "../../engine/types"
 import {
   AVERAGE_ENHANCEMENT_BONUS_LEVELS,
@@ -9,11 +15,7 @@ import {
 } from "../../data/baseStats"
 import type { LadderLevels } from "./enhancementLadderDef"
 
-export const DEFAULT_ENHANCEMENT_LEVEL = 65
-
-// The ladder has no rows past this level in any container — see the season
-// ceiling table below, which can technically exceed it.
-const LADDER_CEILING = 65
+const LADDER_CEILING = WEAPON_ENHANCEMENT_LEVELS.length
 
 type EnhancementProfile = "weapon" | "discPendant" | "helmBracer" | "chestGreaves"
 
@@ -27,14 +29,6 @@ const PROFILE_BY_SLOT: Readonly<Record<GearSlot, EnhancementProfile>> = {
   armor: "chestGreaves",
   greaves: "chestGreaves",
 }
-
-export function defaultEnhancementLevels(): EnhancementLevels {
-  const out = {} as EnhancementLevels
-  for (const slot of GEAR_SLOTS) out[slot] = DEFAULT_ENHANCEMENT_LEVEL
-  return out
-}
-
-export const DEFAULT_ENHANCEMENTS: EnhancementLevels = defaultEnhancementLevels()
 
 function rowAt<Row>(rows: LadderLevels<Row>, level: number): Row | undefined {
   return rows[Math.min(level, rows.length) - 1]
@@ -89,9 +83,12 @@ export function levelForEnhancementValue(slot: GearSlot, stat: string, value: nu
   }
 }
 
-export function enhancementContributions(levels: EnhancementLevels): Record<string, number> {
+export function enhancementContributions(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const slot of GEAR_SLOTS) {
+  for (const slot of slots) {
     const stats = enhancementStatsAtLevel(slot, levels[slot] ?? 0)
     if (stats.minPhys) out["phys.min"] = (out["phys.min"] ?? 0) + stats.minPhys
     if (stats.maxPhys) out["phys.max"] = (out["phys.max"] ?? 0) + stats.maxPhys
@@ -99,15 +96,21 @@ export function enhancementContributions(levels: EnhancementLevels): Record<stri
   return out
 }
 
-export function enhancementHpTotal(levels: EnhancementLevels): number {
+export function enhancementHpTotal(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): number {
   let hp = 0
-  for (const slot of GEAR_SLOTS) hp += enhancementStatsAtLevel(slot, levels[slot] ?? 0).maxHp ?? 0
+  for (const slot of slots) hp += enhancementStatsAtLevel(slot, levels[slot] ?? 0).maxHp ?? 0
   return hp
 }
 
-export function enhancementPhysDefTotal(levels: EnhancementLevels): number {
+export function enhancementPhysDefTotal(
+  levels: EnhancementLevels,
+  slots: readonly GearSlot[] = GEAR_SLOTS,
+): number {
   let physDef = 0
-  for (const slot of GEAR_SLOTS) {
+  for (const slot of slots) {
     physDef += enhancementStatsAtLevel(slot, levels[slot] ?? 0).physDef ?? 0
   }
   return physDef
@@ -137,7 +140,7 @@ interface EnhancementCapTier {
   reqWorldLevel: number
 }
 
-// In-game values as of 2026-09-07: the gear level and world level each
+// In-game values as of 2026-10-15: the gear level and world level each
 // enhancement cap requires.
 const CAP_TIERS: readonly EnhancementCapTier[] = [
   { level: 2, reqGearLevel: 1, reqWorldLevel: 0 },
@@ -165,7 +168,7 @@ interface SeasonCeiling {
   ceiling: number
 }
 
-// In-game values as of 2026-09-07, keyed by the world level each season
+// In-game values as of 2026-10-15, keyed by the world level each season
 // introduces. A season's
 // ceiling governs every world level from the previous season's threshold up
 // to and including its own.
@@ -195,4 +198,70 @@ export function enhancementCap(pieceGearLevel: number, breakthrough: number): nu
     }
   }
   return Math.min(raw, seasonCeilingFor(breakthrough), LADDER_CEILING)
+}
+
+export interface GearLevelUnlock {
+  level: number
+  gearLevel: number
+}
+
+export function gearLevelUnlock(
+  pieceGearLevel: number,
+  breakthrough: number,
+): GearLevelUnlock | undefined {
+  const reachableLevel = enhancementCap(Infinity, breakthrough)
+  if (enhancementCap(pieceGearLevel, breakthrough) >= reachableLevel) return undefined
+  const gearLevel = Math.min(
+    ...CAP_TIERS.filter(
+      (tier) => enhancementCap(tier.reqGearLevel, breakthrough) >= reachableLevel,
+    ).map((tier) => tier.reqGearLevel),
+  )
+  return { level: reachableLevel, gearLevel }
+}
+
+export interface EnhancementGear {
+  inventory: readonly GearPiece[]
+  equipped: EquippedSlots
+}
+
+export function equippedPieceGearLevel(
+  slot: GearSlot,
+  gear: EnhancementGear | undefined,
+): number | undefined {
+  const equippedId = gear?.equipped[slot]
+  if (!equippedId) return undefined
+  return gear?.inventory.find((piece) => piece.id === equippedId)?.level
+}
+
+export function enhancedSlotsOf(gear: EnhancementGear | undefined): readonly GearSlot[] {
+  if (!gear || gear.inventory.length === 0) return GEAR_SLOTS
+  const pieceIds = new Set(gear.inventory.map((piece) => piece.id))
+  return GEAR_SLOTS.filter((slot) => pieceIds.has(gear.equipped[slot] ?? ""))
+}
+
+export function slotEnhancementCap(
+  slot: GearSlot,
+  breakthrough: number,
+  gear?: EnhancementGear,
+): number {
+  return enhancementCap(equippedPieceGearLevel(slot, gear) ?? Infinity, breakthrough)
+}
+
+export function defaultEnhancementLevels(
+  breakthrough: number,
+  gear?: EnhancementGear,
+): EnhancementLevels {
+  const levels = {} as EnhancementLevels
+  for (const slot of GEAR_SLOTS) levels[slot] = slotEnhancementCap(slot, breakthrough, gear)
+  return levels
+}
+
+export function effectiveEnhancementLevels(
+  levels: EnhancementLevels,
+  breakthrough: number,
+): EnhancementLevels {
+  const ceiling = enhancementCap(Infinity, breakthrough)
+  const effective = {} as EnhancementLevels
+  for (const slot of GEAR_SLOTS) effective[slot] = Math.min(levels[slot] ?? 0, ceiling)
+  return effective
 }

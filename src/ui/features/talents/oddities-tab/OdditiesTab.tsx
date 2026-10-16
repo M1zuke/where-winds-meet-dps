@@ -6,14 +6,18 @@ import type {
   OddityStat,
 } from "../../../../definitions/baseStats"
 import {
-  ODDITY_BOARD,
+  RELEASED_ODDITY_BOARD,
   claimedOddityCost,
   claimedOddityNodes,
+  convertedOddityNodes,
+  hasUnclaimedReleasedOddityNodes,
   isOddityNodeClaimed,
+  isOddityNodeConverted,
   isOddityNodeReachable,
   oddityBoardTotals,
   oddityNodeById,
   withOddityNodeClaimed,
+  withReleasedOddityRegionsReset,
 } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
 import {
@@ -32,7 +36,7 @@ interface Props {
   onChange: (next: Inputs) => void
 }
 
-const STAT_KEYS: Readonly<Record<OddityStat, string>> = {
+const STAT_KEYS: Readonly<Record<Exclude<OddityStat, "vitality">, string>> = {
   minPhys: "common.minPhys",
   maxPhys: "common.maxPhys",
   physDef: "content.statLine.physDef",
@@ -40,7 +44,13 @@ const STAT_KEYS: Readonly<Record<OddityStat, string>> = {
   endurance: "content.meter.endurance",
 }
 
-const STAT_ORDER: readonly OddityStat[] = ["minPhys", "maxPhys", "physDef", "maxHp", "endurance"]
+const STAT_ORDER: readonly (keyof typeof STAT_KEYS)[] = [
+  "minPhys",
+  "maxPhys",
+  "physDef",
+  "maxHp",
+  "endurance",
+]
 
 type NodeState = "claimed" | "ready" | "locked"
 
@@ -50,7 +60,7 @@ const STATE_KEYS: Readonly<Record<NodeState, string>> = {
   locked: "talents.oddities.lockedByPredecessor",
 }
 
-const REGIONS_NEWEST_FIRST = [...ODDITY_BOARD].reverse()
+const REGIONS_NEWEST_FIRST = [...RELEASED_ODDITY_BOARD].reverse()
 
 const BOARD_HEIGHT = 340
 const CHAPTER_BAND = 34
@@ -142,6 +152,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
     REGIONS_NEWEST_FIRST.find((entry) => entry.key === openRegion) ?? REGIONS_NEWEST_FIRST[0]
   const layout = useMemo(() => layoutOf(region), [region])
   const totals = oddityBoardTotals(unclaimed)
+  const converted = convertedOddityNodes(unclaimed)
 
   useLayoutEffect(() => {
     const element = frameRef.current
@@ -175,7 +186,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
 
   async function resetAll() {
     if (!(await confirm(t("talents.oddities.resetAllOdditiesToDefault")))) return
-    onChange({ ...inputs, unclaimedOddityNodes: {} })
+    onChange({ ...inputs, unclaimedOddityNodes: withReleasedOddityRegionsReset(unclaimed) })
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -197,7 +208,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
   }
 
   const spent = claimedOddityCost(unclaimed, region.key)
-  const nothingUnclaimed = Object.keys(unclaimed).length === 0
+  const nothingUnclaimed = !hasUnclaimedReleasedOddityNodes(unclaimed)
 
   const visibleWidth = frameWidth || layout.width
   const tooltipLeft = hovered
@@ -236,7 +247,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
             </span>
           </div>
           <div className={styles.budgetLabel}>
-            {t("talents.oddities.submittedIn")} {t(oddityRegionKey(region.key), region.key)}
+            {t("talents.oddities.submittedIn")} {t(oddityRegionKey(region.key), region.label)}
           </div>
           <div className={styles.budgetBar}>
             <i style={{ width: `${region.cost ? (spent / region.cost) * 100 : 0}%` }} />
@@ -298,7 +309,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                   {open ? "▾" : "▸"}
                 </span>
                 <span className={styles.regionName}>
-                  {t(oddityRegionKey(entry.key), entry.key)}
+                  {t(oddityRegionKey(entry.key), entry.label)}
                 </span>
                 {index === 0 && (
                   <span className={styles.newest}>{t("talents.oddities.newest")}</span>
@@ -327,7 +338,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                       height={BOARD_HEIGHT}
                       viewBox={`0 0 ${layout.width} ${BOARD_HEIGHT}`}
                       role="group"
-                      aria-label={t(oddityRegionKey(entry.key), entry.key)}
+                      aria-label={t(oddityRegionKey(entry.key), entry.label)}
                     >
                       <OddityNodeIcons />
                       <g>
@@ -418,7 +429,11 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                               )}
                               <use
                                 className={styles.glyph}
-                                href={oddityIconHref(node.icon)}
+                                href={oddityIconHref(
+                                  isOddityNodeConverted(converted, entry.key, node.id)
+                                    ? "hp"
+                                    : node.icon,
+                                )}
                                 x={-ICON_SIZE[node.kind] / 2}
                                 y={-ICON_SIZE[node.kind] / 2}
                                 width={ICON_SIZE[node.kind]}
@@ -456,11 +471,16 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                         {hovered.cost} {t("talents.oddities.oddities")}
                       </div>
                       <div className={styles.tooltipEffect}>
-                        {t(oddityNodeDescriptionKey(hovered), hovered.description)}
+                        {isOddityNodeConverted(converted, entry.key, hovered.id)
+                          ? `${t(STAT_KEYS.maxHp)} +${hovered.fallbackMaxHp}`
+                          : t(oddityNodeDescriptionKey(hovered), hovered.description)}
                       </div>
                       <div className={styles.tooltipState}>
                         {t(STATE_KEYS[stateOf(hovered)])}
-                        {hovered.stat ? "" : ` — ${t("talents.oddities.noEngineEffect")}`}
+                        {isOddityNodeConverted(converted, entry.key, hovered.id) ||
+                        (hovered.stat && hovered.stat !== "vitality")
+                          ? ""
+                          : ` — ${t("talents.oddities.noEngineEffect")}`}
                       </div>
                       <div className={styles.tooltipGate}>
                         {gate

@@ -25,9 +25,10 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 function grantsFlyingTornado(skill: Skill): boolean {
-  const lastHit = skill.hits[skill.hits.length - 1]!
-  return lastHit.triggers.some(
-    (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "gourdTossFlyingTornado",
+  return skill.hits.some((hit) =>
+    hit.triggers.some(
+      (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "gourdTossFlyingTornado",
+    ),
   )
 }
 
@@ -120,12 +121,12 @@ describe("V53__gourdTossFlyingTornado — through the chain", () => {
 describe("every healed skill survives the hydrator too", () => {
   beforeEach(() => localStorage.clear())
 
-  it("keeps both additions after loadCustomSkills, not just after the migration step", () => {
+  it("hands the Special's Flying Tornado grant on to the return and keeps the light-charged variant after loadCustomSkills", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const special = loaded.find((candidate) => candidate.id === SPECIAL_ID)!
     const lightCharged = loaded.find((candidate) => candidate.id === LIGHT_CHARGED_ID)!
-    expect(grantsFlyingTornado(special)).toBe(true)
+    expect(grantsFlyingTornado(special)).toBe(false)
     expect(carriesFlyingTornadoVariant(lightCharged)).toBe(true)
   })
 })

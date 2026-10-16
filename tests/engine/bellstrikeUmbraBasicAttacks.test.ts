@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../../src/data/skills/ids"
-import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { swordChargeStage24Hit } from "../../src/data/skills/bellstrike-umbra/sword-charge-stage-2-4-hit"
 import { swordChargeStage25Hit } from "../../src/data/skills/bellstrike-umbra/sword-charge-stage-2-5-hit"
@@ -87,9 +87,9 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
     }
   })
 
-  it("Second Track Slash stage 2's 4-hit form needs Sword Horizon and ends at 142 f", () => {
-    expect(swordChargeStage24Hit.castFrames).toBe(142)
-    expect(swordChargeStage24Hit.castConditions).toEqual([{ param: PARAM.swordHorizon }])
+  it("Second Track Slash stage 2's 4-hit form needs no Sword Horizon and ends one frame past hit 4", () => {
+    expect(swordChargeStage24Hit.castFrames).toBe(85 + 51.11)
+    expect("castConditions" in swordChargeStage24Hit).toBe(false)
     expect(swordChargeStage24Hit.hits).toEqual(swordChargeStage25Hit.hits.slice(0, 4))
   })
 
@@ -118,7 +118,7 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
     }
     expect(
       [swordLight1, swordLight2, swordLight3, swordLight3EndsChain, swordLight4].map(frames),
-    ).toEqual([[22], [12, 32], [8, 21], [8, 21, 34], [13]])
+    ).toEqual([[22], [12, 32], [8, 20], [8, 20, 34], [13]])
     expect(
       [swordLight1, swordLight2, swordLight3, swordLight3EndsChain, swordLight4].map(
         (skill) => skill.castFrames,
@@ -155,7 +155,7 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
       expect(skill.receives, skill.id).toContain(BUFF.swallowcallLightAttackBoost)
       expect(skill.reachMeters, skill.id).toBe(4.5)
     }
-    expect(chain.map(frames)).toEqual([[20], [14], [14, 31], [12, 23, 40]])
+    expect(chain.map(frames)).toEqual([[20], [14.24], [18, 35], [12, 23, 40]])
     expect(chain.map((skill) => skill.castFrames)).toEqual([27, 24, 42, 59])
   })
 

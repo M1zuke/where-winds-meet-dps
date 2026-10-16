@@ -6,22 +6,32 @@ import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import type { Inputs } from "../../src/engine/types"
 import profileFile from "../migrations/testProfiles/v10/stonesplitStrength.json"
+
+function withoutBoardsAddedLater(inputs: Inputs): Inputs {
+  return {
+    ...inputs,
+    unclaimedOddityNodes: { ...inputs.unclaimedOddityNodes, Qingzhou: [600], Jiangnan: [700] },
+  }
+}
 
 describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(59279.36683587487)
-    expect(result.totalDamage).toBe(3556762.010152492)
+    const result = runEngine(
+      applyBowSet(applyArmorSet(withDerivedStats(withoutBoardsAddedLater(profile.inputs)))),
+    )
+    expect(result.dps).toBe(59725.45097703879)
+    expect(result.totalDamage).toBe(3583527.058622327)
   })
 
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
-    const raised = { ...profile.inputs, breakthrough: 17 }
+    const raised = { ...withoutBoardsAddedLater(profile.inputs), breakthrough: 17 }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
-    expect(result.dps).toBe(60293.05313523464)
-    expect(result.totalDamage).toBe(3617583.1881140782)
+    expect(result.dps).toBe(60751.30319001484)
+    expect(result.totalDamage).toBe(3645078.1914008907)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

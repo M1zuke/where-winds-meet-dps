@@ -8,9 +8,9 @@ import { DEBUFF } from "../../src/data/skills/mystic/ids"
 import { MYSTIC, ROLE } from "../../src/data/skills/ids"
 import type { Skill } from "../../src/engine/skill"
 
-const LEVEL_171_POWER = 12.7508622641509
-const LEVEL_171_FLAT = 1933.32075471698
-const LEVEL_71_POWER = 13.51571
+const LEVEL_176_POWER = 12.751806
+const LEVEL_176_FLAT = 2020.5849
+const LEVEL_76_POWER = 13.516714
 const FLIP_RATIO = 0.04
 const POUNCE_RATIO = 0.24
 const HIT_POUNCE_RATIO = 0.312
@@ -28,20 +28,20 @@ describe.each([
     expect(skill.cancelledBy).toBe("deflectCancel")
   })
 
-  it("carries the level-171 flip and pounce rows", () => {
+  it("carries the level-176 flip and pounce rows", () => {
     for (const [index, ratio] of [
       [0, FLIP_RATIO],
       [1, pounceRatio],
     ] as const) {
       const row = rowOf(skill, index)
-      expect(row.physMultiplier).toBeCloseTo(LEVEL_171_POWER * ratio, 5)
-      expect(row.attributeMultiplier).toBeCloseTo(LEVEL_171_POWER * ratio * 1.5, 5)
-      expect(row.physFixed).toBeCloseTo(LEVEL_171_FLAT * ratio, 3)
+      expect(row.physMultiplier).toBeCloseTo(LEVEL_176_POWER * ratio, 5)
+      expect(row.attributeMultiplier).toBeCloseTo(LEVEL_176_POWER * ratio * 1.5, 5)
+      expect(row.physFixed).toBeCloseTo(LEVEL_176_FLAT * ratio, 3)
       expect(row.attributeFixed).toBe(0)
     }
   })
 
-  it("applies the level-171 venom on the pounce only", () => {
+  it("applies the level-176 venom on the pounce only", () => {
     expect(rowOf(skill, 0).triggers).toEqual([])
     expect(rowOf(skill, 1).triggers.map((trigger) => trigger.targetId)).toEqual([
       DEBUFF.toadPoisonFury,
@@ -55,10 +55,10 @@ describe("flip frame", () => {
   })
 })
 
-describe("level 171 against level 71", () => {
+describe("level 176 against level 76", () => {
   it("plain Fury deals 0.9434 of Toad[Cancel] on the pounce", () => {
     expect(rowOf(toadFury, 1).physMultiplier / rowOf(toadCancel, 1).physMultiplier).toBeCloseTo(
-      LEVEL_171_POWER / LEVEL_71_POWER,
+      LEVEL_176_POWER / LEVEL_76_POWER,
       4,
     )
   })
@@ -73,7 +73,7 @@ describe("level 171 against level 71", () => {
 })
 
 describe("Toad Poison (Fury)", () => {
-  it("is Toad Poison's shape with the level-171 explosion", () => {
+  it("is Toad Poison's shape with the level-176 explosion", () => {
     expect(toadPoisonFury.dot).toMatchObject({
       tickIntervalFrames: toadPoison.dot!.tickIntervalFrames,
       directHit: true,
@@ -81,11 +81,11 @@ describe("Toad Poison (Fury)", () => {
     })
     expect(toadPoisonFury.durationFrames).toBe(toadPoison.durationFrames)
     expect(toadPoisonFury.tags).toEqual([ROLE.toadVenom])
-    expect(toadPoisonFury.dot!.physMultiplier).toBeCloseTo(LEVEL_171_POWER * VENOM_RATIO, 5)
+    expect(toadPoisonFury.dot!.physMultiplier).toBeCloseTo(LEVEL_176_POWER * VENOM_RATIO, 5)
     expect(toadPoisonFury.dot!.attributeMultiplier).toBeCloseTo(
-      LEVEL_171_POWER * VENOM_RATIO * 1.5,
+      LEVEL_176_POWER * VENOM_RATIO * 1.5,
       5,
     )
-    expect(toadPoisonFury.dot!.physFixed).toBeCloseTo(LEVEL_171_FLAT * VENOM_RATIO, 3)
+    expect(toadPoisonFury.dot!.physFixed).toBeCloseTo(LEVEL_176_FLAT * VENOM_RATIO, 3)
   })
 })

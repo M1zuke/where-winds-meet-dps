@@ -518,17 +518,9 @@ describe("timeline — applyDot / detonateDot (logic-free DoT trigger kinds)", (
     expect(r.perSkill.find((s) => s.name === "Bleed Burst")).toBeUndefined()
   })
 
-  it("retains retainParamStacks at tier 6, resets to retainStacks (default 0) below tier 6", () => {
+  it("keeps retainStacks after a detonation, so the next one needs fewer hits", () => {
     const burst = makeBurst()
-    const bleed = makeDetonatingBleed({
-      detonation: {
-        skillId: burst.id,
-        retainStacks: 0,
-        retainParam: "swordHorizon",
-        retainMinTier: 6,
-        retainParamStacks: 2,
-      },
-    })
+    const bleed = makeDetonatingBleed({ detonation: { skillId: burst.id, retainStacks: 2 } })
     const detonator = makeApplyAndDetonate(bleed.id, 3)
     const rotation = makeRotation(CLASS, {
       steps: [
@@ -537,29 +529,8 @@ describe("timeline — applyDot / detonateDot (logic-free DoT trigger kinds)", (
         makeStep({ skillId: detonator.id }),
       ],
     })
-    const base = timelineInputs(rotation, [detonator, burst], [], [bleed])
-    const below6: Inputs = {
-      ...base,
-      mindMethods: [
-        { name: "Sword Horizon", stacks: "tier 5" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-    }
-    const at6: Inputs = {
-      ...base,
-      mindMethods: [
-        { name: "Sword Horizon", stacks: "tier 6" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-    }
-    const belowResult = simulateTimeline(below6)
-    const atResult = simulateTimeline(at6)
-    expect(belowResult.perSkill.find((s) => s.name === "Bleed Burst")!.count).toBe(1)
-    expect(atResult.perSkill.find((s) => s.name === "Bleed Burst")!.count).toBe(2)
+    const result = simulateTimeline(timelineInputs(rotation, [detonator, burst], [], [bleed]))
+    expect(result.perSkill.find((s) => s.name === "Bleed Burst")!.count).toBe(2)
   })
 })
 

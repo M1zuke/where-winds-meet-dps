@@ -1,8 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { LIGHT_ATTACK_NOT_REPLACED } from "./empowered-light-attack"
+import {
+  CLASS_RECEIVES,
+  MISTWILLOW_LIGHT_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 
 // In-game values as of 2026-09-24, level 100: stage 1 of the 4-stage twin
 // blade light-attack chain, one hit, ratio 1.0.
@@ -11,7 +16,7 @@ export const dualBladesLightAttack1 = defineSkill({
   classId: "bamboocutDraught",
   name: "Dual Blades - Light Attack (1st Stage)",
   breakdownName: "Dual Blades - Light Attack",
-  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack],
+  tags: [WEAPON.twinBlades, ATTUNE.twinbladesLightAttack, ATTACK.light],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -21,11 +26,12 @@ export const dualBladesLightAttack1 = defineSkill({
     BUFF.swallowcallLightAttackBoost,
     ...CLASS_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
+    ...MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   ],
+  castConditions: [LIGHT_ATTACK_NOT_REPLACED],
   castFrames: 26,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — no approach field found.
-  startLatency: "noWaitOnDummy",
   hits: [
     hit(0, {
       frame: 20,

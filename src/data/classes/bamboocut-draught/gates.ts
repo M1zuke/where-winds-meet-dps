@@ -21,6 +21,12 @@ export const SKILL_BINGE_POINT_ACCUMULATION_DURATION_FRAMES = 120
 export const PEAKFALL_COOLDOWN_FRAMES = 600
 export const CASTLINK_COOLDOWN_FRAMES = 120
 export const HEROS_BLOOD_COOLDOWN_FRAMES = 720
+// In-game values as of 2026-10-15.
+export const REVELDRIFT_SPACING_FRAMES = 180
+export const EMPOWERED_LIGHT_ATTACK_FRAMES = 66
+export const NIGHTWICK_STANCE_FRAMES = 300
+export const TIPSYLAY_COOLDOWN_FRAMES = 900
+export const SKYSTRIKE_GAUNTLETS_EX_COOLDOWN_FRAMES = 3600
 
 // In-game state text, 2026-09-06: Binge Points start at 60 and cap at 200;
 // Tipsy from 100, Deepdaze at 200 for 5 s, 10 s with Skyspeak tier 3. When
@@ -173,6 +179,74 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     stackScaling: "flat",
     createdAt: "2026-09-16T00:00:00.000Z",
     updatedAt: "2026-09-16T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.reveldriftSpacing,
+    classId: CLASS_ID,
+    name: "Reveldrift Interval",
+    description: "Reveldrift cannot be cast again while this holds.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: REVELDRIFT_SPACING_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.empoweredLightAttack,
+    classId: CLASS_ID,
+    name: "Empowered Light Attack",
+    description: "Opens Blade Against Waves and Tidepour, which consume it, and shuts Boundvessel.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: EMPOWERED_LIGHT_ATTACK_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.nightwickStance,
+    classId: CLASS_ID,
+    name: "Nightwick Follow-up",
+    description: "Opens Primepick and Grounddrift, which end it.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: NIGHTWICK_STANCE_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.tipsylayCooldown,
+    classId: CLASS_ID,
+    name: "Tipsylay Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: TIPSYLAY_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.skystrikeGauntletsExCooldown,
+    classId: CLASS_ID,
+    name: "Skystrike Gauntlets - EX Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: SKYSTRIKE_GAUNTLETS_EX_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-15T00:00:00.000Z",
+    updatedAt: "2026-10-15T00:00:00.000Z",
   }),
   defineGateBuff({
     id: STATUS.carouse,

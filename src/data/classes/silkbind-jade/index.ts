@@ -15,6 +15,9 @@ import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import { SILKBIND_JADE_GATES } from "./gates"
+import { SILKBIND_JADE_CHARGE_METERS } from "./chargeMeters"
+import { windrider } from "../../skills/silkbind-jade/buffs/windrider"
+import { moonShatterSpringLockout } from "../../skills/silkbind-jade/buffs/moonShatterSpringLockout"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
 const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Silkbind", SKILLS).filter(
@@ -54,7 +57,7 @@ export const silkbindJade = defineClass({
   // weapon (Peak's Springless Silence / Moon Shatter Spring) — an assumption
   // for every skill with no reach of its own.
   defaultMeleeReachMeters: 9,
-  meters: [enduranceMeter],
+  meters: [enduranceMeter, ...SILKBIND_JADE_CHARGE_METERS],
   critBoostWeaponTypes: ["Umbrella", "Fan"],
   skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
@@ -65,6 +68,8 @@ export const silkbindJade = defineClass({
     trajectorySkill,
     inkwellFanAdditionalAttack,
     vernalUmbrellaAdditionalAttack,
+    windrider,
+    moonShatterSpringLockout,
   ],
   gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],

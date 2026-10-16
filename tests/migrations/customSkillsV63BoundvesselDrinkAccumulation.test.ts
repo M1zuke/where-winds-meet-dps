@@ -26,6 +26,8 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 
 const finishingSlash = (skill: Skill) => skill.hits.find((hit) => hit.id === "hit-12")!
 
+const bankingHit = (skill: Skill) => skill.hits.find((hit) => hit.id === "hit-15")!
+
 const builtinBoundvessel = () =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === BOUNDVESSEL_ID)!
 
@@ -39,7 +41,7 @@ describe("custom-skills v62 fixture", () => {
 describe("healSkill", () => {
   it("gives the unedited finishing slash the built-in's accumulation triggers", () => {
     const healed = healSkill(clone(skillIn(STORE, BOUNDVESSEL_ID))) as Skill
-    expect(finishingSlash(healed).triggers).toEqual(finishingSlash(builtinBoundvessel()).triggers)
+    expect(finishingSlash(healed).triggers).toEqual(bankingHit(builtinBoundvessel()).triggers)
     expect(finishingSlash(healed).triggers).toHaveLength(2)
   })
 
@@ -109,8 +111,8 @@ describe("the healed copy survives the hydrator too", () => {
   it("keeps the triggers after loadCustomSkills, not just after the migration step", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
-    expect(
-      finishingSlash(loaded.find((skill) => skill.id === BOUNDVESSEL_ID)!).triggers,
-    ).toHaveLength(2)
+    expect(bankingHit(loaded.find((skill) => skill.id === BOUNDVESSEL_ID)!).triggers).toHaveLength(
+      2,
+    )
   })
 })

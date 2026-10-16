@@ -9,7 +9,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
 
-const MARK_DURATION = 2
+const MARK_DURATION = 5
 
 function jadeEngine() {
   return new BuffEngine({ classId: "silkbindJade" }, buffDefsForClass("silkbindJade"), [])

@@ -34,16 +34,13 @@ function wolfchasersArtEnduranceGain() {
   })
 }
 
-// In-game values as of 2026-09-24: one Bleeding stack per River Flow (or
-// higher) hit on every cast, no cooldown; the non-clearing Blood Burst (plus
-// the 2 stacks Sword Horizon's retention would otherwise keep) and the
+// In-game values as of 2026-10-15: one Bleeding stack per River Flow (or
+// higher) hit on every cast, no cooldown; the non-clearing Blood Burst and the
 // Wolfchaser's Art Endurance gain only under Empowered River Flow, on its
 // own 12 s cooldown.
 function payloadTriggers() {
   return [
     applyDot({ target: DEBUFF.bleedTick, condition: RIVER_FLOW_CONDITION }),
-    applyDot({ target: DEBUFF.bleedTick, condition: EMPOWERED_CONDITION, conditions: [COOLDOWN_CONDITION] }),
-    applyDot({ target: DEBUFF.bleedTick, condition: EMPOWERED_CONDITION, conditions: [COOLDOWN_CONDITION] }),
     castSkill({
       target: SKILL.bleedDetonation,
       stacks: 0,

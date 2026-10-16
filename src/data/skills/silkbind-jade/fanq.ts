@@ -3,6 +3,11 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import {
+  chargeAvailable,
+  chargeCost,
+  emeraldBarrierChargesMeter,
+} from "../../classes/silkbind-jade/chargeMeters"
 
 export const fanq = defineSkill({
   id: SKILL.fanq,
@@ -14,9 +19,20 @@ export const fanq = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.fanQ,
   receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
-  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
-  // Cast length to the earliest next input (in-game animation, 2026-09-24).
-  castFrames: 61,
+  triggersBuffs: [
+    BUFF.jadeware,
+    BUFF.windWall,
+    BUFF.windWallPursuit,
+    BUFF.windrider,
+    BUFF.springThunder,
+  ],
+  // In-game values as of 2026-10-15: Jadebreak lands with the wind wall at 10 f
+  // and Windrider where the cast ends.
+  triggersBuffsAtFrame: { [BUFF.windWall]: 10, [BUFF.windWallPursuit]: 10, [BUFF.windrider]: 61.2 },
+  meterCosts: [chargeCost(emeraldBarrierChargesMeter)],
+  castConditions: [chargeAvailable(emeraldBarrierChargesMeter)],
+  // Cast length to the earliest next input (in-game animation, 2026-10-15).
+  castFrames: 61.2,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1 m
   // shrink-only pull toward a locked target.

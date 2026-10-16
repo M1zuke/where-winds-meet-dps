@@ -41,26 +41,62 @@ function timelineInputs(
   }
 }
 
-describe("ping and average fps — delays every cast's start by the quantised round trip plus the server processing time plus one render frame", () => {
-  it("adds the same round-trip-plus-server-processing-plus-one-frame delay before every cast in the rotation", () => {
-    const firstSkill = makeSkill(CLASS, { name: "First", castFrames: 60, hits: [makeHit()] })
-    const secondSkill = makeSkill(CLASS, { name: "Second", castFrames: 60, hits: [makeHit()] })
+describe("ping and average fps — a skill starts in the input's own frame unless it waits for the server", () => {
+  const startsOf = (
+    startLatency: "serverRoundTrip" | undefined,
+    dummyMode: boolean,
+  ): { castA: number; castB: number; rotationDuration: number } => {
+    const firstSkill = makeSkill(CLASS, {
+      name: "First",
+      castFrames: 60,
+      startLatency,
+      hits: [makeHit()],
+    })
+    const secondSkill = makeSkill(CLASS, {
+      name: "Second",
+      castFrames: 60,
+      startLatency,
+      hits: [makeHit()],
+    })
     const rotation = makeRotation(CLASS, {
       steps: [makeStep({ skillId: firstSkill.id }), makeStep({ skillId: secondSkill.id })],
     })
-    const inputs = timelineInputs(rotation, [firstSkill, secondSkill], {
-      pingMs: 100,
-      averageFps: 60,
-    })
-    const result = simulateTimeline(inputs)
-
-    // 100 ms ping (6 f) + the calibrated server processing time (24 ms, 1.44 f)
-    // + one 60 fps render frame (1 f), rounded up to the next render frame: 9 f.
+    const result = simulateTimeline(
+      timelineInputs(rotation, [firstSkill, secondSkill], {
+        pingMs: 100,
+        averageFps: 60,
+        dummyMode,
+      }),
+    )
     const [castA, castB] = result.casts!
-    expect(castA.timeSec).toBeCloseTo(9 / FPS, 10)
-    expect(castB.timeSec).toBeCloseTo(78 / FPS, 10)
-    expect(result.rotationDuration).toBeCloseTo(138 / FPS, 10)
-  })
+    return {
+      castA: castA.timeSec,
+      castB: castB.timeSec,
+      rotationDuration: result.rotationDuration,
+    }
+  }
+
+  it.each([true, false])(
+    "a normal skill starts at the previous cast's end with dummy mode %s",
+    (dummyMode) => {
+      const starts = startsOf(undefined, dummyMode)
+      expect(starts.castA).toBe(0)
+      expect(starts.castB).toBeCloseTo(60 / FPS, 10)
+      expect(starts.rotationDuration).toBeCloseTo(120 / FPS, 10)
+    },
+  )
+
+  it.each([true, false])(
+    "an excluded skill waits for the round trip plus the server processing time plus one render frame with dummy mode %s",
+    (dummyMode) => {
+      // 100 ms ping (6 f) + the calibrated server processing time (24 ms, 1.44 f)
+      // + one 60 fps render frame (1 f), rounded up to the next render frame: 9 f.
+      const starts = startsOf("serverRoundTrip", dummyMode)
+      expect(starts.castA).toBeCloseTo(9 / FPS, 10)
+      expect(starts.castB).toBeCloseTo(78 / FPS, 10)
+      expect(starts.rotationDuration).toBeCloseTo(138 / FPS, 10)
+    },
+  )
 
   it("adds nothing at 0 ms — the app's own no-latency baseline, not a real zero-latency connection", () => {
     const skill = makeSkill(CLASS, { name: "Solo", castFrames: 60, hits: [makeHit()] })
@@ -106,27 +142,14 @@ describe("ping and average fps — quantises cast length and hit offsets to the 
   })
 })
 
-describe("ping and average fps — skips the round trip and the server processing time only in dummy mode for no-wait skills, but still pays the render frame", () => {
-  const skill = makeSkill(CLASS, {
-    name: "NoWaitOnDummy",
-    castFrames: 30,
-    startLatency: "noWaitOnDummy",
-    hits: [makeHit()],
-  })
-  const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
-
-  it("still pays one render frame in dummy mode", () => {
+describe("ping and average fps — a normal skill pays no render frame at its start", () => {
+  it("starts in the same frame at a high frame rate", () => {
+    const skill = makeSkill(CLASS, { name: "Plain", castFrames: 30, hits: [makeHit()] })
+    const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
     const result = simulateTimeline(
-      timelineInputs(rotation, [skill], { pingMs: 100, averageFps: 60, dummyMode: true }),
+      timelineInputs(rotation, [skill], { pingMs: 100, averageFps: 250, dummyMode: true }),
     )
-    expect(result.casts![0].timeSec).toBeCloseTo(1 / FPS, 10)
-  })
-
-  it("still waits for the round trip plus the server processing time with dummy mode off", () => {
-    const result = simulateTimeline(
-      timelineInputs(rotation, [skill], { pingMs: 100, averageFps: 60, dummyMode: false }),
-    )
-    expect(result.casts![0].timeSec).toBeCloseTo(9 / FPS, 10)
+    expect(result.casts![0].timeSec).toBe(0)
   })
 })
 
@@ -146,15 +169,11 @@ describe("ping and average fps — a skill's own further in-cast server waits le
       timelineInputs(rotation, [waiting, next], { pingMs: 100, averageFps: 60 }),
     )
 
-    // The cast's own start pays only the ordinary start latency (9 f); its
-    // one further in-cast wait (100 ms ping + the 24 ms server processing
-    // time, 8 f) then delays every hit and the cast's own end, so the next
-    // step starts 8 f later than the plain 20 f cast length would give.
     const [castA, castB] = result.casts!
-    expect(castA.timeSec).toBeCloseTo(9 / FPS, 10)
-    expect(castB.timeSec).toBeCloseTo((9 + 20 + 8 + 9) / FPS, 10)
+    expect(castA.timeSec).toBe(0)
+    expect(castB.timeSec).toBeCloseTo((20 + 8) / FPS, 10)
     const hitEvent = result.timeline!.find((event) => event.kind === "hit")!
-    expect(hitEvent.frame).toBe(9 + 5 + 8)
+    expect(hitEvent.frame).toBe(5 + 8)
   })
 
   it("does not reach a pre-pull cast", () => {
@@ -183,6 +202,7 @@ describe("ping and average fps — a skill's own further in-cast server waits le
           pingMs: 100,
           averageFps: 60,
           divinecraft: null,
+          set: null,
         }),
       )
     }
@@ -242,7 +262,7 @@ describe("ping and average fps — the free direct weapon swap never waits on a 
 
 describe("ping and average fps — adds no round trip to idle delay steps or generated sub-casts", () => {
   it("a step whose skill declares no start latency requirement starts at once", () => {
-    const idle = makeSkill(CLASS, { name: "Idle", castFrames: 10, startLatency: "none", hits: [] })
+    const idle = makeSkill(CLASS, { name: "Idle", castFrames: 10, hits: [] })
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: idle.id })] })
     const result = simulateTimeline(
       timelineInputs(rotation, [idle], { pingMs: 100, averageFps: 60 }),
@@ -395,11 +415,13 @@ describe("ping and average fps — a meter's own cursor stays a clean integer fr
       name: "Prepull",
       prePull: true,
       castFrames: 30,
+      startLatency: "serverRoundTrip",
       hits: [makeHit({ frame: 10, physMultiplier: 1, physFixed: 1 })],
     })
     const costly = makeSkill(CLASS, {
       name: "Costly",
       castFrames: 12,
+      startLatency: "serverRoundTrip",
       meterCosts: [{ meterId: enduranceMeter.id, amount: 20 }],
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
     })
@@ -430,6 +452,7 @@ describe("ping and average fps — drops hits pushed past a fixed window", () =>
     const skill = makeSkill(CLASS, {
       name: "Solo",
       castFrames: 10,
+      startLatency: "serverRoundTrip",
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 100 })],
     })
     const rotation = makeRotation(CLASS, {
@@ -455,6 +478,7 @@ describe("the rotation's own server processing time", () => {
   const waiting = makeSkill(CLASS, {
     name: "Waiting",
     castFrames: 30,
+    startLatency: "serverRoundTrip",
     serverWaitsInCast: 1,
     hits: [makeHit()],
   })
@@ -477,5 +501,29 @@ describe("the rotation's own server processing time", () => {
   it("is a no-op at 0 ms ping whatever its value", () => {
     expect(runWith(500, 0).castDuration).toBeCloseTo(runWith(0, 0).castDuration, 10)
     expect(runWith(500, 0).casts![0].timeSec).toBe(0)
+  })
+})
+
+describe("ping and average fps — a skill whose keyframes lead by a render frame ends one render period early", () => {
+  const castDurationOf = (keyframesLeadByRenderFrame: boolean, averageFps: number): number => {
+    const skill = makeSkill(CLASS, {
+      name: "Leading",
+      castFrames: 61,
+      keyframesLeadByRenderFrame,
+      hits: [makeHit({ frame: 5, physMultiplier: 1, physFixed: 100 })],
+    })
+    const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
+    return simulateTimeline(timelineInputs(rotation, [skill], { pingMs: 0, averageFps }))
+      .castDuration
+  }
+
+  it("subtracts one render period from the quantised cast length", () => {
+    expect(castDurationOf(false, 30)).toBeCloseTo(62 / FPS, 10)
+    expect(castDurationOf(true, 30)).toBeCloseTo(60 / FPS, 10)
+  })
+
+  it("subtracts a full frame at 60 fps and a fraction of one at a high frame rate", () => {
+    expect(castDurationOf(true, 60)).toBeCloseTo(60 / FPS, 10)
+    expect(castDurationOf(false, 240) - castDurationOf(true, 240)).toBeCloseTo(0.25 / FPS, 10)
   })
 })

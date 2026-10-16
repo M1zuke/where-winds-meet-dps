@@ -9,14 +9,12 @@ import { WEAPON_BOOST_STAT_KEY } from "../../data/stats/weaponBoosts"
 import { GRANT_REQUIRES_DEFAULT, type BuffModule } from "./buffModule"
 import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
-import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
 import { paramOnOf, paramsFromInputs, paramTierOf } from "./params"
 import type { BuffParams } from "./buffEngine"
 import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../builtinLibrary"
-import { tickSourceSkillId } from "../dot"
 import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/classes/registry"
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
@@ -237,8 +235,9 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   }
   const mysticCategory = mysticCategoryOf(skill)
   const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
-  if (mysticBoostKey) {
-    rows.push(gearStatRow(mysticBoostKey, inputs))
+  if (mysticBoostKey) rows.push(gearStatRow(mysticBoostKey, inputs))
+  if (mysticBoostKey || skill.skillType === "mystic") {
+    rows.push(gearStatRow("allMysticBoost", inputs))
   }
   const attuneTag = attuneTagOf(skill)
   const attunement = attuneTag
@@ -255,31 +254,6 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       isSpecMechanic: false,
       active: forThisClass && rolled > 0,
     })
-  }
-
-  if (classId) {
-    const debuffsById = new Map<string, Debuff>()
-    for (const d of builtinDebuffsForClass(classId)) debuffsById.set(d.id, d)
-    for (const d of inputs?.customDebuffs ?? []) debuffsById.set(d.id, d)
-    for (const d of debuffsById.values()) {
-      const det = d.detonation
-      if (!det?.retainParam || tickSourceSkillId(d) !== skill.id) continue
-      const innerWayLabel =
-        innerWayForBuffParam(det.retainParam)?.name ?? humanizeParamId(det.retainParam)
-      const minTier = det.retainMinTier ?? 6
-      const retained = det.retainParamStacks ?? det.retainStacks ?? 0
-      const baseline = det.retainStacks ?? 0
-      rows.push({
-        id: `dotRetention:${d.id}`,
-        name: innerWayLabel,
-        effect: `retains ${retained} ${d.name} stacks after detonation (${baseline} without it)`,
-        requires: `${innerWayLabel} tier ${minTier}+`,
-        isSpecMechanic: false,
-        active: params
-          ? paramOnOf(params, det.retainParam) && paramTierOf(params, det.retainParam) >= minTier
-          : true,
-      })
-    }
   }
 
   return rows.sort((a, b) => a.name.localeCompare(b.name))

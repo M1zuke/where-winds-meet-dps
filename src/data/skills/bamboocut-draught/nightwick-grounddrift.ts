@@ -1,29 +1,29 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import type { HitTrigger } from "../../../engine/skill"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
+import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightwick-stance"
 
-const pursuit = (index: number, frame: number, triggers: HitTrigger[] = []) =>
+const pursuit = (index: number, frame: number) =>
   hit(index, {
     frame,
     physMultiplier: 0.57198,
     attributeMultiplier: 0.85797,
     physFixed: 158.25,
     attributeFixed: 86.25,
-    triggers,
   })
 
 // In-game level-100 row (2.28792 / 633 / 345, 2026-09-04) at the tooltip's
-// 0.25 per hit; four hits is a provisional count. Attribute side × 1.5. Cast
-// length and hit frames: in-game animation, 2026-09-05.
+// 0.25 per hit, one hit per collider. Attribute side × 1.5. Cast
+// length: in-game animation, 2026-09-05. Hit frames and the Binge Points grant:
+// in-game values as of 2026-10-15.
 export const nightwickGrounddrift = defineSkill({
   id: SKILL.nightwickGrounddrift,
   classId: "bamboocutDraught",
   name: "Nightwick - Grounddrift",
-  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial],
+  tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial, ROLE.inebriateEnhanced],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
@@ -33,6 +33,7 @@ export const nightwickGrounddrift = defineSkill({
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
   ],
+  castConditions: NIGHTWICK_STANCE_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 93,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
@@ -40,11 +41,20 @@ export const nightwickGrounddrift = defineSkill({
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    pursuit(0, 8),
-    pursuit(1, 24),
-    pursuit(2, 56),
-    pursuit(3, 88, skillBingePointAccumulationTriggers),
+    pursuit(0, 15),
+    pursuit(1, 29),
+    pursuit(2, 54),
+    pursuit(3, 80),
+    hit(4, {
+      frame: 93,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: skillBingePointAccumulationTriggers,
+    }),
+    nightwickStanceSpent(5),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -6,6 +6,8 @@ import { swordLightAttack } from "./sword-light-attack"
 import { swordSpecialDash } from "./sword-dash"
 import { swordSprintDash } from "./sword-sprint-dash"
 import { swordHeavyChargedTier1 } from "./swordheavycharged-tier-1"
+import { swordHeavyChargedTier1Wushuang } from "./swordheavycharged-tier-1-wushuang"
+import { swordHeavyChargedWushuang } from "./swordheavycharged-wushuang"
 import { legionCrusher } from "./legioncrusher"
 import { spearq } from "./spearq"
 import { spearq0HitCancel } from "./spearq-0-hit-cancel"
@@ -21,13 +23,12 @@ import { stormDanceStage2 } from "./stormdance-stage-2"
 import { stormDanceStage2Wushuang } from "./stormdance-stage-2-wushuang"
 import { swordHeavyCharged } from "./swordheavycharged"
 import { swordHeavyCharged2Hit } from "./swordheavycharged-2-hit"
+import { swordHeavyCharged2HitWushuang } from "./swordheavycharged-2-hit-wushuang"
 import { swordHeavyChargedPrepull } from "./swordheavycharged-prepull"
 import { swordq } from "./swordq"
 import { swordq2nd } from "./swordq-2nd"
 import { swordq3rd } from "./swordq-3rd"
 import { swordSpecial } from "./swordspecial"
-import { swordSpecial2nd } from "./swordspecial-2nd"
-import { swordSpecialDeflect } from "./swordspecial-deflect"
 
 export const CLASS_ID = "bellstrikeSplendor"
 
@@ -35,13 +36,12 @@ export const SKILLS = [
   swordHeavyCharged,
   swordHeavyChargedPrepull,
   swordHeavyCharged2Hit,
+  swordHeavyCharged2HitWushuang,
   energySurge,
   swordq,
   swordq2nd,
   swordq3rd,
   swordSpecial,
-  swordSpecial2nd,
-  swordSpecialDeflect,
   spearq,
   spearqPrepull,
   spearq0HitCancel,
@@ -56,6 +56,8 @@ export const SKILLS = [
   spearDual,
   swordSpecialDash,
   swordHeavyChargedTier1,
+  swordHeavyChargedTier1Wushuang,
+  swordHeavyChargedWushuang,
   swordLightAttack,
   spearLightAttack,
   swordHeavyAttack,

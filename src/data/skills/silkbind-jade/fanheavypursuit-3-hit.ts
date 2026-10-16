@@ -3,6 +3,11 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import {
+  MOON_SHATTER_SPRING_CONDITIONS,
+  PURSUIT_RECHARGE_CUT,
+  STARTLING_SPRING_STACK,
+} from "./moonShatterSpring"
 
 // In-game values as of 2026-10-05.
 const CAST_TOTAL = {
@@ -19,6 +24,7 @@ const coefficientsFor = (share: number) => ({
   physFixed: CAST_TOTAL.physFixed * share,
   attributeFixed: CAST_TOTAL.attributeFixed * share,
   extraCritDamage: 1,
+  triggers: [PURSUIT_RECHARGE_CUT, STARTLING_SPRING_STACK],
 })
 
 export const fanheavypursuit3Hit = defineSkill({
@@ -49,18 +55,20 @@ export const fanheavypursuit3Hit = defineSkill({
     BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
-  triggersBuffs: [BUFF.pursuitChargedBoost],
-  // Cast length to the earliest next input (in-game animation, 2026-09-24).
-  castFrames: 93,
+  triggersBuffs: [BUFF.pursuitChargedBoost, BUFF.moonShatterSpringLockout],
+  castConditions: MOON_SHATTER_SPRING_CONDITIONS,
+  // Cast length to the earliest next input and the strike frames (in-game
+  // animation, 2026-10-15).
+  castFrames: 93.42,
   triggerable: true,
   // In-game values as of 2026-09-28: 9 m approach reach; the cast's own
   // segments then teleport to about 1.5 m from the target, along its facing.
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 10, ...coefficientsFor(HIT_SHARES[0]) }),
-    hit(1, { frame: 34, ...coefficientsFor(HIT_SHARES[1]) }),
-    hit(2, { frame: 72, ...coefficientsFor(HIT_SHARES[2]) }),
+    hit(0, { frame: 9.66, ...coefficientsFor(HIT_SHARES[0]) }),
+    hit(1, { frame: 33.78, ...coefficientsFor(HIT_SHARES[1]) }),
+    hit(2, { frame: 71.82, ...coefficientsFor(HIT_SHARES[2]) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-10-05T00:00:00.000Z",

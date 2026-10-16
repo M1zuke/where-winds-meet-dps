@@ -4,14 +4,8 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
+import { endlessGaleAtStartGrant } from "./buffs/endlessGaleCostReductionGrant"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
-
-// In-game values as of 2026-09-29: blocked while a Mountain's Might Endless
-// Gale (from Qiankun's Lock's own end) already holds.
-const legionCrusherEndlessGaleGrant = applyBuff({
-  target: BUFF.endlessGaleAtStart,
-  condition: { buffId: BUFF.endlessGale, op: "lte", stacks: 0 },
-})
 
 const legionCrusherWushuangStanceGrant = applyBuff({ target: BUFF.wushuangStance })
 
@@ -45,7 +39,7 @@ export const legionCrusher = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [legionCrusherEndlessGaleGrant],
+      triggers: [endlessGaleAtStartGrant],
     }),
     hit(1, {
       // In-game values as of 2026-09-24: the collider's own frame.
@@ -58,5 +52,5 @@ export const legionCrusher = defineSkill({
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

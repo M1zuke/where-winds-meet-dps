@@ -4,7 +4,7 @@ import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
-// In-game values as of 2026-10-06 (level 171), with the caster hit during the
+// In-game values as of 2026-10-15 (level 176), with the caster hit during the
 // flip.
 export const toadFuryHit = defineSkill({
   id: SKILL.toadFuryHit,
@@ -23,16 +23,16 @@ export const toadFuryHit = defineSkill({
   hits: [
     hit(0, {
       frame: 40,
-      physMultiplier: 0.510034,
-      attributeMultiplier: 0.765052,
-      physFixed: 77.3328,
+      physMultiplier: 0.510072,
+      attributeMultiplier: 0.765108,
+      physFixed: 80.8234,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 68,
-      physMultiplier: 3.978269,
-      attributeMultiplier: 5.967404,
-      physFixed: 603.1961,
+      physMultiplier: 3.978563,
+      attributeMultiplier: 5.967845,
+      physFixed: 630.4225,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.toadPoisonFury })],
     }),

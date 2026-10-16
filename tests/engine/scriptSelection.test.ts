@@ -110,7 +110,7 @@ function inputsWithScript(script: ScriptId | null): Inputs {
   }
 }
 
-// The rotation's own authored window, pinned as an explicit fixed schedule so
+// A fixed 34 s break, pinned as an explicit fixed schedule so
 // this magnitude check stays a fixed-window fact rather than riding a bare,
 // unbuilt `defaultInputs` character's own simulated schedule, which
 // (correctly) may never reach a break at all.
@@ -128,14 +128,14 @@ describe("script selection — end to end on the class default rotation", () => 
     expect(wraith).toBeGreaterThan(noneWithBreak)
   })
 
-  it("changes nothing when the rotation's Qi break window has no length", () => {
+  it("changes nothing when the Qi break window has no length", () => {
     const options = { fixedQiBreaks: [{ startSec: 0, durationSec: 0, lowQiLeadSec: 0 }] }
     const none = runEngine(inputsWithScript(null), options).totalDamage
     const wraith = runEngine(inputsWithScript("wraithstrikeScript"), options).totalDamage
     expect(wraith).toBeCloseTo(none, 6)
   })
 
-  // Calibration for the rotation's own authored break-34s/lead-5s window: a
+  // Calibration for the fixed break-34s/lead-5s window: a
   // +0.10 crit-damage script is worth roughly +1%, far short of the +4.7% an
   // unconditional grant would be — landing near the unconditional figure
   // means the gate isn't being applied.

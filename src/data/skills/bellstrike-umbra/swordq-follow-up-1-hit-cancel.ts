@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDQ_FOLLOW_UP_1_HIT_CANCEL_MOTION } from "./rootMotion"
 
 export const swordqFollowUp1HitCancel = defineSkill({
   id: SKILL.swordqFollowUp1HitCancel,
@@ -18,9 +19,10 @@ export const swordqFollowUp1HitCancel = defineSkill({
   cancelledBy: "deflectCancel",
   triggersBuffs: [BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
-  // A cancel form ends where the animation opens its interrupt window — 24 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
-  castFrames: 24,
+  // A cancel form ends one frame past its last kept hit — the animation opens no earlier interrupt window (in-game animation, 2026-10-15); the parry that ends it is the next rotation step.
+  castFrames: 7,
   triggerable: true,
+  displacement: SWORDQ_FOLLOW_UP_1_HIT_CANCEL_MOTION,
   // In-game values as of 2026-09-28: 4 m approach reach.
   reachMeters: 4,
   hits: [
@@ -34,5 +36,5 @@ export const swordqFollowUp1HitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

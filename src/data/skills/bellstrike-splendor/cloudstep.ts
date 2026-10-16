@@ -3,7 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06: the dash input while sprinting; the sprint
+// In-game values as of 2026-10-15: the dash input while sprinting; the sprint
 // itself is not simulated.
 export const cloudstep = defineSkill({
   id: SKILL.cloudstep,
@@ -16,7 +16,7 @@ export const cloudstep = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.splendorCloudstep,
   receives: NAMELESS_SPEAR_RECEIVES,
-  castFrames: 43,
+  castFrames: 36,
   triggerable: true,
   displacement: {
     kind: "byDistance",
@@ -25,7 +25,7 @@ export const cloudstep = defineSkill({
   },
   hits: [
     hit(0, {
-      frame: 29,
+      frame: 25,
       physMultiplier: 0.591504,
       attributeMultiplier: 0.887256,
       physFixed: 164.4,
@@ -33,5 +33,5 @@ export const cloudstep = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

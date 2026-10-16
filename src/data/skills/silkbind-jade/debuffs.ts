@@ -2,9 +2,16 @@ import { defineDebuff } from "../../../definitions/skills/skillDef"
 import { BUFF } from "../buffs/ids"
 import type { Debuff } from "../../../engine/debuff"
 import { DEBUFF } from "./ids"
-import { DRONE_LINGERING_BONE_ADDITIONAL_TICKS, droneDotSpec, droneWindowFrames } from "./droneTick"
+import {
+  DRONE_LINGERING_BONE_ADDITIONAL_TICKS,
+  DRONE_RECALL,
+  droneDotSpec,
+  droneWindowFrames,
+} from "./droneTick"
 
 const CLASS_ID = "silkbindJade"
+
+const DRONE_TRIGGERS_BUFFS = [BUFF.lingeringBone, BUFF.starReacherSupreme, BUFF.starReacher]
 
 export const umbdrone12Hit = defineDebuff({
   id: DEBUFF.umbdrone12Hit,
@@ -15,12 +22,13 @@ export const umbdrone12Hit = defineDebuff({
   durationFrames: droneWindowFrames(12),
   effects: [],
   dot: droneDotSpec(false),
+  recall: DRONE_RECALL,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  receives: [BUFF.lingeringBone, BUFF.comboExtendMark],
+  triggersBuffs: DRONE_TRIGGERS_BUFFS,
 })
 
 export const umbdrone16Hit = defineDebuff({
@@ -32,12 +40,13 @@ export const umbdrone16Hit = defineDebuff({
   durationFrames: droneWindowFrames(16),
   effects: [],
   dot: droneDotSpec(false),
+  recall: DRONE_RECALL,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  receives: [BUFF.lingeringBone, BUFF.comboExtendMark],
+  triggersBuffs: DRONE_TRIGGERS_BUFFS,
 })
 
 export const umbdrone20Hit = defineDebuff({
@@ -49,12 +58,13 @@ export const umbdrone20Hit = defineDebuff({
   durationFrames: droneWindowFrames(20),
   effects: [],
   dot: droneDotSpec(false),
+  recall: DRONE_RECALL,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  receives: [BUFF.lingeringBone, BUFF.comboExtendMark],
+  triggersBuffs: DRONE_TRIGGERS_BUFFS,
 })
 
 export const umbdrone23Hit = defineDebuff({
@@ -66,12 +76,13 @@ export const umbdrone23Hit = defineDebuff({
   durationFrames: droneWindowFrames(23),
   effects: [],
   dot: droneDotSpec(false),
+  recall: DRONE_RECALL,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  receives: [BUFF.lingeringBone, BUFF.comboExtendMark],
+  triggersBuffs: DRONE_TRIGGERS_BUFFS,
 })
 
 export const umbdrone26Hit = defineDebuff({
@@ -83,12 +94,13 @@ export const umbdrone26Hit = defineDebuff({
   durationFrames: droneWindowFrames(26),
   effects: [],
   dot: droneDotSpec(false),
+  recall: DRONE_RECALL,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken, BUFF.lingeringBone],
-  triggersBuffs: [BUFF.lingeringBone],
+  receives: [BUFF.lingeringBone, BUFF.comboExtendMark],
+  triggersBuffs: DRONE_TRIGGERS_BUFFS,
 })
 
 export const bitterSeasonTick = defineDebuff({
@@ -119,7 +131,7 @@ export const bitterSeasonTick = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  receives: [],
 })
 
 export const umbdrone = defineDebuff({
@@ -127,6 +139,7 @@ export const umbdrone = defineDebuff({
   id: DEBUFF.umbdrone,
   name: "UmbDrone",
   durationFrames: 3600 * 60,
+  recall: null,
   dot: { ...umbdrone20Hit.dot, additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS },
 })
 
