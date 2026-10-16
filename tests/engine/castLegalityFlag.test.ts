@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill, makeTrigger, type Skill } from "../../src/engine/skill"
@@ -6,7 +6,9 @@ import { makeStep, type Rotation } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import { enduranceRequires } from "../../src/data/resources/enduranceMeter"
-import { PARAM } from "../../src/data/skills/buffs/ids"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { loadCustomSkills } from "../../src/storage"
+import { LATEST_CUSTOM_SKILLS_VERSION } from "../../src/migrations/customSkills"
 import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
@@ -18,6 +20,7 @@ const NO_ODDITY_ENDURANCE: UnclaimedOddityNodes = {
   Qinghe: [101, 112, 126, 139],
   Kaifeng: [205, 222],
   Hexi: [305, 324],
+  Jiangnan: [705, 719],
 }
 
 function timelineInputs(
@@ -321,5 +324,76 @@ describe("an illegal step's reported reason", () => {
     const [warning] = result.warnings
     expect(warning).toContain("active (not active)")
     expect(warning).not.toContain("inner way")
+  })
+})
+
+describe("a cast condition that reads the buff engine", () => {
+  const ENGINE_GATE = {
+    buffId: BUFF.windWall,
+    op: "gte",
+    stacks: 1,
+    source: "buffEngine",
+  } as const
+
+  function granter(castFrames = 60) {
+    return makeSkill(CLASS, {
+      name: "Granter",
+      castTag: "cast:test-granter",
+      triggersBuffs: [BUFF.windWall],
+      castFrames,
+      hits: [makeHit({ frame: 0 })],
+    })
+  }
+
+  function gated() {
+    return makeSkill(CLASS, {
+      name: "Gated",
+      castFrames: 90,
+      castConditions: [ENGINE_GATE],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+  }
+
+  it("flags a step before the engine's grant and not a step after it", () => {
+    const gate = gated()
+    const skills = [gate, granter(), gate]
+    const result = simulateTimeline(timelineInputs(rotationOf(skills), skills, []))
+    const gatedSteps = result.casts!.filter((cast) => cast.skillName === "Gated")
+    expect(result.invalidStepIds).toEqual([gatedSteps[0].stepId])
+  })
+
+  it("names the engine module and its actual stacks in the reason", () => {
+    const gate = gated()
+    const result = simulateTimeline(timelineInputs(rotationOf([gate]), [gate], []))
+    const [stepId] = result.invalidStepIds!
+    expect(result.invalidStepReasons![stepId]).toEqual([
+      { kind: "buff", id: BUFF.windWall, name: "Wind Wall", op: "gte", required: 1, actual: 0 },
+    ])
+  })
+
+  it("never counts the step's own grants", () => {
+    const selfGranting = makeSkill(CLASS, {
+      ...gated(),
+      castTag: "cast:test-self-granting",
+      triggersBuffs: [BUFF.windWall],
+    })
+    const result = simulateTimeline(
+      timelineInputs(rotationOf([selfGranting, selfGranting]), [selfGranting], []),
+    )
+    const steps = result.casts!.filter((cast) => cast.skillName === "Gated")
+    expect(result.invalidStepIds).toEqual([steps[0].stepId])
+  })
+
+  describe("in a saved copy", () => {
+    beforeEach(() => localStorage.clear())
+
+    it("is kept when the copy is loaded", () => {
+      const gate = gated()
+      localStorage.setItem(
+        "wwm.customSkills",
+        JSON.stringify({ v: LATEST_CUSTOM_SKILLS_VERSION, skills: [gate] }),
+      )
+      expect(loadCustomSkills()[0].castConditions).toEqual([ENGINE_GATE])
+    })
   })
 })

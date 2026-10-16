@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDQ_DISPLACEMENT } from "./rootMotion"
 
 export const swordq = defineSkill({
   id: SKILL.swordq,
@@ -21,6 +22,7 @@ export const swordq = defineSkill({
   // running first: in-game animation, 2026-09-24.
   castFrames: 27,
   triggerable: true,
+  displacement: SWORDQ_DISPLACEMENT,
   // In-game values as of 2026-09-28: 4 m approach reach.
   reachMeters: 4,
   hits: [

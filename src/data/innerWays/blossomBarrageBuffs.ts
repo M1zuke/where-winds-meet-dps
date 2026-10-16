@@ -1,5 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { FRAME_AFTER_HIT_SEC } from "../skills/buffs/hitTiming"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -15,16 +16,15 @@ export function comboBuffDef(): BuffModule {
     id: BUFF.combo,
     name: "Combo",
     requires: { param: PARAM.blossomBarrage },
-    duration: 15,
-    buffAppliesOnCastEnd: true,
+    duration: (ctx) => (ctx.build.paramTier(PARAM.blossomBarrage) >= 3 ? 15 : 10),
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
     effects: [stat("allDamageBoost", 0.2)],
   })
 }
 
 let comboUmbLightBonusMinTier: number | undefined
 
-// In-game values as of 2026-09-24: only the +5% branch reaches the floating
-// umbrella's projectiles, and only against your Combo target's Qi break.
+// In-game values as of 2026-10-15: +5% against your Combo target, +10% in its Qi break.
 export function comboUmbLightBonusBuffDef(): BuffModule {
   return defineBuff({
     id: BUFF.comboUmbLightBonus,
@@ -40,9 +40,9 @@ export function comboUmbLightBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    buffAppliesOnCastEnd: true,
-    summary: "+5% damage against your Combo target while Exhausted (PvE)",
-    effects: (ctx) => (ctx.phase === "exhausted" ? [stat("allDamageBoost", 0.05)] : []),
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
+    summary: "+5% floating umbrella damage against your Combo target; +10% while Exhausted (PvE)",
+    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
   })
 }
 
@@ -63,8 +63,38 @@ export function comboSpringAwayBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    buffAppliesOnCastEnd: true,
-    summary: "+10% Spring Away damage against your Combo target; +15% while Exhausted (PvE)",
-    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.15 : 0.1)],
+    buffAppliesAfterLastHitSec: FRAME_AFTER_HIT_SEC,
+    summary: "+5% Spring Away damage against your Combo target; +10% while Exhausted (PvE)",
+    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
+  })
+}
+
+let comboExtendMarkMinTier: number | undefined
+
+export function comboExtendMarkBuffDef(): BuffModule {
+  return defineBuff({
+    id: BUFF.comboExtendMark,
+    name: "Combo - Extend Mark",
+    requires: {
+      param: PARAM.blossomBarrage,
+      get minTier(): number {
+        return (comboExtendMarkMinTier ??= requireInnerWayNodeTier(
+          blossomBarrage,
+          INNER_WAY_NODE.blossomBarrageSpringAwayBonus,
+        ))
+      },
+    },
+    requiresActiveBuffOnTrigger: BUFF.combo,
+    triggerPhase: "exhausted",
+    cooldown: 0.5,
+    duration: 0,
+    extendsBuffs: {
+      buffIds: [BUFF.combo, BUFF.comboUmbLightBonus, BUFF.comboSpringAwayBonus],
+      bySec: 1,
+      maxRemainingSec: 15,
+    },
+    summary:
+      "Spring Away bullets and floating umbrella bullets extend your Combo by 1 s (up to 15 s) while the target is Exhausted, at most once per 0.5 s",
+    effects: [],
   })
 }

@@ -5,15 +5,3 @@ export const DEFAULT_QI_BREAK_WINDOW: QiBreakWindow = {
   durationSec: 10,
   lowQiLeadSec: 5,
 }
-
-export function resolveQiBreakWindow(rotationWindow: QiBreakWindow | undefined): QiBreakWindow {
-  return rotationWindow ?? DEFAULT_QI_BREAK_WINDOW
-}
-
-export function sameQiBreakWindow(left: QiBreakWindow, right: QiBreakWindow): boolean {
-  return (
-    left.startSec === right.startSec &&
-    left.durationSec === right.durationSec &&
-    left.lowQiLeadSec === right.lowQiLeadSec
-  )
-}

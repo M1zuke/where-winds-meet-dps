@@ -7,6 +7,8 @@ import type { PARAM } from "../../data/skills/buffs/ids"
 export interface SetFormulaBonus {
   /** `formula.ts`'s `setFalcon` fallback below the AE/AG term. */
   physBoost?: number
+  /** `formula.ts`'s Bellstrike attack rate fallback when no scheduler supplied one. */
+  bellstrikeAttackPct?: number
   /** `panel.ts buildContext`'s `generalDamageBoost`. */
   generalDamageBoost?: number
 }

@@ -4,7 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// In-game values as of 2026-09-24.
+// In-game values as of 2026-10-15.
 export const hiddenSwordLight3 = defineSkill({
   id: SKILL.hiddenSwordLight3,
   classId: "silkbindJade",
@@ -28,7 +28,7 @@ export const hiddenSwordLight3 = defineSkill({
       attributeFixed: 34.5,
     }),
     hit(1, {
-      frame: 21,
+      frame: 20,
       physMultiplier: 0.114246,
       attributeMultiplier: 0.171369,
       physFixed: 31.65,

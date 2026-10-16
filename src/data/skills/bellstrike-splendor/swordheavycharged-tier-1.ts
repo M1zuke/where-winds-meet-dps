@@ -3,17 +3,16 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import {
-  VAGRANT_SWORD_DISPLACEMENT,
-  VAGRANT_SWORD_FREEZE,
-  VAGRANT_SWORD_TIER_1_DRAIN,
-} from "./buffs/vagrantSwordEndurance"
+import { VAGRANT_SWORD_TIER_1_MOTION } from "./rootMotion"
+import { VAGRANT_SWORD_FREEZE, VAGRANT_SWORD_TIER_1_DRAIN } from "./buffs/vagrantSwordEndurance"
 import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
+import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
+import { VAGRANT_SWORD_TIER_1_PROJECTILE } from "./vagrantSwordBolts"
 
-// In-game values as of 2026-10-06: released at the earliest first-tier hold
-// (45 f); the single bolt launches at 57 f.
+// In-game values as of 2026-10-15: released at the earliest first-tier hold
+// (45.6 f); the single bolt launches at 57.74 f.
 export const swordHeavyChargedTier1 = defineSkill({
   id: SKILL.swordHeavyChargedTier1,
   classId: "bellstrikeSplendor",
@@ -24,8 +23,8 @@ export const swordHeavyChargedTier1 = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyChargedTier1,
-  startLatency: "noWaitOnDummy",
   serverWaitsInCast: 1,
+  castConditions: [WUSHUANG_STANCE_ABSENT],
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.swordSlashDamageBoost,
@@ -35,19 +34,19 @@ export const swordHeavyChargedTier1 = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 82,
+  castFrames: 82.8,
   meterDrains: VAGRANT_SWORD_TIER_1_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
-  displacement: VAGRANT_SWORD_DISPLACEMENT,
+  displacement: VAGRANT_SWORD_TIER_1_MOTION,
   hits: [
     hit(0, {
-      frame: 57,
+      frame: 57.74,
       physMultiplier: 1.51032,
       attributeMultiplier: 2.26548,
       physFixed: 419,
       attributeFixed: 228,
-      projectile: { speedMetersPerSecond: 36, maxTravelFrames: 24 },
+      projectile: VAGRANT_SWORD_TIER_1_PROJECTILE,
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -56,5 +55,5 @@ export const swordHeavyChargedTier1 = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -22,12 +22,13 @@ export const poetFinalHitCancel = defineSkill({
   // an assumption (the class's own default melee reach).
   approach: "stationary",
   receives: [BUFF.poetFinalStrikeStack],
+  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.70541,
-      attributeMultiplier: 2.558115,
-      physFixed: 256.37,
+      physMultiplier: 1.705588,
+      attributeMultiplier: 2.558382,
+      physFixed: 268.184,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -41,5 +42,5 @@ export const poetFinalHitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

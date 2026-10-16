@@ -24,6 +24,7 @@ import { builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { retiredRotation } from "./retiredRotations"
 import { BUFF } from "../../src/data/skills/buffs/ids"
+import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -62,9 +63,11 @@ function runSteps(
     WOLFCHASERS_ART_SLOT,
     ...defaultInputs.mindMethods.slice(1),
   ] as Inputs["mindMethods"],
+  openingStacks: Record<string, number> = {},
 ): Result {
   const rotation = makeRotation(CLASS, {
     steps: skillIds.map((skillId) => makeStep({ skillId })),
+    openingStacks,
   })
   const inputs: Inputs = {
     ...defaultInputs,
@@ -237,6 +240,33 @@ describe("Spear Special — bleed stacks are not consumed by its own payload", (
     const seeder = bleedSeeder(EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST)
     const r = runSteps([seeder.id, spearQId, spearSpecialId, swordSpecial3Id], [seeder])
     expect(detonationEvents(r)).toHaveLength(2)
+  })
+})
+
+describe("Spear Special — the burst returns two Bleeding stacks only at Sword Horizon tier 6 with Sword Spirit banked", () => {
+  const bleedingDamageWith = (swordHorizonStacks: string | null) => {
+    const seeder = bleedSeeder(EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST)
+    const filler = makeFiller(300)
+    const mindMethods = [
+      WOLFCHASERS_ART_SLOT,
+      swordHorizonStacks === null
+        ? { name: "", stacks: "" }
+        : { name: "swordHorizon", stacks: swordHorizonStacks },
+      ...defaultInputs.mindMethods.slice(2),
+    ] as Inputs["mindMethods"]
+    const r = runSteps(
+      [seeder.id, spearQId, spearSpecialId, filler.id],
+      [seeder, filler],
+      mindMethods,
+      { [ZENITH_BAR_BUFF_ID]: 1 },
+    )
+    return damageOf(r, dotRow(CLASS, DEBUFF.bleedTick))
+  }
+
+  it("leaves more Bleeding standing at tier 6 than at tier 5 or without the inner way", () => {
+    const tier6 = bleedingDamageWith("tier 6")
+    expect(tier6).toBeGreaterThan(bleedingDamageWith("tier 5"))
+    expect(bleedingDamageWith("tier 5")).toBeCloseTo(bleedingDamageWith(null), 6)
   })
 })
 

@@ -4,6 +4,7 @@ import { CAST, WEAPON } from "../ids"
 import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORD_R_CHARGE_FOLLOW_UP_MOTION } from "./rootMotion"
 import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
 import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
@@ -23,6 +24,7 @@ export const swordRChargeFollowUp = defineSkill({
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-24.
   castFrames: 87,
   triggerable: true,
+  displacement: SWORD_R_CHARGE_FOLLOW_UP_MOTION,
   hits: [
     hit(0, {
       frame: 14,

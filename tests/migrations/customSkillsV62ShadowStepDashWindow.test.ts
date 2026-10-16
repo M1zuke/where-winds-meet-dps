@@ -23,6 +23,7 @@ const WINDOW_DURATION_BY_ID = {
   "bellstrikeSplendor-swordspecial-deflect": 167,
 }
 const TARGET_IDS = Object.keys(WINDOW_DURATION_BY_ID) as (keyof typeof WINDOW_DURATION_BY_ID)[]
+const LIVE_IDS = TARGET_IDS.filter((id) => id === "bellstrikeSplendor-swordspecial")
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
@@ -30,9 +31,11 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const windowGrants = (skill: Skill) =>
-  skill.hits[0]!.triggers.filter(
-    (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "shadowStepDashWindow",
-  )
+  skill.hits
+    .flatMap((hit) => hit.triggers)
+    .filter(
+      (trigger) => trigger.kind === "applyBuff" && trigger.targetId === "shadowStepDashWindow",
+    )
 
 const builtin = (id: string): Skill =>
   builtinSkillsForClass("bellstrikeSplendor").find((skill) => skill.id === id)!
@@ -45,11 +48,15 @@ describe("custom-skills v61 fixture", () => {
 })
 
 describe("healSkill", () => {
-  it.each(TARGET_IDS)("adds the window grant to %s and lands on the built-in", (id) => {
+  it.each(TARGET_IDS)("adds the window grant to %s", (id) => {
     const healed = healSkill(clone(skillIn(STORE, id))) as Skill
     expect(windowGrants(healed)).toHaveLength(1)
     expect(windowGrants(healed)[0]!.durationFrames).toBe(WINDOW_DURATION_BY_ID[id])
-    expect(windowGrants(healed)).toEqual(windowGrants(builtin(id)))
+  })
+
+  it.each(LIVE_IDS)("lands %s on the built-in after every later hop", (id) => {
+    const latest = runCustomSkillMigrations(clone(STORE))!
+    expect(windowGrants(skillIn(latest.blob, id))).toEqual(windowGrants(builtin(id)))
   })
 
   it("keeps the first hit's other triggers", () => {

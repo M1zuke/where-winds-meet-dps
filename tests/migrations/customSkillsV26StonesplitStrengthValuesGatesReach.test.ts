@@ -50,7 +50,8 @@ const CHECKED_FIELDS = ["tags", "receives", "triggersBuffs", "hits"] as const
 // tag at a later hop too. Every Anxi Soldier hit's own `hits` gains a Blade
 // Momentum gain trigger at the meter hop, and every Anxi Soldier's own
 // `receives` gains Etherwrath's 5-stack penetration reach at a later hop
-// still. None of these equal the LIVE built-in once stopped at v26.
+// still, and the class-108 skills gain Jadeware's trigger at the last hop. None
+// of these equal the LIVE built-in once stopped at v26.
 const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS)[number][]>> = {
   "stonesplitStrength-snowpartingvc": ["hits", "triggersBuffs"],
   "stonesplitStrength-snowpartingvc-prepull": ["hits", "triggersBuffs"],
@@ -62,10 +63,10 @@ const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS
   "stonesplitStrength-anxisoldierheng": ["tags", "hits", "receives"],
   "stonesplitStrength-anxisoldiermosweep": ["hits", "receives"],
   "stonesplitStrength-anxisoldiermodown": ["hits", "receives"],
-  "stonesplitStrength-snowpartingq-stab": ["hits"],
+  "stonesplitStrength-snowpartingq-stab": ["hits", "triggersBuffs"],
   "stonesplitStrength-phalanxcharged-s3": ["hits"],
   "stonesplitStrength-phalanxcharged-s3-innerpassion": ["hits"],
-  "stonesplitStrength-snowpartingspecial": ["hits"],
+  "stonesplitStrength-snowpartingspecial": ["hits", "triggersBuffs"],
 }
 const fieldsStillMatchingLiveBuiltin = (id: string) =>
   CHECKED_FIELDS.filter((field) => !(MOVED_AGAIN_FIELDS[id] ?? []).includes(field))

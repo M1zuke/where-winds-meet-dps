@@ -52,7 +52,6 @@ export default defineRotation({
   ],
   permanentBuffIds: [],
   openingStacks: {},
-  qiBreak: { startSec: 25, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-09-06T00:00:00.000Z",
   updatedAt: "2026-09-06T00:00:00.000Z",
   description:

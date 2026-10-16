@@ -5,6 +5,7 @@
 // same way — see `debuffs.ts`.
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
+import { effectiveTickIntervalFrames } from "../../src/engine/dot"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinDebuff, builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
@@ -52,9 +53,9 @@ describe("Smolder debuff data", () => {
 
   it("carries the DoT row recalibrated to the mystic art's actual reachable rank", () => {
     const dot = darkFire!.dot!
-    expect(dot.physMultiplier).toBeCloseTo(0.23578, 10)
-    expect(dot.attributeMultiplier).toBeCloseTo(0.35367, 10)
-    expect(dot.physFixed).toBeCloseTo(35.95, 10)
+    expect(dot.physMultiplier).toBeCloseTo(0.235818, 10)
+    expect(dot.attributeMultiplier).toBeCloseTo(0.353727, 10)
+    expect(dot.physFixed).toBeCloseTo(37.6455, 10)
     expect(dot.attributeFixed).toBe(0)
     expect(dot.tickIntervalFrames).toBe(30)
     expect(darkFire!.maxStacks).toBe(1)
@@ -63,7 +64,7 @@ describe("Smolder debuff data", () => {
 })
 
 describe("Dragon Fire (Smolder) skills", () => {
-  it("both exist and carry the in-game level-171 Smolder coefficients", () => {
+  it("both exist and carry the in-game level-176 Smolder coefficients", () => {
     const one = skillOf(ONE_HIT)
     const two = skillOf(TWO_HITS)
 
@@ -71,21 +72,21 @@ describe("Dragon Fire (Smolder) skills", () => {
       s.hits.reduce((a, h) => a + h[field], 0)
 
     expect(one.hits.length).toBe(1)
-    expect(sum(one, "physMultiplier")).toBeCloseTo(1.28367, 10)
-    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925505, 10)
-    expect(sum(one, "physFixed")).toBeCloseTo(195.71, 10)
+    expect(sum(one, "physMultiplier")).toBeCloseTo(1.283899, 10)
+    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925849, 10)
+    expect(sum(one, "physFixed")).toBeCloseTo(204.9587, 10)
 
     expect(two.hits.length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(3.981991, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.972986, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(607.111, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(3.982708, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974062, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(635.7902, 10)
   })
 
   it("apply Combustion, never Smolder", () => {
     const fb1 = skillOf(SKILL.fireBreath1Hit)
     const fb2 = skillOf(SKILL.fireBreath2Hit)
-    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36064, 10)
-    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.220758, 10)
+    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.360884, 10)
+    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.221518, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
       s.hits.flatMap((h) => h.triggers.map((t) => t.targetId)),
     )
@@ -180,9 +181,11 @@ describe("Smolder duration", () => {
       )!.frame
       return (ticks[ticks.length - 1].frame + 30 - first) / 60
     }
-    // The ticks only sample the window, and where the first one sits cancels in
-    // the difference — the two extra hits are what must be worth 8 s.
-    expect(windowSecOf(TWO_HITS) - windowSecOf(ONE_HIT)).toBeCloseTo(8, 1)
+    // The ticks only sample the window, so the difference is exact only to one
+    // tick interval — the two extra hits are what must be worth 8 s.
+    const tickIntervalSec =
+      effectiveTickIntervalFrames(builtinDebuff(CLASS, DEBUFF.smolder).dot!) / 60
+    expect(Math.abs(windowSecOf(TWO_HITS) - windowSecOf(ONE_HIT) - 8)).toBeLessThan(tickIntervalSec)
   })
 })
 

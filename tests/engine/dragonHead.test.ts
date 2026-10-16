@@ -32,14 +32,14 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
-    // Plain reads 1.1 × its own level-71 row; Plus reads 0.77 × the level-171
+    // Plain reads 1.1 × its own level-76 row; Plus reads 0.77 × the level-176
     // row instead, so the two are no longer a fixed ratio of one another.
-    expect(baseHit.physMultiplier).toBeCloseTo(19.07454, 9)
-    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61181, 9)
-    expect(baseHit.physFixed).toBeCloseTo(2869.37, 9)
-    expect(plusHit.physMultiplier).toBeCloseTo(12.59654, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(18.89481, 9)
-    expect(plusHit.physFixed).toBeCloseTo(1912.3, 9)
+    expect(baseHit.physMultiplier).toBeCloseTo(19.07564, 9)
+    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61346, 9)
+    expect(baseHit.physFixed).toBeCloseTo(3001.372, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(12.597266, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(18.895899, 9)
+    expect(plusHit.physFixed).toBeCloseTo(1999.4721, 9)
   })
 
   it("both versions receive the same buffs, so the pair cannot drift apart again", () => {
@@ -224,9 +224,9 @@ describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
   })
 
   it("Surging Waves does not leak onto other skills", () => {
-    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const alone = skillDamage(simulate([SKILL.swordq], { set: null }), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq]),
+      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], { set: null }),
       SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)
@@ -275,9 +275,9 @@ describe("40 Stacks (Dragon Head) teammate buff", () => {
   })
 
   it("leaves other skills untouched", () => {
-    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const alone = skillDamage(simulate([SKILL.swordq], { set: null }), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], withFullStacks()),
+      simulate([MYSTIC_SKILL.dragonHeadPlus, SKILL.swordq], { ...withFullStacks(), set: null }),
       SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)

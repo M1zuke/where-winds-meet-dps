@@ -26,6 +26,16 @@ const ATTRIBUTE_CEILING: GearLevelValues = { 86: 34.8, 91: 40.4, 96: 49.4, 100: 
 const ATTACK_CEILING: GearLevelValues = { 86: 31, 91: 36.2, 96: 44.2, 100: 51.4, 105: 59.8 }
 const PHYS_ATTACK_CEILING: GearLevelValues = { 86: 54.8, 91: 63.8, 96: 77.8, 100: 90.6, 105: 105.6 }
 const VOID_ATTACK_CEILING: GearLevelValues = { 96: 44.2, 100: 51.4, 105: 59.8 }
+// In-game values as of 2026-10-14.
+const MAX_HP_CEILING: GearLevelValues = { 86: 2084, 91: 2426, 96: 2960, 100: 3444, 105: 4010 }
+const PHYS_DEF_CEILING: GearLevelValues = { 86: 27.4, 91: 32, 96: 39, 100: 45.4, 105: 52.8 }
+const TARGET_TYPE_BOOST_CEILING: GearLevelValues = {
+  86: 0.024,
+  91: 0.026,
+  96: 0.032,
+  100: 0.038,
+  105: 0.044,
+}
 const MARTIAL_ART_BOOST_CEILING: GearLevelValues = {
   86: 0.044,
   91: 0.052,
@@ -41,12 +51,15 @@ const MYSTIC_BOOST_CEILING: GearLevelValues = {
   105: 0.134,
 }
 
+// In-game values as of 2026-10-15.
+const ALL_MYSTIC_BOOST_CEILING: GearLevelValues = { 100: 0.114, 105: 0.134 }
+
 export const STAT_LINES = [
   { id: "power", label: "Power", unit: "raw", maxRoll: ATTRIBUTE_CEILING },
   { id: "agility", label: "Agility", unit: "raw", maxRoll: ATTRIBUTE_CEILING },
   { id: "momentum", label: "Momentum", unit: "raw", maxRoll: ATTRIBUTE_CEILING },
-  { id: "body", label: "Constitution", unit: "raw" },
-  { id: "defense", label: "Defense", unit: "raw" },
+  { id: "body", label: "Constitution", unit: "raw", maxRoll: ATTRIBUTE_CEILING },
+  { id: "defense", label: "Defense", unit: "raw", maxRoll: ATTRIBUTE_CEILING },
   {
     id: "precision",
     label: "Precision Rate",
@@ -241,7 +254,7 @@ export const STAT_LINES = [
     label: "Combat Boost Against Boss Units",
     unit: "percent",
     enginePath: "bossBoost",
-    maxRoll: { 86: 0.024, 91: 0.026, 96: 0.032, 100: 0.038, 105: 0.044 },
+    maxRoll: TARGET_TYPE_BOOST_CEILING,
     scope: "player",
     category: "Target-Type Boosts",
   },
@@ -260,6 +273,15 @@ export const STAT_LINES = [
     unit: "percent",
     enginePath: "areaMysticBoost",
     maxRoll: MYSTIC_BOOST_CEILING,
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
+    id: "allMysticBoost",
+    label: "All Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "allMysticBoost",
+    maxRoll: ALL_MYSTIC_BOOST_CEILING,
     scope: "player",
     category: "Target-Type Boosts",
   },
@@ -463,8 +485,20 @@ export const STAT_LINES = [
     category: "Qi",
   },
   { id: "hp", label: "HP", unit: "raw", enginePath: "hp" },
-  { id: "physDef", label: "Phys Defense", unit: "raw", enginePath: "physDef" },
-  { id: "maxHp", label: "Max HP", unit: "raw" },
+  {
+    id: "physDef",
+    label: "Physical Defense",
+    unit: "raw",
+    enginePath: "physDef",
+    maxRoll: PHYS_DEF_CEILING,
+  },
+  { id: "maxHp", label: "Max HP", unit: "raw", maxRoll: MAX_HP_CEILING },
+  {
+    id: "damageVsPlayer",
+    label: "Boost Vs. Player Units",
+    unit: "percent",
+    maxRoll: TARGET_TYPE_BOOST_CEILING,
+  },
 ] as const satisfies readonly StatLineDef[]
 
 export type StatLineId = (typeof STAT_LINES)[number]["id"]

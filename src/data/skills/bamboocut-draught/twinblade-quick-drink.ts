@@ -4,12 +4,14 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 import { SKYSPEAK_TIER_4_CONDITION } from "./skyspeak-tier-4"
-import { drinkGrants } from "./whaledraft"
+import { DRINK_CONVERSION_FRAME, drinkGrants } from "./whaledraft"
 
-// In-game values as of 2026-10-06: with the twinblades in hand the perfect
-// drink launches the 0.4 falcon, and is offered only with Skyspeak tier 4.
+// In-game values as of 2026-10-15: with the twinblades in hand the perfect
+// drink launches the 0.4 falcon, and is offered only with Skyspeak tier 4. The
+// falcon launches on frame 18 and its flight time is unknown, so it lands with
+// the conversion on frame 19.
 export const twinbladeQuickDrinkHit = hit(0, {
-  frame: 18,
+  frame: DRINK_CONVERSION_FRAME,
   physMultiplier: 0,
   attributeMultiplier: 0,
   physFixed: 0,

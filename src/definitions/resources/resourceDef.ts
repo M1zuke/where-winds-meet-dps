@@ -4,7 +4,7 @@ export interface ResourceGainRule {
   defaultAmount: number
   tag?: string
   skillIds?: readonly string[]
-  oncePerCast?: boolean
+  cooldownSeconds?: number
   divideAcrossSkillHits?: boolean
   requiresParam?: string
   minTier?: number
@@ -20,12 +20,15 @@ export interface ResourceDef {
   defaultExhaustedGainPerTick?: number
   launchSkillId: string
   debuffId: string
+  launchCost?: number
+  maxRunSeconds?: number
   drainPerSecond: number
   regenPerSecond?: number
   enhancedRunCost: number
   recallTag?: string
   recallExemptSkillIds?: readonly string[]
   endRefund: number
+  refundDelaySeconds?: number
   refundCooldownSeconds: number
   gains: readonly ResourceGainRule[]
 }

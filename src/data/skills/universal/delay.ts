@@ -11,7 +11,6 @@ export const delay = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.delay,
-  startLatency: "none",
   castFrames: 6,
   triggerable: true,
   // A wait, not a real in-game cast — a large reach keeps this stationary

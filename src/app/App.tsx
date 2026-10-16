@@ -161,6 +161,7 @@ function AppInner() {
 
   const rotationName = useMemo(() => activeRotationName(inputs), [inputs])
   const goToRotationTab = useCallback(() => navigate("/rotation"), [navigate])
+  const goToRotationEditorTab = useCallback(() => navigate("/rotation-editor"), [navigate])
 
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -397,6 +398,7 @@ function AppInner() {
           }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
+          onQiBreakNoticeClick={goToRotationEditorTab}
         />
 
         <nav className={styles.tabs} role="tablist">

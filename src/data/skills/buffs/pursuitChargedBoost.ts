@@ -7,7 +7,7 @@ export const pursuitChargedBoost = defineBuff({
   name: "Spring Shock",
   duration: 15,
   maxStacks: 5,
-  stacksPerHit: true,
+  stackOnGrantingHit: true,
   summary: "+4.0% all/stack",
   effects: (ctx) => (ctx.self.stacks > 0 ? [stat("allDamageBoost", 0.04 * ctx.self.stacks)] : []),
 })

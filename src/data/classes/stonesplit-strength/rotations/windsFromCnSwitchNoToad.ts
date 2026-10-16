@@ -7,7 +7,7 @@ export default defineRotation({
   steps: [
     { skillId: "stonesplitStrength-phalanxspecial-prepull" },
     { skillId: "mystic-flute-of-the-tides-prepull" },
-    { skillId: "stonesplitStrength-snowpartingslide-prepull" },
+    { skillId: "stonesplitStrength-snowpartingslide-reslide-prepull" },
     { skillId: "stonesplitStrength-snowpartingslide-prepull" },
     { skillId: "stonesplitStrength-snowpartingspecial" },
     { skillId: "stonesplitStrength-snowpartingq-stab" },
@@ -47,7 +47,6 @@ export default defineRotation({
     { skillId: "stonesplitStrength-snowpartingcharged-forgetfulness" },
   ],
   permanentBuffIds: [],
-  qiBreak: { startSec: 29, durationSec: 10, lowQiLeadSec: 5 },
   fixedWindowSec: 60,
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",

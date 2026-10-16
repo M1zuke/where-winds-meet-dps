@@ -3,7 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-15.
 export const moDash = defineSkill({
   id: SKILL.moDash,
   classId: "stonesplitStrength",
@@ -24,7 +24,7 @@ export const moDash = defineSkill({
   },
   hits: [
     hit(0, {
-      frame: 25,
+      frame: 24,
       physMultiplier: 1.01266,
       attributeMultiplier: 1.51899,
       physFixed: 281,

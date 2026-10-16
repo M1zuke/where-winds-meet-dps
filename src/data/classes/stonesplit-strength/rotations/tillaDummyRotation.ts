@@ -64,7 +64,6 @@ export default defineRotation({
     { skillId: "mystic-soaring" },
   ],
   permanentBuffIds: [],
-  qiBreak: { startSec: 29, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   description: "Pure Hengdao rotation by Tilla from WSR Discord",

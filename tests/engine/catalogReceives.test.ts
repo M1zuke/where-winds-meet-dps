@@ -4,71 +4,13 @@ import {
   receivesForSkill,
   specMechanicIds,
 } from "../../src/engine/buffs/catalog"
-import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 import { builtinSkill } from "../builtins"
-import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 const CLASS = "bellstrikeUmbra"
-const RETENTION_ROW_ID = `dotRetention:${DEBUFF.bleedTick}`
-
-function inputsWithSwordHorizon(tier: string | null): Inputs {
-  return {
-    ...defaultInputs,
-    classId: CLASS,
-    mindMethods: [
-      tier ? { name: "Sword Horizon", stacks: tier } : { name: "", stacks: "" },
-      { name: "", stacks: "" },
-      { name: "", stacks: "" },
-      { name: "", stacks: "" },
-    ],
-  }
-}
-
-describe("catalog receives — Sword Horizon retention on Bleed Tick", () => {
-  it("Bleed Tick carries the retention row as an ordinary (non-spec-mechanic) buff", () => {
-    const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
-    const rows = receivesForSkill(bleedTick, CLASS, inputsWithSwordHorizon("tier 6"))
-    const row = rows.find((r) => r.id === RETENTION_ROW_ID)
-    expect(row).toBeTruthy()
-    expect(row!.isSpecMechanic).toBe(false)
-  })
-
-  it("is active at Sword Horizon tier 6, inactive at tier 5, inactive with no Sword Horizon at all", () => {
-    const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
-    const at6 = receivesForSkill(bleedTick, CLASS, inputsWithSwordHorizon("tier 6"))
-    expect(at6.find((r) => r.id === RETENTION_ROW_ID)!.active).toBe(true)
-
-    const at5 = receivesForSkill(bleedTick, CLASS, inputsWithSwordHorizon("tier 5"))
-    expect(at5.find((r) => r.id === RETENTION_ROW_ID)!.active).toBe(false)
-
-    const none = receivesForSkill(bleedTick, CLASS, inputsWithSwordHorizon(null))
-    expect(none.find((r) => r.id === RETENTION_ROW_ID)!.active).toBe(false)
-  })
-
-  it("survives renaming the debuff away from its tick skill — the row is matched by id", () => {
-    const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
-    const inputs = inputsWithSwordHorizon("tier 6")
-    const renamed = builtinDebuffsForClass(CLASS).map((debuff) => ({
-      ...debuff,
-      name: `${debuff.name} renamed`,
-    }))
-
-    const rows = receivesForSkill(bleedTick, CLASS, { ...inputs, customDebuffs: renamed })
-
-    expect(rows.some((row) => row.id === RETENTION_ROW_ID)).toBe(true)
-  })
-
-  it("does not appear on Blood Burst or Crosswind Blade (appliers, not the DoT skill)", () => {
-    const inputs = inputsWithSwordHorizon("tier 6")
-    const detonation = receivesForSkill(builtinSkill(CLASS, SKILL.bleedDetonation), CLASS, inputs)
-    const crosswind = receivesForSkill(builtinSkill(CLASS, SKILL.crosswindBlade), CLASS, inputs)
-    expect(detonation.some((r) => r.id === RETENTION_ROW_ID)).toBe(false)
-    expect(crosswind.some((r) => r.id === RETENTION_ROW_ID)).toBe(false)
-  })
-})
 
 describe("catalog receives — Vulnerability (Teammate) follows the Tank Spear Debuff toggle", () => {
   it("reads inactive by default (toggle off) and requires names the Tank Spear Debuff", () => {

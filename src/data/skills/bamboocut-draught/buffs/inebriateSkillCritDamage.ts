@@ -1,7 +1,7 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
 import { stat } from "../../../../engine/effects/effect"
-import { isInebriate } from "./inebriate"
+import { isInebriateEnhancedHit } from "./inebriate"
 import { steppedByMinPhysAttack } from "./minPhysScaling"
 
 const MAX_CRIT_DAMAGE_BOOST = 0.3
@@ -19,10 +19,9 @@ export const inebriateSkillCritDamage = defineClassBuff({
   name: "Inebriate Critical Enhancement",
   alwaysActive: true,
   duration: 9999,
-  summary:
-    "critDamageBoost up to +30% on Inebriate-enhanced skills while Inebriate, full at 750 Min Phys",
+  summary: "critDamageBoost up to +30% on Inebriate-enhanced hits, full at 750 Min Phys",
   effects: (ctx) =>
-    ctx.self.reachesEvent && isInebriate(ctx)
+    ctx.self.reachesEvent && isInebriateEnhancedHit(ctx)
       ? [stat("critDamageBoost", inebriateCritDamageBoostAt(ctx.build.minPhysAttack))]
       : [],
 })

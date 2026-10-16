@@ -5,9 +5,10 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 import {
-  bladeMomentumMeter,
-  bladeMomentumRequires,
-} from "../../classes/stonesplit-strength/bladeMomentumMeter"
+  BURNING_HEART_BLADE_MOMENTUM_GATE,
+  BURNING_HEART_STAGE_2_COST,
+  BURNING_HEART_STAGE_2_DRAIN,
+} from "./buffs/burningHeartCharge"
 
 // In-game values as of 2026-10-06: the minimum hold to the second charge
 // threshold. The soldier frame is the threshold itself, an assumption.
@@ -36,8 +37,9 @@ export const phalanxchargedS2 = defineSkill({
     ...PHALANXBANE_BLADE_RECEIVES,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
-  castConditions: [bladeMomentumRequires("gt", 50)],
-  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
+  releaseGates: BURNING_HEART_BLADE_MOMENTUM_GATE,
+  meterCosts: [BURNING_HEART_STAGE_2_COST],
+  meterDrains: BURNING_HEART_STAGE_2_DRAIN,
   castFrames: 137,
   triggerable: true,
   reachMeters: 4.5,

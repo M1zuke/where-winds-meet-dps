@@ -15,6 +15,15 @@ import { healSkill as healGourdTossFlyingTornado } from "../../src/migrations/cu
 import { healSkill as healSwallowcallColorfulPhoenixReach } from "../../src/migrations/customSkills/V54__swallowcallColorfulPhoenixReach"
 import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
+import { healComboExtendMarkReach } from "../../src/migrations/customSkills/V71__comboExtendMarkReach"
+import { healSkill as healSpringAwayBulletsExtendMarkPerHit } from "../../src/migrations/customSkills/V74__springAwayBulletsExtendMarkPerHit"
+import { healSkill as healSpringAwayHoverCueTiming } from "../../src/migrations/customSkills/V75__springAwayHoverCueTiming"
+import { healSkill as healSpringAwayReach } from "../../src/migrations/customSkills/V79__springAwayReach"
+import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
+import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
+import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -67,18 +76,37 @@ const builtinOf = (id: string): Skill =>
 
 // A no-op on the ids a given later hop doesn't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
-const throughLaterHops = (skill: unknown): Skill =>
-  healBoundvesselSpringAwayToadAfterimageTiming(
-    healInGameCoefficientCorrections(
-      healSwallowcallColorfulPhoenixReach(
-        healGourdTossFlyingTornado(
-          healPerGrantSiteDelayAndSetReach(
-            healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+const throughHopsBeforeV95 = (skill: unknown): Skill =>
+  healJadeSpringSorrowChargesAndComboRechargeCut(
+    healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
+      healJadeAvailabilityAndRecharge(
+        healJadeHitLandingsGrantsAndClipTimings(
+          healSpringAwayReach(
+            healSpringAwayHoverCueTiming(
+              healSpringAwayBulletsExtendMarkPerHit(
+                healComboExtendMarkReach(
+                  healBoundvesselSpringAwayToadAfterimageTiming(
+                    healInGameCoefficientCorrections(
+                      healSwallowcallColorfulPhoenixReach(
+                        healGourdTossFlyingTornado(
+                          healPerGrantSiteDelayAndSetReach(
+                            healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
     ),
   ) as Skill
+
+const throughLaterHops = (skill: unknown): Skill =>
+  healFractionalFrameTiming(throughHopsBeforeV95(skill)) as Skill
 
 describe("custom-skills v27 fixture", () => {
   it("is v27 and still stores the pre-V28 shape for every healed skill", () => {

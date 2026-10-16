@@ -105,7 +105,7 @@ describe(
       expect(seeded.map((row) => row.expectedDps)).toEqual(unseeded.map((row) => row.expectedDps))
     })
 
-    it("converges in no more passes than seeding from the rotation's authored window", () => {
+    it("converges in no more passes than seeding from the default window", () => {
       const inputs = graduationInputsFor(CLASS_ID)
       const baseline = runEngine(inputs)
       const seededBreaks = qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS)

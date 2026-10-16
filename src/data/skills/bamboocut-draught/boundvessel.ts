@@ -1,15 +1,24 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
 import { applyBuff } from "../../../definitions/skills/triggers"
-import { CAST, WEAPON } from "../ids"
+import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 import { SKYSPEAK_TIER_4_CONDITION } from "./skyspeak-tier-4"
 import { skillBingePointAccumulationTriggersWhen } from "./buffs/skillBingePointAccumulation"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
+
+export const BOUNDVESSEL_CAST_CONDITIONS: TriggerCondition[] = [
+  ...INEBRIATE,
+  { buffId: STATUS.empoweredLightAttack, op: "eq", stacks: 0 },
+]
 
 const rapidSlash = (index: number, frame: number) =>
   hit(index, {
@@ -28,9 +37,9 @@ const rapidSlash = (index: number, frame: number) =>
 // slashes, spread evenly across the loop window (in-game values as of
 // 2026-10-06). The completed hold grants Cloudvault (in-game skill text,
 // 2026-09-04); cast length and the finishing hit frames to the full hold's own
-// finish: in-game animation, 2026-09-24. With Skyspeak tier 4 the first
-// finishing slash also banks Binge Points for the drink that follows
-// (in-game values as of 2026-10-06).
+// finish: in-game animation, 2026-09-24. With Skyspeak tier 4 the finish
+// banks Binge Points on frame 159 for the drink that follows (in-game values
+// as of 2026-10-15).
 export const boundvesselHits = [
   hit(0, {
     frame: 24,
@@ -66,6 +75,14 @@ export const boundvesselHits = [
     physFixed: 32.2,
     attributeFixed: 17.4,
     conditions: INEBRIATE,
+  }),
+  hit(15, {
+    frame: 159,
+    physMultiplier: 0,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
+    conditions: INEBRIATE,
     triggers: skillBingePointAccumulationTriggersWhen(SKYSPEAK_TIER_4_CONDITION),
   }),
   hit(13, {
@@ -84,7 +101,7 @@ export const boundvessel = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack",
   breakdownName: "Boundvessel",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ROLE.inebriateEnhanced, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
@@ -93,7 +110,9 @@ export const boundvessel = defineSkill({
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.nonPlayerBaseDamage50,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   ],
+  castConditions: BOUNDVESSEL_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 208,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

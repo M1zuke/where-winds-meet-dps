@@ -1,6 +1,8 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import {
+  effectiveEnhancementLevels,
+  enhancedSlotsOf,
   effectiveMaxHp,
   totalFormlessAttack,
   totalMaxHp,
@@ -54,7 +56,7 @@ const MARTIAL_BOOST_PATHS = [
   "gauntletsBoost",
 ]
 
-const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost"]
+const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost", "allMysticBoost"]
 
 interface RowEntry {
   label: string
@@ -92,6 +94,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
   })
 
   const equippedPieces = equippedPiecesFor(inputs)
+  const enhancedSlots = enhancedSlotsOf(inputs)
+  const enhancements = effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough)
   const attrs = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
@@ -101,25 +105,28 @@ export function StatsOverviewPanel({ inputs }: Props) {
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const maxHpEffective = effectiveMaxHp(
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const physDef = totalPhysDef(
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
     armorSetPhysDefBonus(inputs),
+    enhancedSlots,
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),

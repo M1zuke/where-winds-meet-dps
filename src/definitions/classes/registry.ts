@@ -19,7 +19,7 @@
 import type { Buff } from "../../engine/buff"
 import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { AttunementOption } from "../../engine/attunements"
-import type { AttributeKey } from "../../engine/types"
+import type { AttributeKey, GearSlot, WeaponName } from "../../engine/types"
 import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import type { ClassDef, RetunementPool } from "./classDef"
@@ -54,6 +54,25 @@ export function martialArtsOf(classDef: ClassDef): readonly MartialArtDef[] {
   return classDef.weapons
     .map((id) => martialArtDefinition(id))
     .filter((def): def is MartialArtDef => !!def)
+}
+
+const MARTIAL_ART_WEAPON_SLOTS: readonly GearSlot[] = ["leftWeapon", "rightWeapon"]
+
+export function martialArtForWeaponSlot(classId: string, slot: GearSlot): MartialArtDef | null {
+  const slotIndex = MARTIAL_ART_WEAPON_SLOTS.indexOf(slot)
+  if (slotIndex < 0) return null
+  const martialArtId = CLASSES.find((classDef) => classDef.id === classId)?.weapons[slotIndex]
+  return (martialArtId && martialArtDefinition(martialArtId)) || null
+}
+
+export function weaponTypeForSlot(classId: string, slot: GearSlot): WeaponName | null {
+  return martialArtForWeaponSlot(classId, slot)?.weaponType ?? null
+}
+
+export function weaponSlotForWeaponType(classId: string, weapon: WeaponName): GearSlot | null {
+  return (
+    MARTIAL_ART_WEAPON_SLOTS.find((slot) => weaponTypeForSlot(classId, slot) === weapon) ?? null
+  )
 }
 
 for (const classDef of CLASSES) {

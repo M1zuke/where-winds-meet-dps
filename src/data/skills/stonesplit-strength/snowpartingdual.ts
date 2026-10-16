@@ -40,8 +40,8 @@ export const snowpartingdual = defineSkill({
     }),
     hit(1, {
       frame: 30,
-      physMultiplier: 0.6486,
-      attributeMultiplier: 0.9729,
+      physMultiplier: 0.64861,
+      attributeMultiplier: 0.972915,
       physFixed: 180,
       attributeFixed: 98,
     }),

@@ -16,7 +16,7 @@ export const frostCladNight = defineInnerWay({
   name: "Frost-Clad Night",
   legacyNames: ["Frostwhite Night"],
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.frostCladNight,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackMinFiveStar },

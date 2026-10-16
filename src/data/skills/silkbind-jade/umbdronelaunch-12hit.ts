@@ -22,16 +22,17 @@ export const umbdronelaunch12Hit = defineSkill({
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castTag: CAST.umbDroneLaunch12hit,
-  // Cast length to the earliest next input (in-game animation, 2026-09-24).
-  castFrames: 66,
+  // Cast length to the earliest next input (in-game animation, 2026-10-15).
+  castFrames: 65.58,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      // In-game values as of 2026-09-24: the throw's collider frame.
-      frame: 36,
+      // In-game values as of 2026-10-15: the throw's collider lands at 35.78 f;
+      // the umbrella attaches at 36 f, which opens the drone's run.
+      frame: 35.78,
       physMultiplier: 0.539718,
       attributeMultiplier: 0.809577,
       // In-game values as of 2026-10-05.

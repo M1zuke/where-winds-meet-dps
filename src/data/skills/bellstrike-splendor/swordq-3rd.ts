@@ -5,6 +5,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
+import { energySurgeCutHit } from "./energySurgeCut"
 
 // In-game values as of 2026-09-29: removed at the animation start — this
 // cast only exists while its own window holds.
@@ -21,9 +22,12 @@ export const swordq3rd = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ3rd,
-  startLatency: "noWaitOnDummy",
-  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
-  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SWORD_RECEIVES],
+  triggersBuffs: [BUFF.jadeware],
+  receives: [
+    BUFF.starweaveMartialBoost,
+    BUFF.mountainsMightQiImbalance,
+    ...NAMELESS_SWORD_RECEIVES,
+  ],
   // Only offered while Relentless Chase's first strike opened this window
   // (docs/TIMELINE.md § "Cast legality").
   castConditions: [{ buffId: BUFF.relentlessChaseWindow, op: "gte", stacks: 1 }],
@@ -42,11 +46,12 @@ export const swordq3rd = defineSkill({
       triggers: [relentlessChaseWindowConsume],
     }),
     hit(1, {
-      frame: 19,
+      frame: 18,
       physMultiplier: 0.768985,
       attributeMultiplier: 1.153478,
       physFixed: 212.7,
       attributeFixed: 115.95,
+      triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(2, {
       frame: 34,
@@ -54,6 +59,7 @@ export const swordq3rd = defineSkill({
       attributeMultiplier: 1.153478,
       physFixed: 212.7,
       attributeFixed: 115.95,
+      triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(3, {
       frame: 64,
@@ -73,7 +79,8 @@ export const swordq3rd = defineSkill({
       attributeFixed: 0,
       triggers: [qiShieldGrant],
     }),
+    energySurgeCutHit(5, 65, 66),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

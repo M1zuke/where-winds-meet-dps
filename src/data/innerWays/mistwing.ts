@@ -10,13 +10,13 @@ import {
 } from "./mistwingBuffs"
 
 // In-game inner-way text (2026-09-06): the enhancement scaling has no state
-// to read and is deliberately absent. The tier-5 panel line was read in game
-// at breakthrough 17 (2026-09-03).
+// to read and is deliberately absent. The tier-5 panel line: in-game values as
+// of 2026-10-15, breakthrough 12 to 21.
 export const mistwing = defineInnerWay({
   id: INNER_WAY_ID.mistwing,
   name: "Mistwing",
   selectableTiers: [6, 5, 4, 3, 2, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.mistwing,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },

@@ -31,7 +31,7 @@ export const multiWaveWindowReleaseGrantLate = (lateFrames: number) =>
 
 export const SWORD_MORPH_EQUIPPED: TriggerCondition = { param: PARAM.swordMorph }
 
-// In-game values as of 2026-10-06: read once at the press — the window or the
+// In-game values as of 2026-10-15: read once at the press — the window, the
 // Qi Shield held, or the player not yet in combat.
 export const THREE_WAVE_RELEASE_CONDITIONS: TriggerCondition[] = [
   SWORD_MORPH_EQUIPPED,

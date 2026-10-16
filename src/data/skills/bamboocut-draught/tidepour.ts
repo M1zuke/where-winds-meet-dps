@@ -1,7 +1,15 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
-import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
+import { SKILL } from "./ids"
+import {
+  EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
+  empoweredLightAttackSpent,
+} from "./empowered-light-attack"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  RIVEN_TWINBLADES_RECEIVES,
+} from "./receives"
 
 const bolt = (index: number, launchFrame: number) =>
   hit(index, {
@@ -22,17 +30,21 @@ export const tidepour = defineSkill({
   classId: "bamboocutDraught",
   name: "Twinblade Heavy Attack - Tidepour",
   breakdownName: "Tidepour",
-  tags: [WEAPON.twinBlades],
+  tags: [WEAPON.twinBlades, ROLE.inebriateEnhanced, ATTACK.heavy],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.tidepour,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
-  castConditions: [{ buffId: STATUS.bingePoints, op: "gt", stacks: 49 }],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  ],
+  castConditions: EMPOWERED_LIGHT_ATTACK_CAST_CONDITIONS,
   triggerable: false,
   castFrames: 42,
   reachMeters: 4,
-  hits: [bolt(0, 10), bolt(1, 24)],
+  hits: [bolt(0, 10), bolt(1, 24), empoweredLightAttackSpent(2)],
   createdAt: "2026-10-06T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",
 })

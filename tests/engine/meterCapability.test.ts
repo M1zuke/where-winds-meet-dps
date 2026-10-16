@@ -27,6 +27,7 @@ const NO_ODDITY_ENDURANCE: UnclaimedOddityNodes = {
   Qinghe: [101, 112, 126, 139],
   Kaifeng: [205, 222],
   Hexi: [305, 324],
+  Jiangnan: [705, 719],
 }
 
 function timelineInputs(

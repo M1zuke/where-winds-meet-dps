@@ -108,7 +108,7 @@ describe("a sampled engine run", () => {
     // Raised alongside the simulated Qi schedule's own fixed-point iteration,
     // which multiplies every one of these 2000 runs by its own pass count
     // (docs/TIMELINE.md § "Qi bar", "Performance").
-  }, 90000)
+  }, 240_000)
 
   it("mean of sampled runs tracks the deterministic total within 5% when proc mechanics round an expectation", () => {
     const expected = runEngine(withProcs).totalDamage

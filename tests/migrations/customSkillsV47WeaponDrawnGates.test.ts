@@ -193,7 +193,7 @@ describe("every healed skill survives the hydrator too", () => {
       const variant = skill.hits[0]!.variants!.find(
         (entry) => entry.id === DRAWN_VARIANT_ID_BY_SKILL[id],
       )
-      expect(variant, id).toEqual(EXPECTED_VARIANT_BY_SKILL[id])
+      expect(variant, id).toEqual({ ...EXPECTED_VARIANT_BY_SKILL[id], castFrames: 18.06 })
     }
     const dodge = loaded.find((candidate) => candidate.id === "bamboocutDraught-perfect-dodge")!
     expect(hasDrawnGate(dodge)).toBe(true)

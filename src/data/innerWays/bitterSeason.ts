@@ -8,7 +8,7 @@ export const bitterSeason = defineInnerWay({
   id: INNER_WAY_ID.bitterSeason,
   name: "Bitter Season",
   selectableTiers: [6, 5, 4, 3, 2, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   // In-game values as of 2026-09-24: ranks 4-5 reuse the rank-3 rows — only
   // rank 6 raises the proc chance.
   tiers: {

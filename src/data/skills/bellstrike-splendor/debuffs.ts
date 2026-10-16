@@ -1,5 +1,4 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
-import { BUFF } from "../buffs/ids"
 import { DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
 
@@ -14,6 +13,8 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
+    // In-game cadence as of 2026-10-11.
+    reschedulesPerTick: true,
     // In-game values as of 2026-09-24.
     physMultiplier: 0.02,
     physFixed: 0,
@@ -30,8 +31,8 @@ export const bitterSeasonTick = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-10-15T00:00:00.000Z",
+  receives: [],
 })
 
 export const DEBUFFS: readonly Debuff[] = [bitterSeasonTick]

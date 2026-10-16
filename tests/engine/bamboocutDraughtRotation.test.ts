@@ -14,6 +14,7 @@ import { quickDrink } from "../../src/data/skills/bamboocut-draught/quick-drink"
 import { quickDrinkCancel } from "../../src/data/skills/bamboocut-draught/quick-drink-cancel"
 import { reveldrift } from "../../src/data/skills/bamboocut-draught/reveldrift"
 import { reveldriftCancel } from "../../src/data/skills/bamboocut-draught/reveldrift-cancel"
+import { nightwickPrimepick } from "../../src/data/skills/bamboocut-draught/nightwick-primepick"
 import { nightwickPrimepickFollowUp } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up"
 import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
@@ -66,7 +67,7 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
       },
       // Pinned to the break the measured build's simulated Qi bar reaches, so
       // the frame assertions below stay on a known second.
-      { fixedQiBreaks: [{ ...rotation.qiBreak!, startSec: 30.35, durationSec: 10 }] },
+      { fixedQiBreaks: [{ startSec: 30.35, durationSec: 10, lowQiLeadSec: 5 }] },
     )
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
     expect(echoRow.count).toBe(3)
@@ -109,16 +110,16 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
 
 describe("a 1-hit cancel form", () => {
   it("Twinblade Q lands only the first Reveldrift hit over a shorter cast", () => {
-    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0]])
+    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0], reveldrift.hits[2]])
     expect(reveldriftCancel.castFrames).toBeLessThan(reveldrift.castFrames)
     expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
   })
 
-  it("Primepick Follow-up lands only the thrust over a shorter cast", () => {
-    expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
-    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(
-      nightwickPrimepickFollowUp.castFrames,
-    )
+  it("Primepick Follow-up lands only the thrust over the same cast, ended by the next skill", () => {
+    expect(nightwickPrimepickFollowUp.hits.filter((hit) => hit.physMultiplier > 0)).toHaveLength(1)
+    expect(nightwickPrimepickFollowUpCancel.hits).toEqual(nightwickPrimepickFollowUp.hits)
+    expect(nightwickPrimepickFollowUpCancel.castFrames).toBe(nightwickPrimepickFollowUp.castFrames)
+    expect(nightwickPrimepickFollowUpCancel.cancelledBy).toBe("nextSkill")
     expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(
       nightwickPrimepickFollowUp.breakdownName,
     )
@@ -185,13 +186,25 @@ describe("the Primepick follow-up", () => {
   })
 
   it("pins the hit's coefficients and frame", () => {
-    expect(nightwickPrimepickFollowUp.hits).toHaveLength(1)
     const [hit] = nightwickPrimepickFollowUp.hits
     expect(hit.frame).toBe(20)
     expect(hit.physMultiplier).toBe(0.64565)
     expect(hit.physFixed).toBe(180)
     expect(hit.attributeMultiplier).toBe(0.968475)
     expect(hit.attributeFixed).toBe(98)
+  })
+
+  it("banks the drink's Binge Points on frame 27 and Tipsylay banks none", () => {
+    const bankingHit = nightwickPrimepickFollowUp.hits[1]
+    expect(bankingHit.frame).toBe(27)
+    expect(bankingHit.physMultiplier).toBe(0)
+    expect(bankingHit.triggers.map((trigger) => trigger.targetId)).toEqual([
+      STATUS.skillBingePointAccumulation,
+      STATUS.skillBingePointAccumulation,
+    ])
+    expect(
+      nightwickPrimepick.hits.flatMap((hit) => hit.triggers.map((trigger) => trigger.targetId)),
+    ).not.toContain(STATUS.skillBingePointAccumulation)
   })
 })
 

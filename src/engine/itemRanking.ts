@@ -23,7 +23,7 @@ import {
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
-import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
 import { attunementLabelKey, attunementMax, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
@@ -118,6 +118,11 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     wordSpec("allMartialBoost", (x, roll) => {
       x.allMartialBoost += roll
     }),
+    wordSpec("maxHp", () => {}),
+    wordSpec("body", () => {}),
+    wordSpec("defense", () => {}),
+    wordSpec("physDef", () => {}),
+    wordSpec("damageVsPlayer", () => {}),
   ]
   for (const weapon of [primaryWeapon, secondaryWeapon]) {
     if (!weapon) continue
@@ -139,6 +144,9 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     }),
     wordSpec("areaMysticBoost", (x, roll) => {
       x.areaMysticBoost += roll
+    }),
+    wordSpec("allMysticBoost", (x, roll) => {
+      x.allMysticBoost += roll
     }),
     ...ATTRIBUTE_KEYS.flatMap((attribute) => [
       wordSpec(`min${attribute}`, (x, roll) => {

@@ -12,7 +12,6 @@ function grantSkill(name: string, targetId: string, frame = 0) {
   return makeSkill(CLASS, {
     name,
     castFrames: 10,
-    startLatency: "none",
     hits: [makeHit({ frame, triggers: [makeTrigger({ kind: "applyBuff", targetId })] })],
   })
 }
@@ -25,7 +24,6 @@ function clearSkill(
   return makeSkill(CLASS, {
     name,
     castFrames: 10,
-    startLatency: "none",
     hits: [
       makeHit({ frame: 0, triggers: [makeTrigger({ kind: "clearStatus", targetId, conditions })] }),
     ],

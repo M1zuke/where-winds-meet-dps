@@ -79,7 +79,9 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr) 92px;
+  grid-template-columns:
+    28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr)
+    56px 88px 84px 92px;
   gap: 10px;
   align-items: center;
   padding: 5px 8px;
@@ -166,9 +168,32 @@
   background: var(--color-bg);
 }
 
+.ledgerHead {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.qiMarkerRow {
+  background: rgba(216, 122, 74, 0.14);
+  border-color: rgba(216, 122, 74, 0.5);
+}
+
+.qiMarkerText {
+  grid-column: span 5;
+  color: #f0c8a8;
+  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+}
+
 @include breakpoints.below(breakpoints.$bp-720) {
   .entry {
     grid-template-columns: 1fr;
+  }
+  .qiMarkerText {
+    grid-column: auto;
+  }
+  .ledgerHead {
+    display: none;
   }
   .meta input[type="text"] {
     min-width: 160px;

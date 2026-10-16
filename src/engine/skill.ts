@@ -19,7 +19,7 @@ export type TriggerKind =
   | "cooldownCut"
 export type TriggerOp = "gte" | "gt" | "eq" | "lte" | "lt"
 
-export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
+export type StartLatency = "serverRoundTrip"
 
 export interface StatusCondition {
   buffId: string
@@ -59,7 +59,15 @@ export type ParamSourceKind = "innerWay" | "set" | "script"
 export type ConditionFailureReason =
   | { kind: "buff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
   | { kind: "debuff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
-  | { kind: "meter"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | {
+      kind: "meter"
+      id: string
+      name: string
+      op: TriggerOp
+      required: number
+      actual: number
+      unitSize?: number
+    }
   | { kind: "weapon"; id: string; name: string; actualId: string; actualName: string }
   | {
       kind: "param"
@@ -84,6 +92,10 @@ export interface HitVariant {
   // docs/TIMELINE.md § "Hit variants" — replaces the hit's own `frame` where
   // this variant is the active one.
   frame?: number
+  // Replaces the hit's own `projectile` where this variant is the active one.
+  projectile?: ProjectileSpec
+  // Replaces the skill's own `displacement` where this variant is the active one.
+  displacement?: Displacement
 }
 
 export interface HitTrigger {
@@ -102,6 +114,8 @@ export interface HitTrigger {
   // The ledger-side counterpart of a buff module's `buffAppliesOnCastEnd`: the
   // window opens where the granting cast ends, not at this hit's frame.
   appliesOnCastEnd?: boolean
+  // `meterDelta` only: lands this many frames after the hit instead of on it.
+  delayFrames?: number
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
@@ -158,6 +172,11 @@ export interface SkillHit {
 
 export interface ProjectileSpec {
   speedMetersPerSecond: number
+  acceleration?: { initialSpeedMetersPerSecond: number; metersPerSecondSquared: number }
+  collisionDelayFrames?: number
+  // How far ahead of the projectile's origin its collision box reaches, in
+  // meters: contact happens that much sooner than the origin-to-target distance.
+  contactAdvanceMeters?: number
   // A hard ceiling on travel time, in frames from the throw — the projectile's
   // own lifetime, independent of the skill's reach.
   maxTravelFrames: number
@@ -190,6 +209,12 @@ export interface MeterFreeze {
   fromFrame: number
 }
 
+export interface ReleaseGate {
+  atFrame: number
+  requires: TriggerCondition[]
+  fallbackSkillId: string
+}
+
 export interface Skill {
   id: string
   classId: string
@@ -206,6 +231,8 @@ export interface Skill {
   meterCosts?: MeterCost[]
   meterDrains?: MeterDrain[]
   meterFreezes?: MeterFreeze[]
+  // docs/TIMELINE.md § "Meters".
+  releaseGates?: ReleaseGate[]
   // The identity this cast presents to the buff engine and to the migration
   // that backfills `receives`/`triggersBuffs` on an old save. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
@@ -241,6 +268,9 @@ export interface Skill {
   // A count of further server round trips this cast's own timeline waits for,
   // beyond the start wait — docs/TIMELINE.md § "Coefficients". Absent means 0.
   serverWaitsInCast?: number
+  // Its keyframe timers are armed one render frame early — docs/TIMELINE.md
+  // § "Coefficients". Absent means false.
+  keyframesLeadByRenderFrame?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -355,8 +385,10 @@ export function isTriggerCondition(value: unknown): value is TriggerCondition {
 }
 
 // `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
-// condition — a hit's or a variant's condition never gates a generated cast.
-function hasBuffEngineSource(value: unknown): boolean {
+// condition, on a `meterDelta` trigger's own status condition and on a
+// `castConditions` entry — a hit's or a variant's condition never reads the
+// buff engine.
+export function hasBuffEngineSource(value: unknown): boolean {
   if (!value || typeof value !== "object") return false
   const record = value as Record<string, unknown>
   if (record.source === "buffEngine") return true
@@ -419,8 +451,12 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     }
   }
   if (t.kind !== "castSkill") {
-    if (hasBuffEngineSource(t.condition)) return false
-    if (Array.isArray(t.conditions) && t.conditions.some(hasBuffEngineSource)) return false
+    const readsBuffEngine = (condition: unknown) =>
+      t.kind === "meterDelta" && isStatusCondition(condition)
+        ? false
+        : hasBuffEngineSource(condition)
+    if (readsBuffEngine(t.condition)) return false
+    if (Array.isArray(t.conditions) && t.conditions.some(readsBuffEngine)) return false
   }
   if (t.transferFrom !== undefined) {
     if (typeof t.transferFrom !== "string" || !t.transferFrom) return false
@@ -439,6 +475,11 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     (typeof t.durationFrames !== "number" ||
       !Number.isFinite(t.durationFrames) ||
       t.durationFrames <= 0)
+  )
+    return false
+  if (
+    t.delayFrames !== undefined &&
+    (typeof t.delayFrames !== "number" || !Number.isFinite(t.delayFrames) || t.delayFrames < 0)
   )
     return false
   if (
@@ -498,7 +539,21 @@ export function isHitVariant(x: unknown): x is HitVariant {
   if (v.frame !== undefined) {
     if (typeof v.frame !== "number" || !Number.isFinite(v.frame)) return false
   }
+  if (v.projectile !== undefined && !isProjectileSpecValue(v.projectile)) return false
+  if (v.displacement !== undefined && !isDisplacement(v.displacement)) return false
   return true
+}
+
+function isProjectileSpecValue(value: unknown): value is ProjectileSpec {
+  if (!value || typeof value !== "object") return false
+  const projectile = value as Record<string, unknown>
+  return (
+    typeof projectile.speedMetersPerSecond === "number" &&
+    projectile.speedMetersPerSecond > 0 &&
+    typeof projectile.maxTravelFrames === "number" &&
+    Number.isFinite(projectile.maxTravelFrames) &&
+    isProjectileExtrasValid(projectile)
+  )
 }
 
 export function isSkillHit(x: unknown): x is SkillHit {
@@ -543,21 +598,60 @@ export function isSkillHit(x: unknown): x is SkillHit {
     return false
   if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat)))
     return false
-  if (h.projectile !== undefined) {
-    if (!h.projectile || typeof h.projectile !== "object") return false
-    const projectile = h.projectile as Record<string, unknown>
-    if (
-      typeof projectile.speedMetersPerSecond !== "number" ||
-      !(projectile.speedMetersPerSecond > 0)
-    )
-      return false
-    if (
-      typeof projectile.maxTravelFrames !== "number" ||
-      !Number.isFinite(projectile.maxTravelFrames)
-    )
-      return false
-  }
+  if (h.projectile !== undefined && !isProjectileSpecValue(h.projectile)) return false
   return true
+}
+
+export function isProjectileExtrasValid(projectile: Record<string, unknown>): boolean {
+  const { acceleration, collisionDelayFrames, contactAdvanceMeters, speedMetersPerSecond } =
+    projectile
+  if (
+    contactAdvanceMeters !== undefined &&
+    (typeof contactAdvanceMeters !== "number" ||
+      !Number.isFinite(contactAdvanceMeters) ||
+      contactAdvanceMeters < 0)
+  )
+    return false
+  if (
+    collisionDelayFrames !== undefined &&
+    (typeof collisionDelayFrames !== "number" ||
+      !Number.isFinite(collisionDelayFrames) ||
+      collisionDelayFrames < 0)
+  )
+    return false
+  if (acceleration === undefined) return true
+  if (!acceleration || typeof acceleration !== "object") return false
+  const { initialSpeedMetersPerSecond, metersPerSecondSquared } = acceleration as Record<
+    string,
+    unknown
+  >
+  return (
+    typeof initialSpeedMetersPerSecond === "number" &&
+    typeof metersPerSecondSquared === "number" &&
+    typeof speedMetersPerSecond === "number" &&
+    initialSpeedMetersPerSecond >= 0 &&
+    initialSpeedMetersPerSecond < speedMetersPerSecond &&
+    metersPerSecondSquared > 0 &&
+    Number.isFinite(metersPerSecondSquared)
+  )
+}
+
+export function projectileTravelFrames(projectile: ProjectileSpec, distanceMeters: number): number {
+  const { speedMetersPerSecond: cappedSpeed, acceleration } = projectile
+  const travelMeters = Math.max(0, distanceMeters - (projectile.contactAdvanceMeters ?? 0))
+  let travelSeconds: number
+  if (!acceleration) {
+    travelSeconds = travelMeters / cappedSpeed
+  } else {
+    const { initialSpeedMetersPerSecond: initialSpeed, metersPerSecondSquared: rate } = acceleration
+    const rampMeters = (cappedSpeed ** 2 - initialSpeed ** 2) / (2 * rate)
+    travelSeconds =
+      travelMeters <= rampMeters
+        ? (Math.sqrt(initialSpeed ** 2 + 2 * rate * travelMeters) - initialSpeed) / rate
+        : (cappedSpeed - initialSpeed) / rate + (travelMeters - rampMeters) / cappedSpeed
+  }
+  const travelFrames = Math.max(travelSeconds * NOMINAL_FPS, projectile.collisionDelayFrames ?? 0)
+  return Math.min(travelFrames, projectile.maxTravelFrames)
 }
 
 export function triggerConditions(tr: HitTrigger): TriggerCondition[] {
@@ -581,18 +675,24 @@ export function selectHitVariant(
 // independent of the simulation's own render frame rate.
 const NOMINAL_FPS = 60
 
-// `distanceMeters` is the live target distance at the frame this hit resolves
-// from — absent for every reader that has none available, in which case a
-// `projectile` hit falls back to its own base frame, same as one without it.
+// `distance` is the live target distance at the frame this hit resolves from,
+// or a function of the hit's own launch frame where the cast's displacement
+// moves during the cast — absent for every reader that has none available, in
+// which case a `projectile` hit falls back to its own base frame, same as one
+// without it.
+export type HitDistance = number | ((launchFrame: number) => number)
+
 export function resolvedHitFrame(
   hit: SkillHit,
   test: (condition: TriggerCondition) => boolean,
-  distanceMeters?: number,
+  distance?: HitDistance,
 ): number {
-  const base = selectHitVariant(hit, test)?.frame ?? hit.frame
-  if (!hit.projectile || distanceMeters === undefined) return base
-  const travelFrames = (distanceMeters / hit.projectile.speedMetersPerSecond) * NOMINAL_FPS
-  return base + Math.min(travelFrames, hit.projectile.maxTravelFrames)
+  const variant = selectHitVariant(hit, test)
+  const base = variant?.frame ?? hit.frame
+  const projectile = variant?.projectile ?? hit.projectile
+  if (!projectile || distance === undefined) return base
+  const distanceMeters = typeof distance === "function" ? distance(base) : distance
+  return base + projectileTravelFrames(projectile, distanceMeters)
 }
 
 // The one place `SkillHit.conditions` is checked — every path that turns a
@@ -658,7 +758,7 @@ export function isSkill(x: unknown): x is Skill {
   if (s.castConditions !== undefined) {
     if (!Array.isArray(s.castConditions)) return false
     for (const condition of s.castConditions) {
-      if (!isHitOrVariantCondition(condition)) return false
+      if (!isTriggerCondition(condition)) return false
     }
   }
   if (s.meterCosts !== undefined) {
@@ -723,6 +823,10 @@ export function isSkill(x: unknown): x is Skill {
         return false
     }
   }
+  if (s.releaseGates !== undefined) {
+    if (!Array.isArray(s.releaseGates)) return false
+    if (!s.releaseGates.every(isReleaseGate)) return false
+  }
   if (
     s.reachMeters !== undefined &&
     (typeof s.reachMeters !== "number" || !Number.isFinite(s.reachMeters))
@@ -738,12 +842,31 @@ export function isSkill(x: unknown): x is Skill {
   )
     return false
   if (
+    s.keyframesLeadByRenderFrame !== undefined &&
+    typeof s.keyframesLeadByRenderFrame !== "boolean"
+  )
+    return false
+  if (
     s.cancelledBy !== undefined &&
     s.cancelledBy !== "deflectCancel" &&
     s.cancelledBy !== "nextSkill"
   )
     return false
   return true
+}
+
+export function isReleaseGate(value: unknown): value is ReleaseGate {
+  if (!value || typeof value !== "object") return false
+  const gate = value as Record<string, unknown>
+  return (
+    typeof gate.atFrame === "number" &&
+    Number.isFinite(gate.atFrame) &&
+    Array.isArray(gate.requires) &&
+    gate.requires.length > 0 &&
+    gate.requires.every(isTriggerCondition) &&
+    typeof gate.fallbackSkillId === "string" &&
+    !!gate.fallbackSkillId
+  )
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -794,6 +917,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     cancelledBy: src.cancelledBy,
     startLatency: src.startLatency,
     serverWaitsInCast: src.serverWaitsInCast,
+    keyframesLeadByRenderFrame: src.keyframesLeadByRenderFrame,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,
@@ -805,6 +929,10 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
     meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),
     meterFreezes: src.meterFreezes?.map((freeze) => ({ ...freeze })),
+    releaseGates: src.releaseGates?.map((gate) => ({
+      ...gate,
+      requires: gate.requires.map(cloneTriggerCondition),
+    })),
     reachMeters: src.reachMeters,
     approach: src.approach,
     displacement: src.displacement,

@@ -79,8 +79,6 @@ const ALL_MATCH_IDS = [
   "bellstrikeSplendor-swordq",
   "bellstrikeSplendor-swordq-2nd",
   "bellstrikeSplendor-swordspecial",
-  "bellstrikeSplendor-swordspecial-2nd",
-  "bellstrikeSplendor-swordspecial-deflect",
   "bellstrikeUmbra-deflect-cancel",
   "bellstrikeUmbra-deflect-cancel-prepull",
   "bellstrikeUmbra-delay",

@@ -112,6 +112,10 @@ describe("the healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === HEROS_BLOOD_INEBRIATE_ID)!
-    expectHealed(skill)
+    expect(skill.neverAbrades).toBeUndefined()
+    expect(skill.receives).toEqual([
+      ...skillIn(STORE, HEROS_BLOOD_INEBRIATE_ID).receives!,
+      "bingePointGainNoAbrasion",
+    ])
   })
 })

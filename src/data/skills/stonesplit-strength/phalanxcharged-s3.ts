@@ -5,9 +5,10 @@ import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 import {
-  bladeMomentumMeter,
-  bladeMomentumRequires,
-} from "../../classes/stonesplit-strength/bladeMomentumMeter"
+  BURNING_HEART_BLADE_MOMENTUM_GATE,
+  BURNING_HEART_STAGE_3_COST,
+  BURNING_HEART_STAGE_3_DRAIN,
+} from "./buffs/burningHeartCharge"
 
 export const phalanxchargedS3 = defineSkill({
   id: SKILL.phalanxchargedS3,
@@ -33,13 +34,13 @@ export const phalanxchargedS3 = defineSkill({
     ...PHALANXBANE_BLADE_RECEIVES,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
-  // In-game values as of 2026-09-25: the stage-2/3 charge is offered only
-  // above 50 Blade Momentum, and spends 50 at the release. Stage 3 itself
-  // needs Steadfast Devotion equipped at all — held past the stage-2
-  // threshold with no talent, the charge still releases stage 2 (in-game
-  // values as of 2026-09-24).
-  castConditions: [{ param: PARAM.steadfastDevotion, minTier: 1 }, bladeMomentumRequires("gt", 50)],
-  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
+  // In-game values as of 2026-09-25: stage 3 needs Steadfast Devotion
+  // equipped at all — held past the stage-2 threshold with no talent, the
+  // charge still releases stage 2 (in-game values as of 2026-09-24).
+  castConditions: [{ param: PARAM.steadfastDevotion, minTier: 1 }],
+  releaseGates: BURNING_HEART_BLADE_MOMENTUM_GATE,
+  meterCosts: [BURNING_HEART_STAGE_3_COST],
+  meterDrains: BURNING_HEART_STAGE_3_DRAIN,
   // Cast length to the earliest next input for a full hold to the stage-3
   // threshold (in-game values as of 2026-09-24).
   castFrames: 173,
@@ -83,15 +84,15 @@ export const phalanxchargedS3 = defineSkill({
     }),
     hit(2, {
       frame: 151,
-      physMultiplier: 1.7199,
-      attributeMultiplier: 2.5798,
+      physMultiplier: 1.719879,
+      attributeMultiplier: 2.579819,
       physFixed: 475.8,
       attributeFixed: 259.2,
     }),
     hit(3, {
       frame: 160,
-      physMultiplier: 4.0131,
-      attributeMultiplier: 6.0196,
+      physMultiplier: 4.013051,
+      attributeMultiplier: 6.019577,
       physFixed: 1110.2,
       attributeFixed: 604.8,
     }),

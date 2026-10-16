@@ -98,11 +98,11 @@ describe("user-defined martial-arts talents", () => {
 
     it("seeded defaults match the JSON's bonus + scaling", () => {
       const byName = Object.fromEntries(
-        getDefaultTalentsForClass("bellstrikeUmbra").map((d) => [d.name, d]),
+        getDefaultTalentsForClass("bellstrikeUmbra", 17).map((d) => [d.name, d]),
       )
       const phys = byName["Physical Attack UP"]
       expect(phys.stat).toBe("maxPhys")
-      expect(phys.maxBonus).toBe(73.9)
+      expect(phys.maxBonus).toBe(73.92)
       expect(phys.scalesWith).toBe("power")
       expect(phys.scaleMax).toBe(280)
       const affinity = byName["Affinity Rate UP"]
@@ -130,26 +130,56 @@ describe("user-defined martial-arts talents", () => {
       expect(bellPen.stat).toBe("bellstrikePenetration")
       expect(bellPen.maxBonus).toBeCloseTo(0.22, 6)
       expect(bellPen.scalesWith).toBe("bellstrike.max")
-      expect(bellPen.scaleMax).toBe(655)
+      expect(bellPen.scaleMax).toBe(22 / 0.0336)
       const attrDmg = byName["Attribute Damage Scale"]
       expect(attrDmg.stat).toBe("attributeDamage")
       expect(attrDmg.maxBonus).toBeCloseTo(0.11, 6)
       expect(attrDmg.scalesWith).toBe("bellstrike.max")
-      expect(attrDmg.scaleMax).toBe(655)
+      expect(attrDmg.scaleMax).toBe(22 / 0.0336)
     })
 
     // Sword and Spear each grant their own independent +98/+196 Bellstrike
     // Attack talent row — a deliberate double contribution, not a duplicate.
     it("Sword + Spear flat Bellstrike Attack bonuses stack (double contribution)", () => {
-      const contributions = userTalentContributions(getDefaultTalentsForClass("bellstrikeUmbra"), {
-        power: 280,
-        agility: 0,
-        momentum: 0,
-        "bellstrike.max": 655,
-      })
+      const contributions = userTalentContributions(
+        getDefaultTalentsForClass("bellstrikeUmbra", 17),
+        {
+          power: 280,
+          agility: 0,
+          momentum: 0,
+          "bellstrike.max": 655,
+        },
+      )
       expect(contributions["bellstrike.min"]).toBe(196)
       expect(contributions["bellstrike.max"]).toBe(392)
     })
+
+    it.each(["stonesplitStrength", "bamboocutDraught"])(
+      "%s raises its Agility caps and Min-attack clamps at breakthrough 18-21",
+      (classId) => {
+        const at = (breakthrough: number) =>
+          Object.fromEntries(
+            getDefaultTalentsForClass(classId, breakthrough).map((d) => [d.name, d]),
+          )
+        expect(at(17)["Physical Attack UP"].maxBonus).toBe(73.92)
+        expect(at(17)["Physical Attack UP"].scaleMax).toBe(280)
+        expect(at(18)["Physical Attack UP"].maxBonus).toBe(79.2)
+        expect(at(18)["Physical Attack UP"].scaleMax).toBe(300)
+        expect(at(21)["Physical Attack UP"].maxBonus).toBe(106.92)
+        expect(at(21)["Physical Attack UP"].scaleMax).toBe(405)
+        expect(at(18)["Critical Rate UP"].maxBonus).toBeCloseTo(0.0912, 6)
+        expect(at(21)["Critical Rate UP"].maxBonus).toBeCloseTo(0.12312, 6)
+        expect(at(17)["Attribute Damage Scale"].scaleMax).toBe(22 / 0.0672)
+        expect(at(19)["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.126, 6)
+        expect(at(19)["Attribute Damage Scale"].scaleMax).toBe(375)
+        const penetrationName =
+          classId === "stonesplitStrength"
+            ? "Stonesplit Penetration Scale"
+            : "Bamboocut Penetration Scale"
+        expect(at(21)[penetrationName].maxBonus).toBeCloseTo(0.296, 6)
+        expect(at(21)[penetrationName].scaleMax).toBe(29.6 / 0.0672)
+      },
+    )
 
     it("the stage attack rows follow the breakthrough, and nothing unrelated moves", () => {
       const at17 = getDefaultTalentsForClass("bellstrikeUmbra", 17)
@@ -168,7 +198,7 @@ describe("user-defined martial-arts talents", () => {
       }
     })
 
-    // In-game talent caps as of 2026-09-24: node 1 and node 3 of both arts
+    // In-game talent caps as of 2026-10-15: node 1 and node 3 of both arts
     // raise their Power/Max-Bellstrike-Attack threshold and cap at breakthrough
     // 18-21, on top of the stage-13 values live at 16-17.
     it("the talent caps that scale with a resource stat rise at breakthrough 18-21", () => {
@@ -179,12 +209,12 @@ describe("user-defined martial-arts talents", () => {
       const at17 = byBreakthrough(17)
       expect(at17["Affinity Rate UP"].maxBonus).toBeCloseTo(0.04256, 6)
       expect(at17["Affinity Rate UP"].scaleMax).toBe(280)
-      expect(at17["Physical Attack UP"].maxBonus).toBe(73.9)
+      expect(at17["Physical Attack UP"].maxBonus).toBe(73.92)
       expect(at17["Physical Attack UP"].scaleMax).toBe(280)
       expect(at17["Bellstrike Penetration Scale"].maxBonus).toBeCloseTo(0.22, 6)
-      expect(at17["Bellstrike Penetration Scale"].scaleMax).toBe(655)
+      expect(at17["Bellstrike Penetration Scale"].scaleMax).toBe(22 / 0.0336)
       expect(at17["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.11, 6)
-      expect(at17["Attribute Damage Scale"].scaleMax).toBe(655)
+      expect(at17["Attribute Damage Scale"].scaleMax).toBe(22 / 0.0336)
 
       const expectedByBreakthrough: Record<
         number,
@@ -196,7 +226,7 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.236,
           attr: 0.118,
           resourceScaleMax: 300,
-          attributeScaleMax: 702.4,
+          attributeScaleMax: 23.6 / 0.0336,
         },
         19: {
           affinity: 0.0494,
@@ -204,7 +234,7 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.252,
           attr: 0.126,
           resourceScaleMax: 325,
-          attributeScaleMax: 750,
+          attributeScaleMax: 25.2 / 0.0336,
         },
         20: {
           affinity: 0.05548,
@@ -212,7 +242,7 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.276,
           attr: 0.138,
           resourceScaleMax: 365,
-          attributeScaleMax: 821.4,
+          attributeScaleMax: 27.6 / 0.0336,
         },
         21: {
           affinity: 0.06156,
@@ -220,7 +250,7 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.296,
           attr: 0.148,
           resourceScaleMax: 405,
-          attributeScaleMax: 881,
+          attributeScaleMax: 29.6 / 0.0336,
         },
       }
       for (const [breakthrough, expected] of Object.entries(expectedByBreakthrough)) {
@@ -246,21 +276,21 @@ describe("user-defined martial-arts talents", () => {
       }
     })
 
-    // In-game talent caps as of 2026-09-24.
+    // In-game talent caps as of 2026-10-15.
     it("silkbindJade's talent caps rise at breakthrough 18-21 too", () => {
       const byBreakthrough = (breakthrough: number) =>
         Object.fromEntries(
           getDefaultTalentsForClass("silkbindJade", breakthrough).map((d) => [d.name, d]),
         )
       const at17 = byBreakthrough(17)
-      expect(at17["Critical Rate UP"].maxBonus).toBeCloseTo(0.085, 6)
+      expect(at17["Critical Rate UP"].maxBonus).toBeCloseTo(0.08512, 6)
       expect(at17["Critical Rate UP"].scaleMax).toBe(280)
-      expect(at17["Physical Attack UP"].maxBonus).toBe(73.9)
+      expect(at17["Physical Attack UP"].maxBonus).toBe(73.92)
       expect(at17["Physical Attack UP"].scaleMax).toBe(280)
       expect(at17["Silkbind Penetration Scale"].maxBonus).toBeCloseTo(0.22, 6)
-      expect(at17["Silkbind Penetration Scale"].scaleMax).toBe(328)
+      expect(at17["Silkbind Penetration Scale"].scaleMax).toBe(22 / 0.0672)
       expect(at17["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.11, 6)
-      expect(at17["Attribute Damage Scale"].scaleMax).toBe(328)
+      expect(at17["Attribute Damage Scale"].scaleMax).toBe(22 / 0.0672)
 
       const expectedByBreakthrough: Record<
         number,
@@ -279,7 +309,7 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.236,
           attr: 0.118,
           agilityScaleMax: 300,
-          silkbindScaleMax: 351.2,
+          silkbindScaleMax: 23.6 / 0.0672,
         },
         19: {
           crit: 0.0988,
@@ -287,23 +317,23 @@ describe("user-defined martial-arts talents", () => {
           pen: 0.252,
           attr: 0.126,
           agilityScaleMax: 325,
-          silkbindScaleMax: 375.0,
+          silkbindScaleMax: 25.2 / 0.0672,
         },
         20: {
-          crit: 0.111,
+          crit: 0.11096,
           phys: 96.36,
           pen: 0.276,
           attr: 0.138,
           agilityScaleMax: 365,
-          silkbindScaleMax: 410.7,
+          silkbindScaleMax: 27.6 / 0.0672,
         },
         21: {
-          crit: 0.1231,
+          crit: 0.12312,
           phys: 106.92,
           pen: 0.296,
           attr: 0.148,
           agilityScaleMax: 405,
-          silkbindScaleMax: 440.5,
+          silkbindScaleMax: 29.6 / 0.0672,
         },
       }
       for (const [breakthrough, expected] of Object.entries(expectedByBreakthrough)) {

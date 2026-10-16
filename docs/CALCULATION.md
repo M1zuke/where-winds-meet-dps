@@ -142,6 +142,13 @@ attribute flat term alike, and applies before the martial art's
 attribute-flat multiplier** so the two compose multiplicatively in that
 order. It never reaches either coefficient term.
 
+**Attack rates form one additive pool per attack track, and a flat attack
+bonus sits outside it.** Every rate that raises the physical attack — a buff's,
+a set's — is summed first and multiplies the steady attack once; a flat bonus is
+added after, unscaled. On an attribute track a rate multiplies the steady attack, and the Formless
+attack takes only the rates that are granted to it. A rate that applies to one
+attribute track never reaches another.
+
 ### Sources of truth
 
 These external sources are authoritative. On conflicts **between** sources,
@@ -221,6 +228,15 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   found to open the window, with nothing about the rotation's own hits or
   ticks having changed. A mechanic genuinely timed off the fight's own clock,
   rather than off a hit it reacts to, is the one exception.
+- **A mechanic whose trigger is a hit's own outcome observes the run**
+  (`observeEvent`) instead of building a schedule from hit times. The engine
+  hands it every scored damage event — a hit, a DoT tick or a mechanic's extra
+  event — once, in processing order and after the event is scored, with the
+  chance the event's outcome was an affinity read **without the mechanic's own
+  contribution**, and on a run that rolls hits the outcome it rolled.
+  `contributeAt` reads the state left by every event already observed, so an
+  event resolving later on the same frame reads what an earlier one set up and
+  the event that sets a state up never reads it.
 - **A DoT tick may feed a proc schedule too**, opted into separately from a
   hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
   from the same layout pass, at each debuff's own tick interval, through the

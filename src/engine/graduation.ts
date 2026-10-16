@@ -1,7 +1,8 @@
-import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
+import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
+  StandardizedGraduation,
   StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
 import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
@@ -75,13 +76,25 @@ export function followedGraduationBuildAmong(
   return builds.find((build) => build.id === buildId) ?? (builds.length === 1 ? builds[0] : null)
 }
 
+function classStandardOnRotation(
+  builtin: readonly GraduationBuild[],
+  rotationId: string,
+): StandardizedGraduation | undefined {
+  const standardizedBuilds = builtin.filter((build) => build.standardized)
+  return (
+    standardizedBuilds.find((build) => build.rotationId === rotationId) ?? standardizedBuilds[0]
+  )?.standardized
+}
+
 export function graduationBuildsForProfile(
   inputs: Pick<Inputs, "classId" | "customGraduationBuild">,
 ): readonly GraduationBuild[] {
   const builtin = graduationBuildsFor(inputs.classId)
   const custom = inputs.customGraduationBuild
   if (!custom || custom.classId !== inputs.classId) return builtin
-  return [...builtin, graduationBuildFromCustom(custom)]
+  const authored = graduationBuildFromCustom(custom)
+  const standardized = classStandardOnRotation(builtin, custom.rotationId)
+  return [...builtin, standardized ? { ...authored, standardized } : authored]
 }
 
 export function followedGraduationBuild(
@@ -141,6 +154,7 @@ export function graduationInputs(
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
   }))
+  const equipped = equippedSlots(build)
   return standardizedGraduationInputs(
     {
       ...onBuiltinRotation(inputs, build.rotationId),
@@ -150,7 +164,7 @@ export function graduationInputs(
       qiRateAdd: 0,
       qiDamageIndexMultiplier: 0,
       inventory,
-      equipped: equippedSlots(build),
+      equipped,
       set: build.set,
       bowSet: build.bowSet,
       arsenal: build.arsenal,
@@ -161,7 +175,7 @@ export function graduationInputs(
         }),
       ),
       unclaimedOddityNodes: {},
-      enhancements: { ...DEFAULT_ENHANCEMENTS },
+      enhancements: defaultEnhancementLevels(inputs.breakthrough, { inventory, equipped }),
     },
     build,
   )

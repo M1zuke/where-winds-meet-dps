@@ -7,6 +7,7 @@ import {
   type TriggerCondition,
 } from "../../../engine/skill"
 import { FPS } from "../../../engine/timeline"
+import { inDisplayUnits } from "../../../definitions/resources/meterDef"
 import { humanizeParamId } from "../../../engine/buffs/catalog"
 import { innerWayForBuffParam } from "../../../definitions/innerWays/registry"
 import { SCRIPT_LABEL_KEYS } from "../../../data/skills/buffs/scriptOptions"
@@ -127,13 +128,12 @@ function conditionFailureText(reason: ConditionFailureReason, t: Translate): str
       const actual = reason.actualOn ? `${tier} ${reason.actualTier}` : notActive
       return `${needs} ${reason.name} ${tier} ${reason.minTier}+ (${actual})`
     }
+    case "meter": {
+      const label = t(meterKey(reason.id), reason.name)
+      return `${needs} ${label} ${OP_SYMBOL[reason.op]} ${inDisplayUnits(reason.required, reason.unitSize)} (${has} ${inDisplayUnits(reason.actual, reason.unitSize)})`
+    }
     default: {
-      const key =
-        reason.kind === "meter"
-          ? meterKey(reason.id)
-          : reason.kind === "debuff"
-            ? debuffKey(reason.id)
-            : buffKey(reason.id)
+      const key = reason.kind === "debuff" ? debuffKey(reason.id) : buffKey(reason.id)
       const label = t(key, reason.name)
       return `${needs} ${label} ${OP_SYMBOL[reason.op]} ${reason.required} (${has} ${reason.actual})`
     }

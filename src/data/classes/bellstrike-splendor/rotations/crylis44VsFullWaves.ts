@@ -31,7 +31,6 @@ export default defineRotation({
     { skillId: "bellstrikeSplendor-swordheavycharged-2-hit" },
   ],
   permanentBuffIds: [],
-  qiBreak: { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   description: "Bellstrike Splendor 44 Vagrant Sword rotation, no Dragon Breath. Source: Crylis.",

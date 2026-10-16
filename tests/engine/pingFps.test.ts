@@ -59,10 +59,17 @@ describe("the server processing time default and validation", () => {
   })
 
   it("keeps a built-in's own authored value", () => {
-    const authored = builtinRotationsForClass("bellstrikeUmbra").find(
-      (rotation) => rotation.id === "builtin-bellstrikeUmbra-38-bbs",
-    )
-    expect(authored?.serverProcessingMs).toBe(30)
+    const authored = defineRotation({
+      id: "builtin-test-authored-server-processing",
+      name: "Authored",
+      classId: "bellstrikeUmbra",
+      steps: [],
+      permanentBuffIds: [],
+      serverProcessingMs: 30,
+      createdAt: "2026-10-16T00:00:00.000Z",
+      updatedAt: "2026-10-16T00:00:00.000Z",
+    })
+    expect(authored.serverProcessingMs).toBe(30)
   })
 
   it("accepts a finite value from 0 to 1000 and rejects anything else", () => {

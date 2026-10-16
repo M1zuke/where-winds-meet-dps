@@ -2,7 +2,7 @@ import type { GearSlot, Inputs } from "../../../../engine/types"
 import type { GearSlotAnalysisRow } from "../../../../engine/gearAnalysis"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useGearAnalysis } from "../../../hooks/useGearAnalysis"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import styles from "./GearAnalysisPanel.module.scss"
 
@@ -119,7 +119,7 @@ export function GearAnalysisPanel({ engineInputs, currentDps, baselineQiBreaks }
         <tbody>
           {sorted.map((row) => (
             <tr key={row.slot}>
-              <td>{t(GEAR_SLOT_KEYS[row.slot])}</td>
+              <td>{t(gearSlotLabelKey(row.slot, engineInputs.classId))}</td>
               <RankCell gain={row.retuneGain} rank={retuneRanks.get(row.slot)} />
               <RankCell gain={row.reattuneGain} rank={reattuneRanks.get(row.slot)} />
               <RankCell gain={row.relayGain} rank={relayRanks.get(row.slot)} />

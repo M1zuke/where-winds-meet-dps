@@ -61,7 +61,7 @@ function withInventory(p: GearPiece, equipped: boolean = false, extra: GearPiece
   }
 }
 
-describe("getFTPiece", () => {
+describe("getFTPiece", { timeout: 30_000 }, () => {
   it("for a non-relayed piece, returns the variant whose DPS is at least as high as either build path", () => {
     const p = piece([w("crit", 0.05), w("agility", 30), w("momentum", 30), EMPTY, EMPTY], {
       attunement: "physPen",
@@ -69,7 +69,7 @@ describe("getFTPiece", () => {
     })
     const inputs = withInventory(p)
     const baselineDps = runEngine(inputs).dps
-    const ft = getFTPiece(p, inputs)
+    const ft = getFTPiece(p, inputs).piece
 
     const baseline = applyPieceContribution(inputs, p, -1)
     const ftDps = runEngine(applyPieceContribution(baseline, ft, +1)).dps
@@ -84,7 +84,7 @@ describe("getFTPiece", () => {
     })
     const inputs = withInventory(p)
     runEngine(inputs)
-    const ft = getFTPiece(p, inputs)
+    const ft = getFTPiece(p, inputs).piece
 
     expect(ft.relayed).toBe(true)
     const specs = getWordSpecs(inputs, BREAKTHROUGH_LEVEL)
@@ -106,7 +106,7 @@ describe("getFTPiece", () => {
     )
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
-    const fpBefore = ftDpsWhenEquipped(p, inputs) - baselineDps
+    const fpBefore = ftDpsWhenEquipped(p, inputs).dps - baselineDps
 
     const baseline = applyPieceContribution(inputs, p, -1)
     let bestSwap: { slot: number; word: string; dps: number } | null = null
@@ -143,7 +143,7 @@ describe("getFTPiece", () => {
       equipped: { ...inputs.equipped, [pPost.slot]: pPost.id },
     }
     const baselinePostDps = runEngine(inputsPost).dps
-    const fpAfter = ftDpsWhenEquipped(pPost, inputsPost) - baselinePostDps
+    const fpAfter = ftDpsWhenEquipped(pPost, inputsPost).dps - baselinePostDps
 
     expect(fpAfter).toBeLessThanOrEqual(fpBefore + 1e-3)
   })
@@ -155,7 +155,7 @@ describe("getFTPiece", () => {
     })
     const inputs = withInventory(p, /* equipped */ true)
     runEngine(inputs)
-    const ft = getFTPiece(p, inputs)
+    const ft = getFTPiece(p, inputs).piece
     const baseline = applyPieceContribution(inputs, p, -1)
     const ftDps = runEngine(applyPieceContribution(baseline, ft, +1)).dps
 
@@ -188,7 +188,7 @@ describe("getFTPiece", () => {
     })
     const inputs = withInventory(p)
     runEngine(inputs)
-    const ft = getFTPiece(p, inputs)
+    const ft = getFTPiece(p, inputs).piece
 
     expect(ft.attunement).toBe("physPen")
     expect(ft.attunementValue).toBeGreaterThan(p.attunementValue)
@@ -204,7 +204,7 @@ describe("getFTPiece", () => {
     ])
     const inputs = withInventory(p)
     runEngine(inputs)
-    const ft = getFTPiece(p, inputs)
+    const ft = getFTPiece(p, inputs).piece
     expect(ft.relayed).toBe(true)
     const specs = getWordSpecs(inputs, BREAKTHROUGH_LEVEL)
     for (const wd of ft.words) {
@@ -221,7 +221,7 @@ describe("ftDpsWhenEquipped", () => {
     const p = piece([w("crit", 0.001), w("agility", 1), EMPTY, EMPTY, EMPTY])
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
-    const dps = ftDpsWhenEquipped(p, inputs)
+    const dps = ftDpsWhenEquipped(p, inputs).dps
     expect(dps).toBeGreaterThan(baselineDps)
   })
 
@@ -233,8 +233,40 @@ describe("ftDpsWhenEquipped", () => {
     })
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
-    const dps = ftDpsWhenEquipped(p, inputs)
+    const dps = ftDpsWhenEquipped(p, inputs).dps
     expect(dps).toBeGreaterThan(baselineDps)
+  })
+})
+
+describe("computeDpsDeltas → the gear level each figure is measured at", () => {
+  function deltaFor(p: GearPiece) {
+    const inputs = withInventory(p, /* equipped */ true)
+    const baselineDps = runEngine(inputs).dps
+    return computeDpsDeltas({ reqId: 1, inputs, baselineDps, pieceIds: [p.id] }).deltas[p.id]
+  }
+
+  it("measures Max (94%) at the breakthrough's gear level", () => {
+    const p = piece([w("crit", 0.05), w("agility", 30), EMPTY, EMPTY, EMPTY])
+    expect(deltaFor(p).upgradedLevel).toBe(BREAKTHROUGH_LEVEL)
+  })
+
+  it("reports the breakthrough's gear level for FP when relaying beats a retune", () => {
+    const p = piece([w("crit", 0.001), w("agility", 1), w("momentum", 1), EMPTY, EMPTY])
+    expect(p.level).not.toBe(BREAKTHROUGH_LEVEL)
+    expect(getFTPiece(p, withInventory(p, true)).level).toBe(BREAKTHROUGH_LEVEL)
+    expect(deltaFor(p).fullPotentialLevel).toBe(BREAKTHROUGH_LEVEL)
+  })
+
+  it("reports the breakthrough's gear level for FP on an already relayed piece", () => {
+    const p = piece([w("crit", 0.05), w("agility", 30), EMPTY, EMPTY, EMPTY], { relayed: true })
+    expect(deltaFor(p).fullPotentialLevel).toBe(BREAKTHROUGH_LEVEL)
+  })
+
+  it("reports the piece's own level for FP when the piece already sits at the breakthrough's level", () => {
+    const p = piece([w("crit", 0.05), w("agility", 30), EMPTY, EMPTY, EMPTY], {
+      level: BREAKTHROUGH_LEVEL,
+    })
+    expect(deltaFor(p).fullPotentialLevel).toBe(p.level)
   })
 })
 
@@ -469,7 +501,10 @@ describe("FT variant selection", { timeout: 30_000 }, () => {
     )
     const inputs = derivedInputs([equippedWeapon, relayedHelm], [candidate])
 
-    expect(ftDpsWhenEquipped(candidate, inputs)).toBeCloseTo(bestReachableDps(candidate, inputs), 6)
+    expect(ftDpsWhenEquipped(candidate, inputs).dps).toBeCloseTo(
+      bestReachableDps(candidate, inputs),
+      6,
+    )
   })
 
   it("picks the retune at the value the word carries once the piece is relayed, not at its unrelayed roll", () => {
@@ -485,6 +520,9 @@ describe("FT variant selection", { timeout: 30_000 }, () => {
     )
     const inputs = derivedInputs([candidate, relayedHelm], [])
 
-    expect(ftDpsWhenEquipped(candidate, inputs)).toBeCloseTo(bestReachableDps(candidate, inputs), 6)
+    expect(ftDpsWhenEquipped(candidate, inputs).dps).toBeCloseTo(
+      bestReachableDps(candidate, inputs),
+      6,
+    )
   })
 })

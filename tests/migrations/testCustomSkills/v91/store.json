@@ -1,0 +1,862 @@
+{
+  "v": 91,
+  "skills": [
+    {
+      "id": "silkbindJade-fanlightcharged",
+      "classId": "silkbindJade",
+      "name": "FanLightCharged",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 71.4,
+          "physMultiplier": 1.9044,
+          "attributeMultiplier": 2.8566,
+          "physFixed": 527,
+          "attributeFixed": 287,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mvapaia6-3tgwv9-2",
+              "label": "Flying Tornado",
+              "conditions": [
+                {
+                  "buffId": "gourdTossFlyingTornado",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.9044,
+              "attributeMultiplier": 2.8566,
+              "physFixed": 527,
+              "attributeFixed": 287,
+              "frame": 60,
+              "castFrames": 86.4,
+              "projectile": {
+                "speedMetersPerSecond": 30,
+                "contactAdvanceMeters": 1.75,
+                "maxTravelFrames": 60
+              }
+            }
+          ],
+          "projectile": {
+            "speedMetersPerSecond": 20,
+            "contactAdvanceMeters": 1.75,
+            "maxTravelFrames": 60
+          }
+        }
+      ],
+      "castFrames": 97.8,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:fanLightCharged",
+      "receives": [
+        "windWall",
+        "pursuitChargedBoost",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 30,
+          "fromFrame": 14.4,
+          "stopAfterSec": 0.55
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "reachMeters": 20,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      }
+    },
+    {
+      "id": "silkbindJade-fanheavypursuit-3-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 3-Hit",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "tags": [
+        "prop:isExecution",
+        "prop:hasLowQiCritBoost",
+        "prop:hasLowQiDmgBoost",
+        "weapon:Fan",
+        "attack:heavy",
+        "attune:fanSpecial",
+        "role:fanHeavyPursuit"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 9.66,
+          "physMultiplier": 0.37434,
+          "attributeMultiplier": 0.56148,
+          "physFixed": 103.8,
+          "attributeFixed": 56.4,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 33.78,
+          "physMultiplier": 0.37434,
+          "attributeMultiplier": 0.56148,
+          "physFixed": 103.8,
+          "attributeFixed": 56.4,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 71.82,
+          "physMultiplier": 0.49912,
+          "attributeMultiplier": 0.74864,
+          "physFixed": 138.4,
+          "attributeFixed": 75.2,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        }
+      ],
+      "castFrames": 93.42,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:fanHeavyPursuit3Hit",
+      "breakdownName": "Moon Shatter Spring",
+      "receives": [
+        "windWallPursuit",
+        "lowQiFollowUp",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["pursuitChargedBoost", "moonShatterSpringLockout"],
+      "castConditions": [
+        {
+          "buffId": "lingeringBone",
+          "op": "gte",
+          "stacks": 1,
+          "source": "buffEngine"
+        },
+        {
+          "buffId": "moonShatterSpringLockout",
+          "op": "lte",
+          "stacks": 0,
+          "source": "buffEngine"
+        }
+      ],
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      }
+    },
+    {
+      "id": "silkbindJade-fanheavypursuit-5-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 5-Hit",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "tags": [
+        "prop:isExecution",
+        "prop:hasLowQiCritBoost",
+        "prop:hasLowQiDmgBoost",
+        "weapon:Fan",
+        "attack:heavy",
+        "attune:fanSpecial",
+        "role:fanHeavyPursuit"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14.05,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 32.51,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 68.97,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 84.2,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 111.9,
+          "physMultiplier": 0.90555,
+          "attributeMultiplier": 1.3583399999999999,
+          "physFixed": 250.5,
+          "attributeFixed": 136.5,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            }
+          ]
+        }
+      ],
+      "castFrames": 145.98,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:fanHeavyPursuit5Hit",
+      "breakdownName": "Moon Shatter Spring",
+      "receives": [
+        "windWallPursuit",
+        "lowQiFollowUp",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["pursuitChargedBoost", "moonShatterSpringLockout"],
+      "castConditions": [
+        {
+          "buffId": "lingeringBone",
+          "op": "gte",
+          "stacks": 1,
+          "source": "buffEngine"
+        },
+        {
+          "buffId": "moonShatterSpringLockout",
+          "op": "lte",
+          "stacks": 0,
+          "source": "buffEngine"
+        },
+        {
+          "buffId": "windrider",
+          "op": "gte",
+          "stacks": 1,
+          "source": "buffEngine"
+        }
+      ],
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      }
+    },
+    {
+      "id": "silkbindJade-apricot-heaven-normal",
+      "classId": "silkbindJade",
+      "name": "Apricot Heaven (Normal Fall)",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 54,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 72,
+          "physMultiplier": 1.565095,
+          "attributeMultiplier": 2.347643,
+          "physFixed": 433,
+          "attributeFixed": 236,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 96,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -5,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 214,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:apricotHeavenNormal",
+      "breakdownName": "Apricot Heaven",
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "reachMeters": 3
+    },
+    {
+      "id": "silkbindJade-apricot-heaven-enhanced",
+      "classId": "silkbindJade",
+      "name": "Apricot Heaven (Enhanced Fall)",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 54,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 96,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -5,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 162,
+          "physMultiplier": 2.504152,
+          "attributeMultiplier": 3.756228,
+          "physFixed": 692.8,
+          "attributeFixed": 377.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 304,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:apricotHeavenEnhanced",
+      "breakdownName": "Apricot Heaven",
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 72,
+          "stopAfterSec": 1.5
+        }
+      ],
+      "reachMeters": 3
+    },
+    {
+      "id": "silkbindJade-glow-and-flow-stage-1",
+      "classId": "silkbindJade",
+      "name": "Glow & Flow (Stage 1)",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:heavy"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.612395,
+          "attributeMultiplier": 0.918593,
+          "physFixed": 169.5,
+          "attributeFixed": 92.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 18,
+          "physMultiplier": 0.612395,
+          "attributeMultiplier": 0.918593,
+          "physFixed": 169.5,
+          "attributeFixed": 92.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 70,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:glowAndFlowStage1",
+      "breakdownName": "Glow & Flow",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 10
+        }
+      ],
+      "reachMeters": 3,
+      "displacement": {
+        "kind": "selfForward",
+        "meters": 4.5
+      }
+    },
+    {
+      "id": "silkbindJade-glow-and-flow-stage-2",
+      "classId": "silkbindJade",
+      "name": "Glow & Flow (Stage 2)",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:heavy", "attune:fanCharged"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 56,
+          "physMultiplier": 1.22479,
+          "attributeMultiplier": 1.837185,
+          "physFixed": 339,
+          "attributeFixed": 184.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 56,
+          "physMultiplier": 1.22479,
+          "attributeMultiplier": 1.837185,
+          "physFixed": 339,
+          "attributeFixed": 184.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 108,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:glowAndFlowStage2",
+      "breakdownName": "Glow & Flow",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 10
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 18,
+          "stopAfterSec": 0.63
+        }
+      ],
+      "reachMeters": 3,
+      "displacement": {
+        "kind": "selfForward",
+        "meters": 9
+      }
+    },
+    {
+      "id": "silkbindJade-umblightcharge",
+      "classId": "silkbindJade",
+      "name": "UmbLightCharge",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": [
+        "prop:isCharged",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbFrequentProjectile",
+        "role:umbLightCharge"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 47.4,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "silkbindJade-umblightcharge-lift",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-1",
+          "frame": 57,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-2",
+          "frame": 66.6,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-3",
+          "frame": 77.4,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-4",
+          "frame": 87,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-5",
+          "frame": 96.6,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        }
+      ],
+      "castFrames": 132.05,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castTag": "cast:umbLightCharge",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "combo",
+        "comboSpringAwayBonus",
+        "comboExtendMark",
+        "windWall",
+        "pursuitChargedBoost",
+        "trajectorySkill",
+        "thunderousBloom",
+        "springThunder",
+        "nonPlayerBaseDamage125",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 10,
+          "fromFrame": 44.4,
+          "stopAfterSec": 0.87
+        }
+      ],
+      "reachMeters": 13,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      }
+    },
+    {
+      "id": "sk-user-authored-umbrella-slash",
+      "classId": "silkbindJade",
+      "name": "User-authored umbrella slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 50,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1.5,
+          "physFixed": 100,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 67,
+      "triggerable": true,
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

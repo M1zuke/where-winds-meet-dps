@@ -12,7 +12,7 @@
     "note": "Coefficients/flat values are verbatim cached cell values at full stored precision; formulas are retained in the complete workbook extraction."
   },
   "_translation": {
-    "method": "Labels joined against the game client's official ZH<->EN localization in reference/locale/zhToEnOfficial.json. 'official' = exact client key; 'composed' = official component terms plus spreadsheet shorthand.",
+    "method": "Labels joined against the official in-game ZH<->EN text pairs in reference/locale/zhToEnOfficial.json. 'official' = exact entry in that list; 'composed' = official component terms plus spreadsheet shorthand.",
     "columns": [
       {
         "col": "A",

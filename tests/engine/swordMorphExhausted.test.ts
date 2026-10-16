@@ -94,6 +94,8 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
       SKILL.swordHeavyCharged,
       SKILL.swordHeavyChargedPrepull,
       SKILL.swordHeavyCharged2Hit,
+      SKILL.swordHeavyCharged2HitWushuang,
+      SKILL.swordHeavyChargedWushuang,
       SKILL.energySurge,
     ])
   })

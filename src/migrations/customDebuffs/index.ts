@@ -13,6 +13,16 @@ import { V8__mysticArtIds } from "./V8__mysticArtIds"
 import { V9__sharedDotRecalibration } from "./V9__sharedDotRecalibration"
 import { V10__droneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 import { V11__qiRateDefaults } from "./V11__qiRateDefaults"
+import { V12__bitterSeasonCadence } from "./V12__bitterSeasonCadence"
+import { V13__mysticArtLevelCap } from "./V13__mysticArtLevelCap"
+import { V14__droneComboExtendMarkReach } from "./V14__droneComboExtendMarkReach"
+import { V15__droneComboExtendMarkPerHit } from "./V15__droneComboExtendMarkPerHit"
+import { V16__droneStampsAndRecall } from "./V16__droneStampsAndRecall"
+import { V17__splendorBitterSeasonTickWithoutSoulShaken } from "./V17__splendorBitterSeasonTickWithoutSoulShaken"
+import { V18__jadeDroneStarReacherGrantsAndNoSoulShaken } from "./V18__jadeDroneStarReacherGrantsAndNoSoulShaken"
+import { V19__draughtBitterSeasonTickWithoutSoulShaken } from "./V19__draughtBitterSeasonTickWithoutSoulShaken"
+import { V20__jadeDroneDirectHitFlight } from "./V20__jadeDroneDirectHitFlight"
+import { V21__bleedDetonationWithoutRetainedStacks } from "./V21__bleedDetonationWithoutRetainedStacks"
 
 export type {
   CustomDebuffMigration,
@@ -28,6 +38,11 @@ export { migrateMysticDebuffReferences } from "./V8__mysticArtIds"
 export { recalibrateSharedDot } from "./V9__sharedDotRecalibration"
 export { healDroneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 export { healQiRateDefault } from "./V11__qiRateDefaults"
+export { healBitterSeasonCadence } from "./V12__bitterSeasonCadence"
+export { healMysticDotLevelCap } from "./V13__mysticArtLevelCap"
+export { healDroneComboExtendMarkReach } from "./V14__droneComboExtendMarkReach"
+export { healDroneComboExtendMarkPerHit } from "./V15__droneComboExtendMarkPerHit"
+export { healDroneStampsAndRecall } from "./V16__droneStampsAndRecall"
 
 export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V3__umbraBleedTick,
@@ -39,6 +54,16 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V9__sharedDotRecalibration,
   V10__droneIntervalAndOffset,
   V11__qiRateDefaults,
+  V12__bitterSeasonCadence,
+  V13__mysticArtLevelCap,
+  V14__droneComboExtendMarkReach,
+  V15__droneComboExtendMarkPerHit,
+  V16__droneStampsAndRecall,
+  V17__splendorBitterSeasonTickWithoutSoulShaken,
+  V18__jadeDroneStarReacherGrantsAndNoSoulShaken,
+  V19__draughtBitterSeasonTickWithoutSoulShaken,
+  V20__jadeDroneDirectHitFlight,
+  V21__bleedDetonationWithoutRetainedStacks,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

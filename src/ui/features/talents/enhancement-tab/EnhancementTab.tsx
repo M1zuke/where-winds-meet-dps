@@ -5,14 +5,17 @@ import {
   averageEnhancementBonus,
   averageEnhancementLevel,
   defaultEnhancementLevels,
-  enhancementCap,
+  effectiveEnhancementLevels,
+  equippedPieceGearLevel,
+  slotEnhancementCap,
   enhancementStatsAtLevel,
+  gearLevelUnlock,
+  type GearLevelUnlock,
 } from "../../../../definitions/baseStats"
-import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { fmt } from "../../../utils/statFormatting"
-import { GEAR_SLOT_KEYS } from "../../gear/shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../../gear/shared/gearSlotKeys"
 import { ENHANCEMENT_STAT_KEYS } from "../shared/enhancementStatKeys"
 import styles from "./EnhancementTab.module.scss"
 
@@ -40,32 +43,40 @@ const SLOT_DISPLAY_ORDER: readonly GearSlot[] = [
 export function EnhancementTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
-  const levels = inputs.enhancements
+  const gear = useMemo(
+    () => ({ inventory: inputs.inventory, equipped: inputs.equipped }),
+    [inputs.inventory, inputs.equipped],
+  )
+  const levels = useMemo(
+    () => effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough),
+    [inputs.enhancements, inputs.breakthrough],
+  )
 
-  const capBySlot = useMemo(() => {
-    const byId = new Map(inputs.inventory.map((piece) => [piece.id, piece]))
-    const fallbackGearLevel = gearLevelForBreakthrough(inputs.breakthrough)
-    const out = {} as Record<GearSlot, number>
+  const { capBySlot, unlockBySlot } = useMemo(() => {
+    const caps = {} as Record<GearSlot, number>
+    const unlocks = {} as Record<GearSlot, GearLevelUnlock | undefined>
     for (const slot of GEAR_SLOTS) {
-      const equippedId = inputs.equipped[slot]
-      const piece = equippedId ? byId.get(equippedId) : undefined
-      out[slot] = enhancementCap(piece?.level ?? fallbackGearLevel, inputs.breakthrough)
+      caps[slot] = slotEnhancementCap(slot, inputs.breakthrough, gear)
+      unlocks[slot] = gearLevelUnlock(
+        equippedPieceGearLevel(slot, gear) ?? Infinity,
+        inputs.breakthrough,
+      )
     }
-    return out
-  }, [inputs.inventory, inputs.equipped, inputs.breakthrough])
+    return { capBySlot: caps, unlockBySlot: unlocks }
+  }, [gear, inputs.breakthrough])
 
   function step(slot: GearSlot, delta: number) {
     const current = levels[slot] ?? 0
     if (delta > 0 && current >= capBySlot[slot]) return
     onChange({
       ...inputs,
-      enhancements: { ...levels, [slot]: Math.max(0, current + delta) },
+      enhancements: { ...inputs.enhancements, [slot]: Math.max(0, current + delta) },
     })
   }
 
   async function resetAll() {
     if (!(await confirm(t("talents.enhancement.resetAllEnhancementsToDefault")))) return
-    onChange({ ...inputs, enhancements: defaultEnhancementLevels() })
+    onChange({ ...inputs, enhancements: defaultEnhancementLevels(inputs.breakthrough, gear) })
   }
 
   const average = averageEnhancementLevel(levels)
@@ -97,9 +108,19 @@ export function EnhancementTab({ inputs, onChange }: Props) {
           const level = levels[slot] ?? 0
           const cap = capBySlot[slot]
           const stats = enhancementStatsAtLevel(slot, level)
+          const unlock = unlockBySlot[slot]
           return (
             <div className={`panel ${styles.slotCard}`} key={slot}>
-              <h2>{t(GEAR_SLOT_KEYS[slot])}</h2>
+              <div className="panel-head">
+                <h2>{t(gearSlotLabelKey(slot, inputs.classId))}</h2>
+                {unlock && (
+                  <p className={styles.gearHint}>
+                    {t("talents.enhancement.unlockableWithGearLevel")
+                      .replace("{level}", String(unlock.level))
+                      .replace("{gearLevel}", String(unlock.gearLevel))}
+                  </p>
+                )}
+              </div>
               <div className={styles.levelControl}>
                 <button
                   type="button"

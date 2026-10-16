@@ -20,7 +20,7 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    its several internal passes inside that one engine pass — it is not a
    second call, in this rule's count or in the worker's. **Every repeated
    sweep warm-starts** its own iteration from the baseline's already-converged
-   schedule instead of re-seeding from the rotation's authored window, carried
+   schedule instead of re-seeding from the default break, carried
    down through its own request kind and hook the same way the baseline's DPS
    already is.
 2. **The client assigns request ids; a hook never numbers its own requests.**
@@ -114,6 +114,14 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
     remaining time are its information, and a module declared with a literal
     empty `effects` array, a state marker other modules read. A gate a build
     opens for the whole fight as a bare unlock marker is not a chip at all.
+15. **A cast's chips show the state once its own trigger chain has landed.**
+    The cast's own end is the later of its last frame and its last own hit.
+    Ledger statuses are read at the last hit the cast's trigger chain lands, at
+    any depth, or at the cast's own end if that is later. The read sees only
+    writes owned by that cast or an earlier one, and unowned writes no later
+    than the cast's own end. A later cast's extension or cut of an earlier
+    window is rolled back. Class-buff modules and mechanic chips are read at
+    the cast's own end.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
 

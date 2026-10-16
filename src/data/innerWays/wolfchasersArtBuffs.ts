@@ -20,9 +20,7 @@ export function wineGuBuffDef() {
     name: "Wine Gu",
     requires: { param: PARAM.wolfchasersArt, minTier: 6 },
     affectsAll: true,
-    // In-game behaviour as of 2026-09-10: this one raises the damage of an
-    // attack, and leaves a damage-over-time tick alone.
-    reachesDotTicks: false,
+    reachesDotTicks: true,
     duration: 15,
     // In-game values as of 2026-09-24: Sober Sorrow's 3rd hit (45.4 frames in) opens the window.
     buffAppliesAfterSec: 45.4 / 60,

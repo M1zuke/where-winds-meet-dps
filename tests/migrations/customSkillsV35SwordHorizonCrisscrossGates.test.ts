@@ -204,7 +204,11 @@ function expectAvailabilityHealed(healed: Skill) {
   expect(healed.castConditions).toEqual([SWORD_HORIZON_CONDITION])
 }
 
-function expectCutLengthHealed(id: keyof typeof CUT_LENGTH_SPEC, healed: Skill) {
+function expectCutLengthHealed(
+  id: keyof typeof CUT_LENGTH_SPEC,
+  healed: Skill,
+  castFrames: number = CUT_LENGTH_SPEC[id].castFrames,
+) {
   const spec = CUT_LENGTH_SPEC[id]
   const localId = id.replace(/^bellstrikeUmbra-/, "")
   expect(healed.hits[0]!.variants).toEqual([
@@ -216,7 +220,7 @@ function expectCutLengthHealed(id: keyof typeof CUT_LENGTH_SPEC, healed: Skill) 
       attributeMultiplier: spec.attributeMultiplier,
       physFixed: spec.physFixed,
       attributeFixed: spec.attributeFixed,
-      castFrames: spec.castFrames,
+      castFrames,
     },
   ])
 }
@@ -370,6 +374,6 @@ describe("every healed skill survives the hydrator too", () => {
     const swordspecial4Hit = loaded.find(
       (candidate) => candidate.id === "bellstrikeUmbra-swordspecial-4-hit",
     )!
-    expectCutLengthHealed("bellstrikeUmbra-swordspecial-4-hit", swordspecial4Hit)
+    expectCutLengthHealed("bellstrikeUmbra-swordspecial-4-hit", swordspecial4Hit, 76.96)
   })
 })

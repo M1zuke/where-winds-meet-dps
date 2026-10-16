@@ -19,7 +19,7 @@ it("resolves the 30-second preset, whose Dragon Head cast runs past its own wind
   })
   expect(result.resources?.[0].launches).toHaveLength(3)
   const finalLaunch = result.resources![0].launches[2]
-  expect(finalLaunch.ticks).toBe(19)
+  expect(finalLaunch.ticks).toBe(16)
   expect(result.rotationDuration).toBe(30)
   expect(result.castDuration).toBeGreaterThan(30)
   // Its own long cast carries the Dragon Head - Plus hit past the window's

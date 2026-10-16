@@ -11,10 +11,11 @@ const DRILL_HIT = {
   physFixed: 103.8,
   attributeFixed: 56.58,
 }
-// In-game values as of 2026-09-24: the 8 drill hits' frames from the
+// In-game values as of 2026-10-16: the 8 drill hits' frames from the
 // release, folded onto the 30 f minimum press-to-release hold for this
-// stage, then the finisher.
-const DRILL_FRAMES = [35, 44, 53, 62, 71, 81, 91, 101]
+// stage, then the finisher 14.97 f into the finishing clip, which starts
+// 75.6 f after the release.
+const DRILL_FRAMES = [34.5, 43.9, 53.1, 62.1, 71, 81, 90.7, 101]
 
 export const spearheavyStage1 = defineSkill({
   id: SKILL.spearheavyStage1,
@@ -31,7 +32,9 @@ export const spearheavyStage1 = defineSkill({
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
   meterDrains: DRIFTING_THRUST_STAGE_1_DRAIN,
   meterFreezes: DRIFTING_THRUST_FREEZE,
-  castFrames: 120,
+  // The 30 f minimum hold, then the finisher's own cast length after its
+  // start: in-game animation, 2026-10-15.
+  castFrames: 173,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
@@ -40,7 +43,7 @@ export const spearheavyStage1 = defineSkill({
   hits: [
     ...DRILL_FRAMES.map((frame, index) => hit(index, { frame, ...DRILL_HIT })),
     hit(DRILL_FRAMES.length, {
-      frame: 117,
+      frame: 120.57,
       physMultiplier: 0.7505268,
       attributeMultiplier: 1.1257902,
       physFixed: 207.6,
@@ -48,5 +51,5 @@ export const spearheavyStage1 = defineSkill({
     }),
   ],
   createdAt: "2026-09-24T00:00:00.000Z",
-  updatedAt: "2026-09-24T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

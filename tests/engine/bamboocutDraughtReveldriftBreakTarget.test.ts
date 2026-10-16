@@ -11,18 +11,24 @@ import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 const CLASS = "bamboocutDraught"
 
 function runReveldrift(onBreakTarget: boolean, bingePoints: number) {
-  return runEngine({
-    ...defaultInputs,
-    classId: CLASS,
-    set: null,
-    activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: SKILL.reveldrift })],
-      qiBreak: onBreakTarget
-        ? { startSec: 0, durationSec: 10, lowQiLeadSec: 0 }
-        : { startSec: 9999, durationSec: 0, lowQiLeadSec: 0 },
-      openingStacks: { [STATUS.bingePoints]: bingePoints },
-    }),
-  })
+  return runEngine(
+    {
+      ...defaultInputs,
+      classId: CLASS,
+      set: null,
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [makeStep({ skillId: SKILL.reveldrift })],
+        openingStacks: { [STATUS.bingePoints]: bingePoints },
+      }),
+    },
+    {
+      fixedQiBreaks: [
+        onBreakTarget
+          ? { startSec: 0, durationSec: 10, lowQiLeadSec: 0 }
+          : { startSec: 9999, durationSec: 0, lowQiLeadSec: 0 },
+      ],
+    },
+  )
 }
 
 function bingePointsAfterCast(result: ReturnType<typeof runReveldrift>): number {

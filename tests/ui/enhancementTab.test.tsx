@@ -1,12 +1,42 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import { enhancementCap } from "../../src/definitions/baseStats"
+import { defaultEnhancementLevels, enhancementCap } from "../../src/definitions/baseStats"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmContext } from "../../src/ui/components/confirm-dialog/confirmContext"
 import { EnhancementTab } from "../../src/ui/features/talents/enhancement-tab/EnhancementTab"
-import type { Inputs } from "../../src/engine/types"
+import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
+
+const inputsAtBreakthrough17: Inputs = {
+  ...defaultInputs,
+  breakthrough: 17,
+  enhancements: defaultEnhancementLevels(17),
+}
+
+function inputsWithDiscAtGearLevel(gearLevel: GearLevel): Inputs {
+  const disc = {
+    id: "disc-under-test",
+    slot: "disc",
+    level: gearLevel,
+    rarity: "legendary",
+    minPhys: 0,
+    maxPhys: 0,
+    hp: 0,
+    physDef: 0,
+    words: Array.from({ length: 5 }, () => ({ word: "", value: 0, retuned: false })),
+    attunement: "",
+    attunementValue: 0,
+    relayed: false,
+  } as unknown as GearPiece
+  return {
+    ...defaultInputs,
+    breakthrough: 18,
+    enhancements: defaultEnhancementLevels(18),
+    inventory: [disc],
+    equipped: { ...defaultInputs.equipped, disc: disc.id },
+  }
+}
 
 function renderTab(inputs: Inputs = defaultInputs, onChange: (next: Inputs) => void = () => {}) {
   return render(
@@ -19,6 +49,10 @@ function renderTab(inputs: Inputs = defaultInputs, onChange: (next: Inputs) => v
 }
 
 function cardFor(heading: string): HTMLElement {
+  return screen.getByRole("heading", { level: 2, name: heading }).closest<HTMLElement>(".panel")!
+}
+
+function headerFor(heading: string): HTMLElement {
   return screen.getByRole("heading", { level: 2, name: heading }).parentElement!
 }
 
@@ -27,8 +61,8 @@ describe("the Enhancement tab", () => {
     renderTab()
     const headings = screen.getAllByRole("heading", { level: 2 }).map((node) => node.textContent)
     expect(headings).toEqual([
-      "Left Weapon",
-      "Right Weapon",
+      "Strategic Sword",
+      "Heavenquaker Spear",
       "Helm",
       "Armor",
       "Disc",
@@ -38,8 +72,8 @@ describe("the Enhancement tab", () => {
     ])
   })
 
-  it("shows the level 65 default and its stats on every card", () => {
-    renderTab()
+  it("shows the breakthrough's default level and its stats on every card", () => {
+    renderTab(inputsAtBreakthrough17)
     const discCard = cardFor("Disc")
     expect(discCard).toHaveTextContent("65")
     expect(discCard).toHaveTextContent("Max Phys")
@@ -101,7 +135,7 @@ describe("the Enhancement tab", () => {
     expect(discCard.querySelector('[aria-label="Decrease level"]')).toBeDisabled()
   })
 
-  it("does not let a level stored above the current cap be incremented further", () => {
+  it("shows a level stored above the current cap as the cap and blocks incrementing", () => {
     const cap = enhancementCap(
       gearLevelForBreakthrough(defaultInputs.breakthrough),
       defaultInputs.breakthrough,
@@ -112,16 +146,52 @@ describe("the Enhancement tab", () => {
     }
     renderTab(inputs)
     const discCard = cardFor("Disc")
-    expect(discCard).toHaveTextContent(String(cap + 50))
+    expect(discCard).toHaveTextContent(`${cap} / ${cap}`)
+    expect(discCard).not.toHaveTextContent(String(cap + 50))
     expect(discCard.querySelector('[aria-label="Increase level"]')).toBeDisabled()
   })
 
+  it("resets every slot to the highest level the breakthrough allows", async () => {
+    const onChange = vi.fn()
+    renderTab(
+      { ...inputsAtBreakthrough17, enhancements: { ...defaultInputs.enhancements } },
+      onChange,
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalled())
+    expect(onChange.mock.lastCall![0].enhancements).toEqual(defaultEnhancementLevels(17))
+  })
+
+  it("resets an equipped low-gear slot to its piece's cap and an empty slot to the breakthrough cap", async () => {
+    const onChange = vi.fn()
+    const inputs = inputsWithDiscAtGearLevel(96)
+    renderTab(
+      { ...inputs, enhancements: { ...inputs.enhancements, disc: 10, pendant: 10 } },
+      onChange,
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalled())
+    const reset = onChange.mock.lastCall![0].enhancements
+    expect(reset.disc).toBe(65)
+    expect(reset.pendant).toBe(70)
+  })
+
   it("shows the average-level bonus", () => {
-    renderTab()
+    renderTab(inputsAtBreakthrough17)
     expect(screen.getByText("Average Enhancement Level").parentElement).toHaveTextContent("65")
     expect(screen.getByText("Average-Level Max HP").parentElement).toHaveTextContent(
       (9864).toLocaleString(),
     )
     expect(screen.getByText("Average-Level Max HP %").parentElement).toHaveTextContent("20.00%")
+  })
+
+  it("hints at the level a higher gear level unlocks on a gear-limited card", () => {
+    renderTab(inputsWithDiscAtGearLevel(96))
+    expect(headerFor("Disc")).toHaveTextContent("Up to 70 at gear level 100")
+  })
+
+  it("shows no gear level hint on a card already at the breakthrough maximum", () => {
+    renderTab(inputsWithDiscAtGearLevel(100))
+    expect(cardFor("Disc")).not.toHaveTextContent("at gear level")
   })
 })

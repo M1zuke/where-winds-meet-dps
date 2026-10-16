@@ -7,7 +7,8 @@ import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { targetLevelLabel } from "../shared/targetLevelLabel"
 import styles from "./GearSlotTiles.module.scss"
 
 interface Props {
@@ -89,7 +90,7 @@ export function GearSlotTiles({
                 ✎
               </span>
             )}
-            <div className={styles.gearTileSlot}>{t(GEAR_SLOT_KEYS[slot])}</div>
+            <div className={styles.gearTileSlot}>{t(gearSlotLabelKey(slot, profile.classId))}</div>
             {piece?.label && <div className={styles.gearTileLabel}>{piece.label}</div>}
             <div className={styles.gearTilePiece}>
               {piece
@@ -99,13 +100,17 @@ export function GearSlotTiles({
             {piece && (
               <div className={styles.gearTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
                 <SlotStat
-                  label={t("gear.slotTiles.max94")}
+                  label={targetLevelLabel(
+                    t("gear.slotTiles.max94"),
+                    piece.level,
+                    delta?.upgradedLevel,
+                  )}
                   hint={t(DELTA_HINT_KEYS.upgraded)}
                   delta={delta?.upgraded}
                   pending={dpsDeltasPending}
                 />
                 <SlotStat
-                  label="FP"
+                  label={targetLevelLabel("FP", piece.level, delta?.fullPotentialLevel)}
                   hint={t(DELTA_HINT_KEYS.fullPotential)}
                   delta={delta?.fullPotential}
                   pending={dpsDeltasPending}

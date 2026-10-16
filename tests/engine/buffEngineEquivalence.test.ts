@@ -164,6 +164,7 @@ function summarizeDamage(result: DamageEffectsResult) {
 // no reason to carry ~11 tag combinations × every probed time step for it in
 // the committed fixture.
 const SPELLED_OUT_CLASS_ID = "bellstrikeUmbra"
+const SPELLED_OUT_CLASS_MAX_PHYS_ATTACK = 2000
 
 function dynamicDumpFor(classId: string) {
   const buffs = buffDefsForClass(classId)
@@ -173,6 +174,7 @@ function dynamicDumpFor(classId: string) {
   // Forces every gate open so the simulation exercises every branch a build
   // could reach, not just whatever the default build happens to enable.
   const params: Record<string, unknown> = { armorSet: "jadeware" }
+  if (classId === SPELLED_OUT_CLASS_ID) params.maxPhysAttack = SPELLED_OUT_CLASS_MAX_PHYS_ATTACK
   for (const module of allModules) {
     const requirements = [module.requires, ...Object.values(module.grantRequires ?? {})]
     for (const requires of requirements) {

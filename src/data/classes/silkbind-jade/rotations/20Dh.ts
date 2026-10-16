@@ -53,7 +53,6 @@ export default defineRotation({
   createdAt: "2026-10-07T14:51:41.417Z",
   updatedAt: "2026-10-08T20:19:29.729Z",
   openingStacks: {},
-  qiBreak: { startSec: 31, durationSec: 10, lowQiLeadSec: 5 },
   pingMs: 15,
   averageFps: 120,
   serverProcessingMs: 32,

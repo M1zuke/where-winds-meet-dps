@@ -17,13 +17,22 @@ import type {
   GearSlot,
   GearWordEntry,
   Inputs,
+  WeaponName,
 } from "../../../../engine/types"
+import {
+  classDefinition,
+  weaponSlotForWeaponType,
+  weaponTypeForSlot,
+} from "../../../../definitions/classes/registry"
+import { martialArtDefinition } from "../../../../definitions/martialArts/registry"
 import { newGearPieceId } from "../../../../storage"
 import { AFFIX_ID_TO_STAT_LINE } from "./affixStatLineTable"
 import { targetKey } from "./dashboardGearPayload"
 import { resolveInnerWays } from "./importedInnerWays"
 import type {
   AffixTarget,
+  EquippedMartialArt,
+  EquippedMartialArts,
   GearImportResult,
   ImportedAffix,
   ImportedPiece,
@@ -77,11 +86,12 @@ function legalTargets(
       max: attunementMax(option, level),
     }))
   }
+  const weapon = slot ? weaponTypeForSlot(inputs.classId, slot) : null
   const pool = !slot
     ? null
     : lineIndex === null
-      ? gearWordPool(level, slot)
-      : gearWordPoolForLine(level, slot, lineIndex)
+      ? gearWordPool(level, slot, weapon)
+      : gearWordPoolForLine(level, slot, lineIndex, weapon)
   return getWordSpecs(inputs, level)
     .filter((spec) => !pool || pool.includes(spec.word))
     .map((spec) => ({
@@ -178,11 +188,77 @@ function levelAgreedByWeapons(pieces: readonly ImportedPiece[]): GearLevel | nul
   return levels.size === 1 ? [...levels][0]! : null
 }
 
+const MAIN_ART_GAME_SLOT = "1"
+const SUB_ART_GAME_SLOT = "2"
+const WEAPON_GAME_SLOTS: readonly string[] = [MAIN_ART_GAME_SLOT, SUB_ART_GAME_SLOT]
+
+function equippedArtWeaponType(
+  gameSlotId: string,
+  equippedMartialArts: EquippedMartialArts | null,
+): WeaponName | null {
+  const equipped =
+    gameSlotId === MAIN_ART_GAME_SLOT ? equippedMartialArts?.main : equippedMartialArts?.sub
+  return equipped?.martialArtId
+    ? (martialArtDefinition(equipped.martialArtId)?.weaponType ?? null)
+    : null
+}
+
+function weaponSlotByMartialArt(
+  piece: ImportedPiece,
+  equippedMartialArts: EquippedMartialArts | null,
+  classId: string,
+): GearSlot | null {
+  const weaponType =
+    piece.weaponType ?? equippedArtWeaponType(piece.gameSlotId, equippedMartialArts)
+  return weaponType ? weaponSlotForWeaponType(classId, weaponType) : null
+}
+
+function placeWeaponsByMartialArt(result: GearImportResult, classId: string): ImportedPiece[] {
+  const weaponPieces = result.pieces.filter(
+    (piece) => WEAPON_GAME_SLOTS.includes(piece.gameSlotId) && piece.slot.kind === "mapped",
+  )
+  const placements = weaponPieces.map((piece) => ({
+    piece,
+    byMartialArt: weaponSlotByMartialArt(piece, result.equippedMartialArts, classId),
+  }))
+  const proposedSlots = placements.map(
+    ({ piece, byMartialArt }) => byMartialArt ?? (piece.slot as { slot: GearSlot }).slot,
+  )
+  const collides = new Set(proposedSlots).size !== proposedSlots.length
+
+  return result.pieces.map((piece) => {
+    const placement = placements.find((candidate) => candidate.piece === piece)
+    if (!placement) return piece
+    if (placement.byMartialArt === null || collides)
+      return { ...piece, weaponPlacedByGameSlot: true }
+    return { ...piece, slot: { kind: "mapped", slot: placement.byMartialArt } }
+  })
+}
+
+function flagForeignMartialArts(
+  equippedMartialArts: EquippedMartialArts | null,
+  classId: string,
+): EquippedMartialArts | null {
+  if (!equippedMartialArts) return null
+  const classArts: readonly string[] = classDefinition(classId)?.weapons ?? []
+  const flag = (equipped: EquippedMartialArt | null): EquippedMartialArt | null =>
+    equipped && {
+      ...equipped,
+      foreignToClass: !!equipped.martialArtId && !classArts.includes(equipped.martialArtId),
+    }
+  return { main: flag(equippedMartialArts.main), sub: flag(equippedMartialArts.sub) }
+}
+
 export function resolveAgainstBuild(
-  result: GearImportResult,
+  importResult: GearImportResult,
   inputs: Inputs,
   choices: AffixChoices = {},
 ): GearImportResult {
+  const result: GearImportResult = {
+    ...importResult,
+    equippedMartialArts: flagForeignMartialArts(importResult.equippedMartialArts, inputs.classId),
+    pieces: placeWeaponsByMartialArt(importResult, inputs.classId),
+  }
   const withIdentity = result.pieces.map((piece) => {
     const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
     return {

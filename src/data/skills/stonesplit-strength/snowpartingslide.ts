@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -12,7 +13,9 @@ export const snowpartingslide = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSlide,
+  startLatency: "serverRoundTrip",
   receives: SNOWPARTING_BLADE_RECEIVES,
+  triggersBuffs: [BUFF.jadeware],
   castFrames: 42,
   triggerable: true,
   // In-game values as of 2026-09-28: 8 m approach reach, plus a further

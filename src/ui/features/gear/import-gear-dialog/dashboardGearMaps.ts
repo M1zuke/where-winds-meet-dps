@@ -5,7 +5,7 @@ import type { GearSlot } from "../../../../engine/types"
  * `wearEquipsDetailed` maps. Mapping confirmed against a live account
  * (user report, 2026-08-11).
  *
- * Slot 9 is the bow and slot 21 the ring; neither is a modeled gear slot — the
+ * Slot 9 is the thumb ring and slot 21 the bow; neither is a modeled gear slot — the
  * bow is `Inputs.bowSet`, not a `GearPiece` — so both are hidden from the preview.
  *
  * A key mapped to null is a game slot we know about and have no app slot for; a

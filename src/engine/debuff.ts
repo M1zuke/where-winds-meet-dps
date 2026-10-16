@@ -1,4 +1,5 @@
 import type { BuffStatEffect, StackScaling, BuffActivation } from "./buff"
+import type { ProjectileSpec } from "./skill"
 import type { AttributeKey } from "./types"
 
 export interface DotStackShape {
@@ -15,11 +16,18 @@ export interface DebuffDotSpec {
   // application carries 0. Absent, the first tick falls one interval in.
   firstTickOffsetFrames?: number | null
   additionalTicks?: { offsetsFrames: readonly number[]; requiresBuff: string }
+  // Each pulse fires a bullet that lands after its flight at the live target
+  // distance, in place of landing on the pulse itself.
+  projectile?: ProjectileSpec
   // Whether each tick schedules the next one, which is what makes the interval
-  // run long (see `dot.ts`'s tick-timer factor). False for a DoT that pulses on
-  // a fixed schedule instead. Absent means it has not been established for this
-  // DoT yet, and the interval is left alone.
+  // and the first tick run long (see `dot.ts`'s tick timer). False for a DoT
+  // that pulses on a fixed schedule instead. Absent means it has not been
+  // established for this DoT yet, and the interval is left alone.
   reschedulesPerTick?: boolean | null
+  // Whether each run re-arms its timer toward the next absolute deadline of the
+  // original grid, so the lateness of one run does not carry into the next
+  // deadline but shifts the delay requested for it (see `dot.ts`).
+  rearmsToAbsoluteDeadline?: boolean | null
   physMultiplier: number
   physFixed: number
   attributeMultiplier: number
@@ -54,9 +62,6 @@ export interface DebuffDotSpec {
 export interface DotDetonationSpec {
   skillId: string
   retainStacks?: number
-  retainParam?: string
-  retainMinTier?: number
-  retainParamStacks?: number
 }
 
 export interface DebuffEchoReleaseAdjustment {
@@ -69,6 +74,11 @@ export interface DebuffEchoSpec {
   breakdownName: string
   skillType: string
   releaseAdjustment?: DebuffEchoReleaseAdjustment | null
+}
+
+export interface DebuffRecallSpec {
+  tag: string
+  exemptSkillIds?: readonly string[]
 }
 
 export interface Debuff {
@@ -90,6 +100,9 @@ export interface Debuff {
   stackScaling: StackScaling
   detonation?: DotDetonationSpec | null
   echo?: DebuffEchoSpec | null
+  // A rotation step whose skill carries the tag ends the running window at its
+  // own start — the summoned source is recalled — unless its skill is exempt.
+  recall?: DebuffRecallSpec | null
   createdAt: string
   updatedAt: string
 }

@@ -9,6 +9,12 @@ import type {
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { isGearWordId } from "../../../../data/stats/statLines"
 import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
+import {
+  tunementDrawChances,
+  oneRetuneTunedLinesChance,
+  tunementSetChance,
+  wordsOnOtherTunableLines,
+} from "../../../../engine/tunementChance"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
@@ -29,7 +35,9 @@ import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { attributeForClass, weaponTypeForSlot } from "../../../../definitions/classes/registry"
+import { retuneWeightPool } from "../../../../data/stats/gearRetuneWeights"
 import { GEAR_LEVEL_KEYS } from "../shared/gearLevelKeys"
 import type { GearScreenshotRowSlot } from "../screenshot-ocr/ocrGearPiece"
 import { RetuneOptionsDialog } from "../retune-options-dialog/RetuneOptionsDialog"
@@ -52,6 +60,15 @@ function fmtDpsDelta(deltaDps: number): string {
   if (rounded > 0) return `+${rounded.toLocaleString()}`
   if (rounded < 0) return rounded.toLocaleString()
   return "+0"
+}
+
+const SMALL_CHANCE = 0.0001
+
+function formatSetChance(chance: number): string {
+  if (chance <= 0) return "0%"
+  const percent =
+    chance >= SMALL_CHANCE ? `${(chance * 100).toFixed(2)}%` : `${(chance * 100).toPrecision(2)}%`
+  return `${percent} (1 : ${Math.round(1 / chance).toLocaleString()})`
 }
 
 function deltaSignClass(deltaDps: number): string {
@@ -92,8 +109,9 @@ export function GearPieceForm({
   }
 
   const slotOptions: ComboboxOption[] = useMemo(
-    () => GEAR_SLOTS.map((slot) => ({ value: slot, label: t(GEAR_SLOT_KEYS[slot]) })),
-    [t],
+    () =>
+      GEAR_SLOTS.map((slot) => ({ value: slot, label: t(gearSlotLabelKey(slot, inputs.classId)) })),
+    [t, inputs.classId],
   )
   const levelOptions: ComboboxOption[] = useMemo(
     () =>
@@ -112,16 +130,44 @@ export function GearPieceForm({
   )
   const buildWordSpecs = useMemo(() => getWordSpecs(inputs, piece.level), [inputs, piece.level])
   function wordSpecsForLine(lineIndex: number) {
-    const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex)
+    const pool = gearWordPoolForLine(
+      piece.level,
+      piece.slot,
+      lineIndex,
+      weaponTypeForSlot(inputs.classId, piece.slot),
+    )
     return buildWordSpecs.filter((spec) => pool.includes(spec.word))
   }
   function wordOptionsForLine(lineIndex: number): ComboboxOption[] {
-    const list = wordSpecsForLine(lineIndex).map((spec) => ({
-      value: spec.word,
-      label: t(statLineKey(spec.word), spec.label),
-    }))
+    const drawChances = tunementDrawChances(
+      piece,
+      weaponTypeForSlot(inputs.classId, piece.slot),
+      lineIndex,
+    )
+    const taken = wordsOnOtherTunableLines(piece, lineIndex)
+    const list = wordSpecsForLine(lineIndex)
+      .map((spec) => ({
+        chance: drawChances.get(spec.word) ?? 0,
+        option: {
+          value: spec.word,
+          label: t(statLineKey(spec.word), spec.label),
+          disabled: taken.has(spec.word),
+        },
+      }))
+      .sort(
+        (left, right) =>
+          Number(left.chance === 0) - Number(right.chance === 0) ||
+          left.option.label.localeCompare(right.option.label),
+      )
+      .map(({ chance, option }) => ({ ...option, detail: `${(chance * 100).toFixed(1)}%` }))
     return [{ value: "", label: t("common.none") }, ...list]
   }
+  const setChance = tunementSetChance(piece, weaponTypeForSlot(inputs.classId, piece.slot))
+  const oneRetuneTunedLines = useMemo(() => {
+    const attribute = attributeForClass(inputs.classId)
+    const library = attribute ? retuneWeightPool(attribute, piece.level, piece.slot) : null
+    return oneRetuneTunedLinesChance(piece, weaponTypeForSlot(inputs.classId, piece.slot), library)
+  }, [piece, inputs.classId])
   const attunementCatalog = useMemo(
     () => attunementsFor(piece.slot, inputs.classId),
     [piece.slot, inputs.classId],
@@ -390,6 +436,25 @@ export function GearPieceForm({
             )
           })}
         </div>
+        {setChance !== null && (
+          <div className={styles.tunementSetChance}>
+            <span>
+              {t("gear.pieceForm.tunementSetChance")}
+              <HelpHint text={t("gear.pieceForm.tunementSetChanceHint")} />
+            </span>
+            <b>{formatSetChance(setChance)}</b>
+          </div>
+        )}
+        {oneRetuneTunedLines !== null && (
+          <div className={styles.tunementSetChance}>
+            <span>
+              {t("gear.pieceForm.tunedLinesOneRetuneChance")} ({t("gear.pieceForm.retunedLine")}{" "}
+              {oneRetuneTunedLines.lineIndex + 1})
+              <HelpHint text={t("gear.pieceForm.tunedLinesOneRetuneChanceHint")} />
+            </span>
+            <b>{formatSetChance(oneRetuneTunedLines.chance)}</b>
+          </div>
+        )}
       </div>
 
       {(() => {

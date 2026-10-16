@@ -38,6 +38,7 @@ export const perfectDodge = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Bamboocut",
   castTag: CAST.perfectDodge,
+  startLatency: "serverRoundTrip",
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 0,
   triggerable: true,

@@ -1,6 +1,7 @@
 import type { GearWordId } from "../data/stats/statLines"
 import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
+import type { QiDamageLog } from "./qiBar"
 import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
 
 export type { GearWordId } from "../data/stats/statLines"
@@ -93,6 +94,10 @@ export interface Inputs {
   // stake (docs/TIMELINE.md § "Qi bar").
   qiTarget?: QiTargetId
 
+  // The Formless share inside the primary attribute block. Derived with the
+  // stat paths below and never persisted.
+  formlessAttack?: { min: number; max: number }
+
   phys: AttackBlock
   bellstrike: AttackBlock
   stonesplit: AttackBlock
@@ -133,6 +138,7 @@ export interface Inputs {
   bossBoost: number
   singleMysticBoost: number
   areaMysticBoost: number
+  allMysticBoost: number
 
   classSpecificAttunement: Record<string, number>
 
@@ -350,6 +356,20 @@ export interface EngineRunOptions {
   // single pass, no fixed-point iteration. Never read from `Inputs`, storage
   // or the UI.
   fixedQiBreaks?: readonly QiBreakWindow[]
+  qiDamageLog?: QiDamageLog
+}
+
+export interface QiTracePoint {
+  timeSec: number
+  value: number
+  refill?: true
+}
+
+// Before the first point the bar stands at `max`.
+export interface QiTrace {
+  max: number
+  points: readonly QiTracePoint[]
+  directImmunities: readonly { startSec: number; endSec: number }[]
 }
 
 export interface QiEdgeWarning {
@@ -389,9 +409,8 @@ export interface Result {
   // Every break the Qi bar's own trace recorded this run — docs/TIMELINE.md
   // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
   qiBreaks?: readonly { startSec: number; endSec: number }[]
-  // A coarse, sampled Qi fraction over time, for a future chart — never
-  // persisted.
-  qiTrace?: readonly { timeSec: number; fraction: number }[]
+  qiTrace?: QiTrace
+  qiDamageLog?: QiDamageLog
   // How many fixed-point passes the simulated schedule took to converge.
   qiIterations?: number
   casts?: RotationCast[]
@@ -420,6 +439,7 @@ export interface CastMeterLevel {
   name: string
   amount: number
   capacity: number
+  unitSize?: number
 }
 
 export interface RotationCast {

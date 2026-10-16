@@ -1,77 +1,136 @@
-// Deliberate divergence from the site's `concentration` def
-// (`.tmp/site/deobfuscated.js` ~L5570-5590): the site treats Concentration as
-// always-on once the inner way is selected — its `counterMechanic` is present
-// in the def's data but never actually evaluated at runtime in the extracted
-// bundle. Here it's modeled as a game-accurate 4-hit ramp/10s window.
 import { mulberry32 } from "../rng"
+import type { MechanicObservedEvent } from "../mechanics/types"
 
-const STEP_SEC = 0.05
 const WINDOW_SEC = 10
-const REQUIRED_HITS = 4
+const FOCUS_MAX = 50
+const FOCUS_DECAY_DELAY_SEC = 3
+const FOCUS_DECAY_STEP_SEC = 0.1
+const FOCUS_DECAY_PER_STEP = 0.5
 const SEED_OFFSET = 9173
 const SIM_RUNS = 500
+const TIME_EPSILON_SEC = 1e-6
 
-export interface ConcentrationSchedule {
-  getActiveProbAtTime(tSec: number): number
+export interface ConcentrationRules {
+  focusPerAffinity: number
+  chanceBonusWhileActive: number
 }
 
-const INACTIVE_SCHEDULE: ConcentrationSchedule = { getActiveProbAtTime: () => 0 }
+interface Trajectory {
+  random: () => number
+  focusAtDecayStart: number
+  decayStartSec: number
+  segmentStartSec: number
+  segmentEndSec: number
+}
 
-export function concentrationActiveProbSchedule(
-  weaponHitTimesSec: readonly number[],
-  p: number,
-  rotationDurationSec: number,
-  runRng?: () => number,
-): ConcentrationSchedule {
-  if (weaponHitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return INACTIVE_SCHEDULE
+function countBelow(sorted: Float64Array, value: number): number {
+  let low = 0
+  let high = sorted.length
+  while (low < high) {
+    const middle = (low + high) >>> 1
+    if (sorted[middle] < value) low = middle + 1
+    else high = middle
+  }
+  return low
+}
 
-  // The grid starts at the first weapon hit, not the DPS timer's own start —
-  // Concentration reacts to weapon hits, so relabelling where the timer opens
-  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
-  const originSec = weaponHitTimesSec[0]
-  const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
-  const accum = new Float64Array(steps)
-  const simRuns = runRng ? 1 : SIM_RUNS
+function countAtMost(sorted: Float64Array, value: number): number {
+  let low = 0
+  let high = sorted.length
+  while (low < high) {
+    const middle = (low + high) >>> 1
+    if (sorted[middle] <= value) low = middle + 1
+    else high = middle
+  }
+  return low
+}
 
-  for (let sim = 0; sim < simRuns; sim++) {
-    const rng = runRng ?? mulberry32(SEED_OFFSET + sim)
-    let counter = 0
-    let active = false
-    let lastAffinityHitTime = -Infinity
-    let hitIdx = 0
-    for (let step = 0; step < steps; step++) {
-      const now = originSec + step * STEP_SEC
-      while (hitIdx < weaponHitTimesSec.length && weaponHitTimesSec[hitIdx] <= now) {
-        const hitTime = weaponHitTimesSec[hitIdx]
-        if (active && hitTime - lastAffinityHitTime > WINDOW_SEC) {
-          active = false
-          counter = 0
-        }
-        if (rng() < p) {
-          lastAffinityHitTime = hitTime
-          if (!active) {
-            counter += 1
-            if (counter >= REQUIRED_HITS) active = true
-          }
-        }
-        hitIdx++
-      }
-      if (active && now - lastAffinityHitTime > WINDOW_SEC) {
-        active = false
-        counter = 0
-      }
-      accum[step] += active ? 1 : 0
-    }
+function focusAt(trajectory: Trajectory, timeSec: number): number {
+  if (timeSec <= trajectory.decayStartSec) return trajectory.focusAtDecayStart
+  const steps = Math.floor(
+    (timeSec - trajectory.decayStartSec) / FOCUS_DECAY_STEP_SEC + TIME_EPSILON_SEC,
+  )
+  return Math.max(0, trajectory.focusAtDecayStart - FOCUS_DECAY_PER_STEP * steps)
+}
+
+const isOpen = (trajectory: Trajectory) => trajectory.segmentEndSec > -Infinity
+
+export class ConcentrationTracker {
+  private readonly trajectories: Trajectory[]
+  private readonly closedStarts: number[] = []
+  private readonly closedEnds: number[] = []
+  private history: { starts: Float64Array; ends: Float64Array } | null = null
+
+  constructor(
+    private readonly rules: ConcentrationRules,
+    runRandom?: () => number,
+  ) {
+    const count = runRandom ? 1 : SIM_RUNS
+    this.trajectories = Array.from({ length: count }, (_unused, index) => ({
+      random: runRandom ?? mulberry32(SEED_OFFSET + index),
+      focusAtDecayStart: 0,
+      decayStartSec: -Infinity,
+      segmentStartSec: Infinity,
+      segmentEndSec: -Infinity,
+    }))
   }
 
-  const activeProb = new Float64Array(steps)
-  for (let step = 0; step < steps; step++) activeProb[step] = accum[step] / simRuns
+  activeShareNow(timeSec: number): number {
+    let up = 0
+    for (const trajectory of this.trajectories)
+      if (trajectory.segmentEndSec - timeSec > TIME_EPSILON_SEC) up++
+    return up / this.trajectories.length
+  }
 
-  return {
-    getActiveProbAtTime(tSec: number): number {
-      if (tSec <= originSec) return activeProb[0]
-      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
-      return activeProb[idx]
-    },
+  // A window opens after the event that fills Focus, so a query at that event's
+  // own time reads it as down.
+  activeShareAtTime(timeSec: number): number {
+    if (!this.history) {
+      const starts = [...this.closedStarts]
+      const ends = [...this.closedEnds]
+      for (const trajectory of this.trajectories) {
+        if (!isOpen(trajectory)) continue
+        starts.push(trajectory.segmentStartSec)
+        ends.push(trajectory.segmentEndSec)
+      }
+      this.history = {
+        starts: Float64Array.from(starts).sort(),
+        ends: Float64Array.from(ends).sort(),
+      }
+    }
+    const started = countBelow(this.history.starts, timeSec - TIME_EPSILON_SEC)
+    const ended = countAtMost(this.history.ends, timeSec + TIME_EPSILON_SEC)
+    return (started - ended) / this.trajectories.length
+  }
+
+  observe(event: MechanicObservedEvent): void {
+    this.history = null
+    if (event.occurrence <= 0) return
+    for (const trajectory of this.trajectories) {
+      if (isOpen(trajectory) && event.timeSec >= trajectory.segmentEndSec - TIME_EPSILON_SEC) {
+        this.closedStarts.push(trajectory.segmentStartSec)
+        this.closedEnds.push(trajectory.segmentEndSec)
+        trajectory.segmentStartSec = Infinity
+        trajectory.segmentEndSec = -Infinity
+      }
+      if (event.occurrence < 1 && !(trajectory.random() < event.occurrence)) continue
+      const concentrationUp = isOpen(trajectory)
+      const chance = Math.min(
+        1,
+        event.affinityChance + (concentrationUp ? this.rules.chanceBonusWhileActive : 0),
+      )
+      const rolledAffinity = event.rolledAffinity ?? trajectory.random() < chance
+      if (!rolledAffinity) continue
+
+      const focus = focusAt(trajectory, event.timeSec)
+      const raisedFocus = Math.min(FOCUS_MAX, focus + this.rules.focusPerAffinity)
+      if (raisedFocus <= focus) continue
+      trajectory.focusAtDecayStart = raisedFocus
+      trajectory.decayStartSec = event.timeSec + FOCUS_DECAY_DELAY_SEC
+      if (raisedFocus < FOCUS_MAX) continue
+
+      if (!isOpen(trajectory)) trajectory.segmentStartSec = event.timeSec
+      trajectory.segmentEndSec = event.timeSec + WINDOW_SEC
+    }
   }
 }

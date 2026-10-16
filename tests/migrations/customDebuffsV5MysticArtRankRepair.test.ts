@@ -130,7 +130,7 @@ describe("V5__mysticArtRankRepair — through the chain", () => {
     ])
     expect(
       loaded.find((debuff) => debuff.id === MYSTIC_DEBUFF.toadPoison)!.dot!.physMultiplier,
-    ).toBeCloseTo(1.62189, 10)
+    ).toBeCloseTo(1.622006, 10)
     const persisted = JSON.parse(localStorage.getItem(DEBUFFS_KEY)!) as RawCustomDebuffsBlob
     expect(persisted.v).toBe(LATEST_CUSTOM_DEBUFFS_VERSION)
     const written = localStorage.getItem(DEBUFFS_KEY)

@@ -5,9 +5,10 @@ import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 import {
-  bladeMomentumMeter,
-  bladeMomentumRequires,
-} from "../../classes/stonesplit-strength/bladeMomentumMeter"
+  BURNING_HEART_INNER_PASSION_BLADE_MOMENTUM_GATE,
+  BURNING_HEART_INNER_PASSION_STAGE_3_COST,
+  BURNING_HEART_INNER_PASSION_STAGE_3_DRAIN,
+} from "./buffs/burningHeartCharge"
 
 export const phalanxchargedS3Innerpassion = defineSkill({
   id: SKILL.phalanxchargedS3Innerpassion,
@@ -41,18 +42,10 @@ export const phalanxchargedS3Innerpassion = defineSkill({
   // itself needs Steadfast Devotion equipped at all — held past the stage-2
   // threshold with no talent, the charge still releases stage 2 (in-game
   // values as of 2026-09-24).
-  castConditions: [
-    { param: PARAM.steadfastDevotion, minTier: 1 },
-    { anyOf: [{ param: PARAM.steadfastDevotion, minTier: 4 }, bladeMomentumRequires("gt", 25)] },
-  ],
-  meterCosts: [
-    {
-      meterId: bladeMomentumMeter.id,
-      amount: 25,
-      requiresParam: PARAM.steadfastDevotion,
-      requiresMaxTier: 3,
-    },
-  ],
+  castConditions: [{ param: PARAM.steadfastDevotion, minTier: 1 }],
+  releaseGates: BURNING_HEART_INNER_PASSION_BLADE_MOMENTUM_GATE,
+  meterCosts: [BURNING_HEART_INNER_PASSION_STAGE_3_COST],
+  meterDrains: BURNING_HEART_INNER_PASSION_STAGE_3_DRAIN,
   // Cast length to the earliest next input for a full Inner Passion (1.5×
   // charge speed) hold to the stage-3 threshold (in-game values as of
   // 2026-09-24).
@@ -97,15 +90,15 @@ export const phalanxchargedS3Innerpassion = defineSkill({
     }),
     hit(2, {
       frame: 120,
-      physMultiplier: 1.7199,
-      attributeMultiplier: 2.5798,
+      physMultiplier: 1.719879,
+      attributeMultiplier: 2.579819,
       physFixed: 475.8,
       attributeFixed: 259.2,
     }),
     hit(3, {
       frame: 129,
-      physMultiplier: 4.0131,
-      attributeMultiplier: 6.0196,
+      physMultiplier: 4.013051,
+      attributeMultiplier: 6.019577,
       physFixed: 1110.2,
       attributeFixed: 604.8,
     }),

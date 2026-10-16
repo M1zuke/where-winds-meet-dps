@@ -6,7 +6,7 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import type { Inputs } from "../../src/engine/types"
 import { getAttunement } from "../../src/engine/attunements"
-import { ODDITY_BOARD, claimedOddityNodes } from "../../src/definitions/baseStats"
+import { RELEASED_ODDITY_BOARD, claimedOddityNodes } from "../../src/definitions/baseStats"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { SET_BY_ID } from "../../src/definitions/sets/registry"
 import { statLineLabel } from "../../src/data/stats/statLines"
@@ -49,7 +49,7 @@ describe("EquippedBuildDialog", () => {
     expect(screen.getByText("Bellstrike Umbra")).toBeInTheDocument()
     expect(screen.getByText(`DPS ${formatNumber(54321.1)}`)).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent(
       statLineLabel("swordBoost"),
     )
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
@@ -68,7 +68,7 @@ describe("EquippedBuildDialog", () => {
     renderDialog(withEmptyHelm)
 
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Empty slot")
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent(
       statLineLabel("swordBoost"),
     )
     expect(screen.getAllByRole("article")).toHaveLength(8)
@@ -80,7 +80,7 @@ describe("EquippedBuildDialog", () => {
     const armorSet = fixture.set ? SET_BY_ID[fixture.set] : null
     const enabledCount =
       fixture.martialArtsTalents.filter((talent) => talent.enabled).length +
-      ODDITY_BOARD.reduce(
+      RELEASED_ODDITY_BOARD.reduce(
         (total, region) =>
           total + claimedOddityNodes(fixture.unclaimedOddityNodes, region.key).length,
         0,

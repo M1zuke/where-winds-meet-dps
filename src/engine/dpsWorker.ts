@@ -1,6 +1,6 @@
 import { runEngine } from "./dps"
 import { FPS } from "./timeline"
-import { engineRunOptionsFrom } from "./qiBar"
+import { engineRunOptionsFrom, engineRunOptionsSharingQiOf } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
@@ -23,7 +23,7 @@ import {
 } from "./reattunement"
 import { attunementMax, attunementMin, attunementsFor, attunementLabelKey } from "./attunements"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
+import { ftDpsWhenEquipped, ftDpsWithSlotEmpty, type FullPotentialDps } from "./fullPotential"
 import { withCustomContent } from "./customContent"
 import { withDerivedStats } from "./derivedInputs"
 import {
@@ -46,12 +46,14 @@ import type {
   Arsenal,
   BowSet,
   EngineRunOptions,
+  GearLevel,
   GearPiece,
   GearSlot,
   GearWordId,
   Inputs,
   ItemRankingRow,
   OutcomeCounts,
+  Result,
   SkillTickResult,
 } from "./types"
 
@@ -66,8 +68,10 @@ function engineOptionsFrom(baselineQiBreaks: BaselineQiBreaks | undefined): Engi
 export interface DpsDelta {
   current: number
   upgraded: number
+  upgradedLevel: GearLevel
   fullPotential: number
   fullPotentialE: number
+  fullPotentialLevel: GearLevel
 }
 
 export interface DpsWorkerRequest {
@@ -125,13 +129,13 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
   const byId = new Map<string, GearPiece>()
   for (const piece of inputs.inventory) byId.set(piece.id, piece)
 
-  const ftDpsByPieceId = new Map<string, number>()
-  function ftDpsFor(piece: GearPiece): number {
-    const known = ftDpsByPieceId.get(piece.id)
+  const ftByPieceId = new Map<string, FullPotentialDps>()
+  function ftFor(piece: GearPiece): FullPotentialDps {
+    const known = ftByPieceId.get(piece.id)
     if (known !== undefined) return known
-    const ftDps = ftDpsWhenEquipped(piece, inputs, options)
-    ftDpsByPieceId.set(piece.id, ftDps)
-    return ftDps
+    const ft = ftDpsWhenEquipped(piece, inputs, options)
+    ftByPieceId.set(piece.id, ft)
+    return ft
   }
 
   const ftRefBySlot = new Map<GearSlot, number>()
@@ -140,7 +144,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     if (cached !== undefined) return cached
     const equippedId = inputs.equipped[slot]
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
-    const ref = equipped ? ftDpsFor(equipped) : ftDpsWithSlotEmpty(slot, inputs, options)
+    const ref = equipped ? ftFor(equipped).dps : ftDpsWithSlotEmpty(slot, inputs, options)
     ftRefBySlot.set(slot, ref)
     return ref
   }
@@ -154,22 +158,19 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     const unequippedBaseline = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
 
     const currentDps = dpsForSwap(unequippedBaseline, candidate, options)
-    const upgraded = maxRelayedClone(
-      candidate,
-      inputs,
-      gearLevelForBreakthrough(inputs.breakthrough),
-    )
+    const upgradedLevel = gearLevelForBreakthrough(inputs.breakthrough)
+    const upgraded = maxRelayedClone(candidate, inputs, upgradedLevel)
     const upgradedDps = dpsForSwap(unequippedBaseline, upgraded, options)
 
-    const ftCandidateDps = ftDpsFor(candidate)
-    const fullPotential = ftCandidateDps - baselineDps
-    const fullPotentialE = ftCandidateDps - ftReferenceForSlot(candidate.slot)
+    const ft = ftFor(candidate)
 
     out[id] = {
       current: currentDps - baselineDps,
       upgraded: upgradedDps - baselineDps,
-      fullPotential,
-      fullPotentialE,
+      upgradedLevel,
+      fullPotential: ft.dps - baselineDps,
+      fullPotentialE: ft.dps - ftReferenceForSlot(candidate.slot),
+      fullPotentialLevel: ft.level,
     }
   }
 
@@ -889,9 +890,13 @@ export interface GraduationWorkerResponse {
   graduationRate: number | null
 }
 
-function dpsFor(inputs: Inputs): number {
+function resultFor(inputs: Inputs, options?: EngineRunOptions): Result {
   const derived = withDerivedStats(inputs)
-  return runEngine(applyBowSet(applyArmorSet(derived))).dps
+  return runEngine(applyBowSet(applyArmorSet(derived)), options)
+}
+
+function dpsFor(inputs: Inputs): number {
+  return resultFor(inputs).dps
 }
 
 function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
@@ -936,13 +941,15 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
       graduationRate: null,
     }
   }
-  const currentDps = dpsFor(currentInputs)
-  const theoreticalDps = dpsFor(benchmarkInputs)
+  const benchmarkRun = resultFor(benchmarkInputs)
+  const theoreticalDps = benchmarkRun.dps
+  const sharedQiOptions = engineRunOptionsSharingQiOf(benchmarkRun, FPS)
+  const currentDps = resultFor(currentInputs, sharedQiOptions).dps
   return {
     reqId: req.reqId,
     currentDps,
     theoreticalDps,
-    relayedTheoreticalDps: dpsFor(relayedInputs),
+    relayedTheoreticalDps: resultFor(relayedInputs, sharedQiOptions).dps,
     graduationRate: theoreticalDps > 0 ? currentDps / theoreticalDps : null,
   }
 }

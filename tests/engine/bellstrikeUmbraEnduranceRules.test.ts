@@ -14,6 +14,7 @@ import {
 } from "../../src/engine/types"
 import { graduationBuildsFor } from "../../src/definitions/graduationBuilds/registry"
 import { enduranceMeter } from "../../src/data/resources/enduranceMeter"
+import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import {
   BLEED_MECHANISM_ENHANCEMENT_GAIN,
@@ -29,6 +30,7 @@ const NO_ODDITY_ENDURANCE: UnclaimedOddityNodes = {
   Qinghe: [101, 112, 126, 139],
   Kaifeng: [205, 222],
   Hexi: [305, 324],
+  Jiangnan: [705, 719],
 }
 
 const SWORD_SPECIAL_FORMS: readonly string[] = [
@@ -59,20 +61,33 @@ const triggersOf = (skill: Skill) => skill.hits.flatMap((hit) => hit.triggers)
 
 function levelsOf(
   skills: Skill[],
-  patch: Partial<Inputs> & { openingBleed?: number } = {},
+  patch: Partial<Inputs> & { openingBleed?: number; openingSwordSpirit?: number } = {},
 ): number[] {
-  const { openingBleed, ...inputsPatch } = patch
+  const { openingBleed, openingSwordSpirit, ...inputsPatch } = patch
   const result = simulateTimeline({
     ...defaultInputs,
     classId: CLASS,
     customSkills: skills.filter((skill) => skill.id.startsWith("sk-")),
     activeCustomRotation: testRotation(CLASS, {
       steps: skills.map((skill) => makeStep({ skillId: skill.id })),
-      openingStacks: openingBleed === undefined ? undefined : { [DEBUFF.bleedTick]: openingBleed },
+      openingStacks:
+        openingBleed === undefined && openingSwordSpirit === undefined
+          ? undefined
+          : {
+              ...(openingBleed === undefined ? {} : { [DEBUFF.bleedTick]: openingBleed }),
+              ...(openingSwordSpirit === undefined
+                ? {}
+                : { [ZENITH_BAR_BUFF_ID]: openingSwordSpirit }),
+            },
     }),
     set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
-    buffParams: { swordHorizon: true, swordHorizonTier: 6 },
+    mindMethods: [
+      { name: "Sword Horizon", stacks: "tier 6" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+    ],
     ...inputsPatch,
   })
   return result.casts!.map((cast) => cast.meterLevels!.find((l) => l.id === METER_ID)!.amount)
@@ -119,8 +134,9 @@ describe("the Bleeding Endurance refund shares one lockout across its four skill
     }
     const special = builtinSkill(CLASS, SKILL.swordspecial3Hit)
     const crosswind = builtinSkill(CLASS, SKILL.crosswindBladeCancel)
-    const released = levelsOf([special, crosswind, observer], { openingBleed: 4 })
-    const unreleased = levelsOf([withoutRelease, crosswind, observer], { openingBleed: 4 })
+    const opening = { openingBleed: 4, openingSwordSpirit: 1 }
+    const released = levelsOf([special, crosswind, observer], opening)
+    const unreleased = levelsOf([withoutRelease, crosswind, observer], opening)
     expect(released[2]! - unreleased[2]!).toBe(10)
   })
 })

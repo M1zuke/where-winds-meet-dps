@@ -69,7 +69,6 @@ export default defineRotation({
   permanentBuffIds: [],
   fixedWindowSec: 60,
   openingStacks: { "buff-bellstrikeUmbra-zenith-bar": 5 },
-  qiBreak: { startSec: 35, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-08-08T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",
   description: "1-minute Dragon Head rotation from Nox",

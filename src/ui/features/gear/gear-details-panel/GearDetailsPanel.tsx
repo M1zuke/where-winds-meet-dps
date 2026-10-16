@@ -8,7 +8,7 @@ import { sanitizeGearPieceText } from "../../../../storage"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
 import { TextInput } from "../../../components/text-input/TextInput"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import styles from "./GearDetailsPanel.module.scss"
 
 const LABEL_MAX_LENGTH = 40
@@ -93,7 +93,9 @@ export function GearDetailsPanel({
       <div className={`${styles.identity} ${RARITY[piece.rarity]}`}>
         {piece.label && <div className={styles.identityLabel}>{piece.label}</div>}
         <div className={styles.identityRow}>
-          <span className={styles.identitySlot}>{t(GEAR_SLOT_KEYS[piece.slot])}</span>
+          <span className={styles.identitySlot}>
+            {t(gearSlotLabelKey(piece.slot, inputs.classId))}
+          </span>
           <span className={styles.identityMeta}>
             lv{piece.level} · {t(rarityKey(piece.rarity), piece.rarity)}
             {piece.relayed ? ` · ${t("gear.details.relayed")}` : ""}

@@ -22,8 +22,8 @@ export const spearheavy1Hit = defineSkill({
   meterFreezes: DRIFTING_THRUST_FREEZE,
   // Cast length to the earliest next input and hit frames, folded onto the
   // 18 f minimum press-to-release hold for this level: in-game animation,
-  // 2026-09-09 / 2026-09-24.
-  castFrames: 78,
+  // 2026-10-15.
+  castFrames: 68,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
@@ -39,5 +39,5 @@ export const spearheavy1Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-10T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

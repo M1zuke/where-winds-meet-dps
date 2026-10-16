@@ -6,6 +6,8 @@ import styles from "./Combobox.module.scss"
 export interface ComboboxOption {
   value: string
   label: string
+  detail?: string
+  disabled?: boolean
 }
 
 interface Props {
@@ -37,6 +39,7 @@ export function Combobox({
 
   const selected = options.find((opt) => opt.value === value)
   const displayText = open ? query : (selected?.label ?? "")
+  const selectedDetail = open ? undefined : selected?.detail
 
   const filtered = useMemo(() => {
     if (!open) return options
@@ -61,6 +64,7 @@ export function Combobox({
   const clampedHighlight = Math.min(highlight, maxFilteredIndex)
 
   function commit(opt: ComboboxOption) {
+    if (opt.disabled) return
     onChange(opt.value)
     setOpen(false)
     setQuery("")
@@ -79,9 +83,9 @@ export function Combobox({
       <input
         ref={inputRef}
         type="text"
-        className={styles.comboboxInput}
+        className={styles.comboboxInput + (selectedDetail ? ` ${styles.hasSelectedDetail}` : "")}
         value={displayText}
-        title={displayText}
+        title={selectedDetail ? `${displayText} — ${selectedDetail}` : displayText}
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
@@ -124,6 +128,11 @@ export function Combobox({
           }
         }}
       />
+      {selectedDetail && (
+        <span className={styles.comboboxSelectedDetail} aria-hidden="true">
+          {selectedDetail}
+        </span>
+      )}
       {open &&
         pos &&
         createPortal(
@@ -147,11 +156,13 @@ export function Combobox({
                   key={opt.value}
                   role="option"
                   aria-selected={opt.value === value}
-                  title={opt.label}
+                  aria-disabled={opt.disabled || undefined}
+                  title={opt.detail ? `${opt.label} — ${opt.detail}` : opt.label}
                   className={
                     styles.comboboxOption +
                     (index === clampedHighlight ? ` ${styles.isHighlight}` : "") +
-                    (opt.value === value ? ` ${styles.isSelected}` : "")
+                    (opt.value === value ? ` ${styles.isSelected}` : "") +
+                    (opt.disabled ? ` ${styles.isDisabled}` : "")
                   }
                   onMouseDown={(e) => {
                     e.preventDefault()
@@ -159,7 +170,8 @@ export function Combobox({
                   }}
                   onMouseEnter={() => setHighlight(index)}
                 >
-                  {opt.label}
+                  <span className={styles.comboboxOptionLabel}>{opt.label}</span>
+                  {opt.detail && <span className={styles.comboboxOptionDetail}>{opt.detail}</span>}
                 </li>
               ))
             )}

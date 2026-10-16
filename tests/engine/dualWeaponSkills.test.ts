@@ -73,7 +73,7 @@ const CASES: DualCase[] = [
     dualId: DRAUGHT.gauntletsDual,
     weaponTag: "weapon:Gauntlets",
     castFrames: 48,
-    hitFrames: [14, 37],
+    hitFrames: [17, 40],
     weaponSkillId: DRAUGHT.lightAttack,
     otherWeaponSkillId: DRAUGHT.dualBladesLightAttack1,
   },

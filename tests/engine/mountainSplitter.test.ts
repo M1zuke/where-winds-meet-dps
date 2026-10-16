@@ -184,10 +184,10 @@ describe("Burning Heart — what a charge consumes, and what that grants", () =>
 })
 
 describe("Mountain Splitter (Exhausted target) — the tier 6 fallback rule", () => {
-  it("carries a final-crit rule that fires at 70% and adds 15 points below it, on an Exhausted target without Mountain Splitter", () => {
+  it("carries a final-crit rule that fires at 75% and adds 15 points below it, on an Exhausted target without Mountain Splitter", () => {
     const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
     const result = exhausted.calculateDamageEffects(phalanxCharged(), 1)
-    expect(result.conditionalFinalCrit).toEqual({ threshold: 0.7, bonusBelowThreshold: 0.15 })
+    expect(result.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
   })
 
   it("does not fire outside the Exhausted phase", () => {

@@ -3,7 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-15.
 export const gauntletsDual = defineSkill({
   id: SKILL.gauntletsDual,
   classId: "bamboocutDraught",
@@ -20,14 +20,14 @@ export const gauntletsDual = defineSkill({
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 14,
+      frame: 17,
       physMultiplier: 0.30864,
       attributeMultiplier: 0.46296,
       physFixed: 85.6,
       attributeFixed: 46.8,
     }),
     hit(1, {
-      frame: 37,
+      frame: 40,
       physMultiplier: 0.46296,
       attributeMultiplier: 0.69444,
       physFixed: 128.4,
@@ -35,5 +35,5 @@ export const gauntletsDual = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })
