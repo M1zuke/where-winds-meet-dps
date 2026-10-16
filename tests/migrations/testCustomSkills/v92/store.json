@@ -8,13 +8,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -53,13 +47,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -98,13 +86,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -143,13 +125,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -188,13 +164,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -233,13 +203,7 @@
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "hits": [
         {
           "id": "hit-0",
@@ -753,13 +717,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:light",
-        "attune:fanCharged",
-        "role:fanLightCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -824,11 +782,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
       "meterDrains": [
         {
           "meterId": "endurance",

@@ -5,13 +5,7 @@
       "id": "silkbindJade-fanlightcharged",
       "classId": "silkbindJade",
       "name": "FanLightCharged",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:light",
-        "attune:fanCharged",
-        "role:fanLightCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
@@ -26,11 +20,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
       "meterDrains": [
         {
           "meterId": "endurance",
@@ -108,23 +98,13 @@
       "id": "silkbindJade-fanspecial",
       "classId": "silkbindJade",
       "name": "FanSpecial",
-      "tags": [
-        "weapon:Fan",
-        "attune:fanSpecial"
-      ],
+      "tags": ["weapon:Fan", "attune:fanSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
       "castTag": "cast:fanSpecial",
-      "receives": [
-        "gourdTossThunder",
-        "inkwellFanAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ],
+      "receives": ["gourdTossThunder", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
       "castFrames": 66.8,
       "triggerable": true,
       "reachMeters": 9,
@@ -170,25 +150,13 @@
       "id": "silkbindJade-fanq",
       "classId": "silkbindJade",
       "name": "FanQ",
-      "tags": [
-        "prop:isMartialSkillQ",
-        "weapon:Fan",
-        "attune:fanQ"
-      ],
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
       "castTag": "cast:fanQ",
-      "receives": [
-        "starweaveMartialBoost",
-        "inkwellFanAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "jadeware",
-        "windWall",
-        "windWallPursuit",
-        "springThunder"
-      ],
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
       "castFrames": 61.2,
       "triggerable": true,
       "displacement": {
@@ -218,25 +186,13 @@
       "id": "silkbindJade-fanq-prepull",
       "classId": "silkbindJade",
       "name": "FanQ Prepull",
-      "tags": [
-        "prop:isMartialSkillQ",
-        "weapon:Fan",
-        "attune:fanQ"
-      ],
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
       "castTag": "cast:fanQPrepull",
-      "receives": [
-        "starweaveMartialBoost",
-        "inkwellFanAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "jadeware",
-        "windWall",
-        "windWallPursuit",
-        "springThunder"
-      ],
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
       "castFrames": 0,
       "triggerable": true,
       "displacement": {
@@ -262,26 +218,14 @@
       "id": "silkbindJade-fanqcancel",
       "classId": "silkbindJade",
       "name": "FanQCancel",
-      "tags": [
-        "prop:isMartialSkillQ",
-        "weapon:Fan",
-        "attune:fanQ"
-      ],
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
       "castTag": "cast:fanQCancel",
       "cancelledBy": "nextSkill",
-      "receives": [
-        "starweaveMartialBoost",
-        "inkwellFanAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "jadeware",
-        "windWall",
-        "windWallPursuit",
-        "springThunder"
-      ],
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
       "castFrames": 10,
       "triggerable": true,
       "displacement": {
@@ -334,13 +278,7 @@
         "starweaveMartialBoost",
         "vernalUmbrellaAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "jadeware",
-        "combo",
-        "comboUmbLightBonus",
-        "comboSpringAwayBonus",
-        "springThunder"
-      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
       "castFrames": 87.5,
       "triggerable": true,
       "reachMeters": 20,
@@ -413,13 +351,7 @@
         "starweaveMartialBoost",
         "vernalUmbrellaAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "jadeware",
-        "combo",
-        "comboUmbLightBonus",
-        "comboSpringAwayBonus",
-        "springThunder"
-      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
       "castFrames": 18,
       "triggerable": true,
       "reachMeters": 20,
@@ -447,13 +379,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -498,13 +424,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[12hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -549,13 +469,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[16hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -600,13 +514,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[20hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -651,13 +559,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[23hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -702,13 +604,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[26hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -753,13 +649,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -798,13 +688,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone[12hit] Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -843,13 +727,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone[16hit] Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -888,13 +766,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone[20hit] Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -933,13 +805,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone[23hit] Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -978,13 +844,7 @@
       "classId": "silkbindJade",
       "name": "UmbDrone[26hit] Tick",
       "breakdownName": "Umbrella Drone",
-      "tags": [
-        "prop:isDrone",
-        "weapon:Umbrella",
-        "attack:light",
-        "attune:umbFrequentProjectile",
-        "role:umbDrone"
-      ],
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
       "skillType": "sustain",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -1046,9 +906,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "pursuitChargedBoost"
-      ],
+      "triggersBuffs": ["pursuitChargedBoost"],
       "castFrames": 93.42,
       "triggerable": true,
       "reachMeters": 9,
@@ -1119,9 +977,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "pursuitChargedBoost"
-      ],
+      "triggersBuffs": ["pursuitChargedBoost"],
       "castFrames": 145.98,
       "triggerable": true,
       "reachMeters": 9,

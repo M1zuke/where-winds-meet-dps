@@ -9,16 +9,10 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "castTag": "cast:swordHeavyCharged",
       "startLatency": "noWaitOnDummy",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -366,16 +360,10 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "castTag": "cast:swordHeavyChargedPrepull",
       "startLatency": "noWaitOnDummy",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -614,16 +602,10 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "castTag": "cast:swordHeavyCharged2Hit",
       "startLatency": "noWaitOnDummy",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -812,10 +794,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "castTag": "cast:swordSpecial",
       "receives": [
         "swordSlashDamageBoost",
@@ -863,9 +842,7 @@
       ],
       "createdAt": "2026-08-15T00:00:00.000Z",
       "updatedAt": "2026-08-15T00:00:00.000Z",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -890,24 +867,14 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordQ[3rd]",
       "breakdownName": "Relentless Chase",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordQ3rd",
       "startLatency": "noWaitOnDummy",
-      "triggersBuffs": [
-        "jadeware",
-        "mountainsMightQiImbalance"
-      ],
-      "receives": [
-        "starweaveMartialBoost",
-        "namelessSwordAdditionalAttack"
-      ],
+      "triggersBuffs": ["jadeware", "mountainsMightQiImbalance"],
+      "receives": ["starweaveMartialBoost", "namelessSwordAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "relentlessChaseWindow",
@@ -1002,20 +969,14 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged Tier 1",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordHeavyChargedTier1",
       "startLatency": "noWaitOnDummy",
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1132,16 +1093,9 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged",
-        "user:favourite"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged", "user:favourite"],
       "castTag": "cast:energySurge",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1289,9 +1243,7 @@
       "id": "sk-user-authored-slash",
       "classId": "bellstrikeUmbra",
       "name": "My Slash",
-      "tags": [
-        "weapon:Sword"
-      ],
+      "tags": ["weapon:Sword"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1316,17 +1268,12 @@
       "id": "bellstrikeUmbra-perfect-dodge",
       "classId": "bellstrikeUmbra",
       "name": "Perfect Dodge",
-      "tags": [
-        "weapon:none"
-      ],
+      "tags": ["weapon:none"],
       "skillType": "weapon",
       "weaponOrAttribute": "",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:perfectDodge",
-      "triggersBuffs": [
-        "mirageBonus",
-        "disintegration"
-      ],
+      "triggersBuffs": ["mirageBonus", "disintegration"],
       "castFrames": 0,
       "triggerable": true,
       "reachMeters": 100,
@@ -1365,17 +1312,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Zenith Sword",
       "breakdownName": "Crisscross - Inner Balance III",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:crosswindBlade",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "castFrames": 57,
       "triggerable": true,
       "hits": [
@@ -1436,17 +1378,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Zenith Sword [cancel]",
       "breakdownName": "Crisscross - Inner Balance III",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:crosswindBladeCancel",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "castFrames": 18,
       "triggerable": true,
       "hits": [
@@ -1507,10 +1444,7 @@
       "classId": "bellstrikeUmbra",
       "name": "SwordSpecial 4-Hit",
       "breakdownName": "Inner Balance Strike III",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1682,11 +1616,7 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword Martial QQQ",
       "breakdownName": "Crisscross - Inner Track",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1696,14 +1626,8 @@
           "param": "swordHorizon"
         }
       ],
-      "triggersBuffs": [
-        "jadeware"
-      ],
-      "receives": [
-        "wolfchasersArtMartialDamage",
-        "strategicSwordAdditionalAttack",
-        "starweaveMartialBoost"
-      ],
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack", "starweaveMartialBoost"],
       "castFrames": 86,
       "triggerable": true,
       "hits": [
@@ -1795,17 +1719,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword Charge Stage 1, 4-Hit",
       "breakdownName": "Second Track Slash",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordChargeStage14Hit",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -1882,17 +1801,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword Charge Stage 2, 4-Hit",
       "breakdownName": "Second Track Slash",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordChargeStage24Hit",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -1939,9 +1853,7 @@
       "classId": "mystic",
       "name": "Dragon's Breath: Smolder 1 Hit",
       "breakdownName": "Dragon's Breath",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -1978,9 +1890,7 @@
       "classId": "mystic",
       "name": "Dragon's Breath: Smolder 2 Hits",
       "breakdownName": "Dragon's Breath",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2052,23 +1962,13 @@
       "id": "mystic-dragon-head-plus",
       "classId": "mystic",
       "name": "Dragon Head - Plus",
-      "tags": [
-        "mystic:burst",
-        "prop:hasQiBreakDoubleDamage",
-        "role:dragonHeadPlus",
-        "role:dragonHead"
-      ],
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
       "castTag": "cast:dragonHeadPlus",
-      "receives": [
-        "surgingWaves",
-        "dragonHeadLowHp"
-      ],
-      "triggersBuffs": [
-        "surgingWaves"
-      ],
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
       "neverAbrades": true,
       "castFrames": 246,
       "triggerable": true,
@@ -2093,18 +1993,12 @@
       "id": "mystic-dragon-head",
       "classId": "mystic",
       "name": "Dragon Head",
-      "tags": [
-        "mystic:burst",
-        "role:dragonHead"
-      ],
+      "tags": ["mystic:burst", "role:dragonHead"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
       "castTag": "cast:dragonHead",
-      "receives": [
-        "surgingWaves",
-        "dragonHeadLowHp"
-      ],
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
       "guaranteedNormal": true,
       "castFrames": 246,
       "triggerable": true,
@@ -2129,9 +2023,7 @@
       "id": "mystic-fire-breath-1-hit-prepull",
       "classId": "mystic",
       "name": "Dragon's Breath 1 Hit Prepull",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2167,9 +2059,7 @@
       "id": "mystic-fire-breath-1-hit",
       "classId": "mystic",
       "name": "Dragon's Breath 1 Hit",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2205,9 +2095,7 @@
       "id": "mystic-fire-breath-2-hit",
       "classId": "mystic",
       "name": "Dragon's Breath 2 Hits",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2281,9 +2169,7 @@
       "id": "mystic-free-morph",
       "classId": "mystic",
       "name": "Free Morph",
-      "tags": [
-        "mystic:control"
-      ],
+      "tags": ["mystic:control"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2372,9 +2258,7 @@
       "classId": "mystic",
       "name": "Flute of the Tides Cancel",
       "breakdownName": "Flute Chanting a Thousand Waves",
-      "tags": [
-        "mystic:area-damage"
-      ],
+      "tags": ["mystic:area-damage"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2384,9 +2268,7 @@
       "triggerable": true,
       "reachMeters": 40,
       "approach": "stationary",
-      "triggersBuffs": [
-        "fluteArrival"
-      ],
+      "triggersBuffs": ["fluteArrival"],
       "hits": [
         {
           "id": "hit-0",
@@ -2424,9 +2306,7 @@
       "classId": "mystic",
       "name": "Flute of the Tides Full",
       "breakdownName": "Flute Chanting a Thousand Waves",
-      "tags": [
-        "mystic:area"
-      ],
+      "tags": ["mystic:area"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2435,9 +2315,7 @@
       "triggerable": true,
       "reachMeters": 40,
       "approach": "stationary",
-      "triggersBuffs": [
-        "fluteArrival"
-      ],
+      "triggersBuffs": ["fluteArrival"],
       "hits": [
         {
           "id": "hit-0",
@@ -2474,9 +2352,7 @@
       "id": "mystic-poet-final-hit-cancel",
       "classId": "mystic",
       "name": "Poet Final Hit[Cancel]",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2485,9 +2361,7 @@
       "castFrames": 47,
       "triggerable": true,
       "approach": "stationary",
-      "receives": [
-        "poetFinalStrikeStack"
-      ],
+      "receives": ["poetFinalStrikeStack"],
       "hits": [
         {
           "id": "hit-0",
@@ -2523,9 +2397,7 @@
       "classId": "mystic",
       "name": "Poet Final Hit[Cancel] (Explosion)",
       "breakdownName": "Poet Final Hit[Cancel]",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2581,9 +2453,7 @@
       "id": "mystic-poet1",
       "classId": "mystic",
       "name": "Poet1",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2591,9 +2461,7 @@
       "castFrames": 29,
       "triggerable": true,
       "approach": "stationary",
-      "triggersBuffs": [
-        "poetFinalStrikeStack"
-      ],
+      "triggersBuffs": ["poetFinalStrikeStack"],
       "hits": [
         {
           "id": "hit-0",
@@ -2632,9 +2500,7 @@
       "id": "mystic-poet2",
       "classId": "mystic",
       "name": "Poet2",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2642,9 +2508,7 @@
       "castFrames": 33,
       "triggerable": true,
       "approach": "stationary",
-      "triggersBuffs": [
-        "poetFinalStrikeStack"
-      ],
+      "triggersBuffs": ["poetFinalStrikeStack"],
       "hits": [
         {
           "id": "hit-0",
@@ -2761,9 +2625,7 @@
       "id": "mystic-poet3",
       "classId": "mystic",
       "name": "Poet3",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2771,9 +2633,7 @@
       "castFrames": 36,
       "triggerable": true,
       "approach": "stationary",
-      "triggersBuffs": [
-        "poetFinalStrikeStack"
-      ],
+      "triggersBuffs": ["poetFinalStrikeStack"],
       "hits": [
         {
           "id": "hit-0",
@@ -2890,9 +2750,7 @@
       "id": "mystic-poet4",
       "classId": "mystic",
       "name": "Poet4",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -2900,9 +2758,7 @@
       "castFrames": 39,
       "triggerable": true,
       "approach": "stationary",
-      "triggersBuffs": [
-        "poetFinalStrikeStack"
-      ],
+      "triggersBuffs": ["poetFinalStrikeStack"],
       "hits": [
         {
           "id": "hit-0",
@@ -3019,9 +2875,7 @@
       "id": "mystic-soaring-1-hit",
       "classId": "mystic",
       "name": "Soaring 1-Hit",
-      "tags": [
-        "mystic:control"
-      ],
+      "tags": ["mystic:control"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3049,9 +2903,7 @@
       "id": "mystic-soaring",
       "classId": "mystic",
       "name": "Soaring",
-      "tags": [
-        "mystic:control"
-      ],
+      "tags": ["mystic:control"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3089,9 +2941,7 @@
       "id": "mystic-toad-cancel",
       "classId": "mystic",
       "name": "Toad[Cancel]",
-      "tags": [
-        "mystic:area-debuff"
-      ],
+      "tags": ["mystic:area-debuff"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3137,9 +2987,7 @@
       "id": "mystic-toad-fury",
       "classId": "mystic",
       "name": "Leaping Toad - Fury",
-      "tags": [
-        "mystic:area-debuff"
-      ],
+      "tags": ["mystic:area-debuff"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3185,9 +3033,7 @@
       "id": "mystic-toad-fury-hit",
       "classId": "mystic",
       "name": "Leaping Toad - Fury (Hit)",
-      "tags": [
-        "mystic:area-debuff"
-      ],
+      "tags": ["mystic:area-debuff"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3233,9 +3079,7 @@
       "id": "mystic-wolflike-frenzy",
       "classId": "mystic",
       "name": "Wolflike Frenzy",
-      "tags": [
-        "mystic:control"
-      ],
+      "tags": ["mystic:control"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
@@ -3313,18 +3157,12 @@
       "id": "bamboocutDraught-dragon-head",
       "classId": "mystic",
       "name": "Dragon Head",
-      "tags": [
-        "mystic:burst",
-        "role:dragonHead"
-      ],
+      "tags": ["mystic:burst", "role:dragonHead"],
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
       "castTag": "cast:dragonHead",
-      "receives": [
-        "surgingWaves",
-        "dragonHeadLowHp"
-      ],
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
       "guaranteedNormal": true,
       "castFrames": 246,
       "triggerable": true,
@@ -3350,18 +3188,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword - Light Attack (Stage 3)",
       "breakdownName": "Sword - Light Attack",
-      "tags": [
-        "weapon:Sword",
-        "attack:light"
-      ],
+      "tags": ["weapon:Sword", "attack:light"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSwordLight3",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["swallowcallLightAttackBoost", "strategicSwordAdditionalAttack"],
       "castFrames": 33,
       "triggerable": true,
       "reachMeters": 2.5,
@@ -3395,18 +3227,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword - Light Attack (Stage 3, Ends Chain)",
       "breakdownName": "Sword - Light Attack",
-      "tags": [
-        "weapon:Sword",
-        "attack:light"
-      ],
+      "tags": ["weapon:Sword", "attack:light"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSwordLight3EndsChain",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["swallowcallLightAttackBoost", "strategicSwordAdditionalAttack"],
       "castFrames": 35,
       "triggerable": true,
       "reachMeters": 2.5,
@@ -3450,18 +3276,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear - Light Attack (Stage 3)",
       "breakdownName": "Spear - Light Attack",
-      "tags": [
-        "weapon:Spear",
-        "attack:light"
-      ],
+      "tags": ["weapon:Spear", "attack:light"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSpearLight3",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["swallowcallLightAttackBoost", "heavenquakerSpearAdditionalAttack"],
       "castFrames": 42,
       "triggerable": true,
       "reachMeters": 4.5,
@@ -3495,16 +3315,12 @@
       "classId": "bellstrikeSplendor",
       "name": "Spear Sprint Dash",
       "breakdownName": "Cloudstep",
-      "tags": [
-        "weapon:Spear"
-      ],
+      "tags": ["weapon:Spear"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:splendorCloudstep",
-      "receives": [
-        "namelessSpearAdditionalAttack"
-      ],
+      "receives": ["namelessSpearAdditionalAttack"],
       "castFrames": 36,
       "triggerable": true,
       "displacement": {
@@ -3544,10 +3360,7 @@
       "classId": "bellstrikeSplendor",
       "name": "Sword Light Attack",
       "breakdownName": "Sword - Light Attack",
-      "tags": [
-        "weapon:Sword",
-        "attack:light"
-      ],
+      "tags": ["weapon:Sword", "attack:light"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -3935,9 +3748,7 @@
           "stopAfterSec": 1
         }
       ],
-      "triggersBuffs": [
-        "userAddedBuff"
-      ],
+      "triggersBuffs": ["userAddedBuff"],
       "reachMeters": 13
     },
     {
@@ -3947,11 +3758,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Twin Blades",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Twin Blades",
-        "attune:twinbladesMartialArt",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
       "hits": [
         {
           "id": "hit-mv9fqicp-3bigdg-1",
@@ -3987,14 +3794,8 @@
       "updatedAt": "2026-10-15T11:08:09.193Z",
       "castTag": "cast:reveldrift",
       "breakdownName": "Reveldrift",
-      "receives": [
-        "starweaveMartialBoost",
-        "eonpourInebriateDamage",
-        "rivenTwinbladesAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "jadeware"
-      ],
+      "receives": ["starweaveMartialBoost", "eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
       "reachMeters": 18,
       "displacement": {
         "kind": "towardTarget",
@@ -4008,11 +3809,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Twin Blades",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Twin Blades",
-        "attune:twinbladesMartialArt",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
       "hits": [
         {
           "id": "hit-mv9fqicp-efp2mn-5",
@@ -4039,14 +3836,8 @@
       "cancelledBy": "deflectCancel",
       "castTag": "cast:reveldriftCancel",
       "breakdownName": "Reveldrift",
-      "receives": [
-        "starweaveMartialBoost",
-        "eonpourInebriateDamage",
-        "rivenTwinbladesAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "jadeware"
-      ],
+      "receives": ["starweaveMartialBoost", "eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
       "reachMeters": 18,
       "displacement": {
         "kind": "towardTarget",
@@ -4060,11 +3851,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets",
-        "attune:gauntletsMartialArt",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
       "hits": [
         {
           "id": "hit-mv9fqicp-pu8r22-8",
@@ -4563,9 +4350,7 @@
         "nonPlayerBaseDamage40",
         "starweaveMartialBoost"
       ],
-      "triggersBuffs": [
-        "jadeware"
-      ],
+      "triggersBuffs": ["jadeware"],
       "reachMeters": 18,
       "displacement": {
         "kind": "towardTarget",
@@ -4579,11 +4364,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets",
-        "attune:gauntletsMartialArt",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
       "hits": [
         {
           "id": "hit-mv9fqicq-2uxvh9-g",
@@ -4911,9 +4692,7 @@
         "nonPlayerBaseDamage40",
         "starweaveMartialBoost"
       ],
-      "triggersBuffs": [
-        "jadeware"
-      ],
+      "triggersBuffs": ["jadeware"],
       "reachMeters": 18,
       "displacement": {
         "kind": "towardTarget",
@@ -4927,10 +4706,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets",
-        "attune:gauntletsSpecial"
-      ],
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial"],
       "hits": [
         {
           "id": "hit-mv9fqicq-03lc03-l",
@@ -4979,10 +4755,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets",
-        "attune:gauntletsSpecial"
-      ],
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial"],
       "hits": [
         {
           "id": "hit-mv9fqicq-d23bsn-o",
@@ -5082,9 +4855,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets"
-      ],
+      "tags": ["weapon:Gauntlets"],
       "hits": [
         {
           "id": "hit-mv9fqicq-4t9lpf-u",
@@ -5501,11 +5272,7 @@
       "updatedAt": "2026-10-15T11:08:09.194Z",
       "castTag": "cast:bloombreak",
       "breakdownName": "Bloombreak",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "eonpourInebriateDamage",
-        "skystrikeGauntletsAdditionalAttack"
-      ]
+      "receives": ["swallowcallLightAttackBoost", "eonpourInebriateDamage", "skystrikeGauntletsAdditionalAttack"]
     },
     {
       "id": "bamboocutDraught-gauntlets-dual",
@@ -5514,9 +5281,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets"
-      ],
+      "tags": ["weapon:Gauntlets"],
       "hits": [
         {
           "id": "hit-mv9fqicq-gy3x3f-12",
@@ -5545,10 +5310,7 @@
       "updatedAt": "2026-10-15T11:08:09.194Z",
       "isWeaponSwap": true,
       "castTag": "cast:gauntletsDual",
-      "receives": [
-        "eonpourInebriateDamage",
-        "skystrikeGauntletsAdditionalAttack"
-      ],
+      "receives": ["eonpourInebriateDamage", "skystrikeGauntletsAdditionalAttack"],
       "triggersBuffs": []
     },
     {
@@ -5558,9 +5320,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Gauntlets",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Gauntlets"
-      ],
+      "tags": ["weapon:Gauntlets"],
       "hits": [
         {
           "id": "hit-mv9fqicq-y1dsjs-16",
@@ -6012,11 +5772,7 @@
       "updatedAt": "2026-10-15T11:08:09.194Z",
       "castTag": "cast:lightAttack",
       "breakdownName": "Gauntlets Light Attack",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "eonpourInebriateDamage",
-        "skystrikeGauntletsAdditionalAttack"
-      ],
+      "receives": ["swallowcallLightAttackBoost", "eonpourInebriateDamage", "skystrikeGauntletsAdditionalAttack"],
       "reachMeters": 4,
       "displacement": {
         "kind": "towardTarget",

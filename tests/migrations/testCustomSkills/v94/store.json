@@ -6,11 +6,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -23,9 +19,7 @@
           "stacks": 1
         }
       ],
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -337,19 +331,13 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged[Prepull]",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordHeavyChargedPrepull",
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -585,11 +573,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged 2 Hit",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -607,9 +591,7 @@
           "stacks": 1
         }
       ],
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -783,11 +765,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged 2 Hit (Wushuang Stance)",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -803,9 +781,7 @@
         }
       ],
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -992,11 +968,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged Tier 1",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1009,9 +981,7 @@
           "stacks": 1
         }
       ],
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1118,11 +1088,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged (Wushuang Stance)",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1135,9 +1101,7 @@
         }
       ],
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1379,19 +1343,13 @@
       "classId": "bellstrikeSplendor",
       "name": "EnergySurge",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:energySurge",
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "castConditions": [
         {
           "buffId": "energySurgeGrant",
@@ -1587,23 +1545,13 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordQ",
       "breakdownName": "Daunting Strike",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordQ",
-      "triggersBuffs": [
-        "jadeware"
-      ],
-      "receives": [
-        "starweaveMartialBoost",
-        "mountainsMightQiImbalance",
-        "namelessSwordAdditionalAttack"
-      ],
+      "triggersBuffs": ["jadeware"],
+      "receives": ["starweaveMartialBoost", "mountainsMightQiImbalance", "namelessSwordAdditionalAttack"],
       "castFrames": 55,
       "triggerable": true,
       "reachMeters": 12,
@@ -1639,10 +1587,7 @@
           "attributeFixed": 0,
           "extraCritDamage": 0,
           "triggers": [],
-          "requiresNextStepSkillIds": [
-            "bellstrikeSplendor-energysurge",
-            "bellstrikeSplendor-deflect-cancel"
-          ],
+          "requiresNextStepSkillIds": ["bellstrikeSplendor-energysurge", "bellstrikeSplendor-deflect-cancel"],
           "castFramesWhenGated": 19
         }
       ],
@@ -1654,17 +1599,12 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordSpecial",
       "breakdownName": "Shadow Step",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordSpecial",
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1761,24 +1701,13 @@
       "classId": "bellstrikeSplendor",
       "name": "SpearQ",
       "breakdownName": "Qiankun's Lock",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:spearQ",
-      "triggersBuffs": [
-        "jadeware",
-        "mountainsMight"
-      ],
-      "receives": [
-        "starweaveMartialBoost",
-        "qiankunsLockQiImbalance",
-        "namelessSpearAdditionalAttack"
-      ],
+      "triggersBuffs": ["jadeware", "mountainsMight"],
+      "receives": ["starweaveMartialBoost", "qiankunsLockQiImbalance", "namelessSpearAdditionalAttack"],
       "castFrames": 42,
       "triggerable": true,
       "reachMeters": 5,
@@ -1903,23 +1832,13 @@
       "classId": "bellstrikeSplendor",
       "name": "SpearQ Prepull",
       "breakdownName": "Qiankun's Lock (prepull)",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:spearQPrepull",
-      "triggersBuffs": [
-        "jadeware",
-        "mountainsMight"
-      ],
-      "receives": [
-        "starweaveMartialBoost",
-        "namelessSpearAdditionalAttack"
-      ],
+      "triggersBuffs": ["jadeware", "mountainsMight"],
+      "receives": ["starweaveMartialBoost", "namelessSpearAdditionalAttack"],
       "castFrames": 0,
       "triggerable": true,
       "reachMeters": 5,
@@ -2027,24 +1946,14 @@
       "classId": "bellstrikeSplendor",
       "name": "SpearQ 0-Hit Cancel",
       "breakdownName": "Qiankun's Lock (0-hit cancel)",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearQ",
-        "prop:isMartialSkillQ"
-      ],
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:spearQ0HitCancel",
       "cancelledBy": "deflectCancel",
-      "triggersBuffs": [
-        "jadeware",
-        "mountainsMight"
-      ],
-      "receives": [
-        "starweaveMartialBoost",
-        "namelessSpearAdditionalAttack"
-      ],
+      "triggersBuffs": ["jadeware", "mountainsMight"],
+      "receives": ["starweaveMartialBoost", "namelessSpearAdditionalAttack"],
       "castFrames": 6,
       "triggerable": true,
       "reachMeters": 5,
@@ -2151,17 +2060,12 @@
       "id": "bellstrikeSplendor-legioncrusher",
       "classId": "bellstrikeSplendor",
       "name": "Legion Crusher",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearSpecial"
-      ],
+      "tags": ["weapon:Spear", "attune:spearSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:legionCrusher",
-      "receives": [
-        "namelessSpearAdditionalAttack"
-      ],
+      "receives": ["namelessSpearAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -2230,13 +2134,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -2281,13 +2179,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[12hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -2332,13 +2224,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[16hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -2383,13 +2269,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[20hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -2434,13 +2314,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[23hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
@@ -2485,13 +2359,7 @@
       "classId": "silkbindJade",
       "name": "UmbDroneLaunch[26hit]",
       "breakdownName": "Umbrella Launch",
-      "tags": [
-        "prop:hasQiBreakPhysPen",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "role:umbDrone",
-        "role:umbDroneLaunch"
-      ],
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",

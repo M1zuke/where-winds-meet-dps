@@ -21,13 +21,7 @@
         "weaponOrAttribute": "Sword",
         "count": 1,
         "perStackShapes": null,
-        "perStackMultipliers": [
-          2,
-          2.5,
-          3,
-          4,
-          5
-        ],
+        "perStackMultipliers": [2, 2.5, 3, 4, 5],
         "qiRate": 0.2
       },
       "maxStacks": 5,
@@ -41,9 +35,7 @@
       },
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-09-03T00:00:00.000Z",
-      "tags": [
-        "role:bleedTick"
-      ],
+      "tags": ["role:bleedTick"],
       "receives": [
         "bellstrikeUmbraBleedPen",
         "bellstrikeUmbraBleedingDamage",
@@ -77,13 +69,8 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-09-09T00:00:00.000Z",
-      "tags": [
-        "role:combustion"
-      ],
-      "receives": [
-        "bellstrikeUmbraBleedingDamage",
-        "soulShaken"
-      ]
+      "tags": ["role:combustion"],
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
     },
     {
       "id": "debuff-mystic-smolder",
@@ -113,10 +100,7 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-30T00:00:00.000Z",
       "updatedAt": "2026-09-09T00:00:00.000Z",
-      "receives": [
-        "bellstrikeUmbraBleedingDamage",
-        "soulShaken"
-      ]
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
     },
     {
       "id": "debuff-bellstrikeUmbra-bitter-season-tick",
@@ -144,10 +128,7 @@
       "stackScaling": "flat",
       "createdAt": "2026-08-06T00:00:00.000Z",
       "updatedAt": "2026-09-09T00:00:00.000Z",
-      "receives": [
-        "bellstrikeUmbraBleedingDamage",
-        "soulShaken"
-      ]
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
     },
     {
       "id": "debuff-mystic-toad-poison",
@@ -156,9 +137,7 @@
       "activation": "triggered",
       "durationFrames": 601,
       "effects": [],
-      "tags": [
-        "role:toadVenom"
-      ],
+      "tags": ["role:toadVenom"],
       "dot": {
         "tickIntervalFrames": 300,
         "physMultiplier": 1.622006,
@@ -213,9 +192,7 @@
       "activation": "triggered",
       "durationFrames": 601,
       "effects": [],
-      "tags": [
-        "role:toadVenom"
-      ],
+      "tags": ["role:toadVenom"],
       "dot": {
         "tickIntervalFrames": 300,
         "physMultiplier": 1.530217,
@@ -262,14 +239,8 @@
       "stackScaling": "flat",
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-08-17T00:00:00.000Z",
-      "receives": [
-        "soulShaken",
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone"
-      ]
+      "receives": ["soulShaken", "lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-16hit",
@@ -298,15 +269,8 @@
       "stackScaling": "flat",
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-08-17T00:00:00.000Z",
-      "receives": [
-        "soulShaken",
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "userAddedBuff"
-      ]
+      "receives": ["soulShaken", "lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "userAddedBuff"]
     }
   ]
 }

@@ -24,9 +24,7 @@
         "count": 1,
         "perStackShapes": null,
         "additionalTicks": {
-          "offsetsFrames": [
-            9
-          ],
+          "offsetsFrames": [9],
           "requiresBuff": "lingeringBone"
         },
         "perStackMultipliers": null
@@ -38,15 +36,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-12hit",
@@ -79,15 +70,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-16hit",
@@ -120,15 +104,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-20hit",
@@ -161,15 +138,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-23hit",
@@ -202,15 +172,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-26hit",
@@ -243,15 +206,8 @@
       "createdAt": "2026-08-17T00:00:00.000Z",
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "breakdownName": "Umbrella Drone",
-      "receives": [
-        "lingeringBone",
-        "comboExtendMark"
-      ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ]
+      "receives": ["lingeringBone", "comboExtendMark"],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"]
     },
     {
       "id": "debuff-silkbindJade-bitter-season-tick",

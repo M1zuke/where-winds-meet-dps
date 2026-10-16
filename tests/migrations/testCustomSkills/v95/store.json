@@ -5,24 +5,13 @@
       "id": "stonesplitStrength-phalanxq",
       "classId": "stonesplitStrength",
       "name": "PhalanxQ",
-      "tags": [
-        "weapon:Mo Blade",
-        "attune:phalanxbaneQ",
-        "prop:cleftpeakBoost",
-        "role:phalanxQ"
-      ],
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Modao",
       "attributeAttack": "Stonesplit",
       "castTag": "cast:phalanxQ",
-      "receives": [
-        "cleftpeakDeflect",
-        "phalanxbaneBladeAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "throatPierced",
-        "jadeware"
-      ],
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "jadeware"],
       "triggersBuffsAtFrame": {
         "jadeware": 7
       },
@@ -60,25 +49,13 @@
       "classId": "stonesplitStrength",
       "name": "PhalanxQ (Supreme)",
       "breakdownName": "Total Annihilation - Supreme",
-      "tags": [
-        "weapon:Mo Blade",
-        "attune:phalanxbaneQ",
-        "prop:cleftpeakBoost",
-        "role:phalanxQ"
-      ],
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
       "skillType": "weapon",
       "weaponOrAttribute": "Modao",
       "attributeAttack": "Stonesplit",
       "castTag": "cast:phalanxQSupreme",
-      "receives": [
-        "cleftpeakDeflect",
-        "phalanxbaneBladeAdditionalAttack"
-      ],
-      "triggersBuffs": [
-        "throatPierced",
-        "totalAnnihilationSupremeShield",
-        "jadeware"
-      ],
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "totalAnnihilationSupremeShield", "jadeware"],
       "triggersBuffsAtFrame": {
         "totalAnnihilationSupremeShield": 222,
         "jadeware": 180
@@ -120,9 +97,7 @@
       "weaponOrAttribute": "",
       "attributeAttack": "Stonesplit",
       "castTag": "cast:deflect",
-      "triggersBuffs": [
-        "cleftpeakDeflectGrant"
-      ],
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
       "castFrames": 15,
       "triggerable": true,
       "reachMeters": 100,
@@ -181,9 +156,7 @@
       "triggerable": true,
       "reachMeters": 100,
       "approach": "stationary",
-      "triggersBuffs": [
-        "cleftpeakDeflectGrant"
-      ],
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
       "hits": [
         {
           "id": "hit-0",
@@ -221,16 +194,12 @@
       "id": "stonesplitStrength-heng-dash",
       "classId": "stonesplitStrength",
       "name": "Heng Blade - Dash",
-      "tags": [
-        "weapon:Heng Blade"
-      ],
+      "tags": ["weapon:Heng Blade"],
       "skillType": "weapon",
       "weaponOrAttribute": "Hengdao",
       "attributeAttack": "Stonesplit",
       "castTag": "cast:hengDash",
-      "receives": [
-        "snowpartingBladeAdditionalAttack"
-      ],
+      "receives": ["snowpartingBladeAdditionalAttack"],
       "triggersBuffs": [],
       "castFrames": 40,
       "triggerable": true,

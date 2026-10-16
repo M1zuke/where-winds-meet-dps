@@ -5,12 +5,7 @@
       "id": "bellstrikeUmbra-bleed-detonation",
       "classId": "bellstrikeUmbra",
       "name": "Blood Burst",
-      "tags": [
-        "weapon:Sword",
-        "attune:bleed",
-        "role:bleedDetonation",
-        "prop:empoweredDotEffect"
-      ],
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation", "prop:empoweredDotEffect"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -73,17 +68,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear Special",
       "breakdownName": "Sweep All",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearSpecial"
-      ],
+      "tags": ["weapon:Spear", "attune:spearSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:spearSpecial",
-      "receives": [
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -424,18 +414,13 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear Special (1 Hit Cancel)",
       "breakdownName": "Sweep All",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearSpecial"
-      ],
+      "tags": ["weapon:Spear", "attune:spearSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:spearSpecial1HitCancel",
       "cancelledBy": "deflectCancel",
-      "receives": [
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -640,18 +625,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear - Light Attack (Stage 3)",
       "breakdownName": "Spear - Light Attack",
-      "tags": [
-        "weapon:Spear",
-        "attack:light"
-      ],
+      "tags": ["weapon:Spear", "attack:light"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSpearLight3",
-      "receives": [
-        "swallowcallLightAttackBoost",
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["swallowcallLightAttackBoost", "heavenquakerSpearAdditionalAttack"],
       "castFrames": 42,
       "triggerable": true,
       "reachMeters": 4.5,

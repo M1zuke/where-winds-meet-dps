@@ -67,13 +67,7 @@
         "starweaveMartialBoost",
         "vernalUmbrellaAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "jadeware",
-        "combo",
-        "comboUmbLightBonus",
-        "comboSpringAwayBonus",
-        "springThunder"
-      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
       "castConditions": [
         {
           "buffId": "meter:springSorrowCharges",
@@ -138,13 +132,7 @@
         "starweaveMartialBoost",
         "vernalUmbrellaAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "jadeware",
-        "combo",
-        "comboUmbLightBonus",
-        "comboSpringAwayBonus",
-        "springThunder"
-      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
       "reachMeters": 20,
       "displacement": {
         "kind": "towardTarget",
@@ -158,13 +146,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:light",
-        "attune:fanCharged",
-        "role:fanLightCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -229,11 +211,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
       "meterDrains": [
         {
           "meterId": "endurance",

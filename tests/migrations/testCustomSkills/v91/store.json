@@ -8,13 +8,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:light",
-        "attune:fanCharged",
-        "role:fanLightCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -79,11 +73,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "lingeringBone",
-        "starReacherSupreme",
-        "starReacher"
-      ],
+      "triggersBuffs": ["lingeringBone", "starReacherSupreme", "starReacher"],
       "meterDrains": [
         {
           "meterId": "endurance",
@@ -216,10 +206,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "pursuitChargedBoost",
-        "moonShatterSpringLockout"
-      ],
+      "triggersBuffs": ["pursuitChargedBoost", "moonShatterSpringLockout"],
       "castConditions": [
         {
           "buffId": "lingeringBone",
@@ -404,10 +391,7 @@
         "nonPlayerBaseDamage145",
         "inkwellFanAdditionalAttack"
       ],
-      "triggersBuffs": [
-        "pursuitChargedBoost",
-        "moonShatterSpringLockout"
-      ],
+      "triggersBuffs": ["pursuitChargedBoost", "moonShatterSpringLockout"],
       "castConditions": [
         {
           "buffId": "lingeringBone",
@@ -441,12 +425,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "attune:umbCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -492,9 +471,7 @@
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "castTag": "cast:apricotHeavenNormal",
       "breakdownName": "Apricot Heaven",
-      "receives": [
-        "vernalUmbrellaAdditionalAttack"
-      ],
+      "receives": ["vernalUmbrellaAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -510,12 +487,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Umbrella",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Umbrella",
-        "attack:heavy",
-        "attune:umbCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -561,9 +533,7 @@
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "castTag": "cast:apricotHeavenEnhanced",
       "breakdownName": "Apricot Heaven",
-      "receives": [
-        "vernalUmbrellaAdditionalAttack"
-      ],
+      "receives": ["vernalUmbrellaAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -587,11 +557,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:heavy"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:heavy"],
       "hits": [
         {
           "id": "hit-0",
@@ -620,9 +586,7 @@
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "castTag": "cast:glowAndFlowStage1",
       "breakdownName": "Glow & Flow",
-      "receives": [
-        "inkwellFanAdditionalAttack"
-      ],
+      "receives": ["inkwellFanAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -642,12 +606,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Fan",
       "attributeAttack": "Silkbind",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Fan",
-        "attack:heavy",
-        "attune:fanCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:heavy", "attune:fanCharged"],
       "hits": [
         {
           "id": "hit-0",
@@ -676,9 +635,7 @@
       "updatedAt": "2026-10-15T00:00:00.000Z",
       "castTag": "cast:glowAndFlowStage2",
       "breakdownName": "Glow & Flow",
-      "receives": [
-        "inkwellFanAdditionalAttack"
-      ],
+      "receives": ["inkwellFanAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",

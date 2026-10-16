@@ -22,13 +22,7 @@
         "qiRate": 0.2,
         "count": 1,
         "perStackShapes": null,
-        "perStackMultipliers": [
-          2,
-          2.5,
-          3,
-          4,
-          5
-        ]
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
       },
       "maxStacks": 5,
       "stackScaling": "perStack",
@@ -41,9 +35,7 @@
       },
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-09-03T00:00:00.000Z",
-      "tags": [
-        "role:bleedTick"
-      ],
+      "tags": ["role:bleedTick"],
       "receives": [
         "bellstrikeUmbraBleedPen",
         "bellstrikeUmbraBleedingDamage",
@@ -77,10 +69,7 @@
       "stackScaling": "flat",
       "createdAt": "2026-08-06T00:00:00.000Z",
       "updatedAt": "2026-09-09T00:00:00.000Z",
-      "receives": [
-        "bellstrikeUmbraBleedingDamage",
-        "soulShaken"
-      ]
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
     },
     {
       "id": "df-user-authored-gash",
