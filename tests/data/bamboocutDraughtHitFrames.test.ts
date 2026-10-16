@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
+import { defaultInputs } from "../../src/engine/defaults"
+import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { simulateTimeline, FPS } from "../../src/engine/timeline"
+import { SKILL } from "../../src/data/skills/bamboocut-draught/ids"
 
 const builtin = (id: string): Skill =>
   builtinSkillsForClass("bamboocutDraught").find((skill) => skill.id === id)!
@@ -51,5 +55,32 @@ describe("Bamboocut Draught — keyframes that lead by a render frame", () => {
       .filter((skill) => skill.keyframesLeadByRenderFrame)
       .map((skill) => skill.id)
     expect(flagged).toEqual(["bamboocutDraught-heros-blood"])
+  })
+})
+
+describe("Bamboocut Draught — Hero's Blood ends one render period early", () => {
+  const castDurationSec = (averageFps: number, leads: boolean): number => {
+    const herosBlood = { ...builtin(SKILL.herosBlood), keyframesLeadByRenderFrame: leads }
+    const rotation = makeRotation("bamboocutDraught", {
+      steps: [makeStep({ skillId: herosBlood.id })],
+      pingMs: 0,
+      averageFps,
+    })
+    return simulateTimeline({
+      ...defaultInputs,
+      classId: "bamboocutDraught",
+      customSkills: [herosBlood],
+      activeCustomRotation: rotation,
+      set: null,
+    }).castDuration
+  }
+
+  it.each([30, 60, 144, 250])("shortens the cast by one render period at %s fps", (averageFps) => {
+    const shortening = castDurationSec(averageFps, false) - castDurationSec(averageFps, true)
+    expect(shortening).toBeCloseTo(1 / averageFps, 10)
+  })
+
+  it("casts 45 frames at 60 fps, the declared 46 less one render frame", () => {
+    expect(castDurationSec(60, true)).toBeCloseTo(45 / FPS, 10)
   })
 })
