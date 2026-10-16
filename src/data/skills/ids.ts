@@ -159,6 +159,7 @@ export const CAST = {
   snowpartingQStab: "cast:snowpartingQStab",
   snowpartingSlide: "cast:snowpartingSlide",
   snowpartingSlidePrepull: "cast:snowpartingSlidePrepull",
+  snowpartingSlideReslidePrepull: "cast:snowpartingSlideReslidePrepull",
   snowpartingSlidePrepullHit: "cast:snowpartingSlidePrepullHit",
   snowpartingSpecial: "cast:snowpartingSpecial",
   snowpartingVC: "cast:snowpartingVC",

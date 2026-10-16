@@ -183918,7 +183918,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 79,
+        "count": 80,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -183996,11 +183996,12 @@
           "stonesplitStrength-snowpartingslide",
           "stonesplitStrength-snowpartingslide-prepull",
           "stonesplitStrength-snowpartingslide-prepull-hit",
+          "stonesplitStrength-snowpartingslide-reslide-prepull",
           "stonesplitStrength-snowpartingspecial",
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "27512a3e60da7cbfe41224acd16237711aaaeffda8275ec33af17ae435e7aeb4"
+        "digest": "ccba4bc22772deb6306cd7b4b7a8bda15ea9b5afa1cb72ade07e6eb22a8e5dda"
       },
       "debuffs": {
         "count": 6,

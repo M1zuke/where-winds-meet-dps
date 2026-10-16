@@ -22,6 +22,7 @@ export const SKILL = {
   snowpartingqStab: "stonesplitStrength-snowpartingq-stab",
   snowpartingslide: "stonesplitStrength-snowpartingslide",
   snowpartingslidePrepull: "stonesplitStrength-snowpartingslide-prepull",
+  snowpartingslideReslidePrepull: "stonesplitStrength-snowpartingslide-reslide-prepull",
   snowpartingslidePrepullHit: "stonesplitStrength-snowpartingslide-prepull-hit",
   snowpartingspecial: "stonesplitStrength-snowpartingspecial",
   snowpartingvc: "stonesplitStrength-snowpartingvc",

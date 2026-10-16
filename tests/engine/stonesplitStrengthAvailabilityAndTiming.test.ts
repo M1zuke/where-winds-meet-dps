@@ -210,6 +210,7 @@ describe("Jadeware", () => {
     for (const skillId of [
       SKILL.snowpartingslide,
       SKILL.snowpartingslidePrepull,
+      SKILL.snowpartingslideReslidePrepull,
       SKILL.snowpartingslidePrepullHit,
       SKILL.snowpartingqStab,
       SKILL.snowpartingqSlash,
@@ -273,5 +274,12 @@ describe("Charge Enhancement", () => {
     release(engine, 1, 2)
     release(engine, 10, 2)
     expect(engine.getHistoricalBuffStacks(BUFF.chargeEnhancement, 25)).toBe(0)
+  })
+})
+
+describe("SnowpartingSlide re-slide prepull", () => {
+  it("waits for the server only on the first slide", () => {
+    expect(stonesplitSkill(SKILL.snowpartingslidePrepull).startLatency).toBe("serverRoundTrip")
+    expect(stonesplitSkill(SKILL.snowpartingslideReslidePrepull).startLatency).toBeUndefined()
   })
 })
