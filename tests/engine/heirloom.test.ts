@@ -93,11 +93,17 @@ describe("heirloom — the build the profile follows", () => {
   })
 
   it("keeps the match but not the follow while the profile follows another build", () => {
+    const sameHelm = (build: (typeof builds)[number]) =>
+      [...wordsOf(build.gear.find((piece) => piece.slot === "helm")!)].sort().join() ===
+      [...perfect].sort().join()
+    const other = builds.find((build) => !sameHelm(build))!
     const match = heirloomMatch(pieceFrom(target, perfect), {
       classId: MULTI_BUILD_CLASS,
-      graduationBuildId: builds[1].id,
+      graduationBuildId: other.id,
     })
-    expect(match.builds.map((build) => build.id)).toEqual([builds[0].id])
+    expect(match.builds.map((build) => build.id)).toEqual(
+      builds.filter(sameHelm).map((build) => build.id),
+    )
     expect(match.followed).toBe(false)
   })
 
@@ -213,7 +219,10 @@ describe("heirloom — one retune away", () => {
 })
 
 const SINGLE_TARGET_BUILD = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.find((build) =>
-  build.gear.some((piece) => piece.words.some((word) => word.word === "singleTargetMysticBoost")),
+  build.gear.some(
+    (piece) =>
+      piece.slot === "helm" && piece.words.some((word) => word.word === "singleTargetMysticBoost"),
+  ),
 )!
 const OTHER_UMBRA_BUILD = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.find(
   (build) => build.id !== SINGLE_TARGET_BUILD.id,
@@ -265,7 +274,13 @@ describe("heirloom — one retune away from any build", () => {
     const match = heirloomMatch(piece, { classId: MULTI_BUILD_CLASS })
     expect(match.swaps).toHaveLength(1)
     expect(match.swap).toMatchObject({ slotIndex: 3, currentWord: "crit", word: "affinity" })
-    expect(match.swap!.builds.map((build) => build.id)).toEqual([SINGLE_TARGET_BUILD.id])
+    const armorWords = [...wordsOf(armor)].sort().join()
+    const sameArmor = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.filter(
+      (build) =>
+        [...wordsOf(build.gear.find((candidate) => candidate.slot === "armor")!)].sort().join() ===
+        armorWords,
+    )
+    expect(match.swap!.builds.map((build) => build.id)).toEqual(sameArmor.map((build) => build.id))
   })
 
   it("puts the swap toward the followed build first", () => {

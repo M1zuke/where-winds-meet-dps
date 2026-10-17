@@ -44,7 +44,7 @@ export default defineGraduationBuild({
     createGraduationGearPiece({
       idPrefix,
       slot: "armor",
-      words: ["affinity", "affinity", "allMysticBoost", "maxPhys", "momentum"],
+      words: ["affinity", "affinity", "singleTargetMysticBoost", "maxPhys", "momentum"],
       attunement: "bleedingDamage",
     }),
     createGraduationGearPiece({
