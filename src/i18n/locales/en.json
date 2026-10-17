@@ -2153,6 +2153,8 @@
   "overview.encounterSettings.teammateBuffs": "Teammate Buffs",
   "overview.encounterSettings.voidrotScript": "Voidrot Script",
   "overview.encounterSettings.wraithstrikeScript": "Wraithstrike Script",
+  "overview.equippedStatLines": "Equipped Stat Lines",
+  "overview.equippedStatLines.empty": "No stat lines on the equipped gear.",
   "overview.gearStatLift": "Gear-Stat Lift",
   "overview.innerWays": "Inner Ways",
   "overview.itemRankingTable.dps": "DPS Δ",
