@@ -4,7 +4,11 @@ import { FPS } from "./timeline"
 import { engineRunOptionsFrom, engineRunOptionsSharingQiOf } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs, rankingRows, type RankingBlock } from "./itemRanking"
-import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
+import {
+  computeAllSlotsUnequipLoss,
+  computeGearAnalysis,
+  type GearSlotAnalysisRow,
+} from "./gearAnalysis"
 import { attributeForClass, poolForClass } from "../definitions/classes/registry"
 import {
   annotatePoolForSlot,
@@ -634,23 +638,24 @@ export interface GearAnalysisWorkerRequest {
   inputs: Inputs
   baselineDps: number
   slots?: readonly GearSlot[]
+  skipAllSlotsLoss?: boolean
   baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface GearAnalysisWorkerResponse {
   reqId: number
   rows: GearSlotAnalysisRow[]
+  allSlotsLoss: number | null
 }
 
 function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysisWorkerResponse {
+  const options = engineOptionsFrom(req.baselineQiBreaks)
   return {
     reqId: req.reqId,
-    rows: computeGearAnalysis(
-      req.inputs,
-      req.baselineDps,
-      engineOptionsFrom(req.baselineQiBreaks),
-      req.slots,
-    ),
+    rows: computeGearAnalysis(req.inputs, req.baselineDps, options, req.slots),
+    allSlotsLoss: req.skipAllSlotsLoss
+      ? null
+      : computeAllSlotsUnequipLoss(req.inputs, req.baselineDps, options),
   }
 }
 
