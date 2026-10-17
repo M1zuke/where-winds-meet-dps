@@ -316,6 +316,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
       : fixedQiSchedule(DEFAULT_QI_BREAK_WINDOW, FPS)
   const QI_MAX_ITERATIONS = 6
+  const resolvedStateAcrossPasses = new Map<
+    string,
+    { inputs: Inputs; ctx: ReturnType<typeof buildContext> }
+  >()
   // A warm-started seed is a prior run's own converged schedule, so if this
   // build's first pass reproduces it exactly, that pass already is the fixed
   // point — docs/UI.md § "The rules", "one verifying run". The default window
@@ -2425,13 +2429,22 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const qiBonuses = qiBonusesFrom(effects)
       let r = stateMemo.get(sig)
       if (!r) {
-        const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
-        const ctx = buildContext(effInputs, targetOverride, contextPatch)
-        if (override?.forceGuaranteedAffinity) {
-          ctx.affinityPanel = 0
-          ctx.directAffinityPanel = 1
+        const exactKey =
+          effects.map((effect) => `${effect.statKey}:${effect.amount}`).join(",") +
+          `|${JSON.stringify(contextPatch)}` +
+          (override?.forceGuaranteedAffinity ? "|forcedAffinity" : "")
+        let shared = resolvedStateAcrossPasses.get(exactKey)
+        if (!shared) {
+          const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
+          const ctx = buildContext(effInputs, targetOverride, contextPatch)
+          if (override?.forceGuaranteedAffinity) {
+            ctx.affinityPanel = 0
+            ctx.directAffinityPanel = 1
+          }
+          shared = { inputs: effInputs, ctx }
+          resolvedStateAcrossPasses.set(exactKey, shared)
         }
-        r = { inputs: effInputs, ctx }
+        r = shared
         stateMemo.set(sig, r)
       }
       return {

@@ -59,7 +59,7 @@ import type {
   SkillTickResult,
 } from "./types"
 
-const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
+export const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
 
 type BaselineQiBreaks = readonly { startSec: number; endSec: number }[]
 
@@ -735,6 +735,7 @@ export interface ParseSimulationWorkerRequest {
   rotation: Rotation | null
   runs: number
   seed: number
+  runRange?: { start: number; end: number }
 }
 
 export interface ParseSimulationWorkerResponse {
@@ -747,6 +748,7 @@ export interface ParseSimulationWorkerResponse {
   completedRuns: number
   cancelled: boolean
   warnings: string[]
+  outcomeShares?: OutcomeCounts[]
 }
 
 export interface ParseSimulationProgressResponse {
@@ -773,7 +775,12 @@ async function computeParseSimulation(
     selectedBuiltinRotationId: null,
   }
 
+  const rangeStart = req.runRange ? Math.min(req.runRange.start, total) : 0
+  const rangeEnd = req.runRange ? Math.min(req.runRange.end, total) : total
+  const rangeSize = Math.max(0, rangeEnd - rangeStart)
+
   const runs: ParseRun[] = []
+  const outcomeShares: OutcomeCounts[] = []
   const shareTotals: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
   let warnings: string[] = []
   let rotationDuration = 0
@@ -785,7 +792,8 @@ async function computeParseSimulation(
     })
     const counts = result.outcomeCounts ?? NO_OUTCOMES
     const share = result.expectedOutcomeShare ?? NO_OUTCOMES
-    for (const outcome of OUTCOME_KEYS) shareTotals[outcome] += share[outcome]
+    if (req.runRange) outcomeShares.push({ ...share })
+    else for (const outcome of OUTCOME_KEYS) shareTotals[outcome] += share[outcome]
     if (index === 0) {
       warnings = result.warnings
       rotationDuration = result.rotationDuration
@@ -807,21 +815,21 @@ async function computeParseSimulation(
   }
 
   const startedAt = performance.now()
-  runOnce(0)
+  if (rangeSize > 0) runOnce(rangeStart)
   const msPerRun = Math.max(performance.now() - startedAt, 0.01)
   const chunkRuns = Math.max(
     1,
     Math.min(Math.round(PARSE_TARGET_CHUNK_MS / msPerRun), MAX_CHUNK_RUNS),
   )
 
-  while (runs.length < total) {
+  while (runs.length < rangeSize) {
     if (isCancelled?.()) break
-    const chunkEnd = Math.min(runs.length + chunkRuns, total)
-    for (let index = runs.length; index < chunkEnd; index++) runOnce(index)
-    onProgress?.(runs.length, total)
+    const chunkEnd = Math.min(runs.length + chunkRuns, rangeSize)
+    for (let offset = runs.length; offset < chunkEnd; offset++) runOnce(rangeStart + offset)
+    onProgress?.(runs.length, rangeSize)
     // A synchronous loop never lets `onmessage` fire, so without this yield no
     // cancel is ever read.
-    if (runs.length < total) await new Promise((resolve) => setTimeout(resolve, 0))
+    if (runs.length < rangeSize) await new Promise((resolve) => setTimeout(resolve, 0))
   }
 
   const expectedRates: ExpectedOutcomeRates = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
@@ -831,12 +839,13 @@ async function computeParseSimulation(
     reqId: req.reqId,
     seed: req.seed,
     runs,
-    expectedRates: runs.length > 0 ? expectedRates : null,
+    expectedRates: !req.runRange && runs.length > 0 ? expectedRates : null,
     rotationDuration,
     requestedRuns: total,
     completedRuns: runs.length,
-    cancelled: runs.length < total,
+    cancelled: runs.length < rangeSize,
     warnings,
+    ...(req.runRange ? { outcomeShares } : {}),
   }
 }
 

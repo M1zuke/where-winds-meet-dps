@@ -672,3 +672,77 @@ describe("gear analysis and ranking shard parity", { timeout: 60_000 }, () => {
     }
   })
 })
+
+describe("parse simulation shard parity", { timeout: 120_000 }, () => {
+  const validatedClasses = [
+    "bellstrikeUmbra",
+    "bellstrikeSplendor",
+    "stonesplitStrength",
+    "bamboocutDraught",
+  ]
+  const seed = 20261017
+
+  async function answerShards(request: ParseSimulationWorkerRequest, shardCount: number) {
+    const shards = shardRequest({ kind: "parseSimulation", ...request }, shardCount)
+    expect(shards).not.toBeNull()
+    const parts = await Promise.all(
+      (shards as WorkerRequest[]).map(async (shard) => {
+        if (shard.kind !== "parseSimulation") throw new Error(`unexpected shard kind ${shard.kind}`)
+        return { kind: "parseSimulation" as const, ...(await computeParseSimulation(shard)) }
+      }),
+    )
+    return mergeShardResponses(parts)
+  }
+
+  for (const classId of validatedClasses) {
+    it(`merges shards into the unsharded response for ${classId}`, async () => {
+      const inputs = applySetBonuses(withDerivedStats({ ...defaultInputs, classId }))
+      const request = {
+        reqId: 5,
+        inputs,
+        rotation: defaultRotationForClass(classId),
+        runs: 7,
+        seed,
+      }
+      const whole = await computeParseSimulation(request)
+
+      for (const shardCount of [2, 3, 4]) {
+        expect(await answerShards(request, shardCount)).toEqual({
+          kind: "parseSimulation",
+          ...whole,
+        })
+      }
+    })
+  }
+
+  it("splits the run indices into contiguous ranges covering every run once", () => {
+    const shards = shardRequest(
+      {
+        kind: "parseSimulation",
+        reqId: 1,
+        inputs: umbraInputs,
+        rotation: null,
+        runs: 10,
+        seed,
+      },
+      3,
+    ) as WorkerRequest[]
+    const ranges = shards.map((shard) =>
+      shard.kind === "parseSimulation" ? shard.runRange : undefined,
+    )
+    expect(ranges).toEqual([
+      { start: 0, end: 4 },
+      { start: 4, end: 7 },
+      { start: 7, end: 10 },
+    ])
+  })
+
+  it("does not shard a single run", () => {
+    expect(
+      shardRequest(
+        { kind: "parseSimulation", reqId: 1, inputs: umbraInputs, rotation: null, runs: 1, seed },
+        4,
+      ),
+    ).toBeNull()
+  })
+})

@@ -54,7 +54,28 @@ function levelsBySet(pieces: readonly GearPiece[]): Map<string, number[]> {
   return bySet
 }
 
+interface ActiveSetsEntry {
+  equipped: Inputs["equipped"]
+  bowGear: Inputs["bowGear"]
+  result: ActiveSets
+}
+
+const activeSetsByInventory = new WeakMap<Inputs["inventory"], ActiveSetsEntry>()
+
 export function resolveActiveSets(inputs: Inputs): ActiveSets {
+  const cached = activeSetsByInventory.get(inputs.inventory)
+  if (cached && cached.equipped === inputs.equipped && cached.bowGear === inputs.bowGear)
+    return cached.result
+  const result = computeActiveSets(inputs)
+  activeSetsByInventory.set(inputs.inventory, {
+    equipped: inputs.equipped,
+    bowGear: inputs.bowGear,
+    result,
+  })
+  return result
+}
+
+function computeActiveSets(inputs: Inputs): ActiveSets {
   const twoPiece: { setId: string; level: GearLevel }[] = []
   let fourPiece: string | null = null
   for (const [setId, levels] of levelsBySet(equippedSetBearingPieces(inputs))) {

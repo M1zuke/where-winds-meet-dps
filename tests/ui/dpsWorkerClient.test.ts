@@ -140,7 +140,7 @@ function parseSimulationRequest(): UnsentRequest {
   return { kind: "parseSimulation", inputs: defaultInputs, rotation: null, runs: 10, seed: 1 }
 }
 
-function parseSimulationResponse(reqId: number): WorkerResponse {
+function parseSimulationResponse(reqId: number, cancelled = false): WorkerResponse {
   return {
     kind: "parseSimulation",
     reqId,
@@ -150,7 +150,7 @@ function parseSimulationResponse(reqId: number): WorkerResponse {
     rotationDuration: 0,
     requestedRuns: 10,
     completedRuns: 10,
-    cancelled: false,
+    cancelled,
     warnings: [],
   }
 }
@@ -422,7 +422,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("posts a parse simulation without waiting out the debounce", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
@@ -431,7 +431,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("routes progress without retiring the request", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     const seen: number[] = []
     client.subscribeToDpsWorker("parseSimulation", () => seen.push(-1))
     client.subscribeToDpsWorkerProgress("parseSimulation", ({ done }) => seen.push(done))
@@ -450,7 +450,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("ignores progress from a superseded run", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     const seen: number[] = []
     client.subscribeToDpsWorker("parseSimulation", () => {})
     client.subscribeToDpsWorkerProgress("parseSimulation", ({ done }) => seen.push(done))
@@ -464,7 +464,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("terminates the run a parse simulation is superseding", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
@@ -477,7 +477,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("keeps the partial result of a run the user cancelled", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     const delivered: number[] = []
     client.subscribeToDpsWorker("parseSimulation", (response) => delivered.push(response.reqId))
 
@@ -492,7 +492,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("terminates the sweep when the last listener unsubscribes", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     const stop = client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
@@ -534,7 +534,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("never answers a parse simulation from the cache", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
@@ -707,7 +707,7 @@ describe("dpsWorkerClient", () => {
   })
 
   it("leaves a kind that reports its own progress out of the batch", async () => {
-    const client = await freshClient()
+    const client = await freshClient(2)
     client.subscribeToDpsWorker("parseSimulation", () => {})
 
     client.postToDpsWorker(parseSimulationRequest())
@@ -911,5 +911,107 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
 
     expect(client.retainedResponse("rotationDps")).toBeNull()
+  })
+  it("fans a parse simulation out over the pool by run range", async () => {
+    const client = await freshClient(5)
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+
+    const ranges = allPostsOfKind("parseSimulation").map((shard) =>
+      shard.kind === "parseSimulation" ? shard.runRange : undefined,
+    )
+    expect(ranges).toEqual([
+      { start: 0, end: 3 },
+      { start: 3, end: 6 },
+      { start: 6, end: 8 },
+      { start: 8, end: 10 },
+    ])
+  })
+
+  it("sums parse progress over the shards under the request's own id", async () => {
+    const client = await freshClient(5)
+    const seen: { reqId: number; done: number; total: number }[] = []
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+    client.subscribeToDpsWorkerProgress("parseSimulation", ({ reqId, done, total }) =>
+      seen.push({ reqId, done, total }),
+    )
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const shards = allPostsOfKind("parseSimulation")
+    const requestReqId = Math.min(...shards.map((shard) => shard.reqId)) - 1
+    respond(0, { kind: "parseSimulationProgress", reqId: shards[0].reqId, done: 2, total: 3 })
+    respond(0, { kind: "parseSimulationProgress", reqId: shards[1].reqId, done: 3, total: 3 })
+
+    expect(seen).toEqual([
+      { reqId: requestReqId, done: 2, total: 10 },
+      { reqId: requestReqId, done: 5, total: 10 },
+    ])
+  })
+
+  it("sends a cancel to every shard of a parse simulation", async () => {
+    const client = await freshClient(5)
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const shardReqIds = allPostsOfKind("parseSimulation").map((shard) => shard.reqId)
+    client.cancelDpsWorkerRequest("parseSimulation")
+
+    const cancelled = created
+      .flatMap((worker) => worker.posted as WorkerRequest[])
+      .filter((post) => post.kind === "parseSimulationCancel")
+      .map((post) => post.reqId)
+    expect(cancelled.sort()).toEqual([...shardReqIds].sort())
+  })
+
+  it("cancels a queued parse shard as it is dispatched instead of dropping it", async () => {
+    const client = await freshClient(3)
+    const seen: WorkerResponse[] = []
+    client.subscribeToDpsWorker("rotationDps", () => {})
+    client.subscribeToDpsWorker("parseSimulation", (response) => seen.push(response))
+
+    client.postToDpsWorker(unshardedRequest())
+    await vi.runAllTimersAsync()
+    const busyReqId = newestPostedReqId()
+    client.postToDpsWorker(parseSimulationRequest())
+    const dispatchedShardReqId = reqIdOfLastPost(1)
+    const requestReqId = dispatchedShardReqId - 1
+    client.cancelDpsWorkerRequest("parseSimulation")
+    expect(created[0].posted).toHaveLength(1)
+
+    respond(0, unshardedResponse(busyReqId))
+
+    const queuedShardReqId = dispatchedShardReqId + 1
+    expect(created[0].posted).toEqual([
+      expect.objectContaining({ reqId: busyReqId }),
+      expect.objectContaining({ kind: "parseSimulation", reqId: queuedShardReqId }),
+      { kind: "parseSimulationCancel", reqId: queuedShardReqId },
+    ])
+    expect(seen).toHaveLength(0)
+
+    respond(1, parseSimulationResponse(dispatchedShardReqId, true))
+    respond(0, parseSimulationResponse(queuedShardReqId, true))
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0].reqId).toBe(requestReqId)
+    expect(client.isDpsWorkerPending("parseSimulation")).toBe(false)
+  })
+
+  it("delivers one merged parse answer once the last shard lands", async () => {
+    const client = await freshClient(5)
+    const seen: WorkerResponse[] = []
+    client.subscribeToDpsWorker("parseSimulation", (response) => seen.push(response))
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const shards = allPostsOfKind("parseSimulation")
+    const requestReqId = Math.min(...shards.map((shard) => shard.reqId)) - 1
+    shards.forEach((shard, at) => {
+      respond(0, parseSimulationResponse(shard.reqId))
+      if (at < shards.length - 1) expect(seen).toHaveLength(0)
+    })
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0].reqId).toBe(requestReqId)
+    expect(client.isDpsWorkerPending("parseSimulation")).toBe(false)
   })
 })

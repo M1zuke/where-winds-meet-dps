@@ -35,6 +35,7 @@ export interface DpsWorkerActivity {
 interface ShardCollector {
   remaining: number
   parts: WorkerResponse[]
+  progressByShardReqId: Map<number, { done: number; total: number }>
 }
 
 interface DispatchUnit {
@@ -66,6 +67,7 @@ const runningUnitByWorker = new Map<Worker, DispatchUnit>()
 const workerByReqId = new Map<number, Worker>()
 const ownerReqIdByShardReqId = new Map<number, { ownerReqId: number; shardPosition: number }>()
 const collectorByReqId = new Map<number, ShardCollector>()
+const cancelledOwnerReqIds = new Set<number>()
 const activityListeners = new Set<() => void>()
 let activity: DpsWorkerActivity = { kinds: [], done: 0, total: 0 }
 let lastAssignedReqId = 0
@@ -120,6 +122,9 @@ function dispatchWaiting(): void {
     runningUnitByWorker.set(worker, unit)
     workerByReqId.set(unit.request.reqId, worker)
     worker.postMessage(unit.request)
+    if (unit.request.kind === "parseSimulation" && cancelledOwnerReqIds.has(unit.ownerReqId)) {
+      worker.postMessage({ kind: "parseSimulationCancel", reqId: unit.request.reqId })
+    }
   }
 }
 
@@ -159,6 +164,7 @@ function stopRunsOf(kind: RequestKind, state: KindState, keptOwnerReqId: number 
   for (const ownerReqId of stoppedOwners) {
     state.signatureByInFlightReqId.delete(ownerReqId)
     collectorByReqId.delete(ownerReqId)
+    cancelledOwnerReqIds.delete(ownerReqId)
     for (const [shardReqId, shard] of ownerReqIdByShardReqId) {
       if (shard.ownerReqId === ownerReqId) ownerReqIdByShardReqId.delete(shardReqId)
     }
@@ -191,8 +197,25 @@ function refreshActivity(): void {
 
 function receive(response: WorkerResponse): void {
   const owner = PROGRESS_OWNER_KIND[response.kind]
-  if (owner) deliverProgress(owner, response as ProgressResponse)
+  if (owner) deliverProgress(owner, shardedProgress(response as ProgressResponse))
   else if (!collectShard(response)) deliver(response)
+}
+
+function shardedProgress(progress: ProgressResponse): ProgressResponse {
+  const shard = ownerReqIdByShardReqId.get(progress.reqId)
+  const collector = shard && collectorByReqId.get(shard.ownerReqId)
+  if (!shard || !collector) return progress
+  collector.progressByShardReqId.set(progress.reqId, {
+    done: progress.done,
+    total: progress.total,
+  })
+  let done = 0
+  let total = 0
+  for (const part of collector.progressByShardReqId.values()) {
+    done += part.done
+    total += part.total
+  }
+  return { ...progress, reqId: shard.ownerReqId, done, total }
 }
 
 function deliverProgress(kind: RequestKind, progress: ProgressResponse): void {
@@ -204,6 +227,7 @@ function deliverProgress(kind: RequestKind, progress: ProgressResponse): void {
 function deliver(response: WorkerResponse): void {
   const kind = response.kind as RequestKind
   const state = stateFor(kind)
+  cancelledOwnerReqIds.delete(response.reqId)
   finishUnit(response.reqId)
   const signature = state.signatureByInFlightReqId.get(response.reqId)
   if (signature !== undefined) {
@@ -238,9 +262,13 @@ function postCancel(kind: RequestKind, state: KindState): void {
   const cancelKind = CANCEL_KIND_BY_KIND[kind]
   if (!cancelKind) return
   if (state.latestReqId <= state.lastDeliveredReqId) return
-  const running = workerByReqId.get(state.latestReqId)
-  if (!running) return
-  running.postMessage({ kind: cancelKind, reqId: state.latestReqId })
+  const shardReqIds = [...ownerReqIdByShardReqId]
+    .filter(([, shard]) => shard.ownerReqId === state.latestReqId)
+    .map(([shardReqId]) => shardReqId)
+  cancelledOwnerReqIds.add(state.latestReqId)
+  for (const reqId of shardReqIds.length > 0 ? shardReqIds : [state.latestReqId]) {
+    workerByReqId.get(reqId)?.postMessage({ kind: cancelKind, reqId })
+  }
 }
 
 function dropQueued(state: KindState): void {
@@ -263,11 +291,21 @@ function sendQueued(state: KindState): void {
     dispatchWaiting()
     return
   }
-  const collector: ShardCollector = { remaining: shards.length, parts: [] }
+  const collector: ShardCollector = {
+    remaining: shards.length,
+    parts: [],
+    progressByShardReqId: new Map(),
+  }
   collectorByReqId.set(request.reqId, collector)
   shards.forEach((shard, shardPosition) => {
     const shardReqId = ++lastAssignedReqId
     ownerReqIdByShardReqId.set(shardReqId, { ownerReqId: request.reqId, shardPosition })
+    if (shard.kind === "parseSimulation" && shard.runRange) {
+      collector.progressByShardReqId.set(shardReqId, {
+        done: 0,
+        total: shard.runRange.end - shard.runRange.start,
+      })
+    }
     waitingUnits.push({
       request: { ...shard, reqId: shardReqId } as WorkerRequest,
       kind: request.kind,

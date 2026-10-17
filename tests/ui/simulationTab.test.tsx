@@ -138,6 +138,7 @@ function runDetail(reqId: number, seed: number): WorkerResponse {
 }
 
 beforeEach(() => {
+  Object.defineProperty(navigator, "hardwareConcurrency", { value: 2, configurable: true })
   simulationViewState.optionId = null
   simulationViewState.runCount = DEFAULT_RUN_COUNT
   simulationViewState.ranSignature = null
