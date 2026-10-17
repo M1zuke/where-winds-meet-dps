@@ -35,7 +35,7 @@ const ANALYSIS_ROWS: GearSlotAnalysisRow[] = [
 ]
 
 vi.mock("../../src/ui/hooks/useGearAnalysis", () => ({
-  useGearAnalysis: () => ({ rows: ANALYSIS_ROWS, isPending: false }),
+  useGearAnalysis: () => ({ rows: ANALYSIS_ROWS, allSlotsLoss: 3500, isPending: false }),
 }))
 
 function piece(id: string, slot: GearPiece["slot"]): GearPiece {
@@ -138,14 +138,16 @@ describe("GearTab analysis subtab", () => {
     expect(retune).toHaveAttribute("title", "+120")
   })
 
-  it("states each slot's tuned-stat loss as a share of total DPS, and their total", () => {
+  it("states each slot's tuned-stat loss as a share of total DPS, and the all-slots loss as the total rather than the rows' sum", () => {
     renderTab()
 
     expect(within(analysisRow("Strategic Sword")).getAllByRole("cell")[4]).toHaveTextContent(
       "-3,000(7.5 %)",
     )
     expect(screen.getByRole("cell", { name: /Total tuned-stat DPS contribution/ })).toBeVisible()
-    expect(screen.getByText("-4,000")).toBeInTheDocument()
+    expect(screen.getByText("-3,500")).toBeInTheDocument()
+    expect(screen.queryByText("-4,000")).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/slot rows overlap/)).toBeInTheDocument()
   })
 })
 

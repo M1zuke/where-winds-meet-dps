@@ -101,6 +101,22 @@ function relayedDps(
   return dpsWithPiece(slotEmpty, maxRelayedClone(piece, inputs, breakthroughLevel), options)
 }
 
+export function computeAllSlotsUnequipLoss(
+  inputs: Inputs,
+  baselineDps: number,
+  options?: EngineRunOptions,
+): number {
+  const pieces = GEAR_SLOTS.map((slot) => equippedPiece(inputs, slot)).filter(
+    (piece): piece is GearPiece => piece !== null,
+  )
+  if (pieces.length === 0) return 0
+  const allSlotsEmpty = pieces.reduce(
+    (emptied, piece) => applyPieceContribution(emptied, piece, -1),
+    inputs,
+  )
+  return baselineDps - runEngine(allSlotsEmpty, options).dps
+}
+
 export function computeGearAnalysis(
   inputs: Inputs,
   baselineDps: number,

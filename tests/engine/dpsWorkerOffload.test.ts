@@ -19,7 +19,7 @@ import {
 import type { WorkerRequest, WorkerResponse } from "../../src/engine/dpsWorker"
 import { mergeShardResponses, shardRequest } from "../../src/ui/hooks/workerShards"
 import { RUN_SEED_STRIDE } from "../../src/engine/rng"
-import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
+import { computeAllSlotsUnequipLoss, computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { computeRanking } from "../../src/engine/itemRanking"
 import { runEngine } from "../../src/engine/dps"
@@ -66,6 +66,12 @@ describe("computeGearAnalysisRequest", () => {
     const expected = computeGearAnalysis(umbraInputs, baselineDps)
     const res = computeGearAnalysisRequest({ reqId: 1, inputs: umbraInputs, baselineDps })
     expect(res.rows).toEqual(expected)
+  })
+
+  it("answers the all-slots loss the direct path computes", () => {
+    const baselineDps = runEngine(umbraInputs).dps
+    const res = computeGearAnalysisRequest({ reqId: 1, inputs: umbraInputs, baselineDps })
+    expect(res.allSlotsLoss).toBe(computeAllSlotsUnequipLoss(umbraInputs, baselineDps))
   })
 
   it("echoes reqId", () => {
