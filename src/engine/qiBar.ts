@@ -27,6 +27,12 @@ export interface QiBreak {
 // what a grant that event causes reads; they differ only at the break's start frame.
 export type QiReading = "beforeHit" | "afterHit"
 
+export interface QiReader {
+  isBroken(timeSec: number, reading: QiReading): boolean
+  fractionAt(timeSec: number, reading: QiReading): number
+  phaseAt(timeSec: number, reading: QiReading): QiPhase
+}
+
 export interface QiSchedule {
   readonly breaks: readonly { startSec: number; endSec: number }[]
   isBroken(timeSec: number, reading?: QiReading): boolean
@@ -115,6 +121,11 @@ function brokenAtFrame(
   )
 }
 
+function compatibilityPhase(broken: boolean, fraction: number): QiPhase {
+  if (broken) return "exhausted"
+  return fraction < COMPAT_LOW_QI_FRACTION ? "below30" : "normal"
+}
+
 function scheduleFrom(
   breaks: readonly QiBreak[],
   fps: number,
@@ -145,38 +156,74 @@ export function fixedQiSchedule(
   window: { startSec: number; durationSec: number; lowQiLeadSec: number },
   fps: number,
 ): QiSchedule {
-  return fixedQiScheduleFromWindows([window], fps)
+  return new ScriptedQiBar([window], fps).schedule()
 }
 
-// The `EngineRunOptions.fixedQiBreaks` test harness: every window becomes its
-// own break, unioned into one schedule; only the first window contributes a
-// low-Qi lead, the same rule a single-window call already follows.
-export function fixedQiScheduleFromWindows(
-  windows: readonly { startSec: number; durationSec: number; lowQiLeadSec: number }[],
-  fps: number,
-): QiSchedule {
-  const breaks: QiBreak[] = windows
-    .filter((window) => window.durationSec > 0)
-    .map((window) => {
-      const startFrame = Math.round(window.startSec * fps)
-      const endFrame = startFrame + Math.round(window.durationSec * fps)
-      return { startFrame, endFrame, immuneUntilFrame: endFrame }
-    })
-  const [firstWindow] = windows
-  const hasLowQiLead = !!firstWindow && firstWindow.durationSec > 0 && firstWindow.lowQiLeadSec > 0
-  const firstBreakStartFrame = breaks[0]?.startFrame ?? 0
-  const lowQiStartFrame = hasLowQiLead
-    ? Math.round(Math.max(0, firstWindow.startSec - firstWindow.lowQiLeadSec) * fps)
-    : 0
-  const fractionAt = (frame: number): number => {
-    if (breaks.some((b) => frame >= b.startFrame && frame < b.endFrame)) return 0
-    if (hasLowQiLead && frame >= lowQiStartFrame && frame < firstBreakStartFrame)
+// Every window is its own break; only the first contributes a low-Qi lead.
+export class ScriptedQiBar implements QiReader {
+  private readonly breaks: QiBreak[]
+  private readonly hasLowQiLead: boolean
+  private readonly firstBreakStartFrame: number
+  private readonly lowQiStartFrame: number
+
+  constructor(
+    windows: readonly { startSec: number; durationSec: number; lowQiLeadSec: number }[],
+    private readonly fps: number,
+  ) {
+    this.breaks = windows
+      .filter((window) => window.durationSec > 0)
+      .map((window) => {
+        const startFrame = Math.round(window.startSec * fps)
+        const endFrame = startFrame + Math.round(window.durationSec * fps)
+        return { startFrame, endFrame, immuneUntilFrame: endFrame }
+      })
+    const [firstWindow] = windows
+    this.hasLowQiLead = !!firstWindow && firstWindow.durationSec > 0 && firstWindow.lowQiLeadSec > 0
+    this.firstBreakStartFrame = this.breaks[0]?.startFrame ?? 0
+    this.lowQiStartFrame = this.hasLowQiLead
+      ? Math.round(Math.max(0, firstWindow.startSec - firstWindow.lowQiLeadSec) * fps)
+      : 0
+  }
+
+  isBroken(timeSec: number): boolean {
+    return this.brokenAt(Math.round(timeSec * this.fps))
+  }
+
+  fractionAt(timeSec: number): number {
+    return this.fractionAtFrame(Math.round(timeSec * this.fps))
+  }
+
+  phaseAt(timeSec: number): QiPhase {
+    const frame = Math.round(timeSec * this.fps)
+    return compatibilityPhase(this.brokenAt(frame), this.fractionAtFrame(frame))
+  }
+
+  schedule(): QiSchedule {
+    return scheduleFrom(
+      this.breaks,
+      this.fps,
+      false,
+      (frame) => this.fractionAtFrame(frame),
+      () =>
+        this.hasLowQiLead
+          ? {
+              startSec: this.lowQiStartFrame / this.fps,
+              endSec: this.firstBreakStartFrame / this.fps,
+            }
+          : null,
+    )
+  }
+
+  private brokenAt(frame: number): boolean {
+    return brokenAtFrame(this.breaks, frame, "afterHit", false)
+  }
+
+  private fractionAtFrame(frame: number): number {
+    if (this.brokenAt(frame)) return 0
+    if (this.hasLowQiLead && frame >= this.lowQiStartFrame && frame < this.firstBreakStartFrame)
       return COMPAT_LOW_QI_FRACTION - 0.01
     return 1
   }
-  return scheduleFrom(breaks, fps, false, fractionAt, () =>
-    hasLowQiLead ? { startSec: lowQiStartFrame / fps, endSec: firstBreakStartFrame / fps } : null,
-  )
 }
 
 // Converts a finished run's own `Result.qiBreaks` (seconds) into the frame
@@ -223,46 +270,45 @@ export function warmStartQiSchedule(breaks: readonly QiBreak[], fps: number): Qi
   return scheduleFrom(breaks, fps, true, fractionAt, () => null)
 }
 
-export function qiScheduleReadingFrame(
-  base: QiSchedule,
-  frame: number,
-  referenceFrame: number,
-  fps: number,
-): QiSchedule {
-  const redirected = (timeSec: number): number =>
-    Math.round(timeSec * fps) === frame ? referenceFrame / fps : timeSec
+export function scheduleQiReader(schedule: QiSchedule): QiReader {
   return {
-    breaks: base.breaks,
-    isBroken: (timeSec, reading) => base.isBroken(redirected(timeSec), reading),
-    fractionAt: (timeSec, reading) => base.fractionAt(redirected(timeSec), reading),
-    phaseAt: (timeSec, reading) => base.phaseAt(redirected(timeSec), reading),
-    firstLowQiSpan: () => base.firstLowQiSpan(),
+    isBroken: (timeSec, reading) => schedule.isBroken(timeSec, reading),
+    fractionAt: (timeSec, reading) => schedule.fractionAt(timeSec, reading),
+    phaseAt: (timeSec, reading) => schedule.phaseAt(timeSec, reading),
   }
 }
 
-export function qiScheduleReadingLiveBar(
-  base: QiSchedule,
-  bar: QiBar,
+export function qiReaderReadingFrame(
+  base: QiReader,
   frame: number,
+  referenceFrame: number,
   fps: number,
-): QiSchedule {
-  const readsLiveBar = (timeSec: number, reading: QiReading | undefined): boolean =>
-    reading !== "afterHit" && Math.round(timeSec * fps) === frame
-  const phaseOfLiveBar = (): QiPhase => {
-    if (bar.isBrokenAtFrame(frame)) return "exhausted"
-    return bar.fractionAtFrame(frame) < COMPAT_LOW_QI_FRACTION ? "below30" : "normal"
-  }
+): QiReader {
+  const redirected = (timeSec: number): number =>
+    Math.round(timeSec * fps) === frame ? referenceFrame / fps : timeSec
   return {
-    breaks: base.breaks,
+    isBroken: (timeSec, reading) => base.isBroken(redirected(timeSec), reading),
+    fractionAt: (timeSec, reading) => base.fractionAt(redirected(timeSec), reading),
+    phaseAt: (timeSec, reading) => base.phaseAt(redirected(timeSec), reading),
+  }
+}
+
+export function liveBarQiReader(base: QiReader, bar: QiBar, frame: number, fps: number): QiReader {
+  const readsLiveBar = (timeSec: number, reading: QiReading): boolean =>
+    reading === "beforeHit" && Math.round(timeSec * fps) === frame
+  return {
     isBroken: (timeSec, reading) =>
-      readsLiveBar(timeSec, reading) ? bar.isBrokenAtFrame(frame) : base.isBroken(timeSec, reading),
+      readsLiveBar(timeSec, reading)
+        ? bar.isBroken(timeSec, reading)
+        : base.isBroken(timeSec, reading),
     fractionAt: (timeSec, reading) =>
       readsLiveBar(timeSec, reading)
-        ? bar.fractionAtFrame(frame)
+        ? bar.fractionAt(timeSec, reading)
         : base.fractionAt(timeSec, reading),
     phaseAt: (timeSec, reading) =>
-      readsLiveBar(timeSec, reading) ? phaseOfLiveBar() : base.phaseAt(timeSec, reading),
-    firstLowQiSpan: () => base.firstLowQiSpan(),
+      readsLiveBar(timeSec, reading)
+        ? bar.phaseAt(timeSec, reading)
+        : base.phaseAt(timeSec, reading),
   }
 }
 
@@ -280,8 +326,10 @@ export function sameQiBreaks(left: readonly QiBreak[], right: readonly QiBreak[]
 // for `directImmunitySec`; ticks are never immune; no regeneration; breaks
 // repeat without limit. The event that reaches 0 is itself scored against the
 // bar as it stood before it, so a reader asks `isBrokenAtFrame` /
-// `fractionAtFrame` before `apply`.
-export class QiBar {
+// `fractionAtFrame` before `apply`. The `QiReader` methods answer from that
+// live state for either reading: ordering the read against `apply` is what
+// separates `beforeHit` from `afterHit`.
+export class QiBar implements QiReader {
   private value: number
   private readonly breaks: QiBreak[] = []
   private readonly trace: { frame: number; value: number; refill?: true }[]
@@ -305,6 +353,19 @@ export class QiBar {
   fractionAtFrame(frame: number): number {
     if (this.isBrokenAtFrame(frame)) return 0
     return this.bar.max > 0 ? Math.max(0, Math.min(1, this.value / this.bar.max)) : 0
+  }
+
+  isBroken(timeSec: number, _reading: QiReading): boolean {
+    return this.isBrokenAtFrame(Math.round(timeSec * this.fps))
+  }
+
+  fractionAt(timeSec: number, _reading: QiReading): number {
+    return this.fractionAtFrame(Math.round(timeSec * this.fps))
+  }
+
+  phaseAt(timeSec: number, _reading: QiReading): QiPhase {
+    const frame = Math.round(timeSec * this.fps)
+    return compatibilityPhase(this.isBrokenAtFrame(frame), this.fractionAtFrame(frame))
   }
 
   damageLog(): QiDamageLog {

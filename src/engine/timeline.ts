@@ -97,18 +97,21 @@ import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramNumOf, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { DEFAULT_QI_BREAK_WINDOW } from "./qiBreak"
 import { QiEdgeDependence, qiEdgeSiteOf } from "./qiBreakEdge"
+import { EventQueue, type QueuedEvent } from "./eventQueue"
 import {
   QiBar,
+  ScriptedQiBar,
   fixedQiSchedule,
-  fixedQiScheduleFromWindows,
+  liveBarQiReader,
   qiBonusesFrom,
   qiFromDamage,
-  qiScheduleReadingFrame,
-  qiScheduleReadingLiveBar,
+  qiReaderReadingFrame,
   sameQiBreaks,
+  scheduleQiReader,
   warmStartQiSchedule,
   type QiBreak,
   type QiHitBonuses,
+  type QiReader,
   type QiSchedule,
   type QiTargetBar,
 } from "./qiBar"
@@ -219,64 +222,17 @@ function activeVariantCastFrames(
   return null
 }
 
-interface HitEvent {
-  frame: number
+interface HitEvent extends QueuedEvent {
+  kind: "hit"
   // The landing time before it is rounded to a whole 60 fps frame, for the one
   // reader that compares two hits' wall-clock stamps.
   exactFrame?: number
-  seq: number
   skill: Skill
   hit: SkillHit
   // The frame the CAST started, which is what cast-scoped buff ids are keyed
   // by — not this hit's own frame, which may be well after it.
   castFrame: number
   stepStart: number
-}
-
-class EventQueue {
-  private heap: HitEvent[] = []
-
-  get size(): number {
-    return this.heap.length
-  }
-
-  push(e: HitEvent): void {
-    this.heap.push(e)
-    let i = this.heap.length - 1
-    while (i > 0) {
-      const parent = (i - 1) >> 1
-      if (this.less(this.heap[i], this.heap[parent])) {
-        ;[this.heap[i], this.heap[parent]] = [this.heap[parent], this.heap[i]]
-        i = parent
-      } else break
-    }
-  }
-
-  pop(): HitEvent | undefined {
-    const n = this.heap.length
-    if (n === 0) return undefined
-    const top = this.heap[0]
-    const last = this.heap.pop()!
-    if (this.heap.length > 0) {
-      this.heap[0] = last
-      let i = 0
-      for (;;) {
-        const l = 2 * i + 1
-        const r = 2 * i + 2
-        let smallest = i
-        if (l < this.heap.length && this.less(this.heap[l], this.heap[smallest])) smallest = l
-        if (r < this.heap.length && this.less(this.heap[r], this.heap[smallest])) smallest = r
-        if (smallest === i) break
-        ;[this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]]
-        i = smallest
-      }
-    }
-    return top
-  }
-
-  private less(a: HitEvent, b: HitEvent): boolean {
-    return a.frame !== b.frame ? a.frame < b.frame : a.seq < b.seq
-  }
 }
 
 export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Result {
@@ -310,8 +266,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   const qiWarmStartBreaks = options?.qiScheduleSeedBreaks
   const fixedQiBreaks = options?.fixedQiBreaks
-  let qiSchedule: QiSchedule = fixedQiBreaks
-    ? fixedQiScheduleFromWindows(fixedQiBreaks, FPS)
+  const scriptedQiBar = fixedQiBreaks ? new ScriptedQiBar(fixedQiBreaks, FPS) : null
+  let qiSchedule: QiSchedule = scriptedQiBar
+    ? scriptedQiBar.schedule()
     : qiWarmStartBreaks
       ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
       : fixedQiSchedule(DEFAULT_QI_BREAK_WINDOW, FPS)
@@ -329,6 +286,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   for (let qiIteration = 1; ; qiIteration++) {
     const qiBar = new QiBar(qiTargetBar, FPS, options?.qiDamageLog)
+    const iterationQiReader: QiReader = scriptedQiBar ?? scheduleQiReader(qiSchedule)
 
     const skillsMap = new Map<string, Skill>()
     for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
@@ -456,7 +414,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const guardsHold = (trigger: HitTrigger, frame: number, conditionHolds = holds): boolean => {
         if (!triggerConditions(trigger).every((condition) => conditionHolds(condition, frame)))
           return false
-        if (trigger.phase !== undefined && qiSchedule.phaseAt(frame / FPS) !== trigger.phase)
+        if (
+          trigger.phase !== undefined &&
+          iterationQiReader.phaseAt(frame / FPS, "afterHit") !== trigger.phase
+        )
           return false
         return (
           trigger.requiresParam === undefined ||
@@ -1997,7 +1958,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       try {
         const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
         engine.attachStatuses({ view: ledger, fps: FPS })
-        engine.attachQiSchedule(qiSchedule)
+        engine.attachQiSchedule(qiSchedule, iterationQiReader)
         if (extensionRng) engine.attachExtensionGenerator(extensionRng)
         const castTriggerFires = triggerGate(castConditionHoldsFor(engine)).fires
         let sequence = 0
@@ -2145,7 +2106,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             collect: collectDetail,
             particleCount: buffEngine?.extensionParticleCount ?? 1,
             buffLive: (id, frame) => buffEngine?.liveParticles(id, frame / FPS) ?? false,
-            exhausted: (frame) => qiSchedule.isBroken(frame / FPS),
+            exhausted: (frame) => iterationQiReader.isBroken(frame / FPS, "afterHit"),
             paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
           }),
       )
@@ -2287,7 +2248,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       hitTimesSec: damagingHitTimesSec,
       weaponHitTimesSec,
       dotTickTimesSec,
-      qiPhaseAt: (timeSec) => buffEngine?.qiPhase(timeSec) ?? "normal",
+      qiPhaseAt: (timeSec) => buffEngine?.qiPhase(timeSec, "beforeHit") ?? "normal",
       paramOn: (name) => buffEngine?.paramOn(name) ?? false,
       paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
       hasBuffEngine: !!buffEngine,
@@ -2414,7 +2375,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       const combat = inputs.combatSettings
       if (buffEngine) {
-        if (buffEngine.qiBroken(frame / FPS)) {
+        if (buffEngine.qiBroken(frame / FPS, "beforeHit")) {
           effects.push({ statKey: "independentDamageBoost", amount: QI_BREAK_HP_DAMAGE_BONUS })
           sig += "~qiBreakBoost"
         }
@@ -2472,16 +2433,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     // A hit, a DoT tick, a mechanic's own extra event and an echo release all
     // flow through one frame-ordered list, so `totalDamage` accumulates
-    // strictly in time order and a buff module can read it mid-run. `seq`
-    // breaks ties at the same frame: a hit before a tick before an extra event
-    // before a release, so a release a hit's own trigger fires always scores
-    // after that hit.
+    // strictly in time order and a buff module can read it mid-run. Ties at
+    // the same frame resolve a hit before a tick before an extra event before a
+    // release, so a release a hit's own trigger fires always scores after that
+    // hit.
     type MergedEvent =
       | {
           kind: "hit"
           frame: number
           exactFrame: number
-          seq: number
           skill: Skill
           hit: SkillHit
           castFrame: number
@@ -2493,27 +2453,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           ledgerMark: number
           engineOffsetSec: number
         }
-      | { kind: "tickLaunch"; frame: number; seq: number; entry: DotTickEntry }
-      | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
-      | { kind: "extra"; frame: number; seq: number; event: MechanicEvent }
-      | { kind: "echoRelease"; frame: number; seq: number; debuffId: string }
-      | { kind: "recall"; frame: number; seq: number; resource: CombatResource }
-
-    const MERGED_KIND_PRIORITY: Record<MergedEvent["kind"], number> = {
-      recall: -1,
-      hit: 0,
-      tickLaunch: 0.5,
-      tick: 1,
-      extra: 2,
-      echoRelease: 3,
-    }
-    function byMergedOrder(left: MergedEvent, right: MergedEvent): number {
-      return (
-        left.frame - right.frame ||
-        MERGED_KIND_PRIORITY[left.kind] - MERGED_KIND_PRIORITY[right.kind] ||
-        left.seq - right.seq
-      )
-    }
+      | { kind: "tickLaunch"; frame: number; entry: DotTickEntry }
+      | { kind: "tick"; frame: number; entry: DotTickEntry }
+      | { kind: "extra"; frame: number; event: MechanicEvent }
+      | { kind: "echoRelease"; frame: number; debuffId: string }
+      | { kind: "recall"; frame: number; resource: CombatResource }
 
     const echoPotByDebuff = new Map<string, number>()
     const echoOf = (debuffId: string) => {
@@ -2531,8 +2475,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
-    const queue = new EventQueue()
-    let seq = 0
+    const queue = new EventQueue<HitEvent>()
     for (const ls of laidSteps) {
       for (const hit of ls.performedHits) {
         const resolvedFrame =
@@ -2542,9 +2485,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             ls.hitDistanceMeters,
           ) + ls.midCastExtraFrames
         queue.push({
+          kind: "hit",
           frame: hitLandingFrame(ls.startFrame, resolvedFrame),
           exactFrame: exactHitLandingFrame(ls.startFrame, resolvedFrame),
-          seq: seq++,
           skill: ls.resolved.skill,
           hit,
           castFrame: ls.startFrame,
@@ -2600,9 +2543,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // still run here — they can write the ledger via `setStatus` — but their
     // `stat`/`forceOutcome` output only feeds the formula, so it is captured
     // onto the hit's own merged event for pass 2 instead of reapplied there.
-    const mergedEvents: MergedEvent[] = []
+    const mergedQueue = new EventQueue<MergedEvent>()
     const chainEndFrameByStepStart = new Map<number, number>()
-    let mergedSeq = 0
     let processed = 0
     while (queue.size > 0) {
       if (processed >= EVENT_CAP) {
@@ -2652,17 +2594,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
       const onHitEffectCount = extraEffects.length
       const forcedAffinityByOnHit = forceGuaranteedAffinity
-      const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
+      const qiPhase = buffEngine?.qiPhase(frame / FPS, "beforeHit") ?? "normal"
       for (const effect of behavior.claimStatEffects(hitInput, qiPhase))
         applyEffect(hitSink, effect)
 
       const hitInWindow = inWindow(frame)
       const ledgerMark = ledger.mark()
-      mergedEvents.push({
+      mergedQueue.push({
         kind: "hit",
         frame,
         exactFrame: exactFrame ?? frame,
-        seq: mergedSeq++,
         skill,
         hit,
         castFrame,
@@ -2682,12 +2623,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (trigger.kind === "detonateDot") continue
         if (trigger.kind === "releaseEcho") {
           if (hitInWindow && liveWriter.fires(trigger, frame))
-            mergedEvents.push({
-              kind: "echoRelease",
-              frame,
-              seq: mergedSeq++,
-              debuffId: trigger.targetId,
-            })
+            mergedQueue.push({ kind: "echoRelease", frame, debuffId: trigger.targetId })
           continue
         }
         if (
@@ -2737,11 +2673,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 hitConditionsHold(candidate, subHolds),
               )) {
                 queue.push({
+                  kind: "hit",
                   frame: hitLandingFrame(
                     frame,
                     resolvedHitFrame(subHit, subHolds, subDistanceMeters),
                   ),
-                  seq: seq++,
                   skill: sub,
                   hit: subHit,
                   castFrame: frame,
@@ -2760,8 +2696,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           hitConditionsHold(candidate, subHolds),
         )) {
           queue.push({
+            kind: "hit",
             frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds, subDistanceMeters)),
-            seq: seq++,
             skill: sub,
             hit: subHit,
             castFrame: frame,
@@ -2923,8 +2859,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         dotType: dot.skillType || "sustain",
       }
       dotTickEntries.push(entry)
-      mergedEvents.push({ kind: "tickLaunch", frame: entry.launchFrame, seq: mergedSeq++, entry })
-      mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
+      mergedQueue.push({ kind: "tickLaunch", frame: entry.launchFrame, entry })
+      mergedQueue.push({ kind: "tick", frame: entry.frame, entry })
     }
 
     // A tick carries the same `extraCritDamage` sentinel a regular hit does, but
@@ -2945,7 +2881,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     for (const { mechanic, state } of mechanics) {
       for (const event of mechanic.extraEvents?.(state, mechanicSetup) ?? []) {
-        mergedEvents.push({ kind: "extra", frame: event.frame, seq: mergedSeq++, event })
+        mergedQueue.push({ kind: "extra", frame: event.frame, event })
       }
     }
 
@@ -2972,13 +2908,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const windows = ledger.windowsOf(debuffId)
       if (windows.length === 0) continue
       for (const frame of coverageEnds(windows).filter((end) => end <= windowFrames))
-        mergedEvents.push({ kind: "echoRelease", frame, seq: mergedSeq++, debuffId })
+        mergedQueue.push({ kind: "echoRelease", frame, debuffId })
     }
 
     for (const ls of laidSteps) {
       for (const resource of resources) {
         if (!resource.recalledBy(ls.resolved.skill)) continue
-        mergedEvents.push({ kind: "recall", frame: ls.startFrame, seq: mergedSeq++, resource })
+        mergedQueue.push({ kind: "recall", frame: ls.startFrame, resource })
       }
     }
 
@@ -3001,7 +2937,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           )
         : {}
 
-    let scoringSchedule: QiSchedule = qiSchedule
+    let scoringQiReader: QiReader = iterationQiReader
 
     function withQiReadAtFrame<Scored>(
       frame: number,
@@ -3009,11 +2945,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       score: () => Scored,
     ): Scored {
       if (readQiAtFrame === null || !buffEngine) return score()
-      buffEngine.attachQiSchedule(qiScheduleReadingFrame(qiSchedule, frame, readQiAtFrame, FPS))
+      buffEngine.attachQiReader(qiReaderReadingFrame(iterationQiReader, frame, readQiAtFrame, FPS))
       try {
         return score()
       } finally {
-        buffEngine.attachQiSchedule(scoringSchedule)
+        buffEngine.attachQiReader(scoringQiReader)
       }
     }
 
@@ -3044,7 +2980,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             echo: () => {},
             finalCritAtLeast: () => {},
           }
-          const phase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
+          const phase = buffEngine?.qiPhase(frame / FPS, "beforeHit") ?? "normal"
           for (const effect of behavior.claimStatEffects(hitInput, phase))
             applyEffect(claimSink, effect)
         }
@@ -3062,7 +2998,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           { engineOffsetSec: event.engineOffsetSec },
         )
         const hitContext: HitContext = {
-          phase: buffEngine?.qiPhase(frame / FPS) ?? "normal",
+          phase: buffEngine?.qiPhase(frame / FPS, "beforeHit") ?? "normal",
           smallPhys: st.ctx.smallPhys,
           isEngineBuffActive: (id) =>
             buffEngine?.isBuffActiveAtTime(id, frame / FPS + event.engineOffsetSec) ?? false,
@@ -3235,7 +3171,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       endFrame: Math.round(endSec * FPS),
     }))
     const scoredInsideBreak = (frame: number): boolean =>
-      fixedQiBreaks ? qiSchedule.isBroken(frame / FPS) : qiBar.isBrokenAtFrame(frame)
+      scoringQiReader.isBroken(frame / FPS, "beforeHit")
     const qiEdgeDependence = new QiEdgeDependence()
     const recordQiEdgeDependence = (
       frame: number,
@@ -3256,12 +3192,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // an echo release, which takes whatever this debuff has banked since its
     // last release. `totalDamage` accumulates as each one is scored, so a buff
     // module's `target.remainingHealthFraction` reads the true running total.
-    mergedEvents.sort(byMergedOrder)
     const launchedTicks = new Map<DotTickEntry, ResourceTickOutcome>()
-    for (const event of mergedEvents) {
+    const hitEventsInOrder: Extract<MergedEvent, { kind: "hit" }>[] = []
+    for (const event of mergedQueue.drain()) {
+      if (event.kind === "hit") hitEventsInOrder.push(event)
       if (buffEngine && !fixedQiBreaks) {
-        scoringSchedule = qiScheduleReadingLiveBar(qiSchedule, qiBar, event.frame, FPS)
-        buffEngine.attachQiSchedule(scoringSchedule)
+        scoringQiReader = liveBarQiReader(iterationQiReader, qiBar, event.frame, FPS)
+        buffEngine.attachQiReader(scoringQiReader)
       }
       for (const resource of resources)
         resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
@@ -3500,8 +3437,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
-    scoringSchedule = qiSchedule
-    buffEngine?.attachQiSchedule(qiSchedule)
+    scoringQiReader = iterationQiReader
+    buffEngine?.attachQiReader(iterationQiReader)
 
     if (lateMeterDefs.length > 0) {
       const lateMeterGate = triggerGate(conditionHolds)
@@ -3517,19 +3454,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           startFrame: laidStep.startFrame,
           prePull: laidStep.prePull,
         })),
-        hits: mergedEvents.flatMap((event) =>
-          event.kind === "hit"
-            ? [
-                {
-                  skill: event.skill,
-                  hit: event.hit,
-                  stepStart: event.stepStart,
-                  frame: event.frame,
-                  exactFrame: event.exactFrame,
-                },
-              ]
-            : [],
-        ),
+        hits: hitEventsInOrder.map((event) => ({
+          skill: event.skill,
+          hit: event.hit,
+          stepStart: event.stepStart,
+          frame: event.frame,
+          exactFrame: event.exactFrame,
+        })),
         costApplies: meterCostRequirementHolds,
         delayedCostFrame: (startFrame, atFrame) => hitLandingFrame(startFrame, atFrame),
         castEndFrame: (landed) =>

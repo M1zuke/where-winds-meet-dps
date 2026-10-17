@@ -37,7 +37,13 @@ import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
-import { fixedQiSchedule, type QiReading, type QiSchedule } from "../qiBar"
+import {
+  fixedQiSchedule,
+  scheduleQiReader,
+  type QiReader,
+  type QiReading,
+  type QiSchedule,
+} from "../qiBar"
 import { EXTENSION_PARTICLES, WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
 import { AFTER_HIT_SEC } from "./frameOrder"
 
@@ -125,7 +131,10 @@ export class BuffEngine {
   private consumeEvents = new Set<string>()
   private statuses: TimelineStatuses | null = null
   private qiSchedule: QiSchedule | null = null
+  private qiReader: QiReader | null = null
   private defaultQiSchedule: QiSchedule | null = null
+  private defaultQiReader: QiReader | null = null
+  private defaultQiReaderSchedule: QiSchedule | null = null
   private readonly extensions = new Map<string, WindowExtensionEnsemble>()
   private extensionGenerator: (() => number) | undefined
 
@@ -140,8 +149,23 @@ export class BuffEngine {
   // Absent — the case for a fixture or a unit test that probes `qiPhase`
   // directly off `params` — a fixed schedule stands in, built from the same
   // clock-style params `paramsFromInputs` still seeds either way.
-  attachQiSchedule(schedule: QiSchedule): void {
+  attachQiSchedule(schedule: QiSchedule, reader: QiReader = scheduleQiReader(schedule)): void {
     this.qiSchedule = schedule
+    this.qiReader = reader
+  }
+
+  attachQiReader(reader: QiReader): void {
+    this.qiReader = reader
+  }
+
+  private readerOrDefault(): QiReader {
+    if (this.qiReader) return this.qiReader
+    const schedule = this.scheduleOrDefault()
+    if (this.defaultQiReaderSchedule !== schedule) {
+      this.defaultQiReader = scheduleQiReader(schedule)
+      this.defaultQiReaderSchedule = schedule
+    }
+    return this.defaultQiReader!
   }
 
   private scheduleOrDefault(): QiSchedule {
@@ -228,17 +252,17 @@ export class BuffEngine {
   }
 
   qiPhase(time: number, reading: QiReading = "beforeHit"): QiPhase {
-    const schedulePhase = this.scheduleOrDefault().phaseAt(time, reading)
-    if (schedulePhase !== "normal") return schedulePhase
+    const readerPhase = this.readerOrDefault().phaseAt(time, reading)
+    if (readerPhase !== "normal") return readerPhase
     return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
   qiFraction(time: number, reading: QiReading = "beforeHit"): number {
-    return this.scheduleOrDefault().fractionAt(time, reading)
+    return this.readerOrDefault().fractionAt(time, reading)
   }
 
   qiBroken(time: number, reading: QiReading = "beforeHit"): boolean {
-    return this.scheduleOrDefault().isBroken(time, reading)
+    return this.readerOrDefault().isBroken(time, reading)
   }
 
   qiBreakWindow(): { start: number; end: number } | null {
@@ -340,14 +364,14 @@ export class BuffEngine {
     }
     return {
       timeSec: time,
-      phase: this.qiPhase(time),
+      phase: this.qiPhase(time, "beforeHit"),
       build,
       target: {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
         distanceMeters: this.targetDistanceMeters(time, statusesView),
-        qiFraction: this.qiFraction(time),
-        qiBroken: this.qiBroken(time),
+        qiFraction: this.qiFraction(time, "beforeHit"),
+        qiBroken: this.qiBroken(time, "beforeHit"),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),
@@ -1062,7 +1086,7 @@ export class BuffEngine {
     const alternative = module.perCastConsume?.phaseAlternative
     if (!alternative) return false
     if (alternative.requires && !this.requirementsMet(alternative.requires)) return false
-    const phase = this.qiPhase(time)
+    const phase = this.qiPhase(time, "beforeHit")
     return Array.isArray(alternative.phase)
       ? alternative.phase.includes(phase)
       : alternative.phase === phase
