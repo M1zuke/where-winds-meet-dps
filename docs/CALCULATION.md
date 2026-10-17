@@ -39,6 +39,28 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   the min/max-phys step, and that is its only application site. Applying it in
   the stat layer double-counts it.
 
+## Gear set bonuses
+
+- A gear set sits on the four set-bearing slots only. The other four slots carry
+  an armor set the app does not model: they have no set field, and a set of the
+  armor group stored on any piece counts toward nothing.
+- A set's 2-piece is active with at least two equipped pieces carrying it, its
+  4-piece with four. Two different sets can each have their 2-piece active;
+  at most one 4-piece can be active.
+- A 2-piece's level comes from the equipped carriers' gear levels: sort them high
+  to low, keep the tier size's highest (two), average them, and use the first
+  ladder rung at or above the average — the last rung when the average is past
+  it. A 4-piece has no ladder; it is on or off.
+- A 4-piece gate (a set param, a build-level set check, a formula bonus) reads
+  the one set whose 4-piece is active, never a build-level selection.
+- The bow set sits on the Bow and the Thumb Ring, has only a 2-piece, and is
+  active only when both carry the same bow set. Its level follows the same rule
+  over the two pieces' levels and its own ladder.
+- The Bow and the Thumb Ring carry nothing else: no base stats, tunements,
+  attunement, heirloom, enhancement, analysis, retune or re-attune.
+- A set id the build does not recognise counts toward nothing and is kept as
+  stored.
+
 ## White vs yellow rates
 
 Read **CLAUDE.md § "White vs Yellow rates — DO NOT FLIP THIS"** before touching

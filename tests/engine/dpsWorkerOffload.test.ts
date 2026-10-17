@@ -2,16 +2,17 @@
 // `Worker` in vitest/jsdom.
 import { describe, expect, it } from "vitest"
 import {
+  computeArsenalTiles,
   computeDpsDeltas,
   computeEquippedDeltas,
   computeGearAnalysisRequest,
+  computeGearSetChoices,
   computeParseRunDetail,
   computeParseSimulation,
   computeProfileMetrics,
   computeRankingRequest,
   computeRotationDps,
   computeSelectedPieceDelta,
-  computeSetTiles,
   PARSE_RUN_CAP,
   parseRunSeed,
   type ParseSimulationWorkerRequest,
@@ -26,23 +27,23 @@ import { runEngine } from "../../src/engine/dps"
 import { withCustomContent } from "../../src/engine/customContent"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import type { Skill } from "../../src/engine/skill"
-import {
-  applyArmorSet,
-  applyBowSet,
-  ARMOR_SET_OPTIONS,
-  defaultArsenalForClass,
-  swapArsenal,
-} from "../../src/engine/panel"
+import { defaultArsenalForClass, swapArsenal } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { defaultInputs } from "../../src/engine/defaults"
 import { GEAR_SLOTS } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets/ids"
+import { BOW_SET_DEFS } from "../../src/data/sets/bowSets"
+import { GEAR_SET_DEFS } from "../../src/definitions/sets/registry"
+import { NO_SET_CHOICE } from "../../src/engine/setChoice"
+import { withBowSet, withGearSet } from "../helpers/withGearSet"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 function dpsFor(variant = umbraInputs) {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(variant)))).dps
+  return runEngine(applySetBonuses(withDerivedStats(variant))).dps
 }
 
 describe("computeRankingRequest", { timeout: 30_000 }, () => {
@@ -81,29 +82,100 @@ describe("computeGearAnalysisRequest", () => {
   })
 })
 
-describe("computeSetTiles", () => {
-  const res = computeSetTiles({ reqId: 7, inputs: umbraInputs })
+describe("computeGearSetChoices", () => {
+  const gearBase = withGearSet(umbraInputs, SET_ID.hawkwing, { fabricatePieces: true })
+  const piece = { kind: "piece", pieceId: "zero-leftWeapon" } as const
+
+  function withSetOn(inputs: Inputs, pieceIds: string[], setId: string | null): Inputs {
+    return {
+      ...inputs,
+      inventory: inputs.inventory.map((candidate) =>
+        pieceIds.includes(candidate.id) ? { ...candidate, set: setId ?? undefined } : candidate,
+      ),
+    }
+  }
+
+  it("echoes reqId and the request it answered", () => {
+    const res = computeGearSetChoices({
+      reqId: 9,
+      inputs: gearBase,
+      target: piece,
+      applyToGroup: true,
+    })
+    expect(res.reqId).toBe(9)
+    expect(res.target).toEqual(piece)
+    expect(res.applyToGroup).toBe(true)
+  })
+
+  it("currentDps matches the reference pipeline for the inputs as stored", () => {
+    const res = computeGearSetChoices({
+      reqId: 1,
+      inputs: gearBase,
+      target: piece,
+      applyToGroup: false,
+    })
+    expect(res.currentDps).toBe(dpsFor(gearBase))
+  })
+
+  it("answers every gear set and no set for a gear piece, matching the reference pipeline", () => {
+    const res = computeGearSetChoices({
+      reqId: 1,
+      inputs: gearBase,
+      target: piece,
+      applyToGroup: false,
+    })
+    expect(Object.keys(res.dpsByChoice).sort()).toEqual(
+      [NO_SET_CHOICE, ...GEAR_SET_DEFS.map((set) => set.id)].sort(),
+    )
+    expect(res.dpsByChoice[NO_SET_CHOICE]).toBe(
+      dpsFor(withSetOn(gearBase, ["zero-leftWeapon"], null)),
+    )
+    expect(res.dpsByChoice[SET_ID.jadeware]).toBe(
+      dpsFor(withSetOn(gearBase, ["zero-leftWeapon"], SET_ID.jadeware)),
+    )
+  })
+
+  it("writes the choice onto all four equipped set-bearing pieces when applyToGroup is on", () => {
+    const res = computeGearSetChoices({
+      reqId: 1,
+      inputs: gearBase,
+      target: piece,
+      applyToGroup: true,
+    })
+    const everyPiece = ["zero-leftWeapon", "zero-rightWeapon", "zero-disc", "zero-pendant"]
+    expect(res.dpsByChoice[SET_ID.jadeware]).toBe(
+      dpsFor(withSetOn(gearBase, everyPiece, SET_ID.jadeware)),
+    )
+  })
+
+  it("answers every bow set and no set for a bow piece, matching the reference pipeline", () => {
+    const withBow = withBowSet(gearBase, "crit", 100)
+    const res = computeGearSetChoices({
+      reqId: 1,
+      inputs: withBow,
+      target: { kind: "bow", slot: "bow" },
+      applyToGroup: false,
+    })
+    expect(Object.keys(res.dpsByChoice).sort()).toEqual(
+      [NO_SET_CHOICE, ...Object.keys(BOW_SET_DEFS)].sort(),
+    )
+    const unpaired: Inputs = {
+      ...withBow,
+      bowGear: {
+        ...withBow.bowGear,
+        bow: withBow.bowGear.bow && { ...withBow.bowGear.bow, set: null },
+      },
+    }
+    expect(res.dpsByChoice[NO_SET_CHOICE]).toBe(dpsFor(unpaired))
+    expect(res.dpsByChoice.crit).toBe(res.currentDps)
+  })
+})
+
+describe("computeArsenalTiles", () => {
+  const res = computeArsenalTiles({ reqId: 7, inputs: umbraInputs })
 
   it("echoes reqId", () => {
     expect(res.reqId).toBe(7)
-  })
-
-  it("armorDpsByKey.__none matches the reference set:null pipeline", () => {
-    const expected = dpsFor({ ...umbraInputs, set: null })
-    expect(res.armorDpsByKey.__none).toBe(expected)
-  })
-
-  it("armorDpsByKey matches the reference pipeline for a real setKey", () => {
-    const opt = ARMOR_SET_OPTIONS[0]
-    const expected = dpsFor({ ...umbraInputs, set: opt.setKey })
-    expect(res.armorDpsByKey[opt.setKey]).toBe(expected)
-  })
-
-  it("bowDpsByChoice matches the reference pipeline for all four choices", () => {
-    expect(res.bowDpsByChoice.affinity).toBe(dpsFor({ ...umbraInputs, bowSet: "affinity" }))
-    expect(res.bowDpsByChoice.crit).toBe(dpsFor({ ...umbraInputs, bowSet: "crit" }))
-    expect(res.bowDpsByChoice.precision).toBe(dpsFor({ ...umbraInputs, bowSet: "precision" }))
-    expect(res.bowDpsByChoice.none).toBe(dpsFor({ ...umbraInputs, bowSet: null }))
   })
 
   it("arsenalDpsByChoice contains exactly general, the class default and the active choice", () => {
@@ -195,7 +267,10 @@ describe("computeProfileMetrics", () => {
   const profiles = [
     { id: "profile-a", inputs: umbraInputs },
     { id: "profile-b", inputs: { ...umbraInputs, dummyMode: !umbraInputs.dummyMode } },
-    { id: "profile-c", inputs: { ...umbraInputs, set: null } },
+    {
+      id: "profile-c",
+      inputs: withGearSet(umbraInputs, SET_ID.hawkwing, { fabricatePieces: true }),
+    },
   ]
   const noCustomContent = { customSkills: [], customBuffs: [], customDebuffs: [] }
 
@@ -208,7 +283,7 @@ describe("computeProfileMetrics", () => {
 
     for (const { id, inputs } of profiles) {
       const configured = withCustomContent(inputs, [], [], [])
-      const expected = runEngine(applyBowSet(applyArmorSet(withDerivedStats(configured))))
+      const expected = runEngine(applySetBonuses(withDerivedStats(configured)))
       expect(res.metricsByProfileId[id]).toEqual({
         dps: expected.dps,
         totalDamage: expected.totalDamage,

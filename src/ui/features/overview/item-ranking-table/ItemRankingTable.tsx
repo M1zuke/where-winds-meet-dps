@@ -39,7 +39,7 @@ export function ItemRankingTable({ rows }: Props) {
         <tr>
           <th>{t("overview.itemRankingTable.statLine")}</th>
           <th>{t("common.amount")}</th>
-          <th>{t("overview.itemRankingTable.dps")}</th>
+          <th>{t("common.dpsDelta")}</th>
           <th>{t("overview.itemRankingTable.lift")}</th>
           <th>{t("overview.itemRankingTable.lead")}</th>
         </tr>

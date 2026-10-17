@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
 import { graduationBuildsFor } from "../../src/definitions/graduationBuilds/registry"
@@ -33,7 +33,7 @@ describe.each(CASES)(
         selectedBuiltinRotationId: rotationId,
         activeCustomRotation: null,
       })
-      const result = runEngine(applyBowSet(applyArmorSet(inputs)))
+      const result = runEngine(applySetBonuses(inputs))
       expect(result.warnings.some((warning) => warning.includes("did not converge"))).toBe(false)
     })
   },

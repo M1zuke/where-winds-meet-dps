@@ -29,7 +29,6 @@ function runExpiry(mindMethods: Inputs["mindMethods"]) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {

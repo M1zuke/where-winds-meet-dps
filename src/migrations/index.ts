@@ -28,6 +28,7 @@ import { V29__divinecraftElement } from "./V29__divinecraftElement"
 import { V30__removeNightwickTipsylayHybrid } from "./V30__removeNightwickTipsylayHybrid"
 import { V31__preferredDistanceOnRotation } from "./V31__preferredDistanceOnRotation"
 import { V32__weaponSlotsByMartialArt } from "./V32__weaponSlotsByMartialArt"
+import { V33__setsOnGearPieces } from "./V33__setsOnGearPieces"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -65,6 +66,8 @@ export {
   moveWeaponsToMartialArtSlots,
 } from "./V32__weaponSlotsByMartialArt"
 
+export { moveSetsOntoGearPieces } from "./V33__setsOnGearPieces"
+
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
   V6__dropDerivedStats,
@@ -94,6 +97,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V30__removeNightwickTipsylayHybrid,
   V31__preferredDistanceOnRotation,
   V32__weaponSlotsByMartialArt,
+  V33__setsOnGearPieces,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

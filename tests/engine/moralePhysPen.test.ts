@@ -25,7 +25,6 @@ function baseInputs(classId: string, mindMethods: Inputs["mindMethods"]): Inputs
   return {
     ...umbraInputs,
     classId,
-    set: null,
     // Unset so the hand-reconstructed expectation below, which calls
     // `buildContext` directly and so never sees a buff-engine effect, is not
     // quietly missing Divinecraft: Fire's allDamageBoost contribution.

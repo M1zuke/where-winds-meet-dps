@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import type { Inputs } from "../../src/engine/types"
 import profileFile from "../migrations/testProfiles/v10/stonesplitStrength.json"
 
@@ -20,7 +20,7 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(
-      applyBowSet(applyArmorSet(withDerivedStats(withoutBoardsAddedLater(profile.inputs)))),
+      applySetBonuses(withDerivedStats(withoutBoardsAddedLater(profile.inputs))),
     )
     expect(result.dps).toBe(59725.45097703879)
     expect(result.totalDamage).toBe(3583527.058622327)
@@ -29,7 +29,7 @@ describe("Stonesplit Strength — the captured build", () => {
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const raised = { ...withoutBoardsAddedLater(profile.inputs), breakthrough: 17 }
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
+    const result = runEngine(applySetBonuses(withDerivedStats(raised)))
     expect(result.dps).toBe(60751.30319001484)
     expect(result.totalDamage).toBe(3645078.1914008907)
   })

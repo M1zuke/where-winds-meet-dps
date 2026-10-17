@@ -15,7 +15,6 @@ function runChain(skillId: string, bingePoints: number) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId })],
       openingStacks: { [STATUS.bingePoints]: bingePoints },

@@ -13,7 +13,8 @@ import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
@@ -61,7 +62,7 @@ function anchorInputs(): Inputs {
 }
 
 function toEngineInputs(raw: Inputs): Inputs {
-  return applyBowSet(applyArmorSet(withDerivedStats(raw)))
+  return applySetBonuses(withDerivedStats(raw))
 }
 
 function withInnerWay(
@@ -201,15 +202,21 @@ const CASES: { name: string; build: () => Inputs }[] = [
         }),
       ),
   },
-  { name: "anchor:noSet", build: () => toEngineInputs({ ...anchorInputs(), set: null }) },
+  {
+    name: "anchor:noSet",
+    build: () => toEngineInputs(withGearSet(anchorInputs(), null, { fabricatePieces: true })),
+  },
   ...ARMOUR_SETS.map(([label, id]) => ({
     name: `anchor:set-${label}`,
-    build: () => toEngineInputs({ ...anchorInputs(), set: id }),
+    build: () => toEngineInputs(withGearSet(anchorInputs(), id, { fabricatePieces: true })),
   })),
   // A second rotation, so the guard is not tied to one cast list.
   {
     name: "defaults:umbra",
-    build: () => ({ ...defaultInputs, classId: "bellstrikeUmbra" }),
+    build: () =>
+      withGearSet({ ...defaultInputs, classId: "bellstrikeUmbra" }, SET_ID.hawkwing, {
+        fabricatePieces: true,
+      }),
   },
 ]
 

@@ -10,8 +10,15 @@ import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduat
 import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
-import type { EquippedSlots, GearLevel, Inputs, MindMethodSlot } from "./types"
-import { EMPTY_EQUIPPED } from "./types"
+import type {
+  BowGearLevel,
+  BowPiece,
+  EquippedSlots,
+  GearLevel,
+  Inputs,
+  MindMethodSlot,
+} from "./types"
+import { BOW_GEAR_LEVELS, EMPTY_EQUIPPED, WEAPON_SLOTS } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
 
@@ -21,6 +28,11 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
   const equipped = { ...EMPTY_EQUIPPED }
   for (const piece of build.gear) equipped[piece.slot] = piece.id
   return equipped
+}
+
+function bowGearLevelFor(gearLevel: GearLevel): BowGearLevel | null {
+  if (gearLevel < BOW_GEAR_LEVELS[0]) return null
+  return BOW_GEAR_LEVELS.find((level) => level >= gearLevel) ?? null
 }
 
 function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
@@ -145,15 +157,18 @@ export function graduationInputs(
 ): Inputs | null {
   const followed = followedGraduationBuild(inputs)
   if (!followed) return null
-  const build = graduationBuildAtLevel(
-    followed,
-    variant,
-    gearLevelForBreakthrough(inputs.breakthrough),
-  )
+  const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
+  const build = graduationBuildAtLevel(followed, variant, gearLevel)
   const inventory = build.gear.map((piece) => ({
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
+    ...(build.set && WEAPON_SLOTS.includes(piece.slot) ? { set: build.set } : {}),
   }))
+  const bowLevel = bowGearLevelFor(gearLevel)
+  const bowPiece: BowPiece | null =
+    build.bowSet && bowLevel !== null
+      ? { level: bowLevel, rarity: "legendary", set: build.bowSet }
+      : null
   const equipped = equippedSlots(build)
   return standardizedGraduationInputs(
     {
@@ -165,8 +180,7 @@ export function graduationInputs(
       qiDamageIndexMultiplier: 0,
       inventory,
       equipped,
-      set: build.set,
-      bowSet: build.bowSet,
+      bowGear: { bow: bowPiece && { ...bowPiece }, thumbRing: bowPiece && { ...bowPiece } },
       arsenal: build.arsenal,
       martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
         (talent) => ({

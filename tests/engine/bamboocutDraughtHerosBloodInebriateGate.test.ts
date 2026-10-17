@@ -57,7 +57,6 @@ describe("Hero's Blood - Inebriate is castable once per Deepdaze entry", () => {
         ],
         openingStacks: { [STATUS.bingePoints]: 200 },
       }),
-      set: null,
     })
     // 11 damaging hits on the first cast, none on the second.
     expect(totalHerosBloodInebriateHits(result)).toBe(11)
@@ -79,7 +78,6 @@ describe("Hero's Blood - Inebriate is castable once per Deepdaze entry", () => {
           ],
           openingStacks: { [STATUS.bingePoints]: 200 },
         }),
-        set: null,
       },
       // An exhausted window from the fight's very first frame, deterministic
       // regardless of this synthetic rotation's own damage.

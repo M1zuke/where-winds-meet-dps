@@ -1,5 +1,3 @@
-@use "mixins";
-
 .isHeirloom {
   position: relative;
   isolation: isolate;
@@ -24,7 +22,6 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin: -4px 0 10px;
   font-size: 0.8em;
   color: var(--color-text-muted);
 }
@@ -63,97 +60,4 @@
 .heirloomUnfollowed {
   color: var(--color-text-faint);
   font-style: italic;
-}
-
-.identity {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 2px 0 10px;
-  padding: 6px 10px;
-  background: var(--color-surface-inset);
-  border-left: 3px solid var(--color-border-strong);
-  border-radius: 3px;
-}
-
-.identityLabel {
-  font-size: 0.95em;
-  font-weight: 600;
-  color: var(--color-rarity-legendary);
-}
-
-.identity.rarityEpic .identityLabel {
-  color: var(--color-rarity-epic);
-}
-
-.identityRow {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.identity.rarityLegendary {
-  border-left-color: var(--color-rarity-legendary);
-}
-
-.identity.rarityEpic {
-  border-left-color: var(--color-rarity-epic);
-}
-
-.identitySlot {
-  font-size: 0.95em;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--color-rarity-legendary);
-}
-
-.identity.rarityEpic .identitySlot {
-  color: var(--color-rarity-epic);
-}
-
-.identityMeta {
-  font-size: 0.78em;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.identityBadge {
-  margin-left: auto;
-  padding: 1px 8px;
-  border: 1px solid var(--color-accent);
-  border-radius: 9px;
-  color: var(--color-accent);
-  font-size: 0.68em;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.pieceNameField {
-  margin-bottom: 12px;
-}
-
-.pieceNoteField {
-  margin-top: 12px;
-}
-
-.pieceTextField {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.pieceTextFieldLabel {
-  font-size: 0.7em;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.pieceNoteInput {
-  @include mixins.field-input;
-  @include mixins.field-states;
-  min-height: 64px;
-  resize: vertical;
-  font-family: inherit;
 }

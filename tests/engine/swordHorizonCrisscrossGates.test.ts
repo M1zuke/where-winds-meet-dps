@@ -22,7 +22,6 @@ function invalidStepIdsFor(skillIds: string[], mindMethods: Inputs["mindMethods"
     classId: CLASS,
     mindMethods,
     activeCustomRotation: rotation,
-    set: null,
   })
   return result.invalidStepIds ?? []
 }
@@ -53,7 +52,6 @@ describe("Sword Horizon cuts the forced cast length on the forms that feed into 
       classId: CLASS,
       mindMethods,
       activeCustomRotation: rotation,
-      set: null,
     })
     return result.castDuration * 60
   }

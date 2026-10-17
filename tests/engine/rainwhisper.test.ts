@@ -3,7 +3,8 @@ import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { makeSkill } from "../../src/engine/skill"
-import { applyArmorSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 import { defaultInputs } from "../../src/engine/defaults"
 import { rainwhisper } from "../../src/data/sets/rainwhisper"
 import { SET_ID } from "../../src/data/sets/ids"
@@ -22,9 +23,17 @@ function critDamageAt(engine: BuffEngine, time: number): number | undefined {
 
 describe("rainwhisper — 2-piece precision", () => {
   it("adds 8% precision to the panel at gear level 96", () => {
-    const base = { ...defaultInputs, breakthrough: 16, set: null }
-    const equipped = { ...defaultInputs, breakthrough: 16, set: SET_ID.rainwhisper }
-    expect(applyArmorSet(equipped).precision).toBeCloseTo(applyArmorSet(base).precision + 0.08, 10)
+    const fabricate = { fabricatePieces: true }
+    const base = withGearSet({ ...defaultInputs, breakthrough: 16 }, null, fabricate)
+    const equipped = withGearSet(
+      { ...defaultInputs, breakthrough: 16 },
+      SET_ID.rainwhisper,
+      fabricate,
+    )
+    expect(applySetBonuses(equipped).precision).toBeCloseTo(
+      applySetBonuses(base).precision + 0.08,
+      10,
+    )
   })
 })
 

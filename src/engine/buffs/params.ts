@@ -6,6 +6,7 @@ import { DEFAULT_PREFERRED_DISTANCE_METERS } from "../distance"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
+import { resolveActiveSets } from "../setBonuses"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
 import { DEFAULT_QI_BREAK_WINDOW } from "../qiBreak"
@@ -40,7 +41,8 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     targetMaxHp: getBreakthrough(inputs.breakthrough).targetHp,
   }
 
-  const equippedSet = inputs.set ? SET_BY_ID[inputs.set] : undefined
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
+  const equippedSet = fourPieceSet ? SET_BY_ID[fourPieceSet] : undefined
   if (equippedSet?.siteKey) params.armorSet = equippedSet.siteKey
   if (equippedSet?.buffParam) params[equippedSet.buffParam] = true
 

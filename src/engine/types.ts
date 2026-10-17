@@ -146,12 +146,10 @@ export interface Inputs {
 
   food: boolean
   divinecraft: "fire" | "poison" | null
-  // A `SET_ID` value, never the display name.
-  set: string | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean
 
-  bowSet: BowSet
+  bowGear: BowGear
   arsenal: Arsenal
   arsenalScores: ArsenalScores
   dummyMode: boolean
@@ -283,11 +281,35 @@ export interface GearWordEntry {
   retuned: boolean
 }
 
+export const BOW_GEAR_LEVELS = [91, 96, 100, 105] as const
+export type BowGearLevel = (typeof BOW_GEAR_LEVELS)[number]
+
+export type BowSlot = "bow" | "thumbRing"
+
+export const BOW_SLOTS: readonly BowSlot[] = ["bow", "thumbRing"]
+
+export interface BowPiece {
+  level: BowGearLevel
+  rarity: GearRarity
+  set: BowSet
+  label?: string
+  note?: string
+}
+
+export interface BowGear {
+  bow: BowPiece | null
+  thumbRing: BowPiece | null
+}
+
+export const EMPTY_BOW_GEAR: BowGear = { bow: null, thumbRing: null }
+
 export interface GearPiece {
   id: string
   slot: GearSlot
   level: GearLevel
   rarity: GearRarity
+  // A `SET_ID` value, never the display name. Read on `WEAPON_SLOTS` only.
+  set?: string
   minPhys: number
   maxPhys: number
   hp: number

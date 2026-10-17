@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest"
 import {
-  applyArmorSet,
-  armorSetPhysDefBonus,
   arsenalAttack,
   arsenalHp,
   deriveStats,
@@ -17,9 +15,10 @@ import {
   arsenalStoreState,
   defaultArsenalScores,
 } from "../../src/definitions/baseStats"
-import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { calmwaters } from "../../src/data/sets/calmwaters"
 import { defaultInputs } from "../../src/engine/defaults"
+import { applySetBonuses, setPhysDefBonus } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 
 describe("panel.deriveStats", () => {
   it("resolves the class & target metadata", () => {
@@ -199,23 +198,20 @@ describe("arsenalStoreAttack — the rung ladder", () => {
   })
 })
 
-describe("a Physical Defense 2-piece set bonus", () => {
-  const withCalmwaters = { ...defaultInputs, set: calmwaters.id, breakthrough: 17 }
-
-  it("leaves every damage-facing Inputs field untouched through applyArmorSet", () => {
-    expect(applyArmorSet(withCalmwaters)).toEqual(withCalmwaters)
+describe("an armor-group set stored on a set-bearing piece", () => {
+  const withCalmwaters = withGearSet({ ...defaultInputs, breakthrough: 17 }, calmwaters.id, {
+    fabricatePieces: true,
   })
 
-  it("reads its own gear-level value through armorSetPhysDefBonus", () => {
-    const level = gearLevelForBreakthrough(withCalmwaters.breakthrough)
-    expect(armorSetPhysDefBonus(withCalmwaters)).toBe(calmwaters.panelBonus!.value[level])
+  it("counts toward no bonus, so applying set bonuses leaves Inputs untouched", () => {
+    expect(applySetBonuses(withCalmwaters)).toEqual(withCalmwaters)
   })
 
-  it("is zero for a set with no Physical Defense bonus of its own", () => {
-    expect(armorSetPhysDefBonus(defaultInputs)).toBe(0)
+  it("adds no Physical Defense", () => {
+    expect(setPhysDefBonus(withCalmwaters)).toBe(0)
   })
 
-  it("is zero with no set equipped", () => {
-    expect(armorSetPhysDefBonus({ ...defaultInputs, set: null })).toBe(0)
+  it("adds no Physical Defense with no set equipped", () => {
+    expect(setPhysDefBonus(defaultInputs)).toBe(0)
   })
 })

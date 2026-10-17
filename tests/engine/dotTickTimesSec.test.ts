@@ -33,7 +33,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], debuffs: Debuff[]):
     customSkills: skills,
     customDebuffs: debuffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 

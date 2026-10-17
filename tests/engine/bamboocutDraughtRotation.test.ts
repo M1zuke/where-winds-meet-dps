@@ -63,7 +63,6 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
           { name: "", stacks: "" },
         ],
         activeCustomRotation: rotation,
-        set: null,
       },
       // Pinned to the break the measured build's simulated Qi bar reaches, so
       // the frame assertions below stay on a known second.
@@ -171,7 +170,6 @@ describe("the Primepick follow-up", () => {
       classId: CLASS,
       customSkills: [grantDeepdaze],
       activeCustomRotation: makeRotation(CLASS, { steps }),
-      set: null,
     })
   }
 
@@ -240,7 +238,6 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
         customSkills: [grantDeepdaze],
         mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
         activeCustomRotation: makeRotation(CLASS, { steps }),
-        set: null,
       },
       EXHAUSTED_FROM_START_OPTIONS,
     )
@@ -282,7 +279,6 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
         }),
-        set: null,
       },
       EXHAUSTED_FROM_START_OPTIONS,
     )
@@ -311,7 +307,6 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
           steps: [makeStep({ skillId: SKILL.castlink })],
           openingStacks: { [STATUS.consecutivePunches]: 1 },
         }),
-        set: null,
       },
       EXHAUSTED_FROM_START_OPTIONS,
     )
@@ -328,7 +323,6 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
         }),
-        set: null,
       },
       EXHAUSTED_FROM_START_OPTIONS,
     )

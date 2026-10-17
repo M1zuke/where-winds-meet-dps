@@ -513,7 +513,6 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
     return runEngine(
       {
         ...umbraInputs,
-        set: null,
         customSkills: [probeSkill],
         customDebuffs: [probeDot],
         activeCustomRotation: makeRotation("bellstrikeUmbra", {

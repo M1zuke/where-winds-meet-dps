@@ -9,7 +9,7 @@ import {
 } from "../../src/engine/gearStats"
 import { attunementMax, attunementsFor } from "../../src/engine/attunements"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
@@ -370,14 +370,12 @@ describe("FT variant selection", { timeout: 30_000 }, () => {
 
   function derivedInputs(equipped: GearPiece[], inventory: GearPiece[]): Inputs {
     const equippedIds = Object.fromEntries(equipped.map((p) => [p.slot, p.id]))
-    return applyBowSet(
-      applyArmorSet(
-        withDerivedStats({
-          ...level96Inputs,
-          inventory: [...equipped, ...inventory],
-          equipped: { ...level96Inputs.equipped, ...equippedIds },
-        }),
-      ),
+    return applySetBonuses(
+      withDerivedStats({
+        ...level96Inputs,
+        inventory: [...equipped, ...inventory],
+        equipped: { ...level96Inputs.equipped, ...equippedIds },
+      }),
     )
   }
 

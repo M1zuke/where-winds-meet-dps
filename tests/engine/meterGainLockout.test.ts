@@ -69,7 +69,6 @@ function endLevel(
     activeCustomRotation: testRotation(CLASS, {
       steps: [spender, ...library].map((skill) => makeStep({ skillId: skill.id })),
     }),
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     ...patch,
   }
@@ -198,7 +197,6 @@ describe("a meterCosts entry with atFrame", () => {
         activeCustomRotation: testRotation(CLASS, {
           steps: library.map((skill) => makeStep({ skillId: skill.id })),
         }),
-        set: null,
         unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
       })
       return result.casts!.map((cast) => cast.meterLevels![0]!.amount)

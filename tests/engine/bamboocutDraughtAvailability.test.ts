@@ -8,7 +8,7 @@ import { makeStep } from "../../src/engine/rotation"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { importProfile } from "../../src/storage"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { testRotation } from "../builtins"
 import profileFile from "./bamboocutDraughtMeasured.profile.json"
 
@@ -138,7 +138,7 @@ describe("Empowered Light Attack replaces the base light and heavy attacks", () 
 describe("the built-in dummy rotation", () => {
   it("casts nothing the game would refuse", () => {
     const profile = importProfile(JSON.stringify(profileFile))
-    const inputs = applyBowSet(applyArmorSet(withDerivedStats(profile.inputs)))
+    const inputs = applySetBonuses(withDerivedStats(profile.inputs))
     const result = simulateTimeline(inputs, { collect: "full" })
     expect(result.invalidStepIds ?? []).toEqual([])
   })

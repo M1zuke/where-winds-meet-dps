@@ -6,7 +6,7 @@ import { importProfile, loadProfiles } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import type { Inputs } from "../../src/engine/types"
 
 const PROFILES_KEY = "wwm.profiles"
@@ -26,7 +26,7 @@ function profileFileWith(qiBreakOverride: unknown) {
 }
 
 function engineInputsFrom(inputs: Inputs) {
-  return applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+  return applySetBonuses(withDerivedStats(inputs))
 }
 
 describe("a stored Qi break override no longer changes what the engine runs", () => {

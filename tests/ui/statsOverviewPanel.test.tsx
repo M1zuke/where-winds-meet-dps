@@ -9,7 +9,8 @@ import {
 } from "../../src/definitions/baseStats"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
-import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
+import { effectiveRates } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { StatsOverviewPanel } from "../../src/ui/components/stats-overview-panel/StatsOverviewPanel"
 import { finalHitOutcomeRates } from "../../src/ui/components/stats-overview-panel/finalHitOutcomeRates"
@@ -187,7 +188,7 @@ describe("finalHitOutcomeRates", () => {
 
 describe("StatsOverviewPanel", () => {
   it("shows every hit outcome as its own row, alongside the combined crit and affinity", () => {
-    const withSets = applyBowSet(applyArmorSet(withDerivedStats(defaultInputs)))
+    const withSets = applySetBonuses(withDerivedStats(defaultInputs))
     const effective = effectiveRates(withSets)
     const finalRates = finalHitOutcomeRates({
       precision: effective.precision,
@@ -224,7 +225,7 @@ describe("StatsOverviewPanel", () => {
     const inputs = withFormlessAndBellstrikeWeapon(40)
     const equipped = equippedPiecesFor(inputs)
     const formless = totalFormlessAttack(inputs, equipped)
-    const withSets = applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+    const withSets = applySetBonuses(withDerivedStats(inputs))
 
     render(
       <I18nProvider>

@@ -6,7 +6,7 @@ import * as workerCompute from "../../src/engine/dpsWorker"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { defaultInputs } from "../../src/engine/defaults"
 import { passKey, withPassMemo } from "../../src/engine/passMemo"
 import { rotationOptions } from "../../src/ui/features/rotation/rotationOptions"
@@ -16,7 +16,7 @@ import profileFile from "./bamboocutDraughtMeasured.profile.json"
 const SEED = 7
 
 function workerJobs(inputs: Inputs): Record<string, () => unknown> {
-  const engineInputs = applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+  const engineInputs = applySetBonuses(withDerivedStats(inputs))
   const baseline = runEngine(engineInputs)
   const baselineDps = baseline.dps
   const baselineQiBreaks = baseline.qiBreaks
@@ -57,7 +57,7 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
         baselineDps,
         baselineQiBreaks,
       }),
-    setTiles: () => workerCompute.computeSetTiles({ reqId: 1, inputs }),
+    arsenalTiles: () => workerCompute.computeArsenalTiles({ reqId: 1, inputs }),
     rotationDps: () =>
       workerCompute.computeRotationDps({ reqId: 1, inputs: engineInputs, options }),
     graduation: () => workerCompute.computeGraduation({ reqId: 1, inputs }),
@@ -94,6 +94,14 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
         reqId: 1,
         inputs: engineInputs,
         pieceId,
+        baselineQiBreaks,
+      })
+    jobs.gearSetChoices = () =>
+      workerCompute.computeGearSetChoices({
+        reqId: 1,
+        inputs,
+        target: { kind: "piece", pieceId },
+        applyToGroup: true,
         baselineQiBreaks,
       })
     jobs.wordMax = () =>

@@ -5,7 +5,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { graduationInputs } from "../../src/engine/graduation"
 import { statLineLabel } from "../../src/data/stats/statLines"
 import { getAttunement } from "../../src/engine/attunements"
-import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
+import { effectiveRates } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { finalHitOutcomeRates } from "../../src/ui/components/stats-overview-panel/finalHitOutcomeRates"
@@ -138,7 +139,7 @@ describe("GraduationBuildDialog", () => {
       </I18nProvider>,
     )
 
-    const summary = () => within(screen.getByRole("tabpanel")).getByText("Bow Set")
+    const summary = () => within(screen.getByRole("tabpanel")).getByText("Bow set")
     expect(summary().nextElementSibling).toHaveTextContent("Crit")
     expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent("77.8")
 
@@ -175,9 +176,7 @@ describe("GraduationBuildDialog", () => {
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
     const relayedPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
-    const relayed = applyBowSet(
-      applyArmorSet(withDerivedStats(graduationInputs(inputs, "relayed")!)),
-    )
+    const relayed = applySetBonuses(withDerivedStats(graduationInputs(inputs, "relayed")!))
     expect(relayedPhys).toContain(fmt(relayed.phys.max, false))
     expect(relayedPhys).not.toBe(maxRollPhys)
   })
@@ -201,7 +200,7 @@ describe("GraduationBuildDialog", () => {
 
     expect(screen.queryAllByRole("article")).toHaveLength(0)
 
-    const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(inputs)!)))
+    const benchmark = applySetBonuses(withDerivedStats(graduationInputs(inputs)!))
     const effective = effectiveRates(benchmark)
     const finalRates = finalHitOutcomeRates({
       precision: effective.precision,
@@ -290,7 +289,7 @@ describe("GraduationBuildDialog", () => {
     expect(panel.getByText("Sword Horizon").nextElementSibling).toHaveTextContent("tier 6")
     expect(panel.getByText("Morale Chant").nextElementSibling).toHaveTextContent("tier 5")
     expect(
-      panel.getByText("Sword Horizon").compareDocumentPosition(panel.getByText("Armor Set")) &
+      panel.getByText("Sword Horizon").compareDocumentPosition(panel.getByText("Gear set")) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy()
     expect(screen.getByText("Standardized benchmark").parentElement).not.toHaveTextContent(

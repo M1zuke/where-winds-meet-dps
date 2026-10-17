@@ -16,6 +16,7 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { ODDITY_MAX_ENDURANCE_PARAM } from "../../src/data/resources/enduranceMeter"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 
 function taggedSkill(name: string, tags: string[] = []) {
@@ -43,7 +44,7 @@ describe("paramsFromInputs — build derivation", () => {
         { ...emptyMindMethod },
         { ...emptyMindMethod },
       ],
-      set: SET_ID.cleftpeak,
+      ...gearSetFields(SET_ID.cleftpeak, { fabricatePieces: true }),
     }
     const params = paramsFromInputs(inputs)
     expect(params.wolfchasersArt).toBe(true)
@@ -187,14 +188,20 @@ describe("build-driven enablement moves timeline DPS", () => {
 describe("set enablement registers a requiresSet buff", () => {
   it("Jadeware registers jadeware; Hawking does not", () => {
     const withSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: SET_ID.jadeware }),
+      paramsFromInputs({
+        ...defaultInputs,
+        ...gearSetFields(SET_ID.jadeware, { fabricatePieces: true }),
+      }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
     expect(withSet.definitions.has("jadeware")).toBe(true)
 
     const withoutSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawkwing }),
+      paramsFromInputs({
+        ...defaultInputs,
+        ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
+      }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )

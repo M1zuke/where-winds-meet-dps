@@ -42,7 +42,6 @@ function timelineInputs(
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     ...patch,
   }
@@ -724,7 +723,6 @@ describe("a function-valued meter capacity", () => {
       customSkills: [noop],
       customBuffs: [],
       activeCustomRotation: rotation,
-      set: null,
       unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
       affinityRate,
     })

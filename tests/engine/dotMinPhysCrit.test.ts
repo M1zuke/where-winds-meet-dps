@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { rotationsFor } from "../../src/definitions/rotations/registry"
 import { DRONE_TICK } from "../../src/data/skills/silkbind-jade/droneTick"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -32,7 +32,7 @@ function droneDamage(dropTheGate: boolean): number {
         }
       : {}),
   }
-  const result = simulateTimeline(applyBowSet(applyArmorSet(withDerivedStats(raw))))
+  const result = simulateTimeline(applySetBonuses(withDerivedStats(raw)))
   return result.perSkill.find((row) => row.name === DRONE_ROW)!.expectedDamage
 }
 

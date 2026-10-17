@@ -110,9 +110,11 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
   })
 
   it("lands one afterimage per perfect dodge even when the dodges are inside 48 frames of each other", () => {
-    const result = run("bellstrikeUmbra", [UMBRA, "Opener", DODGE, "Idle 10", DODGE, "Idle 2000"], {
-      set: null,
-    })
+    const result = run(
+      "bellstrikeUmbra",
+      [UMBRA, "Opener", DODGE, "Idle 10", DODGE, "Idle 2000"],
+      {},
+    )
     const dodges = dodgeFrames(result, "Perfect Dodge")
     const events = afterimageEvents("bellstrikeUmbra", result)
     expect(dodges[1]! - dodges[0]!).toBeLessThan(AFTERIMAGE_DELAY_FRAMES)

@@ -77,7 +77,6 @@ function run(options?: { seed: number }) {
     {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: skills,
       customBuffs: [],
       activeCustomRotation: testRotation(CLASS, {

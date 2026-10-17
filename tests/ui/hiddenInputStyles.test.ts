@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
-const SET_BONUSES = "src/ui/features/overview/set-bonuses-panel/SetBonusesPanel.module.scss"
+const SET_BONUSES = "src/ui/features/talents/arsenal-tab/ArsenalChoicePanel.module.scss"
 const SCAN_CARD = "src/ui/features/gear/new-gear-piece-dialog/scan-card/ScanCard.module.scss"
 
 function ruleBody(stylesheetPath: string, className: string): string {

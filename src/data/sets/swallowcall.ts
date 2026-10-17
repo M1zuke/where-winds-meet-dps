@@ -6,6 +6,7 @@ import { SET_ID } from "./ids"
 // skills that receive it, not a set-wide panel scalar.
 export const swallowcall = defineSet({
   id: SET_ID.swallowcall,
+  group: "gear",
   name: "Swallowcall",
   siteKey: "swallowcall",
   // In-game values as of 2026-09-24.

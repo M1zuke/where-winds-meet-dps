@@ -34,7 +34,6 @@ function run(skillIds: string[]) {
     activeCustomRotation: testRotation(CLASS, {
       steps: skillIds.map((skillId) => makeStep({ skillId })),
     }),
-    set: null,
   })
 }
 

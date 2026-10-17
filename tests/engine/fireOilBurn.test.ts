@@ -3,7 +3,7 @@ import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { graduationInputs } from "../../src/engine/graduation"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { makeHit, makeSkill } from "../../src/engine/skill"
@@ -38,7 +38,6 @@ function probeInputs(
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     divinecraft: "fire",
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
@@ -150,7 +149,6 @@ describe("Fire Oil Burn — a damaging pre-pull cast opens its own window", () =
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       divinecraft: "fire",
       customSkills: [prePullSkill, after],
       activeCustomRotation: makeRotation(CLASS, {
@@ -176,7 +174,7 @@ describe("Fire Oil Burn — the graduation builds", () => {
         classId: GRADUATION_CLASS,
         graduationBuildId,
       })!
-      const toEngineInputs = (raw: Inputs) => applyBowSet(applyArmorSet(withDerivedStats(raw)))
+      const toEngineInputs = (raw: Inputs) => applySetBonuses(withDerivedStats(raw))
       const result = runEngine(toEngineInputs(grad))
       const burnRow = result.perSkill.find((row) => row.name === BURN_NAME)
       expect(burnRow).toBeDefined()

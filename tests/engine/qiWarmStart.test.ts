@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { computeRanking } from "../../src/engine/itemRanking"
 import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import {
@@ -56,15 +56,13 @@ function gearedUmbraInputs() {
 function graduationInputsFor(classId: string) {
   const [build] = graduationBuildsFor(classId)
   return withDerivedStats(
-    applyBowSet(
-      applyArmorSet(
-        graduationInputs({
-          ...defaultInputs,
-          classId,
-          graduationBuildId: build.id,
-          breakthrough: 17,
-        })!,
-      ),
+    applySetBonuses(
+      graduationInputs({
+        ...defaultInputs,
+        classId,
+        graduationBuildId: build.id,
+        breakthrough: 17,
+      })!,
     ),
   )
 }

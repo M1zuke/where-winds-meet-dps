@@ -31,13 +31,11 @@ import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty, type FullPotentialDps } from "./fullPotential"
 import { withCustomContent } from "./customContent"
 import { withDerivedStats } from "./derivedInputs"
-import {
-  applyArmorSet,
-  applyBowSet,
-  ARMOR_SET_OPTIONS,
-  defaultArsenalForClass,
-  swapArsenal,
-} from "./panel"
+import { defaultArsenalForClass, swapArsenal } from "./panel"
+import { applySetBonuses } from "./setBonuses"
+import { NO_SET_CHOICE, withSetChoice, type SetChoiceTarget } from "./setChoice"
+import { GEAR_SET_DEFS } from "../definitions/sets/registry"
+import { BOW_SET_DEFS } from "../data/sets/bowSets"
 import { graduationInputs, graduationRatedInputs } from "./graduation"
 import type { Rotation } from "./rotation"
 import type { Skill } from "./skill"
@@ -49,7 +47,6 @@ import type { HitOutcome } from "./formula"
 import { GEAR_SLOTS } from "./types"
 import type {
   Arsenal,
-  BowSet,
   EngineRunOptions,
   GearLevel,
   GearPiece,
@@ -659,16 +656,30 @@ function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysi
   }
 }
 
-export interface SetTilesWorkerRequest {
+export interface ArsenalTilesWorkerRequest {
   reqId: number
   inputs: Inputs
 }
 
-export interface SetTilesWorkerResponse {
+export interface ArsenalTilesWorkerResponse {
   reqId: number
-  armorDpsByKey: Record<string, number>
-  bowDpsByChoice: { affinity: number; crit: number; precision: number; none: number }
   arsenalDpsByChoice: Record<string, number>
+}
+
+export interface GearSetChoicesWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  target: SetChoiceTarget
+  applyToGroup: boolean
+  baselineQiBreaks?: BaselineQiBreaks
+}
+
+export interface GearSetChoicesWorkerResponse {
+  reqId: number
+  target: SetChoiceTarget
+  applyToGroup: boolean
+  currentDps: number
+  dpsByChoice: Record<string, number>
 }
 
 export interface RotationDpsWorkerRequest {
@@ -896,7 +907,7 @@ function computeProfileMetrics(req: ProfileMetricsWorkerRequest): ProfileMetrics
       req.customBuffs,
       req.customDebuffs,
     )
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(configured))))
+    const result = runEngine(applySetBonuses(withDerivedStats(configured)))
     metricsByProfileId[id] = {
       dps: result.dps,
       totalDamage: result.totalDamage,
@@ -921,28 +932,37 @@ export interface GraduationWorkerResponse {
 
 function resultFor(inputs: Inputs, options?: EngineRunOptions): Result {
   const derived = withDerivedStats(inputs)
-  return runEngine(applyBowSet(applyArmorSet(derived)), options)
+  return runEngine(applySetBonuses(derived), options)
 }
 
 function dpsFor(inputs: Inputs): number {
   return resultFor(inputs).dps
 }
 
-function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
+function computeGearSetChoices(req: GearSetChoicesWorkerRequest): GearSetChoicesWorkerResponse {
+  const { inputs, target, applyToGroup } = req
+  const options = engineOptionsFrom(req.baselineQiBreaks)
+  const choiceIds =
+    target.kind === "bow" ? Object.keys(BOW_SET_DEFS) : GEAR_SET_DEFS.map((set) => set.id)
+  const dpsByChoice: Record<string, number> = {}
+  for (const choiceId of [NO_SET_CHOICE, ...choiceIds]) {
+    const setId = choiceId === NO_SET_CHOICE ? null : choiceId
+    dpsByChoice[choiceId] = resultFor(
+      withSetChoice(inputs, target, applyToGroup, setId),
+      options,
+    ).dps
+  }
+  return {
+    reqId: req.reqId,
+    target,
+    applyToGroup,
+    currentDps: resultFor(inputs, options).dps,
+    dpsByChoice,
+  }
+}
+
+function computeArsenalTiles(req: ArsenalTilesWorkerRequest): ArsenalTilesWorkerResponse {
   const { inputs } = req
-
-  const armorDpsByKey: Record<string, number> = { __none: dpsFor({ ...inputs, set: null }) }
-  for (const opt of ARMOR_SET_OPTIONS) {
-    armorDpsByKey[opt.setKey] = dpsFor({ ...inputs, set: opt.setKey })
-  }
-
-  const bowChoice = (choice: BowSet): number => dpsFor({ ...inputs, bowSet: choice })
-  const bowDpsByChoice = {
-    affinity: bowChoice("affinity"),
-    crit: bowChoice("crit"),
-    precision: bowChoice("precision"),
-    none: bowChoice(null),
-  }
 
   const arsenalChoices = new Set<Arsenal>([
     "general",
@@ -954,7 +974,7 @@ function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
     arsenalDpsByChoice[choice] = dpsFor(swapArsenal(inputs, choice))
   }
 
-  return { reqId: req.reqId, armorDpsByKey, bowDpsByChoice, arsenalDpsByChoice }
+  return { reqId: req.reqId, arsenalDpsByChoice }
 }
 
 function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerResponse {
@@ -992,7 +1012,8 @@ export type WorkerRequest =
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerRequest)
-  | ({ kind: "setTiles" } & SetTilesWorkerRequest)
+  | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerRequest)
+  | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerRequest)
   | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerRequest)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerRequest)
@@ -1009,7 +1030,8 @@ export type WorkerResponse =
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerResponse)
-  | ({ kind: "setTiles" } & SetTilesWorkerResponse)
+  | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerResponse)
+  | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerResponse)
   | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerResponse)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerResponse)
@@ -1045,9 +1067,12 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "gearAnalysis") {
     const res = withPassMemo(() => computeGearAnalysisRequest(req))
     ;(self as unknown as Worker).postMessage({ kind: "gearAnalysis", ...res })
-  } else if (req.kind === "setTiles") {
-    const res = withPassMemo(() => computeSetTiles(req))
-    ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
+  } else if (req.kind === "arsenalTiles") {
+    const res = withPassMemo(() => computeArsenalTiles(req))
+    ;(self as unknown as Worker).postMessage({ kind: "arsenalTiles", ...res })
+  } else if (req.kind === "gearSetChoices") {
+    const res = withPassMemo(() => computeGearSetChoices(req))
+    ;(self as unknown as Worker).postMessage({ kind: "gearSetChoices", ...res })
   } else if (req.kind === "rotationDps") {
     const res = withPassMemo(() => computeRotationDps(req))
     ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
@@ -1089,7 +1114,8 @@ export {
   computeWordMax,
   computeRankingRequest,
   computeGearAnalysisRequest,
-  computeSetTiles,
+  computeArsenalTiles,
+  computeGearSetChoices,
   computeRotationDps,
   computeProfileMetrics,
   computeParseSimulation,

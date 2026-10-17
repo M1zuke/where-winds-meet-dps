@@ -216,10 +216,10 @@ describe("dpsWorkerClient", () => {
   it("sends a concurrent request of another kind to an idle worker rather than queueing it", async () => {
     const client = await freshClient()
     client.subscribeToDpsWorker("rotationDps", () => {})
-    client.subscribeToDpsWorker("setTiles", () => {})
+    client.subscribeToDpsWorker("arsenalTiles", () => {})
 
     client.postToDpsWorker(unshardedRequest())
-    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    client.postToDpsWorker({ kind: "arsenalTiles", inputs: defaultInputs })
     await vi.runAllTimersAsync()
 
     expect(created).toHaveLength(2)
@@ -244,7 +244,7 @@ describe("dpsWorkerClient", () => {
 
   it("never sends a second request to a busy worker", async () => {
     const client = await freshClient(2)
-    const kinds = ["dpsDeltas", "retunement", "rotationDps", "setTiles", "graduation"] as const
+    const kinds = ["dpsDeltas", "retunement", "rotationDps", "arsenalTiles", "graduation"] as const
     for (const kind of kinds) {
       client.subscribeToDpsWorker(kind, () => {})
       client.postToDpsWorker({ ...unshardedRequest(), kind, pieceIds: [] } as UnsentRequest)
@@ -258,15 +258,15 @@ describe("dpsWorkerClient", () => {
   it("holds a request in the client until a worker frees, and lets a newer one of its kind replace it", async () => {
     const client = await freshClient(2)
     client.subscribeToDpsWorker("rotationDps", () => {})
-    client.subscribeToDpsWorker("setTiles", () => {})
+    client.subscribeToDpsWorker("arsenalTiles", () => {})
 
     client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
-    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    client.postToDpsWorker({ kind: "arsenalTiles", inputs: defaultInputs })
     await vi.runAllTimersAsync()
     expect(created[0].posted).toHaveLength(1)
 
-    client.postToDpsWorker({ kind: "setTiles", inputs: gearedInputs() })
+    client.postToDpsWorker({ kind: "arsenalTiles", inputs: gearedInputs() })
     await vi.runAllTimersAsync()
     expect(created[0].posted).toHaveLength(1)
 
@@ -274,7 +274,7 @@ describe("dpsWorkerClient", () => {
 
     expect(created[0].posted).toHaveLength(2)
     expect((created[0].posted[1] as WorkerRequest).reqId).toBe(newestPostedReqId())
-    expect((created[0].posted[1] as WorkerRequest).kind).toBe("setTiles")
+    expect((created[0].posted[1] as WorkerRequest).kind).toBe("arsenalTiles")
   })
 
   it("delivers the newest answer after many rapid changes", async () => {
@@ -311,9 +311,9 @@ describe("dpsWorkerClient", () => {
   it("delivers a response only to listeners of its own kind", async () => {
     const client = await freshClient()
     const unshardedSeen: number[] = []
-    const setTilesSeen: number[] = []
+    const arsenalTilesSeen: number[] = []
     client.subscribeToDpsWorker("rotationDps", ({ reqId }) => unshardedSeen.push(reqId))
-    client.subscribeToDpsWorker("setTiles", ({ reqId }) => setTilesSeen.push(reqId))
+    client.subscribeToDpsWorker("arsenalTiles", ({ reqId }) => arsenalTilesSeen.push(reqId))
 
     client.postToDpsWorker(unshardedRequest())
     await vi.runAllTimersAsync()
@@ -321,7 +321,7 @@ describe("dpsWorkerClient", () => {
     respond(0, unshardedResponse(reqId))
 
     expect(unshardedSeen).toEqual([reqId])
-    expect(setTilesSeen).toEqual([])
+    expect(arsenalTilesSeen).toEqual([])
   })
 
   it("discards a response older than the newest one already delivered", async () => {
@@ -408,7 +408,7 @@ describe("dpsWorkerClient", () => {
       "reattunement",
       "wordMax",
       "rotationDps",
-      "setTiles",
+      "arsenalTiles",
       "graduation",
     ] as const
     for (const kind of kinds) {
@@ -612,10 +612,10 @@ describe("dpsWorkerClient", () => {
 
   it("terminates every running shard of a superseded sweep and drops its waiting shards", async () => {
     const client = await freshClient(3)
-    client.subscribeToDpsWorker("setTiles", () => {})
+    client.subscribeToDpsWorker("arsenalTiles", () => {})
     client.subscribeToDpsWorker("equippedDeltas", () => {})
 
-    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    client.postToDpsWorker({ kind: "arsenalTiles", inputs: defaultInputs })
     client.postToDpsWorker(equippedDeltasRequest(1000))
     await vi.runAllTimersAsync()
     expect(allPostsOfKind("equippedDeltas")).toHaveLength(1)
@@ -627,7 +627,7 @@ describe("dpsWorkerClient", () => {
     expect(created[0].terminated).toBe(false)
     expect(allPostsOfKind("equippedDeltas")).toHaveLength(2)
 
-    respond(0, { kind: "setTiles", reqId: reqIdOfLastPost(0) } as unknown as WorkerResponse)
+    respond(0, { kind: "arsenalTiles", reqId: reqIdOfLastPost(0) } as unknown as WorkerResponse)
     expect(allPostsOfKind("equippedDeltas")).toHaveLength(3)
   })
 
@@ -690,19 +690,19 @@ describe("dpsWorkerClient", () => {
   it("reports every pending kind as one batch, and clears it when the last lands", async () => {
     const client = await freshClient()
     client.subscribeToDpsWorker("rotationDps", () => {})
-    client.subscribeToDpsWorker("setTiles", () => {})
+    client.subscribeToDpsWorker("arsenalTiles", () => {})
 
     client.postToDpsWorker(unshardedRequest())
-    client.postToDpsWorker({ kind: "setTiles", inputs: defaultInputs })
+    client.postToDpsWorker({ kind: "arsenalTiles", inputs: defaultInputs })
     await vi.runAllTimersAsync()
 
     expect(client.dpsWorkerActivity()).toMatchObject({ done: 0, total: 2 })
-    expect([...client.dpsWorkerActivity().kinds].sort()).toEqual(["rotationDps", "setTiles"])
+    expect([...client.dpsWorkerActivity().kinds].sort()).toEqual(["arsenalTiles", "rotationDps"])
 
     respond(0, unshardedResponse(reqIdOfLastPost(0)))
-    expect(client.dpsWorkerActivity()).toMatchObject({ kinds: ["setTiles"], done: 1, total: 2 })
+    expect(client.dpsWorkerActivity()).toMatchObject({ kinds: ["arsenalTiles"], done: 1, total: 2 })
 
-    respond(0, { kind: "setTiles", reqId: reqIdOfLastPost(1) } as unknown as WorkerResponse)
+    respond(0, { kind: "arsenalTiles", reqId: reqIdOfLastPost(1) } as unknown as WorkerResponse)
     expect(client.dpsWorkerActivity()).toMatchObject({ kinds: [], done: 0, total: 0 })
   })
 

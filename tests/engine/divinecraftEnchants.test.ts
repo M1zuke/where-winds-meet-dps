@@ -62,7 +62,6 @@ function probeInputs(
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     divinecraft: "poison",
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {

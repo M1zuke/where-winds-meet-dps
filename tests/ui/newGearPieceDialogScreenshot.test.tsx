@@ -64,6 +64,7 @@ describe("NewGearPieceDialog screenshot import", () => {
         <ConfirmProvider>
           <GearTab
             inputs={defaultInputs}
+            configuredInputs={defaultInputs}
             engineInputs={defaultInputs}
             customGraduationBuild={null}
             onChange={() => {}}

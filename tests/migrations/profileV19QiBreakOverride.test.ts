@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import type { StoredProfile } from "../../src/engine/types"
+import type { StoredProfile } from "./legacyProfile"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import {
   V19__qiBreakOverride,

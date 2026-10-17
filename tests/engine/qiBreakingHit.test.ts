@@ -30,7 +30,6 @@ function inputsFor(firstHitQiFlat: number): Inputs {
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [probe],
     activeCustomRotation: testRotation(CLASS, { steps: [makeStep({ skillId: probe.id })] }),
   }

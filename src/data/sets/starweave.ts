@@ -6,6 +6,7 @@ import { SET_ID } from "./ids"
 // this fight, which only the buff engine can read.
 export const starweave = defineSet({
   id: SET_ID.starweave,
+  group: "gear",
   name: "Starweave",
   siteKey: "starweave",
   // In-game values as of 2026-09-24.

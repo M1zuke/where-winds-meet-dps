@@ -16,6 +16,7 @@ import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -30,7 +31,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[] = [])
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 
@@ -612,7 +612,7 @@ describe("hit variant frame override — seen by the buff-engine prepass", () =>
       customSkills: [skill],
       customBuffs: [],
       activeCustomRotation: makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] }),
-      set: SET_ID.cleftpeak,
+      ...gearSetFields(SET_ID.cleftpeak, { fabricatePieces: true }, umbraInputs),
     }
     return simulateTimeline(inputs).timeline!.find((event) => event.frame === 50)!.damage
   }

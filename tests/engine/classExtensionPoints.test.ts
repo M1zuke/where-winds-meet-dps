@@ -67,7 +67,6 @@ function setupFor(classId: string): MechanicSetup {
 
 const buildFor = (classId: string) => ({
   classId,
-  set: null,
   innerWayTier: () => null,
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,

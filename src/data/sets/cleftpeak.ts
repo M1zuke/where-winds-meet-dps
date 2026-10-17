@@ -8,6 +8,7 @@ import { SET_ID } from "./ids"
 // own, scoped to specific skills), not a `formulaBonus` here.
 export const cleftpeak = defineSet({
   id: SET_ID.cleftpeak,
+  group: "gear",
   name: "Cleftpeak",
   siteKey: "cleftpeak",
   panelBonus: { stat: "minPhys", value: { 86: 54.8, 91: 63.8, 96: 77.8, 100: 90.6, 105: 105.6 } },

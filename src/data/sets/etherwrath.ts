@@ -6,6 +6,7 @@ import { SET_ID } from "./ids"
 // this fight, which only the buff engine can read.
 export const etherwrath = defineSet({
   id: SET_ID.etherwrath,
+  group: "gear",
   name: "Etherwrath",
   siteKey: "etherwrath",
   // In-game values as of 2026-09-24.

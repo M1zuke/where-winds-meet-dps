@@ -14,7 +14,6 @@ function runCastlink(consecutivePunches: number) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: SKILL.castlink })],
       openingStacks: { [STATUS.consecutivePunches]: consecutivePunches },

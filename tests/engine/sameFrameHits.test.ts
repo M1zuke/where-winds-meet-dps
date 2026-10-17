@@ -22,7 +22,6 @@ function totalDamageOfHitsAt(frames: number[], stacks = true): number {
   return simulateTimeline({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [cast],
     customBuffs: [],
     mindMethods: [

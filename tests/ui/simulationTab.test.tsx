@@ -29,7 +29,7 @@ vi.mock("../../src/engine/dpsWorker?worker", () => ({ default: MockWorker }))
 
 const { defaultInputs } = await import("../../src/engine/defaults")
 const { withDerivedStats } = await import("../../src/engine/derivedInputs")
-const { applyArmorSet, applyBowSet } = await import("../../src/engine/panel")
+const { applySetBonuses } = await import("../../src/engine/setBonuses")
 const { I18nProvider } = await import("../../src/i18n/I18nProvider")
 const { SimulationTab } =
   await import("../../src/ui/features/simulation/simulation-tab/SimulationTab")
@@ -39,9 +39,7 @@ const { DEFAULT_RUN_COUNT } = await import("../../src/ui/features/simulation/sim
 
 const SIMULATION_SEED = 12345
 
-const umbra = applyBowSet(
-  applyArmorSet(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" })),
-)
+const umbra = applySetBonuses(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" }))
 
 function OwnedSimulationTab() {
   const simulation = useParseSimulation()

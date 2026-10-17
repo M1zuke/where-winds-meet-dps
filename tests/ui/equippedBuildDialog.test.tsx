@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { graduationInputs } from "../../src/engine/graduation"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses, resolveActiveSets, setPieceCount } from "../../src/engine/setBonuses"
 import type { Inputs } from "../../src/engine/types"
 import { getAttunement } from "../../src/engine/attunements"
 import { RELEASED_ODDITY_BOARD, claimedOddityNodes } from "../../src/definitions/baseStats"
@@ -15,7 +15,7 @@ import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { formatNumber } from "../../src/ui/utils/numberFormatting"
 import { fmt } from "../../src/ui/utils/statFormatting"
 import { EquippedBuildDialog } from "../../src/ui/features/gear/equipped-build-dialog/EquippedBuildDialog"
-import { ARSENAL_KEYS, BOW_SET_KEYS } from "../../src/ui/features/gear/shared/buildSetKeys"
+import { ARSENAL_KEYS, BOW_SET_NAME_KEYS } from "../../src/ui/features/gear/shared/buildSetKeys"
 import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmDialog"
 import { GearTab } from "../../src/ui/features/gear/gear-tab/GearTab"
 
@@ -77,7 +77,10 @@ describe("EquippedBuildDialog", () => {
   it("reports the build's own set, bow set, arsenal and enabled count", () => {
     renderDialog()
 
-    const armorSet = fixture.set ? SET_BY_ID[fixture.set] : null
+    const activeSets = resolveActiveSets(fixture)
+    const gearSetSummary = activeSets.twoPiece
+      .map(({ setId }) => `${SET_BY_ID[setId].name} ${setPieceCount(fixture, setId)}/4`)
+      .join(", ")
     const enabledCount =
       fixture.martialArtsTalents.filter((talent) => talent.enabled).length +
       RELEASED_ODDITY_BOARD.reduce(
@@ -86,13 +89,11 @@ describe("EquippedBuildDialog", () => {
         0,
       )
 
-    expect(screen.getByText("Armor Set").nextElementSibling).toHaveTextContent(
-      armorSet ? armorSet.name : "(unselected)",
-    )
-    expect(screen.getByText("Bow Set").nextElementSibling).toHaveTextContent(
-      fixture.bowSet
-        ? (enCatalogue as Record<string, string>)[BOW_SET_KEYS[fixture.bowSet]]
-        : "(unselected)",
+    expect(screen.getByText("Gear set").nextElementSibling).toHaveTextContent(gearSetSummary || "—")
+    expect(screen.getByText("Bow set").nextElementSibling).toHaveTextContent(
+      activeSets.bow
+        ? `${(enCatalogue as Record<string, string>)[BOW_SET_NAME_KEYS[activeSets.bow.set]]} Lv${activeSets.bow.level}`
+        : "—",
     )
     expect(screen.getByText("Arsenal").nextElementSibling).toHaveTextContent(
       (enCatalogue as Record<string, string>)[ARSENAL_KEYS[fixture.arsenal]],
@@ -109,7 +110,7 @@ describe("EquippedBuildDialog", () => {
 
     expect(screen.queryAllByRole("article")).toHaveLength(0)
 
-    const withSets = applyBowSet(applyArmorSet(withDerivedStats(fixture)))
+    const withSets = applySetBonuses(withDerivedStats(fixture))
     expect(screen.getByText(statLineLabel("maxPhys")).parentElement).toHaveTextContent(
       fmt(withSets.phys.max, false),
     )
@@ -141,6 +142,7 @@ describe("GearTab build summary button", () => {
         <ConfirmProvider>
           <GearTab
             inputs={fixture}
+            configuredInputs={fixture}
             engineInputs={fixture}
             customGraduationBuild={null}
             onChange={() => {}}

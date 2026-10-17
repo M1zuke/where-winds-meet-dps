@@ -38,7 +38,6 @@ function runPeakfall(mindMethods: Inputs["mindMethods"], bingePoints = 100) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: SKILL.peakfall })],
@@ -73,7 +72,6 @@ describe("Skyspeak", () => {
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: mindMethodsWith(INNER_WAY_ID.skyspeak, tier),
       customSkills: [idlePastHerosBloodCooldown],
       activeCustomRotation: makeRotation(CLASS, {
@@ -220,7 +218,6 @@ describe("Mistwing — the target's health follows every damage event, not just 
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       breakthrough: BREAKTHROUGH,
       mindMethods,
       customSkills,
@@ -358,7 +355,6 @@ describe("Volutefit", () => {
       return runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         mindMethods,
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: SKILL.herosBlood })],

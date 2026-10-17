@@ -9,9 +9,9 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
-import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields, withBowSet } from "../helpers/withGearSet"
 import { skillRow } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { retiredRotation } from "./retiredRotations"
@@ -52,8 +52,7 @@ const inputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
 
-  set: SET_ID.hawkwing,
-  bowSet: "affinity",
+  bowGear: withBowSet(defaultInputs, "affinity", 91).bowGear,
   arsenal: "bellstrike",
   mindMethods: [
     { name: "Sword Horizon", stacks: "tier 6" },
@@ -91,8 +90,11 @@ const inputs: Inputs = {
   dummyMode: false,
   rotation: null,
   martialArtsTalents: [],
-  equipped: { ...EMPTY_EQUIPPED },
-  inventory: [],
+  ...gearSetFields(
+    SET_ID.hawkwing,
+    { fabricatePieces: true },
+    { ...defaultInputs, breakthrough: 14 },
+  ),
   unclaimedOddityNodes: {},
   activeCustomRotation: retiredRotation("builtin-bellstrikeUmbra-t6-bili"),
   selectedBuiltinRotationId: null,

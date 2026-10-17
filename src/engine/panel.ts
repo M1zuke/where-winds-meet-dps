@@ -1,12 +1,4 @@
-import type {
-  BowSet,
-  Inputs,
-  AttributeKey,
-  Arsenal,
-  ArsenalScores,
-  GearLevel,
-  GearLevelValues,
-} from "./types"
+import type { Inputs, AttributeKey, Arsenal, ArsenalScores } from "./types"
 import type { FormulaContext } from "./formula"
 import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
@@ -14,9 +6,9 @@ import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
 import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
-import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
-import { BOW_SET_DEFS } from "../data/sets/bowSets"
+import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { SET_BY_ID } from "../definitions/sets/registry"
+import { resolveActiveSets } from "./setBonuses"
 import {
   arsenalScoreCap,
   arsenalStoreAttack,
@@ -105,62 +97,6 @@ export function effectiveRates(inputs: Inputs) {
   return { precision, critRate, affinityRate, resistance: r }
 }
 
-// `setKey` is the set's id (`Inputs.set` value), not its display name; render
-// `name` for the label.
-export interface ArmorSetOption {
-  name: string
-  setKey: string
-  // Absent for a set whose whole effect is a 4-piece mechanic or a gated buff
-  // rather than a 2-piece panel stat. Such a set is still selectable — it has
-  // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
-  stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys" | "physDef"
-  value?: GearLevelValues
-}
-export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
-  name: set.name,
-  setKey: set.id,
-  ...set.panelBonus,
-}))
-
-// The pieces carrying a set aren't modeled individually, so the 2-piece bonus
-// follows the current breakthrough's gear level.
-export function armorSetValueForLevel(opt: ArmorSetOption, level: GearLevel): number | undefined {
-  return opt.value?.[level]
-}
-
-export function applyArmorSet(inputs: Inputs): Inputs {
-  if (!inputs.set) return inputs
-  const opt = ARMOR_SET_OPTIONS.find((o) => o.setKey === inputs.set)
-  if (!opt || opt.stat === undefined) return inputs
-  const value = armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough))
-  if (value === undefined) return inputs
-  switch (opt.stat) {
-    case "affinityRate":
-      return { ...inputs, affinityRate: inputs.affinityRate + value }
-    case "critRate":
-      return { ...inputs, critRate: inputs.critRate + value }
-    case "precisionRate":
-      return { ...inputs, precision: inputs.precision + value }
-    case "maxPhys":
-      return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + value } }
-    case "minPhys":
-      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + value } }
-    // Physical Defense isn't an `Inputs` field the damage formula reads, so it
-    // has nothing to add itself here — `armorSetPhysDefBonus` below is what
-    // `totalPhysDef` reads instead, the same split the oddity board's own
-    // Physical Defense nodes already use.
-    case "physDef":
-      return inputs
-  }
-}
-
-export function armorSetPhysDefBonus(inputs: Inputs): number {
-  if (!inputs.set) return 0
-  const opt = ARMOR_SET_OPTIONS.find((setOption) => setOption.setKey === inputs.set)
-  if (!opt || opt.stat !== "physDef") return 0
-  return armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough)) ?? 0
-}
-
 interface ArsenalUnlockState {
   graduatedStores: number
   currentStore?: number
@@ -237,32 +173,14 @@ export function swapArsenal(inputs: Inputs, next: Arsenal): Inputs {
   return { ...inputs, arsenal: next }
 }
 
-export function bowSetValueForLevel(choice: BowSet, level: GearLevel): number {
-  if (choice === null) return 0
-  return BOW_SET_DEFS[choice]?.value[level] ?? 0
-}
-
-export function applyBowSet(inputs: Inputs): Inputs {
-  const value = bowSetValueForLevel(inputs.bowSet, gearLevelForBreakthrough(inputs.breakthrough))
-  switch (inputs.bowSet) {
-    case "affinity":
-      return { ...inputs, affinityRate: inputs.affinityRate + value }
-    case "crit":
-      return { ...inputs, critRate: inputs.critRate + value }
-    case "precision":
-      return { ...inputs, precision: inputs.precision + value }
-    default:
-      return inputs
-  }
-}
-
 export function deriveStats(inputs: Inputs): DerivedStats {
   const school = getSchool(inputs.classId)
   const target = getBreakthrough(inputs.breakthrough)
 
   const effectiveDefense = target.defense * (1 - inputs.phys.penetration)
 
-  const setFormula = (inputs.set ? SET_BY_ID[inputs.set]?.formulaBonus : undefined) ?? {}
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
+  const setFormula = (fourPieceSet ? SET_BY_ID[fourPieceSet]?.formulaBonus : undefined) ?? {}
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
@@ -352,11 +270,12 @@ export function buildContext(
   const targetCritDamageReduction = inputs.dummyMode ? 0 : target.critDamageReduction
   const targetAffinityDamageReduction = inputs.dummyMode ? 0 : target.affinityDamageReduction
   const effectiveBossBoost = inputs.bossBoost
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
     innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
-    (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
+    (fourPieceSet ? (SET_BY_ID[fourPieceSet]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.divinecraft === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
@@ -422,7 +341,7 @@ export function buildContext(
     fatigueDamageTaken: targetFatigueDamageTaken,
     hasSixHenZhi: henZhiActive,
     food: inputs.food,
-    set: inputs.set,
+    set: fourPieceSet,
     divinecraft: inputs.divinecraft,
     classSpecificAttunement,
     attuneBoostByTag,

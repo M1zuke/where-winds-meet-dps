@@ -190,7 +190,6 @@ describe("Burning Heart stages 1 and 2", () => {
     const result = simulateTimeline({
       ...defaultInputs,
       classId: CLASS_ID,
-      set: null,
       mindMethods,
       activeCustomRotation: testRotation(CLASS_ID, {
         steps: [makeStep({ skillId }), makeStep({ skillId })],
@@ -297,7 +296,6 @@ describe("Break Defense", () => {
       const result = simulateTimeline({
         ...defaultInputs,
         classId: CLASS_ID,
-        set: null,
         customSkills: [wait],
         activeCustomRotation: testRotation(CLASS_ID, { steps }),
       })

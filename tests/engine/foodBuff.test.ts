@@ -19,7 +19,6 @@ function base(food: boolean, physOverride?: { min: number; max: number }): Input
   return {
     ...defaultInputs,
     classId: "bellstrikeUmbra",
-    set: null,
     food,
     phys: { min: physOverride?.min ?? 900, max: physOverride?.max ?? 2500, penetration: 0.2 },
   }

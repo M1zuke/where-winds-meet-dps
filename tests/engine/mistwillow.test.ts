@@ -9,6 +9,7 @@ import type { Inputs } from "../../src/engine/types"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const LIGHT_RECEIVES = [BUFF.mistwillowHeavyBuff, BUFF.mistwillowBuff]
 const HEAVY_RECEIVES = [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff]
@@ -183,18 +184,19 @@ describe("mistwillow — Skill Editor catalog", () => {
 })
 
 describe("mistwillow — end to end through simulateTimeline", () => {
-  it("selecting Mistwillow changes DPS relative to no set, without crashing", () => {
+  it("equipping Mistwillow changes DPS relative to Hawkwing, without crashing", () => {
     const rotation = defaultRotationForClass("bellstrikeUmbra")!
     const without: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
+      ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
     }
     const withMistwillow: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
-      set: SET_ID.mistwillow,
+      ...gearSetFields(SET_ID.mistwillow, { fabricatePieces: true }),
     }
     const before = simulateTimeline(without)
     const after = simulateTimeline(withMistwillow)

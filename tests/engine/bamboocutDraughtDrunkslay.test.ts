@@ -149,7 +149,6 @@ function run(
     activeCustomRotation: makeRotation(CLASS, {
       steps: sequence.map((skill) => makeStep({ skillId: skill.id })),
     }),
-    set: null,
     divinecraft: null,
   })
 }

@@ -6,6 +6,7 @@ import { SET_ID } from "../../src/data/sets/ids"
 import { defaultInputs } from "../../src/engine/defaults"
 import { mulberry32 } from "../../src/engine/rng"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -15,7 +16,12 @@ function setupWith(
   windowStartSec = 0,
 ): MechanicSetup {
   return {
-    inputs: { ...defaultInputs, classId: CLASS, set: SET_ID.hawkwing, directAffinityRate: 0 },
+    inputs: {
+      ...defaultInputs,
+      classId: CLASS,
+      ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
+      directAffinityRate: 0,
+    },
     classId: CLASS,
     fps: 60,
     rotationDurationSec: 10,

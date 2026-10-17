@@ -7,6 +7,7 @@ import {
   type HawkwingStacksSchedule,
 } from "../../engine/buffs/hawkwing"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
+import { FOUR_PIECE_SIZE, setPieceCount } from "../../engine/setPieces"
 
 // The game's own Affinity-outcome roll is `min(affinityRate, 0.4) +
 // directAffinityRate` (`formula.ts`'s `affinityRate`) — the direct-affinity
@@ -24,7 +25,7 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
     id: "hawkwing",
 
     prepare(setup) {
-      if (setup.inputs.set !== setId) return null
+      if (setPieceCount(setup.inputs, setId) < FOUR_PIECE_SIZE) return null
       const proc =
         Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
         setup.inputs.directAffinityRate

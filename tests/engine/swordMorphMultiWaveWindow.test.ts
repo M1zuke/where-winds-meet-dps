@@ -49,7 +49,6 @@ function run(steps: Step[], mindMethods: Inputs["mindMethods"]) {
     mindMethods,
     customSkills: [...waits.values()],
     activeCustomRotation: rotation,
-    set: null,
   })
   return {
     result,

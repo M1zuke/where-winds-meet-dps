@@ -304,7 +304,7 @@ Rules:
   one trigger rather than the whole status.
 - **A build-level param may be sourced from whichever gear set is equipped**,
   not only from a slotted inner way: a gear set may declare its own param,
-  set true only while that set is the one equipped, read by a trigger's
+  set true only while that set's 4-piece is active, read by a trigger's
   `requiresParam` or a condition exactly like an inner way's own param — the
   class-buff engine's own set gate reaches a module only, never a hit-level
   trigger or condition, which is what this exists for.

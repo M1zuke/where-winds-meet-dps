@@ -101,7 +101,6 @@ describe("Qi break edge warning on a DoT", () => {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     divinecraft: "fire",
     customSkills: [probeSkill],
     activeCustomRotation: testRotation(CLASS, { steps: [makeStep({ skillId: probeSkill.id })] }),

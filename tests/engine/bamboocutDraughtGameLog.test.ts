@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { importProfile } from "../../src/storage"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import profileFile from "./bamboocutDraughtMeasured.profile.json"
 
 const IN_GAME_HITS: Record<string, number> = {
@@ -32,7 +32,7 @@ const LOGGED_PEAKFALL_HITS = 5
 
 function runDummyRotation() {
   const profile = importProfile(JSON.stringify(profileFile))
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
+  return runEngine(applySetBonuses(withDerivedStats(profile.inputs)))
 }
 
 function loggedHitsByRow(

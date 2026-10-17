@@ -4,6 +4,7 @@ import { MARTIAL_ARTS } from "../../src/definitions/martialArts/registry"
 import { SET_DEFS } from "../../src/definitions/sets/registry"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import { STAT_LINES } from "../../src/data/stats/statLines"
+import { SET_FOUR_PIECE_TEXTS } from "../../src/data/sets/fourPieceTexts"
 import {
   ODDITY_BOARD,
   TALENT_BOARD_CELLS,
@@ -32,6 +33,8 @@ import {
   oddityRegionKey,
   rarityKey,
   rotationKey,
+  setFourPieceFullKey,
+  setFourPieceKey,
   setKey,
   skillBreakdownKey,
   skillKey,
@@ -61,6 +64,10 @@ export function collectContentKeys(): Record<string, string> {
       add(attunementKey(option.id, classId), label)
   }
   for (const set of SET_DEFS) add(setKey(set.id), set.name)
+  for (const [setId, text] of Object.entries(SET_FOUR_PIECE_TEXTS)) {
+    add(setFourPieceKey(setId), text.short)
+    add(setFourPieceFullKey(setId), text.full)
+  }
   for (const art of MARTIAL_ARTS) {
     add(martialArtKey(art.id), art.name)
     add(weaponKey(art.weaponType), art.weaponType)

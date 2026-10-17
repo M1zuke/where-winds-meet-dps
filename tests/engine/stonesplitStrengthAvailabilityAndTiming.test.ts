@@ -29,7 +29,6 @@ function runRotation(skillIds: readonly string[], tier = 6) {
   const result = simulateTimeline({
     ...defaultInputs,
     classId: CLASS_ID,
-    set: null,
     mindMethods: frostCladNight(tier),
     activeCustomRotation: testRotation(CLASS_ID, { steps }),
   })

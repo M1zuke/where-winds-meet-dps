@@ -22,7 +22,6 @@ function fillerRotationResult(openingStacks?: Record<string, number>) {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
@@ -76,7 +75,6 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: [skill],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: skill.id })],

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
 import { graduationBuildsFor } from "../../src/definitions/graduationBuilds/registry"
@@ -66,7 +66,7 @@ function graduationRun(
         },
       }
     : inputs
-  return runEngine(applyBowSet(applyArmorSet(withPatch)), options)
+  return runEngine(applySetBonuses(withPatch), options)
 }
 
 function breakFramesOf(result: { qiBreaks?: readonly { startSec: number; endSec: number }[] }) {

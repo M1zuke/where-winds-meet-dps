@@ -12,7 +12,7 @@ import {
 import styles from "./SimulationOutcomeMixPanel.module.scss"
 
 const CATEGORY_KEYS: Record<OutcomeCategory, string> = {
-  critical: "simulation.outcomeMix.category.critical",
+  critical: "common.critical",
   normal: "common.normal",
   affinity: "common.affinity",
   abrasion: "common.abrasion",
