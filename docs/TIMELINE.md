@@ -326,11 +326,9 @@ Rules:
   window — something the ledger never records — sets this on its condition
   rather than duplicating that module as a ledger status. Every other
   trigger kind keeps reading the ledger; authoring `source: "buffEngine"` on
-  one is invalid. A buff-engine-sourced condition only sees a module granted
-  through that module's own `triggersBuffs`/`receives` wiring at the frame it
-  is checked — one granted through `stackOnDamage` is not yet recorded when
-  the generated-cast walk that decides whether to spawn the cast runs, since
-  that walk finishes before damage hits are folded into the buff engine.
+  one is invalid. A buff-engine-sourced `castSkill` condition reads the buff
+  history as it stands just after the causing hit's own on-damage grants, and
+  the generated cast is decided once, there.
 - **A trigger may carry its own cooldown** (`cooldownFrames`): once it fires,
   the same trigger fires again only after that many frames. The first firing
   is never held back, a firing blocked by its conditions or phase does not
@@ -608,6 +606,34 @@ for applying, `receives` for boosting — never by the module itself.
   may end other modules' windows where it lands** (`dispelsOnGrant`). Both read
   the buff history at the grant's own time. A module's `triggerPhase` may list
   several Qi phases; it holds in any of them.
+- **Every buff-engine gate reads the buff history as of the time it asks
+  about**, never a module's latest window: a cooldown, a rate limit,
+  `requiresActiveBuffOnTrigger`, `refreshOnAnyCast`, a stack spend and the
+  stack count a grant adds to. **A grant that lands after the call that
+  declared it** (cast end, `buffAppliesAfterSec`, a per-site frame, after the
+  last hit) **decides all of them, its trigger phase included, at the time it
+  lands**, with everything stamped before then already in the history.
+- **A module's `stackOnDamage` or `perHitConsume` grant declares when it is
+  decided against its hit** (`damageGrantTiming`). `preScore` reads the Qi bar
+  before the hit's own Qi and counts for that hit's own damage; `postQi` reads
+  the bar after the hit's own Qi and counts for later events only. A module
+  granted pre-score does not run its own pre-score grants for that same hit:
+  only its stat effects apply. A grant that declares none is decided before
+  scoring, gated on the bar as it stands after the hit. Set it from when the
+  game applies the grant: before the hit's damage (`preScore`) or after its
+  damage and Qi (`postQi`). It is the only thing that separates the two, so a
+  grant without a Qi gate chooses only whether it reaches its own hit. A
+  pre-score grant that needs a buff or state (`requiresBuffActive`,
+  `stackOnDamageOnlyWhileActive`, `perHitConsume.from`) reads it as of the
+  event's start, before any grant of that event, so a buff added by this event
+  never enables a grant and the module definition order never matters.
+- **A module's `stackOnDamage` or `perHitConsume` grant declares which damage
+  it listens to** (`damageGrantListensTo`): `directHits`, the default, or
+  `anyDamage`, which also counts every damage-over-time tick. A tick that a
+  grant listens to runs the grant's pre-score part before the tick is scored
+  and its post-Qi part after the tick's Qi, under the same rules as a hit.
+  Set it from whether the game applies the grant on any damage or on direct
+  hits alone.
 - **A module's `effects` may read whether the damage event is a
   damage-over-time tick** (`ctx.event.isDotTick`), for a rule that reaches
   direct hits and one DoT-typed source alone.
@@ -887,11 +913,12 @@ itself exists; instead it is computed in the event loop, in time order,
 alongside `totalDamage`.
 
 - **A schedule, never the live bar, is what every gate reads.** The layout
-  pass, the buff-engine prepass and a hit's triggers read a `QiSchedule` — the
+  pass and a hit's triggers read a `QiSchedule` — the
   target's break windows, a step function of its Qi fraction, and the
   compatibility phase view. The event loop may additionally
   read the bar's own live state for the event it is scoring
-  (`ctx.target.qiFraction`, `ctx.target.qiBroken`).
+  (`ctx.target.qiFraction`, `ctx.target.qiBroken`) and for a hit's own
+  on-damage grants.
 - **The circularity resolves by a fixed-point iteration**: the whole run
   simulates with one schedule, the bar it produces becomes the next schedule,
   and the run repeats until the break frames stop moving or a small iteration
@@ -917,7 +944,7 @@ alongside `totalDamage`.
   damage gate, a phase, `qiBroken` or fraction gate — sees the bar as it stood
   before the event's own Qi. Every later event, one on the same frame included,
   is inside the break. A grant the emptying event causes after its damage
-  lands (an on-hit stack, a trigger) sees the break. The break's end is
+  lands (a post-Qi stack, a trigger) sees the break. The break's end is
   unchanged: the start frame plus the break length, exclusive. A schedule
   therefore answers a read as `beforeHit` (the start frame is outside) or
   `afterHit` (the start frame is inside); the event loop reads the live bar ahead

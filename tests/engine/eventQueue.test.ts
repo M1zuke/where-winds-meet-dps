@@ -11,6 +11,32 @@ function queueWithPoppedFrame(
   return queue
 }
 
+describe("events sharing a frame", () => {
+  it("run a deferred grant ahead of a cast start on that frame", () => {
+    const queue = new EventQueue<QueuedEvent>()
+    queue.push({ kind: "castStart", frame: 50 })
+    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 50 })
+    queue.push({ kind: "hit", frame: 50 })
+    expect([queue.pop(), queue.pop(), queue.pop()].map((event) => event?.kind)).toEqual([
+      "deferredGrant",
+      "castStart",
+      "hit",
+    ])
+  })
+
+  it("order deferred grants of one kind by the exact time they land at", () => {
+    const queue = new EventQueue<QueuedEvent & { label: string }>()
+    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 49.8, label: "later pushed" })
+    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 49.2, label: "earlier landing" })
+    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 49.8, label: "tied, pushed last" })
+    expect([queue.pop(), queue.pop(), queue.pop()].map((event) => event?.label)).toEqual([
+      "earlier landing",
+      "later pushed",
+      "tied, pushed last",
+    ])
+  })
+})
+
 describe("an event queued before the last popped frame", () => {
   afterEach(() => vi.unstubAllEnvs())
 

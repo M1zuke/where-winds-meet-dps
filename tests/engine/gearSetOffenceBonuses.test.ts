@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
@@ -66,7 +67,7 @@ describe("Etherwrath — physical/attribute attack stacks on any damaging hit", 
 
   it("grants a stack per damaging hit, up to 5, worth 1.2% each on every attack term", () => {
     const engine = engineWithSet("etherwrath")
-    for (let hitIndex = 0; hitIndex < 6; hitIndex++) engine.processDamageHit(hitIndex, anySkill)
+    for (let hitIndex = 0; hitIndex < 6; hitIndex++) landDamageHit(engine, hitIndex, anySkill)
     const result = engine.calculateDamageEffects(anySkill, 5.5)
     expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
     expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.06, 10)
@@ -76,7 +77,7 @@ describe("Etherwrath — physical/attribute attack stacks on any damaging hit", 
   it("reaches a skill that never declared it, since the bonus affects every attack", () => {
     const engine = engineWithSet("etherwrath")
     const bystander = makeSkill("test", { name: "Bystander" })
-    engine.processDamageHit(0, bystander)
+    landDamageHit(engine, 0, bystander)
     expect(engine.calculateDamageEffects(bystander, 0.5).artBonuses.minPhysPctBonus).toBeCloseTo(
       0.012,
       10,
@@ -93,7 +94,7 @@ describe("Etherwrath — 5-stack attribute penetration, gated to the skills that
   it("contributes nothing below 5 stacks", () => {
     const engine = engineWithSet("etherwrath")
     for (let hitIndex = 0; hitIndex < 4; hitIndex++)
-      engine.processDamageHit(hitIndex, penetrationReceiver)
+      landDamageHit(engine, hitIndex, penetrationReceiver)
     const result = engine.calculateDamageEffects(penetrationReceiver, 3.5)
     expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.048, 10)
     expect(result.effects).toEqual([])
@@ -102,7 +103,7 @@ describe("Etherwrath — 5-stack attribute penetration, gated to the skills that
   it("adds +6% physical and attribute penetration of every type once 5 stacks are reached", () => {
     const engine = engineWithSet("etherwrath")
     for (let hitIndex = 0; hitIndex < 5; hitIndex++)
-      engine.processDamageHit(hitIndex, penetrationReceiver)
+      landDamageHit(engine, hitIndex, penetrationReceiver)
     const result = engine.calculateDamageEffects(penetrationReceiver, 4.5)
     expect(result.effects).toContainEqual({ statKey: "phys.penetration", amount: 0.06 })
     expect(result.effects).toContainEqual({ statKey: "bellstrike.penetration", amount: 0.06 })
@@ -114,7 +115,7 @@ describe("Etherwrath — 5-stack attribute penetration, gated to the skills that
   it("contributes nothing to a skill outside its own receives list", () => {
     const engine = engineWithSet("etherwrath")
     for (let hitIndex = 0; hitIndex < 5; hitIndex++)
-      engine.processDamageHit(hitIndex, penetrationReceiver)
+      landDamageHit(engine, hitIndex, penetrationReceiver)
     const other = makeSkill("test", { name: "Other" })
     const result = engine.calculateDamageEffects(other, 4.5)
     expect(result.effects).toEqual([])
@@ -131,7 +132,7 @@ describe("Starweave — Martial Art Skill damage bonus, gated to the skills that
 
   it("does not reach a skill outside its own receives list", () => {
     const engine = engineWithSet("starweave")
-    engine.processDamageHit(0, martialSkill)
+    landDamageHit(engine, 0, martialSkill)
     expect(
       engine.calculateDamageEffects(otherSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
     ).toBe(undefined)
@@ -139,9 +140,9 @@ describe("Starweave — Martial Art Skill damage bonus, gated to the skills that
 
   it("ramps 3%/stack up to 5 stacks, at most 2 grants per second", () => {
     const engine = engineWithSet("starweave")
-    engine.processDamageHit(0, martialSkill)
-    engine.processDamageHit(0.1, martialSkill)
-    engine.processDamageHit(0.2, martialSkill)
+    landDamageHit(engine, 0, martialSkill)
+    landDamageHit(engine, 0.1, martialSkill)
+    landDamageHit(engine, 0.2, martialSkill)
     expect(
       engine.calculateDamageEffects(martialSkill, 0.3).breakdown[BUFF.starweaveMartialBoost],
     ).toBeCloseTo(0.06, 10)
@@ -149,7 +150,7 @@ describe("Starweave — Martial Art Skill damage bonus, gated to the skills that
 
   it("adds a further per-stack bonus at 4+ meters of target distance", () => {
     const engine = engineWithSet("starweave", { distanceMeters: 8 })
-    engine.processDamageHit(0, martialSkill)
+    landDamageHit(engine, 0, martialSkill)
     expect(
       engine.calculateDamageEffects(martialSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
     ).toBeCloseTo(0.04, 10)

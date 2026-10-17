@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { hitDealsDamage } from "../../src/engine/skill"
@@ -73,7 +74,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
       (skill) => skill.id === SKILL.spearq,
     )!
     const engine = new BuffEngine({ classId: "bellstrikeSplendor" }, defs)
-    engine.processDamageHit(1, spearQ)
+    landDamageHit(engine, 1, spearQ)
     expect(engine.qiPhase(2)).toBe("below30")
   })
 
@@ -116,7 +117,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
     )!
     const hitLandsAt = (params: Record<string, unknown>) => {
       const engine = new BuffEngine({ classId: "bellstrikeSplendor", ...params }, defs)
-      engine.processDamageHit(1, swordQ)
+      landDamageHit(engine, 1, swordQ)
       return engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 2)
     }
     expect(hitLandsAt({})).toBe(false)
@@ -133,7 +134,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
     )!
     engine.processSkillCast("cast:swordQ", 0, {}, false, swordQ.triggersBuffs, undefined)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 1)).toBe(false)
-    engine.processDamageHit(22 / 60, swordQ)
+    landDamageHit(engine, 22 / 60, swordQ)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 21 / 60)).toBe(false)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 14.9)).toBe(true)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 15.1)).toBe(false)

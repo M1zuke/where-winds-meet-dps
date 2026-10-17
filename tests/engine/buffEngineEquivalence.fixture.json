@@ -29109,12 +29109,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29131,12 +29136,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29153,12 +29163,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29175,12 +29190,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29197,12 +29217,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29219,12 +29244,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29241,12 +29271,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29263,12 +29298,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29285,12 +29325,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29307,12 +29352,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29329,12 +29379,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29355,6 +29410,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -29362,6 +29421,7 @@
           "breakdown": {
             "buff-bellstrikeUmbra-zenith-bar": 0.15,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29378,12 +29438,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29404,12 +29469,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "soulShaken": 0.5,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
@@ -29431,12 +29501,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05,
             "wolfchasersArtMartialDamage": 0.1
@@ -29454,12 +29529,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29476,12 +29556,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29498,12 +29583,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29520,12 +29610,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29542,12 +29637,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29564,12 +29664,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29586,12 +29691,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29608,12 +29718,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29630,12 +29745,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29652,12 +29772,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29674,12 +29799,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29696,6 +29826,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.45
             },
             {
@@ -29707,6 +29841,7 @@
           "breakdown": {
             "divinecraftFire": 0.015,
             "dragonHeadLowHp": 0.45,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29723,12 +29858,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29745,12 +29885,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29767,12 +29912,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29789,12 +29939,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29811,12 +29966,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29833,12 +29993,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29855,12 +30020,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29877,12 +30047,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29899,12 +30074,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29921,12 +30101,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29943,12 +30128,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29965,12 +30155,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -29987,12 +30182,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30009,12 +30209,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30031,12 +30236,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30053,12 +30263,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30075,12 +30290,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30097,12 +30317,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30119,12 +30344,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30141,12 +30371,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30163,12 +30398,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30185,12 +30425,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30207,12 +30452,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30229,12 +30479,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30251,12 +30506,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30273,12 +30533,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30295,12 +30560,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30317,12 +30587,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30339,12 +30614,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30361,12 +30641,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30383,12 +30668,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30405,12 +30695,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30427,12 +30722,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30449,12 +30749,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30468,6 +30773,10 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.15
             },
             {
               "statKey": "allDamageBoost",
@@ -30486,6 +30795,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30506,6 +30816,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -30513,6 +30827,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30529,12 +30844,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30551,12 +30871,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30573,12 +30898,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30595,12 +30925,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wineGu": 0.05
           }
@@ -30613,12 +30948,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30630,12 +30970,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30647,12 +30992,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30664,12 +31014,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30681,12 +31036,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30698,12 +31058,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30715,12 +31080,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30732,12 +31102,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30749,12 +31124,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30766,12 +31146,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30783,12 +31168,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30804,6 +31194,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -30811,6 +31205,7 @@
           "breakdown": {
             "buff-bellstrikeUmbra-zenith-bar": 0.15,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30822,12 +31217,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30843,12 +31243,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "soulShaken": 0.5,
             "vulnerabilityTeammate": 0.08
           }
@@ -30865,12 +31270,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wolfchasersArtMartialDamage": 0.1
           }
@@ -30883,12 +31293,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30900,12 +31315,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30917,12 +31337,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30934,12 +31359,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30951,12 +31381,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30968,12 +31403,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -30985,12 +31425,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31002,12 +31447,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31019,12 +31469,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31036,12 +31491,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31053,12 +31513,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31067,6 +31532,10 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.15
             },
             {
               "statKey": "allDamageBoost",
@@ -31081,6 +31550,7 @@
           "breakdown": {
             "divinecraftFire": 0.015,
             "dragonHeadLowHp": 0.45,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31092,12 +31562,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31109,12 +31584,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31126,12 +31606,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31143,12 +31628,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31160,12 +31650,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31177,12 +31672,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31194,12 +31694,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31211,12 +31716,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31228,12 +31738,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31245,12 +31760,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31262,12 +31782,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31279,12 +31804,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31296,12 +31826,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31313,12 +31848,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31330,12 +31870,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31347,12 +31892,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31364,12 +31914,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31381,12 +31936,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31398,12 +31958,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31415,12 +31980,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31432,12 +32002,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31449,12 +32024,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31466,12 +32046,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31483,12 +32068,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31500,12 +32090,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31517,12 +32112,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31534,12 +32134,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31551,12 +32156,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31568,12 +32178,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31585,12 +32200,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31602,12 +32222,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31619,12 +32244,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31636,12 +32266,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31653,12 +32288,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31667,6 +32307,10 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.15
             },
             {
               "statKey": "allDamageBoost",
@@ -31685,6 +32329,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31700,6 +32345,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -31707,6 +32356,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31718,12 +32368,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31735,12 +32390,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31752,12 +32412,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31769,12 +32434,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31786,12 +32456,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31803,12 +32478,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31820,12 +32500,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31837,12 +32522,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31854,12 +32544,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31871,12 +32566,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31888,12 +32588,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31905,12 +32610,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31922,12 +32632,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31939,12 +32654,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31956,12 +32676,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31977,6 +32702,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -31984,6 +32713,7 @@
           "breakdown": {
             "buff-bellstrikeUmbra-zenith-bar": 0.15,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -31995,12 +32725,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32016,12 +32751,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "soulShaken": 0.5,
             "vulnerabilityTeammate": 0.08
           }
@@ -32038,12 +32778,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08,
             "wolfchasersArtMartialDamage": 0.1
           }
@@ -32056,12 +32801,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32073,12 +32823,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32090,12 +32845,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32107,12 +32867,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32124,12 +32889,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32141,12 +32911,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32158,12 +32933,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32175,12 +32955,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32192,12 +32977,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32209,12 +32999,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32226,12 +33021,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32240,6 +33040,10 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.15
             },
             {
               "statKey": "allDamageBoost",
@@ -32254,6 +33058,7 @@
           "breakdown": {
             "divinecraftFire": 0.015,
             "dragonHeadLowHp": 0.45,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32265,12 +33070,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32282,12 +33092,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32299,12 +33114,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32316,12 +33136,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32333,12 +33158,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32350,12 +33180,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32367,12 +33202,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32384,12 +33224,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32401,12 +33246,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32418,12 +33268,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32435,12 +33290,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32452,12 +33312,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32469,12 +33334,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32486,12 +33356,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32503,12 +33378,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32520,12 +33400,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32537,12 +33422,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32554,12 +33444,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32571,12 +33466,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32588,12 +33488,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32605,12 +33510,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32622,12 +33532,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32639,12 +33554,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32656,12 +33576,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32673,12 +33598,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32690,12 +33620,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32707,12 +33642,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32724,12 +33664,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32741,12 +33686,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32758,12 +33708,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32775,12 +33730,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32792,12 +33752,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32809,12 +33774,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32826,12 +33796,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32840,6 +33815,10 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.15
             },
             {
               "statKey": "allDamageBoost",
@@ -32858,6 +33837,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32873,6 +33853,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
@@ -32880,6 +33864,7 @@
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32891,12 +33876,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32908,12 +33898,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32925,12 +33920,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -32942,12 +33942,17 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "divinecraftFire": 0.015,
+            "mirageBonus": 0.15,
             "vulnerabilityTeammate": 0.08
           }
         },
@@ -172873,6 +173878,18 @@
             "requires": null
           },
           {
+            "id": "mirageBonus",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.15
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "soulShaken",
             "stacks": 5,
             "maxStacks": 5,
@@ -172994,6 +174011,18 @@
             "requires": null
           },
           {
+            "id": "mirageBonus",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.15
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "soulShaken",
             "stacks": 5,
             "maxStacks": 5,
@@ -173100,6 +174129,18 @@
             "stacks": 1,
             "maxStacks": 1,
             "effects": [],
+            "requires": null
+          },
+          {
+            "id": "mirageBonus",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.15
+              }
+            ],
             "requires": null
           },
           {
@@ -185639,7 +186680,7 @@
       ]
     },
     "dynamic": {
-      "digest": "d970a2f3f1504f13c8a357bbd96e1cb217f76bee94117574c60f7bc7fd4d5d76"
+      "digest": "e70ec2aed3ed3d685f7c90221a29f280d6530d9801319b8460a169fe4e2bf0f2"
     }
   },
   "bellstrikeSplendor": {
@@ -187361,7 +188402,7 @@
       ]
     },
     "dynamic": {
-      "digest": "ba6ed8ad4ee51c98ed875313975ce8ccdd43261e06e9973e1ce7d47ad3b3391d"
+      "digest": "783fc35acdefdf6609442fe551330fba8dec9bae0cfcbf4771452e9071ea4292"
     }
   },
   "silkbindJade": {
@@ -189170,7 +190211,7 @@
       ]
     },
     "dynamic": {
-      "digest": "6066525483c1d54500c6ea81d9c70c27b2f5e7bf350eb3f18de1235fb56eaf50"
+      "digest": "f546e51702f9e9ae9dd62411729876f8ea4caaadf5a695a0484d7234b3124c11"
     }
   },
   "bamboocutDraught": {
@@ -190855,7 +191896,7 @@
       ]
     },
     "dynamic": {
-      "digest": "1acfbe48b19fd6b7761dbcd5f361e4a3b0415af9317aaaaf9f3155b3dff6ba33"
+      "digest": "e903daa1ba4d2d35bf5259ca46f8478b30d7efd0e6c392836977b69a6c66367e"
     }
   }
 }

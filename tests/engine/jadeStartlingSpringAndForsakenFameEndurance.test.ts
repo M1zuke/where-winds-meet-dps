@@ -2,6 +2,7 @@
 // another class: wiring, not a damage anchor.
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
@@ -45,7 +46,7 @@ describe("Startling Spring stacks", () => {
   const hitSeconds = fiveHit.hits.map((hit) => hit.frame / FPS)
   const engine = () => {
     const created = new BuffEngine({}, [], [pursuitChargedBoost])
-    for (const second of hitSeconds) created.processDamageHit(second, fiveHit)
+    for (const second of hitSeconds) landDamageHit(created, second, fiveHit)
     return created
   }
 

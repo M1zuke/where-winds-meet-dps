@@ -25,6 +25,7 @@ export function disintegrationBuffDef(): BuffModule {
     duration: 5,
     maxStacks: 5,
     stackOnDamage: true,
+    damageGrantTiming: "preScore",
     stackOnDamagePhase: "exhausted",
     rateLimit: { count: 1, window: 15 },
     summary:

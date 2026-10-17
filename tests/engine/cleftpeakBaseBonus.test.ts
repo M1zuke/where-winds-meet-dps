@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
@@ -26,13 +27,13 @@ describe("Cleftpeak's base ramp is registered as a global gear-set buff", () => 
 
   it("reaches a class other than Stonesplit Strength once that class wears the set", () => {
     const ridged = engine(cleftpeak.siteKey)
-    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
+    for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1)
     expect(allDamageBoostFor(ridged, "weapon", 0.5)).toBeCloseTo(0.05, 9)
   })
 
   it("reaches a damage-over-time tick the same as an ordinary hit", () => {
     const ridged = engine(cleftpeak.siteKey)
-    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
+    for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1)
     expect(allDamageBoostFor(ridged, "sustain", 0.5)).toBeCloseTo(
       allDamageBoostFor(ridged, "weapon", 0.5),
       9,
@@ -42,7 +43,7 @@ describe("Cleftpeak's base ramp is registered as a global gear-set buff", () => 
 
   it("contributes nothing without the set equipped", () => {
     const unequipped = engine()
-    unequipped.processDamageHit(0)
+    landDamageHit(unequipped, 0)
     expect(allDamageBoostFor(unequipped, "weapon", 0)).toBe(0)
   })
 })

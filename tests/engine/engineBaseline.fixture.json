@@ -174,7 +174,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "8d6182b01051847658038d6fddc66079d3314a97dcb771990e0aa6c701ca327d"
+    "digest": "065ea5ca41f74475f3fcfa3a296662573545e8df9de7012700228a5a6978907b"
   },
   "anchor:noAttunement": {
     "dps": 64312,
@@ -351,7 +351,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "6e25ef52fc5950f61a384b2d297d3dcfcd00877ef2482da4e9dff8c0ebad8271"
+    "digest": "9ec42108b5c2a3efbce53089d650bef010cb53e27674aecf14be31578982b6b0"
   },
   "anchor:dummyOff": {
     "dps": 76650.13,
@@ -528,7 +528,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "9c839400a9d2c2667ae75f827130b04fe37c35ad644fbfac9abc16e5fc9d516f"
+    "digest": "1f09a33b12b6420f5295321bbd77e252051bb7a67a57d5f132f584455ec70b98"
   },
   "anchor:breakthrough17": {
     "dps": 72838.33,
@@ -705,7 +705,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "40e6f2ce3758ec6275056d1fca09c47d6710b14eb3c6b41a39422dd22b4597a2"
+    "digest": "a3284fc1979d21de3efd0c9fdb63f751fbbde022a9f6eb4c2d0c06c6a8bde3ad"
   },
   "anchor:healerBuff": {
     "dps": 74978.89,
@@ -882,7 +882,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "e139b631a888c07595bb5a8dadee481c2c574ac34070d2e11cb767643daf7415"
+    "digest": "41620388c0c06746c65a7ba52d8168cc460dee231712316da3896bfacf75314f"
   },
   "anchor:wraithstrikeScript": {
     "dps": 72022.51,
@@ -1059,7 +1059,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "04afe013e3150926088a240ad6f279f55e761eba99eda1733252bd7482400d14"
+    "digest": "6370f1fea685cebc3f324a55d7bfca2d238c1abff9caedd603a046c83fd4cd15"
   },
   "anchor:voidrotScript": {
     "dps": 72956.57,
@@ -1236,7 +1236,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "65e59edb34467281501b01350ab7b2639a0d6971db53297aec36d10b6c302d11"
+    "digest": "51ba841a4850b00588787ec78954a17b9ae3bcebfedabad86d28f6a9c4b78fb5"
   },
   "anchor:breakExtension": {
     "dps": 72982.65,
@@ -1413,7 +1413,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "c213d611b38284138ee3ae6da21488f5a4237a95f363b5181765849d84e813c3"
+    "digest": "de2fac9a500aea923f1e77bd723ea1d402b9f081074e40ceb630cf719a521c02"
   },
   "anchor:swordHorizonT1": {
     "dps": 41838.03,
@@ -1593,7 +1593,7 @@
       "buffWindows": 142,
       "casts": 90
     },
-    "digest": "492a3dcc57dafd1880351cbe3709ca2bd31f25e5585b8ac96e3dd7f293e2f2cd"
+    "digest": "19828bc8db07737ce78b3ac76edf447a27ae4ad63142f09b60bf31b049a20a04"
   },
   "anchor:noSwordHorizon": {
     "dps": 36651.99,
@@ -1796,7 +1796,7 @@
       "buffWindows": 121,
       "casts": 90
     },
-    "digest": "48b94364918b77eb3fff2e5fa9360d758b08e7d04f97d6042fb7d39e47d34212"
+    "digest": "480d7f35f9014db78378d397f9ebc8d81202a6bd95aa633de1114bf0c7bc4d9c"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63061.38,
@@ -1973,7 +1973,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "c156d66bf296c5f32cd123788aef86e06ab9f471ad497695f729a1a784501521"
+    "digest": "738079771adb70822efd820f2f9af2c9a553ce9c7257279bd1c3e11c7f70ccdf"
   },
   "anchor:noMoraleChant": {
     "dps": 65596.24,
@@ -2142,7 +2142,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "b2e7ce7adcec91df1ed086850c7b8e8b04f1e64163ef73f49cbd8e17d4e087af"
+    "digest": "2503cb3978b8d606e983a67134c12d8f5928e1a844a490834b3baa2ac15cb16c"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 41078.86,
@@ -3100,11 +3100,11 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "19e180795725ce046ad9b9ac5342f150a5e08688e23f5c725a836b5d55b05a9e"
+    "digest": "afe1be955a7f8b00fbe653b89b2d4f24075cdf4e95c6d7734d69039cf9ae6101"
   },
   "anchor:set-Jadeware": {
-    "dps": 69459.04,
-    "totalDamage": 4167542.3,
+    "dps": 70956.88,
+    "totalDamage": 4257412.81,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3116,7 +3116,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54191.13,
+        "expectedDamage": 57165.22,
         "castCount": 4
       },
       {
@@ -3132,7 +3132,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 290203.97,
+        "expectedDamage": 290017.8,
         "castCount": 0
       },
       {
@@ -3148,7 +3148,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 460655.52,
+        "expectedDamage": 463101.47,
         "castCount": 0
       },
       {
@@ -3172,7 +3172,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 102757.69,
+        "expectedDamage": 97362.53,
         "castCount": 4
       },
       {
@@ -3180,7 +3180,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100293.33,
+        "expectedDamage": 99965.32,
         "castCount": 10
       },
       {
@@ -3188,7 +3188,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2033041.69,
+        "expectedDamage": 2067110.02,
         "castCount": 0
       },
       {
@@ -3204,7 +3204,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57707.79,
+        "expectedDamage": 57809.82,
         "castCount": 0
       },
       {
@@ -3212,7 +3212,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51188,
+        "expectedDamage": 52405.82,
         "castCount": 4
       },
       {
@@ -3220,7 +3220,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 41179.11,
+        "expectedDamage": 42145.35,
         "castCount": 4
       },
       {
@@ -3228,7 +3228,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 20589.56,
+        "expectedDamage": 21072.67,
         "castCount": 0
       },
       {
@@ -3236,7 +3236,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28394.96,
+        "expectedDamage": 30600.1,
         "castCount": 4
       },
       {
@@ -3252,7 +3252,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39329.28,
+        "expectedDamage": 38696.23,
         "castCount": 4
       },
       {
@@ -3260,7 +3260,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3338.34,
+        "expectedDamage": 3709.23,
         "castCount": 1
       },
       {
@@ -3268,7 +3268,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 502797.56,
+        "expectedDamage": 554376.86,
         "castCount": 1
       }
     ],
@@ -3277,7 +3277,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "7cc2e627322ccd4b1b75d9e469cae63a8fdfdb850734d9525a5f6f099012a0d1"
+    "digest": "efeb563b66ba9a91c664f5b44d1e549a21fd1a42cb6593a0efb5995071634a63"
   },
   "anchor:set-Mistwillow": {
     "dps": 64849.3,
@@ -3454,7 +3454,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "33b62822b816c808b9653db3168307a6a6b87b959f5146dc6f33651cde18986f"
+    "digest": "84034b7ca4deb36e1f4cb5f85a07523be671957bd55156c57c250a1939fb17ce"
   },
   "anchor:set-Rainwhisper": {
     "dps": 65676.25,
@@ -3631,11 +3631,11 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "6946fcf4f90cd41bb29e5c91b2d61432f927c72af6ec982ba64b3f234fafc040"
+    "digest": "f6e176997988109f1e1cd4ea9f82972707f78d82e3cd285d7fddbf8ab88f5b6d"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66226.13,
-    "totalDamage": 3973567.77,
+    "dps": 66226.95,
+    "totalDamage": 3973616.76,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3647,7 +3647,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53751.05,
+        "expectedDamage": 53786.75,
         "castCount": 4
       },
       {
@@ -3663,7 +3663,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 272154.06,
+        "expectedDamage": 272167.35,
         "castCount": 0
       },
       {
@@ -3808,7 +3808,7 @@
       "buffWindows": 241,
       "casts": 90
     },
-    "digest": "3912879c2a1c7f960f4d6ed78802404fd8b574954d3c2afe8d642d225830d1ef"
+    "digest": "cc610fbbf0558eab312573eac118a84b4746100af23082c201f444885c022a3d"
   },
   "defaults:umbra": {
     "dps": 12845.89,

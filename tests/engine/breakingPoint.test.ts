@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { disintegrationBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { makeSkill } from "../../src/engine/skill"
@@ -19,7 +20,7 @@ const EXHAUSTED_FROM_START = { qiBreakTime: 0, bossBreakDuration: 100 }
 describe("Disintegration — damage route", () => {
   it("gains no stack from a damaging hit outside the Exhausted phase", () => {
     const engine = new BuffEngine(BELOW_PERFECT_DODGE, [], [disintegrationBuffDef()])
-    engine.processDamageHit(1)
+    landDamageHit(engine, 1)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 1)).toBe(0)
   })
 
@@ -29,9 +30,9 @@ describe("Disintegration — damage route", () => {
       [],
       [disintegrationBuffDef()],
     )
-    engine.processDamageHit(0.1)
+    landDamageHit(engine, 0.1)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0.1)).toBe(1)
-    engine.processDamageHit(0.2)
+    landDamageHit(engine, 0.2)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0.2)).toBe(2)
   })
 
@@ -41,7 +42,7 @@ describe("Disintegration — damage route", () => {
       [],
       [disintegrationBuffDef()],
     )
-    for (let hit = 0; hit < 8; hit++) engine.processDamageHit(hit * 0.01)
+    for (let hit = 0; hit < 8; hit++) landDamageHit(engine, hit * 0.01)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0.07)).toBe(5)
   })
 
@@ -51,7 +52,7 @@ describe("Disintegration — damage route", () => {
       [],
       [disintegrationBuffDef()],
     )
-    engine.processDamageHit(0)
+    landDamageHit(engine, 0)
     expect(engine.isBuffActiveAtTime(BUFF.disintegration, 4.9)).toBe(true)
     expect(engine.isBuffActiveAtTime(BUFF.disintegration, 5.1)).toBe(false)
   })
@@ -84,7 +85,7 @@ describe("Disintegration — Perfect Dodge trigger route", () => {
       [],
       [disintegrationBuffDef()],
     )
-    engine.processDamageHit(0)
+    landDamageHit(engine, 0)
     engine.processSkillCast("cast:perfectDodge", 3, {}, false, [BUFF.disintegration])
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 4)).toBe(1)
     expect(engine.isBuffActiveAtTime(BUFF.disintegration, 5.5)).toBe(false)
@@ -98,12 +99,12 @@ describe("Disintegration — per-stack magnitude", () => {
       [],
       [disintegrationBuffDef()],
     )
-    engine.processDamageHit(0)
+    landDamageHit(engine, 0)
     const oneStack = engine.calculateDamageEffects(anySkill(), 0)
     expect(statAmount(oneStack.effects, "phys.penetration")).toBeCloseTo(0.05, 9)
     expect(statAmount(oneStack.effects, "critDamageBoost")).toBeCloseTo(0.05, 9)
 
-    engine.processDamageHit(0.1)
+    landDamageHit(engine, 0.1)
     const twoStacks = engine.calculateDamageEffects(anySkill(), 0.1)
     expect(statAmount(twoStacks.effects, "phys.penetration")).toBeCloseTo(0.1, 9)
     expect(statAmount(twoStacks.effects, "critDamageBoost")).toBeCloseTo(0.1, 9)

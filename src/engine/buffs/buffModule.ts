@@ -8,6 +8,12 @@ import type { WindowExtensionSpec } from "./windowExtension"
 // (docs/TIMELINE.md § "Qi bar").
 export type QiGate = QiPhase | { qiBelow: number }
 
+export type DamageGrantTiming = "preScore" | "postQi"
+
+export type DamageGrantSource = "directHits" | "anyDamage"
+
+export type DamageEventKind = "hit" | "tick"
+
 export interface BuffRequirements {
   param?: string
   minTier?: number
@@ -91,6 +97,14 @@ export type BuffMeta = BuffGate & {
   // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
   stackOnGrantingHit?: boolean
   stackOnDamage?: boolean
+  // When the grant of `stackOnDamage` or `perHitConsume` is decided against the
+  // hit's own damage and Qi: `preScore` reads the bar before the hit's Qi and
+  // counts for that hit; `postQi` reads it after and counts for later events
+  // only. Absent keeps the grant before scoring, gated on the bar after the hit.
+  damageGrantTiming?: DamageGrantTiming
+  // Which damage events the grant of `stackOnDamage` or `perHitConsume` listens
+  // to. Absent is `directHits`: damage-over-time ticks grant nothing.
+  damageGrantListensTo?: DamageGrantSource
   // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.

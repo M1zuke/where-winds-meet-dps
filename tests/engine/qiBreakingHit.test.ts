@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffModule } from "../../src/engine/buffs/buffModule"
+import { SAME_FRAME_STEP_SEC } from "../../src/engine/buffs/frameOrder"
 import { QiBar } from "../../src/engine/qiBar"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -106,25 +108,62 @@ describe("the Qi bar's readings at the frame that empties it", () => {
   })
 })
 
+const POST_QI_STACK = "placeholderPostQiStack"
+const postQiStack: BuffModule = {
+  id: POST_QI_STACK,
+  name: "Placeholder Post-Qi Stack",
+  affectsAll: true,
+  duration: 5,
+  maxStacks: 3,
+  stackOnDamage: true,
+  damageGrantTiming: "postQi",
+  stackOnDamagePhase: "exhausted",
+  effects: [],
+}
+
 describe("a grant caused by the event that empties the bar", () => {
   const emptyingFrame = 60
   const bar = new QiBar(BAR, FPS)
   bar.apply(emptyingFrame, 800, "direct")
-  const engine = new BuffEngine(
-    { breakingPoint: true, breakingPointTier: 5 },
-    [],
-    [disintegrationBuffDef()],
-  )
-  engine.attachQiSchedule(bar.schedule())
+  const schedule = bar.schedule()
   const emptyingSec = emptyingFrame / FPS
+  const nextFrameSec = (emptyingFrame + 1) / FPS
 
-  it("sees the break", () => {
-    engine.processDamageHit(emptyingSec)
-    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, emptyingSec)).toBe(1)
+  function engineWith(params: Record<string, unknown>, ...modules: BuffModule[]): BuffEngine {
+    const engine = new BuffEngine(params, modules, [])
+    engine.attachQiSchedule(schedule)
+    return engine
+  }
+
+  it("is decided against the bar before the event's Qi when it counts for that event", () => {
+    const engine = new BuffEngine(
+      { breakingPoint: true, breakingPointTier: 5 },
+      [],
+      [disintegrationBuffDef()],
+    )
+    engine.attachQiSchedule(schedule)
+    engine.processDamageHitPreScore(emptyingSec)
+    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, emptyingSec)).toBe(0)
+    engine.processDamageHitPreScore(nextFrameSec)
+    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, nextFrameSec)).toBe(1)
+  })
+
+  it("sees the break when it is decided after the event's Qi", () => {
+    const engine = engineWith({}, postQiStack)
+    engine.processDamageHitPostQi(emptyingSec)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, nextFrameSec)).toBe(1)
+  })
+
+  it("does not reach the event it was decided after, only the next one on its frame", () => {
+    const engine = engineWith({}, postQiStack)
+    engine.processDamageHitPostQi(emptyingSec)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, emptyingSec)).toBe(0)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, emptyingSec + SAME_FRAME_STEP_SEC)).toBe(1)
   })
 
   it("is not itself gated on the break by a damage-time read", () => {
+    const engine = engineWith({})
     expect(engine.qiBroken(emptyingSec)).toBe(false)
-    expect(engine.qiBroken(emptyingSec + 1 / FPS)).toBe(true)
+    expect(engine.qiBroken(nextFrameSec)).toBe(true)
   })
 })

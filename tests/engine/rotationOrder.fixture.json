@@ -133,14 +133,14 @@
     }
   },
   "builtin-stonesplitStrength-tilla-dummy-rotation": {
-    "dps": 53892.93812269545,
-    "totalDamage": 3233576.287361727,
+    "dps": 53891.445705122875,
+    "totalDamage": 3233486.7423073724,
     "damageBySkill": {
       "SnowpartingSlide Prepull[Hit]": 12647.312113148686,
       "Divinecraft - Fire": 78105.80749389602,
       "SnowpartingVC": 1110292.9342519848,
       "AnxiSoldierHeng": 395537.01731968153,
-      "SnowpartingCharged[Forgetfulness]": 293046.25982863194,
+      "SnowpartingCharged[Forgetfulness]": 292956.71477427747,
       "Flute Ripple (DoT)": 199754.64944430845,
       "SnowpartingSpecial": 155630.59609674173,
       "Divinecraft - Fire Explosion": 13750.711001664,
@@ -334,8 +334,8 @@
     }
   },
   "builtin-silkbindJade-t5": {
-    "dps": 42715.743595613916,
-    "totalDamage": 2976575.399554363,
+    "dps": 42697.803002453154,
+    "totalDamage": 2975325.2392209442,
     "damageBySkill": {
       "UmbQ Prepull": 34501.636928755404,
       "Divinecraft - Fire": 75778.03182954172,
@@ -344,7 +344,7 @@
       "Divinecraft - Fire Explosion": 15004.40356956961,
       "Yi River": 56457.617842560256,
       "UmbDroneLaunch[20hit]": 27421.473712157866,
-      "UmbDrone[20hit] (DoT)": 845986.7291490714,
+      "UmbDrone[20hit] (DoT)": 844736.5688156526,
       "FanSpecial": 56351.507868034394,
       "Soaring": 280536.80264601717,
       "Toad[Cancel]": 149444.99908152095,

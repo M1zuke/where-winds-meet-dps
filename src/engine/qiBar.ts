@@ -293,9 +293,15 @@ export function qiReaderReadingFrame(
   }
 }
 
-export function liveBarQiReader(base: QiReader, bar: QiBar, frame: number, fps: number): QiReader {
+export function liveBarQiReader(
+  base: QiReader,
+  bar: QiBar,
+  frame: number,
+  fps: number,
+  servedReading: QiReading = "beforeHit",
+): QiReader {
   const readsLiveBar = (timeSec: number, reading: QiReading): boolean =>
-    reading === "beforeHit" && Math.round(timeSec * fps) === frame
+    reading === servedReading && Math.round(timeSec * fps) === frame
   return {
     isBroken: (timeSec, reading) =>
       readsLiveBar(timeSec, reading)

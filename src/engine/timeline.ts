@@ -95,8 +95,13 @@ import { EXTENSION_STREAM_OFFSET, MECHANIC_STREAM_OFFSET, mulberry32 } from "./r
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
-import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
-import { SAME_FRAME_STEP_SEC } from "./buffs/frameOrder"
+import {
+  BuffEngine,
+  TARGET_DISTANCE_STATUS,
+  type DamageEffectsResult,
+  type DeferredBuffGrant,
+} from "./buffs/buffEngine"
+import { AFTER_HIT_SEC, SAME_FRAME_STEP_SEC } from "./buffs/frameOrder"
 import { distanceReaderAtCast, type Displacement } from "./distance"
 import { IN_COMBAT_STATUS } from "./combatState"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
@@ -146,6 +151,9 @@ import { resolveAverageFps, resolvePingMs, resolveServerProcessingMs } from "./p
 
 export const FPS = 60
 const ENGINE_READ_LEAD_SEC = 1e-9
+// Frames: a grant stamped this close past a frame boundary (1e-6 s lead offsets,
+// float noise) still lands on that boundary's frame.
+const DEFERRED_GRANT_FRAME_SLACK = 1e-3
 
 // In-game values as of 2026-09-28: every art's own swap-in cast shares one
 // 3 s cooldown, gating every class's Dual-Weapon Skill alike.
@@ -1886,21 +1894,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       unionConditionHolds(c, frame, buffParams, (status, atFrame) =>
         conditionSatisfiedByStacks(status, ledger.conditionStacksAt(status.buffId, atFrame)),
       )
-    // A `castSkill` condition's buff-engine source reads whichever engine
-    // instance the caller passes — the prepass's own in-progress one while it
-    // builds, the live one once the event loop runs.
-    const castConditionHoldsFor =
-      (engineForGate: BuffEngine | null) =>
-      (condition: TriggerCondition, frame: number): boolean =>
-        unionConditionHolds(condition, frame, buffParams, (status, atFrame) =>
-          status.source === "buffEngine"
-            ? !!engineForGate &&
-              conditionSatisfiedByStacks(
-                status,
-                engineForGate.getHistoricalBuffStacks(status.buffId, atFrame / FPS),
-              )
-            : conditionHolds(status, atFrame),
-        )
     const liveWriter = statusWriter(ledger, conditionHolds)
     seedOpeningState(liveWriter, spanStart)
 
@@ -1937,169 +1930,62 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const castScopedBuffs = new Map<string, string[]>()
     const castScopedKey = (frame: number, skillId: string) => `${frame}|${skillId}`
 
-    interface PendingCast {
-      frame: number
-      sequence: number
-      skill: Skill
-      hitCount: number
-      generated: boolean
-      inheritedBuffIds: readonly string[]
-      // 0 for a generated cast — a skill's own further in-cast server waits
-      // never reach a hit it merely triggers (§ "Coefficients").
-      midCastExtraFrames: number
-    }
+    const propagatedBuffIdsByCast = new Map<string, readonly string[]>()
 
     const damagingHitsPerFrame = new Map<number, number>()
-    const damagingHitOrdinals = new Map<string, number[]>()
-    const damagingHitKey = (frame: number, skillId: string, hitId: string) =>
-      `${frame}|${skillId}|${hitId}`
     const sameFrameOffsetSec = (ordinal: number) => ordinal * SAME_FRAME_STEP_SEC
-    const damagingHitOrdinalOf = (frame: number, skillId: string, hitId: string): number =>
-      damagingHitOrdinals.get(damagingHitKey(frame, skillId, hitId))?.shift() ??
-      damagingHitsPerFrame.get(frame) ??
-      0
 
-    // The prepass. It walks the whole cast graph — the rotation's casts and every
-    // cast they generate — in frame order, so the buff history and the consume
-    // ledger are both complete before the damage loop asks anything of them.
     const buffEngine: BuffEngine | null = (() => {
       try {
         const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
         engine.attachStatuses({ view: ledger, fps: FPS })
         engine.attachQiSchedule(qiSchedule, iterationQiReader)
         if (extensionRng) engine.attachExtensionGenerator(extensionRng)
-        const castTriggerFires = triggerGate(castConditionHoldsFor(engine)).fires
-        let sequence = 0
-        const pending: PendingCast[] = laidSteps.map((ls) => ({
-          frame: ls.startFrame,
-          sequence: sequence++,
-          skill: ls.resolved.skill,
-          hitCount: ls.performedHits.length,
-          generated: false,
-          inheritedBuffIds: [],
-          midCastExtraFrames: ls.midCastExtraFrames,
-        }))
-        const damageHits: { frame: number; skill: Skill; generated: boolean; hitId: string }[] = []
-
-        let processed = 0
-        while (pending.length > 0 && processed < EVENT_CAP) {
-          pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
-          const cast = pending.shift()!
-          processed++
-          const castTag = castTagOf(cast.skill)
-          let propagated = [...cast.inheritedBuffIds]
-          const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
-          const castDistanceMeters = targetDistanceAt(cast.frame)
-          const performedHits = cast.skill.hits.filter((candidate) =>
-            hitConditionsHold(candidate, castHolds),
-          )
-          const landingFrameOf = (hit: SkillHit) =>
-            hitLandingFrame(
-              cast.frame,
-              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
-            )
-          const lastHitFrame =
-            performedHits.length > 0 ? Math.max(...performedHits.map(landingFrameOf)) : null
-          const variantCastFrames = activeVariantCastFrames(performedHits, castHolds)
-          if (castTag) {
-            const grantAtSec = cast.skill.triggersBuffsAtFrame
-              ? new Map(
-                  Object.entries(cast.skill.triggersBuffsAtFrame).map(([id, frame]) => [
-                    id,
-                    frame / FPS,
-                  ]),
-                )
-              : undefined
-            const result = engine.processSkillCast(
-              castTag,
-              cast.frame / FPS,
-              {
-                ...propsOfSkill(cast.skill, cast.hitCount),
-                ...(variantCastFrames !== null && { castTime: variantCastFrames / FPS }),
-                ...(lastHitFrame !== null && { lastHitSec: (lastHitFrame - cast.frame) / FPS }),
-              },
-              cast.generated,
-              cast.skill.triggersBuffs ?? [],
-              skillTagsOf(cast.skill),
-              grantAtSec,
-            )
-            const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
-            propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
-            const key = castScopedKey(cast.frame, cast.skill.id)
-            castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
-          }
-          for (const hit of performedHits) {
-            const hitFrame = landingFrameOf(hit)
-            if (hitDealsDamage(hit))
-              damageHits.push({
-                frame: hitFrame,
-                skill: cast.skill,
-                generated: cast.generated,
-                hitId: hit.id,
-              })
-            for (const trigger of hit.triggers) {
-              if (trigger.kind !== "castSkill") continue
-              if (!castTriggerFires(trigger, hitFrame)) continue
-              const generatedSkill = skillsById.get(trigger.targetId)
-              if (!generatedSkill) continue
-              pending.push({
-                frame: hitFrame,
-                sequence: sequence++,
-                skill: generatedSkill,
-                hitCount: generatedSkill.hits.length,
-                generated: true,
-                inheritedBuffIds: propagated,
-                midCastExtraFrames: 0,
-              })
-            }
-          }
-        }
-
-        damageHits.sort((left, right) => left.frame - right.frame)
-        for (const { frame, skill, generated, hitId } of damageHits) {
-          const ordinal = damagingHitsPerFrame.get(frame) ?? 0
-          damagingHitsPerFrame.set(frame, ordinal + 1)
-          const key = damagingHitKey(frame, skill.id, hitId)
-          damagingHitOrdinals.set(key, [...(damagingHitOrdinals.get(key) ?? []), ordinal])
-          engine.processDamageHit(frame / FPS + sameFrameOffsetSec(ordinal), skill, generated)
-        }
         return engine
       } catch {
         return null
       }
     })()
 
-    const castSkillFires = triggerGate(castConditionHoldsFor(buffEngine)).fires
+    const castSkillGate = triggerGate(conditionHolds)
+    const castSkillFires = (trigger: HitTrigger, frame: number, engineReadSec: number): boolean =>
+      castSkillGate.fires(trigger, frame, (condition, atFrame) =>
+        unionConditionHolds(condition, atFrame, buffParams, (status, statusFrame) =>
+          status.source === "buffEngine"
+            ? !!buffEngine &&
+              conditionSatisfiedByStacks(
+                status,
+                buffEngine.getHistoricalBuffStacks(status.buffId, engineReadSec),
+              )
+            : conditionHolds(status, statusFrame),
+        ),
+      )
 
-    // docs/TIMELINE.md § "Cast legality": a `castConditions` entry that reads the
-    // buff engine can only be decided once the engine's history exists, and reads
-    // it just before the step's own start so the step's own grants never count.
-    if (buffEngine) {
+    function checkBuffEngineCastConditions(laidStep: LaidStep): void {
+      if (!buffEngine) return
       const engineStacks = (status: StatusCondition, atFrame: number): number =>
         status.source === "buffEngine"
           ? buffEngine.getHistoricalBuffStacks(status.buffId, atFrame / FPS - ENGINE_READ_LEAD_SEC)
           : layoutLedger.conditionStacksAt(status.buffId, atFrame)
-      for (const laidStep of laidSteps) {
-        const failed = (laidStep.resolved.skill.castConditions ?? []).filter(
-          (condition) =>
-            hasBuffEngineSource(condition) &&
-            !unionConditionHolds(condition, laidStep.startFrame, buffParams, (status, atFrame) =>
-              conditionSatisfiedByStacks(status, engineStacks(status, atFrame)),
-            ),
-        )
-        if (failed.length === 0) continue
-        const reasons = failed.map((condition) =>
-          layout.describeConditionFailure(condition, laidStep.startFrame, {
-            stacksOf: engineStacks,
-            nameOf: (buffId) => buffEngine.moduleName(buffId),
-          }),
-        )
-        const stepId = laidStep.resolved.step.id
-        recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
-        warnings.push(
-          `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
-        )
-      }
+      const failed = (laidStep.resolved.skill.castConditions ?? []).filter(
+        (condition) =>
+          hasBuffEngineSource(condition) &&
+          !unionConditionHolds(condition, laidStep.startFrame, buffParams, (status, atFrame) =>
+            conditionSatisfiedByStacks(status, engineStacks(status, atFrame)),
+          ),
+      )
+      if (failed.length === 0) return
+      const reasons = failed.map((condition) =>
+        layout.describeConditionFailure(condition, laidStep.startFrame, {
+          stacksOf: engineStacks,
+          nameOf: (buffId) => buffEngine.moduleName(buffId),
+        }),
+      )
+      const stepId = laidStep.resolved.step.id
+      recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+      warnings.push(
+        `${laidStep.resolved.skill.name || laidStep.resolved.skill.id} at ${(laidStep.startFrame / FPS - fightStartSec).toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+      )
     }
 
     const resources = (classDefinition(inputs.classId)?.resources ?? [])
@@ -2232,16 +2118,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       () => 1,
       targetDistanceAt,
     )) {
-      if (
-        plan.requiresBuff &&
-        !(
-          buffEngine?.isBuffActiveAtTime(
-            plan.requiresBuff,
-            (plan.requiresBuffAtFrame ?? plan.frame) / FPS,
-          ) ?? false
-        )
-      )
-        continue
+      if (plan.requiresBuff && !buffEngine?.definitions.has(plan.requiresBuff)) continue
       dotTickTimesSec.push(plan.frame / FPS)
     }
     dotTickTimesSec.sort((left, right) => left - right)
@@ -2491,7 +2368,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           hit: SkillHit
           castFrame: number
           stepStart: number
+          generated: boolean
         }
+      | { kind: "castStart"; frame: number; step: LaidStep }
+      | { kind: "deferredGrant"; frame: number; subFrame: number; grant: DeferredBuffGrant }
       | { kind: "castEnd"; frame: number; trigger: HitTrigger; stepStart: number }
       | { kind: "mechanicStep"; frame: number }
       | TickLaunchEvent
@@ -2548,8 +2428,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           hit,
           castFrame: ls.startFrame,
           stepStart: ls.startFrame,
+          generated: false,
         })
       }
+      mergedQueue.push({ kind: "castStart", frame: ls.startFrame, step: ls })
     }
 
     const skillBreakdownRowKey = (skill: Skill): string =>
@@ -2591,6 +2473,83 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
     const chainEndFrameByStepStart = new Map<number, number>()
     type QueuedHit = Extract<MergedEvent, { kind: "hit" }>
+
+    const nextDamagingOrdinal = (frame: number): number => {
+      const ordinal = damagingHitsPerFrame.get(frame) ?? 0
+      damagingHitsPerFrame.set(frame, ordinal + 1)
+      return ordinal
+    }
+
+    const deferGrantFrom =
+      (fromFrame: number) =>
+      (grant: DeferredBuffGrant): void => {
+        mergedQueue.push({
+          kind: "deferredGrant",
+          frame: Math.max(fromFrame, Math.ceil(grant.timeSec * FPS - DEFERRED_GRANT_FRAME_SLACK)),
+          subFrame: grant.timeSec * FPS,
+          grant,
+        })
+      }
+
+    function walkCastStart(cast: {
+      skill: Skill
+      frame: number
+      hitCount: number
+      generated: boolean
+      inheritedBuffIds: readonly string[]
+      holds: (condition: TriggerCondition) => boolean
+      distanceMeters: number
+      midCastExtraFrames: number
+    }): void {
+      const { skill, frame, generated, inheritedBuffIds } = cast
+      const castTag = castTagOf(skill)
+      let propagated = [...inheritedBuffIds]
+      if (buffEngine && castTag) {
+        const performedHits = skill.hits.filter((candidate) =>
+          hitConditionsHold(candidate, cast.holds),
+        )
+        const lastHitFrame =
+          performedHits.length > 0
+            ? Math.max(
+                ...performedHits.map((hit) =>
+                  hitLandingFrame(
+                    frame,
+                    resolvedHitFrame(hit, cast.holds, cast.distanceMeters) +
+                      cast.midCastExtraFrames,
+                  ),
+                ),
+              )
+            : null
+        const variantCastFrames = activeVariantCastFrames(performedHits, cast.holds)
+        const grantAtSec = skill.triggersBuffsAtFrame
+          ? new Map(
+              Object.entries(skill.triggersBuffsAtFrame).map(([id, atFrame]) => [
+                id,
+                atFrame / FPS,
+              ]),
+            )
+          : undefined
+        const result = buffEngine.processSkillCast(
+          castTag,
+          frame / FPS,
+          {
+            ...propsOfSkill(skill, cast.hitCount),
+            ...(variantCastFrames !== null && { castTime: variantCastFrames / FPS }),
+            ...(lastHitFrame !== null && { lastHitSec: (lastHitFrame - frame) / FPS }),
+          },
+          generated,
+          skill.triggersBuffs ?? [],
+          skillTagsOf(skill),
+          grantAtSec,
+          deferGrantFrom(frame),
+        )
+        const scoped = [...new Set([...inheritedBuffIds, ...result.buffIds])]
+        propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
+        const key = castScopedKey(frame, skill.id)
+        castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
+      }
+      propagatedBuffIdsByCast.set(castScopedKey(frame, skill.id), propagated)
+    }
 
     function prepareHit(event: QueuedHit): HitScoreInput {
       const { frame, skill, hit, castFrame, stepStart } = event
@@ -2647,14 +2606,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         forceGuaranteedAffinity,
         onHitEffectCount,
         forcedAffinityByOnHit,
-        engineOffsetSec: hitDealsDamage(hit)
-          ? sameFrameOffsetSec(damagingHitOrdinalOf(frame, skill.id, hit.id))
-          : 0,
+        engineOffsetSec: hitDealsDamage(hit) ? sameFrameOffsetSec(nextDamagingOrdinal(frame)) : 0,
       }
     }
 
-    function fireHitTriggers(event: QueuedHit): void {
+    function fireHitTriggers(event: QueuedHit, engineOffsetSec: number): void {
       const { frame, skill, hit, castFrame, stepStart } = event
+      const engineReadSec = frame / FPS + engineOffsetSec + AFTER_HIT_SEC
       const hitInWindow = inWindow(frame)
       if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
       for (const trigger of hit.triggers) {
@@ -2687,7 +2645,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         const triggerFires =
           trigger.kind === "castSkill"
-            ? castSkillFires(trigger, frame)
+            ? castSkillFires(trigger, frame, engineReadSec)
             : liveWriter.fires(trigger, frame)
         if (!triggerFires) continue
         if (trigger.kind === "applyDot") {
@@ -2721,6 +2679,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   hit: subHit,
                   castFrame: frame,
                   stepStart,
+                  generated: true,
                 })
               }
             }
@@ -2731,6 +2690,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (!sub) continue
         const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
         const subDistanceMeters = targetDistanceAt(frame)
+        if (trigger.kind === "castSkill")
+          walkCastStart({
+            skill: sub,
+            frame,
+            hitCount: sub.hits.length,
+            generated: true,
+            inheritedBuffIds: propagatedBuffIdsByCast.get(castScopedKey(castFrame, skill.id)) ?? [],
+            holds: subHolds,
+            distanceMeters: subDistanceMeters,
+            midCastExtraFrames: 0,
+          })
         for (const subHit of sub.hits.filter((candidate) =>
           hitConditionsHold(candidate, subHolds),
         )) {
@@ -2744,6 +2714,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             hit: subHit,
             castFrame: frame,
             stepStart,
+            generated: true,
           })
         }
       }
@@ -3089,6 +3060,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
+    function readingLiveBarAfterHit(frame: number, read: () => void): void {
+      if (!buffEngine || scoringQiReader === iterationQiReader) {
+        read()
+        return
+      }
+      buffEngine.attachQiReader(liveBarQiReader(iterationQiReader, qiBar, frame, FPS, "afterHit"))
+      try {
+        read()
+      } finally {
+        buffEngine.attachQiReader(scoringQiReader)
+      }
+    }
+
     function readingIterationQi<Read>(read: () => Read): Read {
       if (!buffEngine || scoringQiReader === iterationQiReader) return read()
       buffEngine.attachQiReader(iterationQiReader)
@@ -3351,6 +3335,21 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         ledger.cutWindowsAt(event.statusId, event.frame, UNOWNED)
       } else if (event.kind === "castEnd") {
         liveWriter.applyTrigger(event.trigger, event.frame, event.stepStart)
+      } else if (event.kind === "castStart") {
+        const { step } = event
+        checkBuffEngineCastConditions(step)
+        walkCastStart({
+          skill: step.resolved.skill,
+          frame: step.startFrame,
+          hitCount: step.performedHits.length,
+          generated: false,
+          inheritedBuffIds: [],
+          holds: (condition) => layoutHolds(condition, step.startFrame),
+          distanceMeters: targetDistanceAt(step.startFrame),
+          midCastExtraFrames: step.midCastExtraFrames,
+        })
+      } else if (event.kind === "deferredGrant") {
+        event.grant.commit()
       } else if (event.kind === "mechanicStep") {
         advanceMechanicStatuses(event.frame)
       } else if (event.kind === "hit") {
@@ -3367,13 +3366,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const scoreInput = prepareHit(event)
         const launchResource = resourceByLaunch.get(skill.id)
         const launchShare = launchResource && inWindow(frame) ? launchResource.launch(frame) : 1
+        const engineTimeSec = frame / FPS + scoreInput.engineOffsetSec
         if (launchShare > 0) {
-          if (hitDealsDamage(hit))
+          if (hitDealsDamage(hit)) {
+            buffEngine?.processDamageHitPreScore(engineTimeSec, skill)
             buffEngine?.processDamagingEvent({
               skill,
               timeSec: frame / FPS,
               stampSec: exactFrame / FPS,
             })
+          }
           const scored = scoreHit(scoreInput, hitRng, null, true)
           if (hitDealsDamage(hit)) observeScoredEvent(frame / FPS, launchShare, scored)
           const { rolled, st } = scored
@@ -3398,6 +3400,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 playerQiIndex: PLAYER_QI_DAMAGE_INDEX,
               }),
               "direct",
+            )
+          if (hitDealsDamage(hit))
+            readingLiveBarAfterHit(frame, () =>
+              buffEngine?.processDamageHitPostQi(engineTimeSec, skill, event.generated),
             )
           if (landsInFight) {
             if (hitDealsDamage(hit)) for (const resource of resources) resource.hit(skill, frame)
@@ -3427,7 +3433,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             inWindow: landsInFight,
           })
         }
-        fireHitTriggers(event)
+        fireHitTriggers(event, scoreInput.engineOffsetSec)
         scheduleMechanicStep(frame)
       } else if (event.kind === "tickLaunch") {
         const { episode, pulse, runIndex, offset } = event
@@ -3490,6 +3496,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const resource = resourceByDebuff.get(entry.debuff.id)
         const tickShare = launched.share
         resource?.creditHit(entry.frame, launched.particles)
+        buffEngine?.processDamageHitPreScore(entry.frame / FPS, entry.dotSkill, "tick")
         buffEngine?.processDamagingEvent({
           skill: entry.dotSkill,
           timeSec: entry.frame / FPS,
@@ -3505,6 +3512,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             propsOfSkill(entry.dotSkill, 1),
             false,
             skillTagsOf(entry.dotSkill),
+            undefined,
+            deferGrantFrom(entry.frame),
           )
         }
         const scoredTick = scoreTick(entry, hitRng, null, tickShare, true)
@@ -3532,6 +3541,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           }),
           entry.debuffForTick.dot?.qiHitKind ??
             (entry.debuffForTick.dot?.directHit ? "direct" : "dot"),
+        )
+        readingLiveBarAfterHit(entry.frame, () =>
+          buffEngine?.processDamageHitPostQi(entry.frame / FPS, entry.dotSkill, false, "tick"),
         )
         const landsInFight = inWindow(entry.frame)
         if (landsInFight) {

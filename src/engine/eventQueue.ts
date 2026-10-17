@@ -2,6 +2,7 @@ export const EVENT_KIND_PRIORITY = {
   recall: -1,
   statusRecall: -1,
   castEnd: -0.75,
+  deferredGrant: -0.75,
   castStart: -0.5,
   hit: 0,
   mechanicStep: 0.25,
@@ -16,6 +17,7 @@ export type EventKind = keyof typeof EVENT_KIND_PRIORITY
 export interface QueuedEvent {
   kind: EventKind
   frame: number
+  subFrame?: number
 }
 
 interface QueueEntry<Event extends QueuedEvent> {
@@ -85,6 +87,9 @@ export class EventQueue<Event extends QueuedEvent> {
     const leftPriority = EVENT_KIND_PRIORITY[left.event.kind]
     const rightPriority = EVENT_KIND_PRIORITY[right.event.kind]
     if (leftPriority !== rightPriority) return leftPriority < rightPriority
+    const leftSubFrame = left.event.subFrame ?? left.event.frame
+    const rightSubFrame = right.event.subFrame ?? right.event.frame
+    if (leftSubFrame !== rightSubFrame) return leftSubFrame < rightSubFrame
     return left.seq < right.seq
   }
 }
