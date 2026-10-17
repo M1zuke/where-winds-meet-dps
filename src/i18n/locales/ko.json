@@ -2153,6 +2153,8 @@
   "overview.encounterSettings.teammateBuffs": "파티원 버프",
   "overview.encounterSettings.voidrotScript": "",
   "overview.encounterSettings.wraithstrikeScript": "",
+  "overview.equippedStatLines": "",
+  "overview.equippedStatLines.empty": "",
   "overview.gearStatLift": "장비 능력치 상승",
   "overview.innerWays": "심법",
   "overview.itemRankingTable.dps": "DPS 변화량",
