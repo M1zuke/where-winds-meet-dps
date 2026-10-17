@@ -43,7 +43,7 @@
   }
 }
 
-@include breakpoints.below(breakpoints.$bp-720) {
+@include breakpoints.below(breakpoints.$bp-760) {
   .overviewGrid {
     grid-template-columns: 1fr;
     grid-template-areas:
