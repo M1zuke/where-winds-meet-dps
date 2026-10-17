@@ -25,11 +25,18 @@ function measure(anchor: HTMLElement): DropdownPosition {
   }
 }
 
+function clampLeft(left: number, listWidth: number): number {
+  const rightmost = window.innerWidth - listWidth - VIEWPORT_MARGIN
+  return Math.max(VIEWPORT_MARGIN, Math.min(left, rightmost))
+}
+
 export function useAnchoredDropdown(
   open: boolean,
   anchorRef: RefObject<HTMLElement | null>,
+  listRef: RefObject<HTMLElement | null>,
 ): DropdownPosition | null {
   const [position, setPosition] = useState<DropdownPosition | null>(null)
+  const [listWidth, setListWidth] = useState(0)
 
   const reposition = useCallback(() => {
     if (anchorRef.current) setPosition(measure(anchorRef.current))
@@ -43,8 +50,24 @@ export function useAnchoredDropdown(
     return () => {
       window.removeEventListener("scroll", reposition, true)
       window.removeEventListener("resize", reposition)
+      setPosition(null)
+      setListWidth(0)
     }
   }, [open, reposition])
 
-  return open ? position : null
+  const listMounted = position !== null
+
+  useLayoutEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const measureWidth = () => setListWidth(list.getBoundingClientRect().width)
+    measureWidth()
+    if (typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(measureWidth)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [listRef, listMounted])
+
+  if (!open || !position) return null
+  return { ...position, left: clampLeft(position.left, listWidth) }
 }
