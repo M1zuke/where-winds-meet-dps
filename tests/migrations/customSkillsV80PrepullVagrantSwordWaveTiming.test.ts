@@ -11,13 +11,14 @@ import {
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import storeV79File from "./testCustomSkills/v79/store.json"
 
 const healLatestSplendorHops = (skill: unknown): unknown =>
-  healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill))
+  healSwordMorphConversion(healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill)))
 
 const STORE = storeV79File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const PREPULL_ID = SKILL.swordHeavyChargedPrepull

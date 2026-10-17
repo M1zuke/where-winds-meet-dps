@@ -6,7 +6,7 @@ import { swordMorph } from "../../src/data/innerWays/swordMorph"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { BuildView, HitContext, HitInput, QiPhase } from "../../src/engine/behavior"
-import type { Skill } from "../../src/engine/skill"
+import { hitDealsDamage, type Skill } from "../../src/engine/skill"
 
 const vagrantSword = (): Skill =>
   builtinSkillsForClass("bellstrikeSplendor").find((skill) => skill.id === SKILL.swordHeavyCharged)!
@@ -80,10 +80,11 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
     expect(behavior.claimStatEffects(hitInput(vagrantSword(), 2), "normal")).toEqual([])
   })
 
-  it("has no third wave to reach on the two-wave cast", () => {
+  it("has no third wave to reach on the two-wave cast, whose third hit deals no damage", () => {
     const behavior = swordMorphExhaustedBehavior(buildAt(6))!
     const skill = twoWaves()
-    expect(skill.hits).toHaveLength(2)
+    expect(skill.hits.filter(hitDealsDamage)).toHaveLength(2)
+    expect(hitDealsDamage(skill.hits[2]!)).toBe(false)
     for (let index = 0; index < skill.hits.length; index++) {
       expect(behavior.claimStatEffects(hitInput(skill, index), "exhausted")).toEqual([])
     }

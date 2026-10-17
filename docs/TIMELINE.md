@@ -71,10 +71,9 @@ empowered form is authored** — never with a per-skill branch in the timeline.
 
 A variant may also carry its own cast length, for an empowered form that
 genuinely runs longer or shorter than the skill's own. Every cast's length is
-resolved incrementally, in rotation order, against the ledger state built from
-every cast laid out before it — never only the rotation's declared opening
-state — so a condition only a mid-fight trigger satisfies can still activate a
-cast-length override. A cast's own triggers can never affect its own length or
+resolved at the cast's own start, against everything that has happened up to
+that frame — never only the rotation's declared opening state — so a condition
+only a mid-fight trigger satisfies can still activate a cast-length override. A cast's own triggers can never affect its own length or
 hit set; only what came before it can. Where a skill's several hits each
 select an active variant with an override, the first hit in authoring order
 decides. Leaving the override unset, or giving it the same placeholder value
@@ -87,7 +86,7 @@ coefficients. The active variant is chosen against the ledger state at the
 cast's own start, the same timing the cast-length override above already
 uses, so the choice never depends on the hit's own not-yet-resolved landing
 frame. Every reader of a hit's frame — validation, storage seed/import/
-hydrate, layout and the damage pass — resolves it through the one function
+hydrate, cast placement and the damage pass — resolves it through the one function
 that applies this override; none reads the hit's bare `frame` field directly.
 
 ### Projectile hits
@@ -149,18 +148,17 @@ other two shapes.
 ### Cast legality
 
 A skill may carry its own ANDed ledger conditions (`castConditions`), checked
-once at layout time, at the same point and against the same incrementally
-built ledger state as a conditional hit. A step whose conditions fail is
-flagged and reported, never removed or reshaped: it still lays out, lands
-every hit its skill has and fires every trigger, exactly as it would if the
-conditions had held — the flag changes nothing about the simulation, only
-what gets reported alongside it. A `castConditions` entry may carry
-`source: "buffEngine"`: it reads the class-buff engine's history at the step's
-own start, so it is decided once that history exists rather than at layout; a
-hit's or a variant's own conditions never carry it. This flags a rotation step only — a `castSkill`-generated cast
+once at the step's own start, against the ledger as it stands there — the same
+state as a conditional hit. A step whose conditions fail is flagged and
+reported, never removed or reshaped: it still places, lands every hit its
+skill has and fires every trigger, exactly as it would if the conditions had
+held — the flag changes nothing about the simulation, only what gets reported
+alongside it. A `castConditions` entry may carry `source: "buffEngine"`: it
+reads the class-buff engine's history at the same moment; a hit's or a
+variant's own conditions never carry it. This flags a rotation step only — a `castSkill`-generated cast
 skips straight to its own hits, unflagged. The flag also carries which of the
 step's own conditions failed and the ledger's actual value for each, decided
-once at that same layout-time check — never re-evaluated by a display. A
+once at that same check — never re-evaluated by a display. A
 failed param condition's reason also names the build mechanism that param
 comes from, read off the registry that actually produces it — an inner way's
 own `buffParam`, a set's own `buffParam`, a script id — never a per-param
@@ -186,9 +184,9 @@ id.
   are actually reached, the other's hits summoned from the first through a
   `castSkill` trigger at the right frame offset — never a tag scoped to one
   hit inside a single skill.
-- **A summoned hit counts as a hit for every hit-driven schedule** — proc
-  mechanics, the layout ledger a later step's conditions read — the same as a
-  laid one. A `castSkill` trigger's own hits are not a separate category from
+- **A summoned hit counts as a hit for every hit-driven mechanic** and for
+  the ledger a later step's conditions read — the same as a laid one, and a
+  detonation's burst hit likewise. A `castSkill` trigger's own hits are not a separate category from
   the rotation's own once they land; see CALCULATION.md § "Mechanic rules" for
   the proc side of this.
 - **"Every damage-over-time row" is a structural check, not a tag list.** A
@@ -205,13 +203,13 @@ id.
   coefficients and flat adds are all zero exists to carry triggers; it still
   fires them and still lands on the cast timeline, but it adds neither a count
   nor a row, so a grant-only cast has no breakdown row at all.
-- **The DPS window opens at the first scored event of any kind — a hit, a
-  DoT tick, a summoned hit or a mechanic's own event — anywhere in the run
-  and pre-pull included, whose coefficients deal damage** — the same
-  threshold "reports into the breakdown" above already uses. An event whose
-  coefficients are all zero never opens it. From that frame on, every
-  damaging event counts toward the total, the breakdown and an echo bank
-  alike, a pre-pull one included; nothing before it does. A cast, a hit's
+- **The DPS window opens at the first damaging hit or DoT tick the run
+  processes — a summoned hit and a detonation's burst included, anywhere in
+  the run and pre-pull included** — the same threshold "reports into the
+  breakdown" above already uses. An event whose coefficients are all zero
+  never opens it, and neither does a mechanic's own event. From that frame
+  on, every damaging event counts toward the total, the breakdown and an echo
+  bank alike, a pre-pull one included; nothing before it does. A cast, a hit's
   `triggers` and a tick's `triggersBuffs` otherwise still fire regardless of
   where the window sits — a pre-pull cast sits on the cast timeline at
   negative frames whether or not any of its own hits land, and a DoT tick
@@ -239,9 +237,11 @@ id.
   hits make alike; nothing outside the window fires, scores or opens a
   window. The cast length is still reported beside the run length. A rotation
   with no fixed window runs from its own opening frame to the frame of its
-  own last damaging hit — direct, pre-pull or summoned — found the same way
-  the opening frame is; a DoT tick past that frame neither extends the window
-  nor counts, the same as a zero-damage hit past it.
+  own last damaging hit — direct, pre-pull, summoned or a detonation's burst
+  — known once no hit or cast can still land; a DoT tick past that frame
+  neither extends the window nor counts, the same as a zero-damage hit past
+  it. A tick that falls before a trailing zero-damage hit still runs, so its
+  effects reach whatever that hit sets off, and is dropped from the total.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the
@@ -283,12 +283,11 @@ Rules:
 - A status the player only gains once the granting cast is over opens at that
   cast's end, declared on the trigger. Never emulate it by moving the trigger to
   a later hit: a hit's frame is where it lands, not where a window starts, and a
-  cast's end is usually past every hit it has. In the layout pass and the event
-  loop alike it is decided at the cast's end, so its conditions read the
-  statuses standing there.
+  cast's end is usually past every hit it has. It is decided at the cast's
+  end, so its conditions read the statuses standing there.
 - **A write caused by a hit never lands before that hit.** A trigger declared
   for the end of its cast applies at the later of the cast's end and the
-  causing hit's frame, in the layout pass and the event loop alike. No window,
+  causing hit's frame. No window,
   stack write or event is ever placed at a frame earlier than the event being
   processed. A sub-cast's hits land no earlier than the hit that cast them, a
   `permanent` status active from the fight's start spans the whole fight, and
@@ -301,8 +300,7 @@ Rules:
   target gains as many stacks as the source holds at that frame, window-aware
   and clamped to the target's cap, and the source is set to 0 at the same frame
   with its windows untouched. Such a trigger ignores its own stack delta and
-  never extends; the target write fires the cap payout like any other write,
-  and both passes resolve it against the same ledger state.
+  never extends; the target write fires the cap payout like any other write.
 - **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
   Qi schedule's phase at its frame — the simulated bar's own break and low-Qi
   span, never a status — is the named one. A stagger or control state the
@@ -332,8 +330,7 @@ Rules:
 - **A trigger may carry its own cooldown** (`cooldownFrames`): once it fires,
   the same trigger fires again only after that many frames. The first firing
   is never held back, a firing blocked by its conditions or phase does not
-  start the cooldown, and every pass counts on its own, so the layout pass
-  and the event loop agree. A trigger may also name a `cooldownGroup`: every
+  start the cooldown. A trigger may also name a `cooldownGroup`: every
   trigger carrying the same group string, on any hit or skill, shares one
   cooldown clock — a trigger with no group is scoped to itself. Group members
   evaluated on the frame the group fires all fire; the same trigger evaluated
@@ -383,8 +380,8 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A debuff whose source is a summon declares `recall`** (a tag and the
   exempt skill ids): a rotation step whose skill carries the tag ends the
   running window at its own start, ticks included, unless its skill is exempt
-  or a DoT tick. The cut lands ahead of that frame's hits, so every read from
-  the step's start on sees the window gone.
+  or a DoT tick. The cut lands at the step's own start, ahead of the step's own
+  hits, so every read from then on sees the window gone.
 - **A buff with no stat effects is legitimate.** A pure state marker that a hit
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
@@ -417,9 +414,7 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   buff covering that frame, the target's stack count is set to the declared
   value. A refresh never fires it, an extension moves the frame it fires at,
   a permanent-activation buff never fires it, and each window fires at most
-  once. The reset lands in both the layout pass and the event loop: the layout
-  pass applies it from that frame on, the event loop after that frame's hits
-  and ticks. It may also declare `requiresBuffId`: the reset only lands if that
+  once. The reset lands after that frame's hits and ticks. It may also declare `requiresBuffId`: the reset only lands if that
   other status has a live window at the same frame. When that status is absent the
   lapse resets nothing, unless `elseStacks` is set, in which case it resets to
   that value.
@@ -646,14 +641,27 @@ for applying, `receives` for boosting — never by the module itself.
   module's own active window already is the whole condition, the effect when
   it needs to read further state to decide.
 
+## Event order
+
+- **Events on one frame run in a fixed order**: meter events, cast-end
+  triggers and deferred grants due, the frame's hits in the order they were queued, a cast's start, a
+  release-gate decision, a DoT tick's launch, its landing, a mechanic's own
+  events, then echo releases. A status expiry due on the frame runs after all
+  of them.
+- **A cast starts after the hits landing on its start frame**, so its
+  conditions, variants and length read what those hits wrote.
+- **Every decision reads the state as of the event it belongs to**: nothing a
+  later hit, meter event or grant writes is read, and nothing is written at a
+  frame before the event being processed.
+
 ## Meters
 
 A meter is a build-wide bar every skill of every class may cost from, gain into
 or gate on — a class registers one on its `ClassDef.meters`, shared by every
-skill that names its id. It is **not** a special case: it simulates once, in
-the layout pass's own sequential cursor, and is replayed onto the real ledger
-as a permanent counter status (`meter:<id>`) — every existing reader then
-works unchanged.
+skill that names its id. It is **not** a special case: it advances as the run
+processes the events that spend or gain it, and is recorded on the ledger as a
+permanent counter status (`meter:<id>`) — every existing reader then works
+unchanged, and reads the level as of its own event.
 
 - **A threshold requirement is an ordinary status condition** against
   `meter:<id>`, authored on `castConditions` (a legality flag, per "Cast
@@ -681,10 +689,18 @@ works unchanged.
   validated build) is authored as its full, unscaled amount — the modal
   outcome, not an expected value scaled by the chance itself. Its own
   `recordSpendAsStatus` records the magnitude actually deducted (after
-  `meterSpendCapToCurrent`) onto a permanent counter status, backdated to the
-  granting cast's own start rather than this hit's frame — so a module whose
-  bonus depends on what a capped release actually spent reads the same amount
-  from every hit of that release, including one landing earlier than this one.
+  `meterSpendCapToCurrent`) onto a permanent counter status at this hit's own
+  frame, owned by the cast that spent it. A hit's damage-time reads (the
+  effects of buffs and statuses when the hit is scored) see the spend recorded
+  by its own cast, wherever it lands in time: hits of that cast after the
+  spending hit read it, hits before it and casts without the spend read zero,
+  and no other cast's value reaches it. Variant selection follows the
+  Hit-variants rule: it is decided at cast start, so it sees only a spend that
+  cast had already recorded by then.
+- **Triggers on one hit apply in their authored order.** Where the game leaves
+  the order between a spend and a gain on the same hit undefined, the
+  convention is the spend first, so the gain never feeds it; author them that
+  way.
 - **A `meterDelta` trigger may set `conditionsBeforeHit`**: its conditions read
   the status ledger as it stood before the granting hit's own triggers wrote,
   so a stack count that same hit adds is not yet visible to it. Its cooldown
@@ -692,21 +708,17 @@ works unchanged.
 - **A `meterDelta` trigger may set `delayFrames`**: it lands that many frames
   after the hit's own exact landing frame, rounded to the meter's frame grid,
   instead of on the hit. `appliesOnCastEnd` takes precedence.
-- **A `cooldownCut` carrying `appliesOnCastEnd` lands at the owning cast's laid
+- **A `cooldownCut` carrying `appliesOnCastEnd` lands at the owning cast's
   end, in the meter's frame order beside the `meterDelta` events** — never
   eagerly while its hit is processed — so it releases a cooldown group that
   `meterDelta` triggers share exactly where their own firings sit in time. A
-  cast cut short by the next cast ends where it was cut, because its laid
-  length already stops there. A pre-pull cast never queues one.
+  cast cut short by the next cast ends where it was cut, because its length
+  already stops there. A pre-pull cast never queues one.
 - **A skill's `meterCosts` entry may carry `atFrame`**: the spend lands that
   many frames into the cast instead of at its start, in the meter's frame order,
   and pays every cost modifier active at that frame. A cost with `atFrame` is
   not paid by the cast-start step and is not part of the amount a
   `refundFractionOfCastCost` refunds.
-- **The layout ledger of a detonating debuff follows its detonation**: a hit
-  carrying `detonateDot` whose own stack reaches the cap resets the stacks to the
-  retained amount at that hit's frame, by the same rule the scored run applies,
-  so a condition the meter evaluates reads the stack count the scored run has.
 - **A `meterDelta` trigger's own `refundFractionOfCastCost` gains this
   fraction of what the owning cast actually paid to its own `targetId`
   meter**, after every cost modifier, in place of a fixed `stacks` amount —
@@ -752,8 +764,8 @@ works unchanged.
   of the game's own display. Every readout of its level, its capacity, a cost
   or a failed condition shows the amount divided by it; the engine keeps
   counting in meter units.
-- **A meter may declare `dependsOnBuffs`: it simulates after the buff engine
-  and the damage pass instead of in the layout pass**, because a gain of its
+- **A meter may declare `dependsOnBuffs`: it simulates after the run, once the
+  buff engine's history is complete, instead of as events are processed**, because a gain of its
   own reads a class buff's window. A `meterDelta` trigger on it may carry a
   `source: "buffEngine"` status condition, which holds in the share of the
   extension ensemble's trajectories where the buff is live one frame before the
@@ -772,14 +784,11 @@ works unchanged.
   of unknown length into a handful of negative frames, which has no faithful
   frame-accurate placement for a cost, a drain, a freeze or a gain.
 - **The meter's own cursor advances only for a meter-relevant event** — a
-  cost, a drain or freeze start, a `meterDelta` — never for an ordinary hit
-  that carries none of these, however far its own chain (a `castSkill`
-  sub-cast, a detonation) reaches past the step that follows it in the
-  rotation. A meter-relevant event generated by one step but landing past the
-  next step's own start is held back until that later step's own advance
-  reaches its frame, so every step's cast-start cost is applied at its own,
-  earlier frame first — meter events across the whole layout pass apply in
-  one global frame order, never in the rotation's per-step processing order.
+  cost, a drain or freeze start, a `meterDelta`, a cast start, a release gate's
+  read — never for an ordinary hit that carries none of these. Meter events run
+  in the event queue's frame order, so a meter-relevant event generated by one
+  step but landing past the next step's own start runs after that step's
+  cast-start cost, never ahead of it.
 - **A drain's bounds are fractional frames.** A frame drains in proportion
   to the part of it the drain interval covers; the bounds are never rounded
   to whole frames.
@@ -801,9 +810,9 @@ works unchanged.
   recorded beside the module, not assumed.
 - **A skill's own `meterDrains` entry may carry `chargeRelease`, naming a
   fallback skill**: the generic form of "the meter already warns 'emptied
-  mid-drain' — now the release follows that warning". At layout time, after
-  the step's own cast-start `meterCosts` are paid but before its cast length
-  or hits resolve, the drain is projected from its own start to its own stop
+  mid-drain' — now the release follows that warning". At the cast's start (at
+  its release-gate decision when it has gates), after the step's own cast-start
+  `meterCosts` are paid but before its cast length or hits resolve, the drain is projected from its own start to its own stop
   frame (`stopAfterSec`, or the skill's own `castFrames` where absent) against
   the meter's level at that point — so the projection sees this same cast's
   own earlier-frame costs already spent, never a stale pre-cost level. The
@@ -825,19 +834,22 @@ works unchanged.
   reported as a warning and never added to the step's legality list; the
   fallback's own gates are read the same way, so a chain steps down and never
   loops. The charge-release projection, the cast's distance, hits and `atFrame`
-  costs are then the resolved skill's, never the named one's. A requirement the
-  rotation can never satisfy for a stage the game does not release stays a
-  `castConditions` entry.
+  costs are then the resolved skill's, never the named one's. The decision is
+  made at the gate's own frame: the resolved skill's hits, length, buff-engine
+  cast effects and following step all start from it, and none lands before it —
+  a hit authored earlier lands at the gate frame. What the press itself does —
+  the step's legality check, its immediate costs, the weapon it draws — happens
+  at the press. A requirement the rotation can never satisfy for a stage the
+  game does not release stays a `castConditions` entry.
 - **A charged hold's own release time is quantised the same way every other
   cast length is** — through the render-frame layer, not a second formula —
   so nothing about ping or average FPS is authored per charged skill.
 
 ## Target distance
 
-The player's ground distance to a stationary target simulates **once**, in the
-layout pass's own sequential cursor, beside the meter simulation, and is
-replayed onto the real ledger as a permanent counter status the same way a
-meter is — every reader of `ctx.target.distanceMeters` then works unchanged.
+The player's ground distance to a stationary target is written to the ledger as
+a permanent counter status by each cast at its own start, the same way a meter
+is recorded — every reader of `ctx.target.distanceMeters` then works unchanged.
 There is no second simulation and no per-module distance logic.
 
 - **The preferred distance is the rotation's own `preferredDistanceMeters`**,
@@ -878,10 +890,9 @@ There is no second simulation and no per-module distance logic.
 
 ## Drawn weapon
 
-Which of a class's arts is drawn simulates once, in the layout pass's own
-sequential cursor, beside the meter and distance simulations, and is
-replayed onto the real ledger as a permanent counter status per art
-(`drawn:<weapon>`) — every reader of it then works unchanged.
+Which of a class's arts is drawn is written to the ledger by each cast at its
+own start, beside the meter and distance, as a permanent counter status per
+art (`drawn:<weapon>`) — every reader of it then works unchanged.
 
 - A skill's own weapon identity is its `weapon:` tag; a skill with none, or
   the reserved `none` tag, neither requires nor changes the drawn weapon.
@@ -907,13 +918,11 @@ The target's Qi bar is a damage-driven meter with no regeneration: every
 damaging event's own finished damage — the same value the breakdown and the
 total tally read for one that lands inside the DPS window, crit/affinity/
 abrasion/broken bonus included — feeds a formula that yields that event's Qi,
-which the bar spends. It cannot simulate in the layout pass the way a meter or
-the target distance does, since it needs a hit's damage before that damage
-itself exists; instead it is computed in the event loop, in time order,
-alongside `totalDamage`.
+which the bar spends. It is computed in the event loop, in time order,
+alongside `totalDamage`, since it needs a hit's damage.
 
-- **A schedule, never the live bar, is what every gate reads.** The layout
-  pass and a hit's triggers read a `QiSchedule` — the
+- **A schedule, never the live bar, is what every gate reads.** A cast's
+  decisions and a hit's triggers read a `QiSchedule` — the
   target's break windows, a step function of its Qi fraction, and the
   compatibility phase view. The event loop may additionally
   read the bar's own live state for the event it is scoring
@@ -979,11 +988,11 @@ A skill with genuinely procedural behaviour registers a **factory** against its
 id rather than being special-cased in the loop. Factories, not instances — state
 such as a charge counter must not carry between simulations. A per-hit art patch
 is the **only** sanctioned art-level adjustment, and it comes from a behaviour or
-a mechanic, never from a branch in the loop. A behaviour's per-hit status writes
-land in the layout ledger as well as the live one, in the same hit order, so a
-condition read at layout time sees the state the scored run has. A detonation's
-burst hits are laid out for that ledger alone: they open no fight window and
-join no hit-driven schedule.
+a mechanic, never from a branch in the loop. A behaviour is built once per
+simulation, and its per-hit status writes land in the ledger in hit order, so a
+condition read later in the run sees the state the scored run has. A
+detonation's burst hits are scored hits like any other: they count for the fight
+window and for every hit-driven mechanic.
 
 The status ledger and the buff engine are **two stores on purpose**: the ledger
 calls a status active if any recorded window covers the frame, the engine goes by

@@ -274,7 +274,7 @@
   "content.buff.pursuitChargedBoost.description": "Charged skills deal 4% more damage and cost 4% more Endurance to charge per stack.",
   "content.buff.qiImbalance": "Qi Imbalance",
   "content.buff.qiImbalanceMarker": "Qi Imbalance (Endurance marker)",
-  "content.buff.qiImbalanceMarker.description": "Mirrors the target's own Qi Imbalance window for the layout pass.",
+  "content.buff.qiImbalanceMarker.description": "Mirrors the target's own Qi Imbalance window.",
   "content.buff.qiShield": "Qi Shield",
   "content.buff.qiShield.description": "Granted by Relentless Chase's second strike; a Vagrant Sword pressed under it fires three waves.",
   "content.buff.qiStruggleEnhancement": "Qi Struggle Enhancement",

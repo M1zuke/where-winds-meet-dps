@@ -10,7 +10,7 @@ import {
   moraleDmgPerStack,
   moraleStacksAtTime,
 } from "../../engine/buffs/morale"
-import type { MechanicEvent, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
+import type { MechanicHost, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
 import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
@@ -20,7 +20,12 @@ import { PARAM } from "../skills/buffs/ids"
 // `./moraleChant` in source order would still be in TDZ at that point.
 import { moraleChant } from "./moraleChant"
 
-type State = { tier: number }
+interface State {
+  yiRiver: Skill | null
+  nextYiRiverSec: number | null
+}
+
+const YI_RIVER_SEARCH_LIMIT_SEC = 3600
 
 // In-game rule as of 2026-09-24: the doubling needs a controlled target, and
 // a training stake is never one.
@@ -36,6 +41,41 @@ function effectsFor(stacks: number, controlled: boolean) {
   ]
 }
 
+function yiRiverSkill(classId: string): Skill {
+  return {
+    id: "yi-river",
+    classId,
+    name: "Yi River",
+    breakdownName: "Morale Chant",
+    skillType: "mindMethod",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+    hits: [],
+    castFrames: 0,
+    triggerable: false,
+    createdAt: "1970-01-01T00:00:00.000Z",
+    updatedAt: "1970-01-01T00:00:00.000Z",
+  }
+}
+
+function scheduleYiRiver(state: State, host: MechanicHost, setup: MechanicSetup): void {
+  if (!state.yiRiver || state.nextYiRiverSec === null) return
+  host.scheduleExtra({
+    frame: Math.round(state.nextYiRiverSec * setup.fps),
+    skill: state.yiRiver,
+    art: {
+      name: "Yi River",
+      physMultiplier: 1,
+      // In-game values as of 2026-10-06: a passive hit carries no martial art.
+      attributeMultiplier: 1,
+      skillType: "mindMethod",
+    },
+    name: "Yi River",
+    type: "mindMethod",
+    direct: true,
+  })
+}
+
 // A hoisted factory, not a plain object: `moraleChant.ts` declares this as its
 // mechanic, so this file's own top-level export must be safe to call before
 // `./moraleChant`'s cyclic import back into this module has finished — a
@@ -46,7 +86,15 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
 
     prepare(setup) {
       if (!setup.hasBuffEngine || !setup.paramOn(PARAM.moraleChant)) return null
-      return { tier: setup.paramTier(PARAM.moraleChant) }
+      const hasYiRiver = innerWayHasNode(
+        moraleChant,
+        setup.paramTier(PARAM.moraleChant),
+        INNER_WAY_NODE.yiRiver,
+      )
+      return {
+        yiRiver: hasYiRiver ? yiRiverSkill(setup.classId) : null,
+        nextYiRiverSec: null,
+      }
     },
 
     contributeAt(_state, frame, _skill, setup) {
@@ -55,45 +103,23 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
       return { effects: effectsFor(stacks, controlled) }
     },
 
-    extraEvents(state, setup) {
-      if (!innerWayHasNode(moraleChant, state.tier, INNER_WAY_NODE.yiRiver)) return []
-      const windowEndSec = setup.windowStartSec + setup.rotationDurationSec
+    start(state, host, setup) {
+      if (!state.yiRiver) return
       let first = 0
-      while (first < windowEndSec && stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD)
+      while (
+        first < YI_RIVER_SEARCH_LIMIT_SEC &&
+        stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD
+      )
         first += 0.5
-      if (first > windowEndSec) return []
+      if (first >= YI_RIVER_SEARCH_LIMIT_SEC) return
+      state.nextYiRiverSec = first
+      scheduleYiRiver(state, host, setup)
+    },
 
-      const skill: Skill = {
-        id: "yi-river",
-        classId: setup.classId,
-        name: "Yi River",
-        breakdownName: "Morale Chant",
-        skillType: "mindMethod",
-        weaponOrAttribute: "",
-        attributeAttack: "",
-        hits: [],
-        castFrames: 0,
-        triggerable: false,
-        createdAt: "1970-01-01T00:00:00.000Z",
-        updatedAt: "1970-01-01T00:00:00.000Z",
-      }
-      const events: MechanicEvent[] = []
-      for (let tSec = first; tSec <= windowEndSec; tSec += YI_RIVER_INTERVAL_SEC) {
-        events.push({
-          frame: Math.round(tSec * setup.fps),
-          skill,
-          art: {
-            name: "Yi River",
-            physMultiplier: 1,
-            // In-game values as of 2026-10-06: a passive hit carries no martial art.
-            attributeMultiplier: 1,
-            skillType: "mindMethod",
-          },
-          name: "Yi River",
-          type: "mindMethod",
-        })
-      }
-      return events
+    afterExtraEvent(state, event, host, setup) {
+      if (event.skill !== state.yiRiver || state.nextYiRiverSec === null) return
+      state.nextYiRiverSec += YI_RIVER_INTERVAL_SEC
+      scheduleYiRiver(state, host, setup)
     },
 
     display(_state, timeSec, _prePull, setup) {

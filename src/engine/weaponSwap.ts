@@ -1,6 +1,6 @@
 // Which of a class's arts is drawn, and the free direct swap a weapon change
 // needs before a step of the other art — see docs/TIMELINE.md § "Drawn
-// weapon". Pure functions only: the layout pass owns the sequencing and the
+// weapon". Pure functions only: the timeline owns the sequencing and the
 // frame-accurate cooldown wait, this module only owns which steps a rotation
 // needs a direct swap in front of.
 

@@ -98,7 +98,7 @@ describe("a trigger bound to a Qi phase", () => {
     expect(chipStacks(inputs, 3, gate.id, EXHAUSTED_WINDOW_OPTIONS)).toBe(1)
   })
 
-  it("the layout pass sees the phase-gated grant when sizing a cast", () => {
+  it("a cast-length gate sees the phase-gated grant", () => {
     const gate = makeGate()
     const grant = granter(
       makeTrigger({ kind: "applyBuff", targetId: gate.id, stacks: 1, phase: "exhausted" }),

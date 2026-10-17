@@ -21,14 +21,6 @@ export const multiWaveWindowReleaseGrantTrigger = applyBuff({
   requiresMinTier: 4,
 })
 
-export const multiWaveWindowReleaseGrantLate = (lateFrames: number) =>
-  applyBuff({
-    target: BUFF.swordMorphMultiWaveWindow,
-    durationFrames: MULTI_WAVE_WINDOW_DURATION_FRAMES - lateFrames,
-    requiresParam: PARAM.swordMorph,
-    requiresMinTier: 4,
-  })
-
 export const SWORD_MORPH_EQUIPPED: TriggerCondition = { param: PARAM.swordMorph }
 
 // In-game values as of 2026-10-15: read once at the press — the window, the

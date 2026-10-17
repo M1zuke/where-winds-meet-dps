@@ -3,7 +3,9 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
+import { SWORD_MORPH_CONVERTED_AMOUNT_STATUS } from "../../src/data/skills/bellstrike-splendor/buffs/vagrantSwordEndurance"
 import { enduranceMeter } from "../../src/data/resources/enduranceMeter"
 import type { Inputs } from "../../src/engine/types"
 
@@ -210,6 +212,31 @@ describe("Energy Surge is granted only by a three-wave release", () => {
         mindMethods,
       ).result.casts?.[2]?.meterLevels?.find((level) => level.id === enduranceMeter.id)?.amount ?? 0
     expect(enduranceAfter(swordMorphTier6) - enduranceAfter(swordMorphTier5)).toBeCloseTo(20, 5)
+  })
+})
+
+describe("the release's Endurance spend and the Energy Surge Endurance gain", () => {
+  it("every release lists the spend ahead of the gain, so the gain never feeds the spend", () => {
+    const releaseHits = builtinSkillsForClass(CLASS).flatMap((skill) =>
+      skill.hits.filter((skillHit) =>
+        skillHit.triggers.some(
+          (trigger) => trigger.recordSpendAsStatus === SWORD_MORPH_CONVERTED_AMOUNT_STATUS,
+        ),
+      ),
+    )
+    expect(releaseHits.length).toBeGreaterThanOrEqual(6)
+    for (const releaseHit of releaseHits) {
+      const spendIndex = releaseHit.triggers.findIndex(
+        (trigger) => trigger.recordSpendAsStatus === SWORD_MORPH_CONVERTED_AMOUNT_STATUS,
+      )
+      const gainIndex = releaseHit.triggers.findIndex(
+        (trigger) =>
+          trigger.kind === "meterDelta" &&
+          trigger.targetId === enduranceMeter.id &&
+          trigger.stacks > 0,
+      )
+      expect(gainIndex).toBeGreaterThan(spendIndex)
+    }
   })
 })
 

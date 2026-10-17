@@ -52,16 +52,12 @@ function setupFor(classId: string): MechanicSetup {
     inputs: { ...defaultInputs, classId },
     classId,
     fps: 60,
-    rotationDurationSec: 10,
-    windowStartSec: 0,
-    hitTimesSec: [0, 1, 2],
-    weaponHitTimesSec: [0, 1],
-    dotTickTimesSec: [],
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,
     hasBuffEngine: true,
     effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
+    collectHistory: false,
   }
 }
 

@@ -60,6 +60,8 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
   return {
     id: BUFF.concentration,
 
+    needsAffinityChance: true,
+
     catalogRow: {
       name: "Concentration",
       effects: () => EFFECTS,

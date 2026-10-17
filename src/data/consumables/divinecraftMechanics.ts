@@ -1,7 +1,10 @@
 import type { Skill } from "../../engine/skill"
-import type { MechanicEvent, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
-
-type State = Record<string, never>
+import type {
+  MechanicEvent,
+  MechanicHost,
+  MechanicSetup,
+  TimelineMechanic,
+} from "../../engine/mechanics/types"
 
 interface EnchantDotSpec {
   element: "fire" | "poison"
@@ -11,11 +14,6 @@ interface EnchantDotSpec {
   physMultiplier: number
   qiRate: number
   qiFlat?: number
-}
-
-interface DotWindow {
-  openAt: number
-  endAt: number
 }
 
 const TICK_INTERVAL_SEC = 1
@@ -42,69 +40,15 @@ const POISONED: EnchantDotSpec = {
   qiFlat: 1,
 }
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-06, 2026-10-17.
 const POISON_QI_DAMAGE_BOOST = 0.05
 const EXPLOSION_NAME = "Divinecraft - Fire Explosion"
 const EXPLOSION_PHYS_MULTIPLIER = 0.4
 const STACK_DURATION_SEC = 5
 const STACKS_FOR_COMBUSTION = 5
 const COMBUSTION_DURATION_SEC = 5
-const EXPLOSION_COOLDOWN_SEC = 5
-
-function dotWindows(hitTimesSec: readonly number[], windowSec: number): DotWindow[] {
-  const windows: DotWindow[] = []
-  for (const hitTime of hitTimesSec) {
-    const current = windows[windows.length - 1]
-    if (current && hitTime < current.endAt) current.endAt = hitTime + windowSec
-    else windows.push({ openAt: hitTime, endAt: hitTime + windowSec })
-  }
-  return windows
-}
-
-function dotTickTimesSec(
-  hitTimesSec: readonly number[],
-  windowSec: number,
-  fightWindowEndSec: number,
-): number[] {
-  const ticks: number[] = []
-  for (const window of dotWindows(hitTimesSec, windowSec)) {
-    const windowEndSec = Math.min(window.endAt, fightWindowEndSec)
-    for (
-      let tickTimeSec = window.openAt + FIRST_TICK_LEAD_SEC;
-      tickTimeSec < windowEndSec;
-      tickTimeSec += TICK_INTERVAL_SEC
-    ) {
-      ticks.push(tickTimeSec)
-    }
-  }
-  return ticks
-}
-
-function explosionTimesSec(hitTimesSec: readonly number[]): number[] {
-  const explosions: number[] = []
-  let stacks = 0
-  let stacksExpireAt = 0
-  let combustionEndAt: number | null = null
-  let cooldownEndAt = 0
-  for (const hitTime of hitTimesSec) {
-    if (combustionEndAt !== null && hitTime >= combustionEndAt) combustionEndAt = null
-    if (combustionEndAt !== null) {
-      explosions.push(hitTime)
-      combustionEndAt = null
-      cooldownEndAt = hitTime + EXPLOSION_COOLDOWN_SEC
-      continue
-    }
-    if (hitTime < cooldownEndAt) continue
-    if (hitTime >= stacksExpireAt) stacks = 0
-    stacks += 1
-    stacksExpireAt = hitTime + STACK_DURATION_SEC
-    if (stacks >= STACKS_FOR_COMBUSTION) {
-      stacks = 0
-      combustionEndAt = hitTime + COMBUSTION_DURATION_SEC
-    }
-  }
-  return explosions
-}
+const EXPLOSION_LOCKOUT_SEC = 10
+const EXPLOSION_DELAY_FRAMES = 3
 
 function buffDrivenSkill(classId: string, id: string, name: string): Skill {
   return {
@@ -135,55 +79,138 @@ function fixedFormulaArt(name: string, physMultiplier: number) {
   }
 }
 
-function dotEvents(spec: EnchantDotSpec, setup: MechanicSetup): MechanicEvent[] {
-  const skill = buffDrivenSkill(setup.classId, spec.skillId, spec.name)
-  return dotTickTimesSec(
-    setup.hitTimesSec,
-    spec.windowSec,
-    setup.windowStartSec + setup.rotationDurationSec,
-  ).map((tickTimeSec) => ({
-    frame: Math.round(tickTimeSec * setup.fps),
-    skill,
-    art: fixedFormulaArt(spec.name, spec.physMultiplier),
-    name: spec.name,
-    type: "mindMethod",
-    qiRate: spec.qiRate,
-    qiFlat: spec.qiFlat,
-    qiHitKind: "dot" as const,
-  }))
-}
+class EnchantDotChain {
+  private readonly skill: Skill
+  private windowEndSec = -Infinity
+  private nextTickSec = 0
+  private tickPending = false
 
-function explosionEvents(setup: MechanicSetup): MechanicEvent[] {
-  const skill = buffDrivenSkill(setup.classId, "divinecraft-fire-explosion", EXPLOSION_NAME)
-  return explosionTimesSec(setup.hitTimesSec).map((explosionTimeSec) => ({
-    frame: Math.round(explosionTimeSec * setup.fps),
-    skill,
-    art: fixedFormulaArt(EXPLOSION_NAME, EXPLOSION_PHYS_MULTIPLIER),
-    name: EXPLOSION_NAME,
-    type: "mindMethod",
-    qiRate: 1,
-  }))
-}
+  constructor(
+    private readonly spec: EnchantDotSpec,
+    setup: MechanicSetup,
+  ) {
+    this.skill = buffDrivenSkill(setup.classId, spec.skillId, spec.name)
+  }
 
-function prepareFor(element: EnchantDotSpec["element"]) {
-  return (setup: MechanicSetup): State | null => (setup.inputs.divinecraft === element ? {} : null)
-}
+  owns(event: MechanicEvent): boolean {
+    return event.skill.id === this.spec.skillId
+  }
 
-export function fireOilBurnMechanic(): TimelineMechanic<State> {
-  return {
-    id: "fireOilBurn",
-    prepare: prepareFor("fire"),
-    extraEvents: (_state, setup) => [...dotEvents(FIRE_BURN, setup), ...explosionEvents(setup)],
+  onHit(timeSec: number, host: MechanicHost, setup: MechanicSetup): void {
+    if (timeSec >= this.windowEndSec) {
+      this.nextTickSec = timeSec + FIRST_TICK_LEAD_SEC
+      this.tickPending = false
+    }
+    this.windowEndSec = timeSec + this.spec.windowSec
+    this.arm(host, setup)
+  }
+
+  onTick(event: MechanicEvent, host: MechanicHost, setup: MechanicSetup): void {
+    if (!this.tickPending || event.frame !== Math.round(this.nextTickSec * setup.fps)) return
+    this.tickPending = false
+    this.nextTickSec += TICK_INTERVAL_SEC
+    this.arm(host, setup)
+  }
+
+  private arm(host: MechanicHost, setup: MechanicSetup): void {
+    if (this.tickPending) return
+    if (!(this.nextTickSec < this.windowEndSec)) return
+    this.tickPending = true
+    host.scheduleExtra({
+      frame: Math.round(this.nextTickSec * setup.fps),
+      skill: this.skill,
+      art: fixedFormulaArt(this.spec.name, this.spec.physMultiplier),
+      name: this.spec.name,
+      type: "mindMethod",
+      direct: false,
+      qiRate: this.spec.qiRate,
+      qiFlat: this.spec.qiFlat,
+      qiHitKind: "dot" as const,
+    })
   }
 }
 
-export function toxicPowderPoisonedMechanic(): TimelineMechanic<State> {
+class FireExplosionTracker {
+  private readonly skill: Skill
+  private stacks = 0
+  private stacksExpireAtFrame = Number.NEGATIVE_INFINITY
+  private combustionEndFrame = Number.NEGATIVE_INFINITY
+  private lockoutEndFrame = Number.NEGATIVE_INFINITY
+
+  constructor(setup: MechanicSetup) {
+    this.skill = buffDrivenSkill(setup.classId, "divinecraft-fire-explosion", EXPLOSION_NAME)
+  }
+
+  onHit(timeSec: number, host: MechanicHost, setup: MechanicSetup): void {
+    const frame = Math.round(timeSec * setup.fps)
+    const combustionWasUp = frame < this.combustionEndFrame
+    if (frame >= this.stacksExpireAtFrame) this.stacks = 0
+    this.stacks += 1
+    this.stacksExpireAtFrame = frame + STACK_DURATION_SEC * setup.fps
+    if (this.stacks >= STACKS_FOR_COMBUSTION) {
+      this.stacks = 0
+      this.combustionEndFrame = frame + COMBUSTION_DURATION_SEC * setup.fps
+    }
+    if (!combustionWasUp || frame < this.lockoutEndFrame) return
+    this.lockoutEndFrame = frame + EXPLOSION_LOCKOUT_SEC * setup.fps
+    host.scheduleExtra({
+      frame: frame + EXPLOSION_DELAY_FRAMES,
+      skill: this.skill,
+      art: fixedFormulaArt(EXPLOSION_NAME, EXPLOSION_PHYS_MULTIPLIER),
+      name: EXPLOSION_NAME,
+      type: "mindMethod",
+      direct: true,
+      qiRate: 1,
+    })
+  }
+}
+
+interface FireState {
+  burn: EnchantDotChain
+  explosion: FireExplosionTracker
+}
+
+interface PoisonState {
+  poison: EnchantDotChain
+}
+
+export function fireOilBurnMechanic(): TimelineMechanic<FireState> {
+  return {
+    id: "fireOilBurn",
+    prepare: (setup) =>
+      setup.inputs.divinecraft === "fire"
+        ? {
+            burn: new EnchantDotChain(FIRE_BURN, setup),
+            explosion: new FireExplosionTracker(setup),
+          }
+        : null,
+    observeEvent(state, event, setup, host) {
+      if (!event.direct) return
+      state.burn.onHit(event.timeSec, host, setup)
+      state.explosion.onHit(event.timeSec, host, setup)
+    },
+    afterExtraEvent(state, event, host, setup) {
+      if (state.burn.owns(event)) state.burn.onTick(event, host, setup)
+    },
+  }
+}
+
+export function toxicPowderPoisonedMechanic(): TimelineMechanic<PoisonState> {
   return {
     id: "toxicPowderPoisoned",
-    prepare: prepareFor("poison"),
+    prepare: (setup) =>
+      setup.inputs.divinecraft === "poison"
+        ? { poison: new EnchantDotChain(POISONED, setup) }
+        : null,
     contributeAt: () => ({
       effects: [{ statKey: "qiDamageBoost", amount: POISON_QI_DAMAGE_BOOST }],
     }),
-    extraEvents: (_state, setup) => dotEvents(POISONED, setup),
+    observeEvent(state, event, setup, host) {
+      if (!event.direct) return
+      state.poison.onHit(event.timeSec, host, setup)
+    },
+    afterExtraEvent(state, event, host, setup) {
+      if (state.poison.owns(event)) state.poison.onTick(event, host, setup)
+    },
   }
 }

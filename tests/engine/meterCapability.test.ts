@@ -1,9 +1,8 @@
 // The generic meter capability (docs/TIMELINE.md § "Meters"): a build-wide
-// bar simulated once, in the layout pass's own sequential cursor, and
-// replayed onto the real ledger. `bellstrikeUmbra` already registers the
+// bar advanced by the timeline's own events. `bellstrikeUmbra` already registers the
 // shared Endurance meter (`src/data/resources/enduranceMeter.ts`) — every
 // skill and buff below is placeholder content authored only for this file.
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeBuff, type Buff } from "../../src/engine/buff"
@@ -14,6 +13,34 @@ import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 import { enduranceMeter, enduranceRequires } from "../../src/data/resources/enduranceMeter"
 import { meterStatusId, meterMaxParamKey } from "../../src/definitions/resources/meterDef"
 import type { UnclaimedOddityNodes } from "../../src/engine/types"
+
+const { RECORDED_STATUS, SPEND_PROBE_ID } = vi.hoisted(() => ({
+  RECORDED_STATUS: "recordedConversionAmount",
+  SPEND_PROBE_ID: "recordedSpendProbe",
+}))
+
+vi.mock("../../src/engine/buffs/data", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../src/engine/buffs/data")>()
+  const { stat: statEffect } = await import("../../src/engine/effects/effect")
+  const spendProbe = {
+    id: SPEND_PROBE_ID,
+    name: "Spend Probe",
+    alwaysActive: true,
+    duration: 9999,
+    summary: "test",
+    effects: (context: {
+      self: { reachesEvent: boolean }
+      status: { stacks(id: string): number }
+    }) =>
+      context.self.reachesEvent
+        ? [statEffect("allDamageBoost", context.status.stacks(RECORDED_STATUS))]
+        : [],
+  }
+  return {
+    ...actual,
+    buffDefsForClass: (classId: string) => [...actual.buffDefsForClass(classId), spendProbe],
+  }
+})
 
 const CLASS = "bellstrikeUmbra"
 const METER_ID = enduranceMeter.id
@@ -325,51 +352,161 @@ describe("a meterDelta trigger", () => {
 })
 
 describe("a meterDelta trigger's recordSpendAsStatus", () => {
-  it("backdates the recorded amount to the cast's own start, so an earlier hit in the same release reads what a later hit's own spend deducts", () => {
-    const recordedStatus = "recordedConversionAmount"
+  const recordedStatus = RECORDED_STATUS
+  const WAVE_FIXED = 100
+  const boostedVariant = (id: string, stacks = 1) => ({
+    id,
+    label: "Boosted",
+    conditions: [{ buffId: recordedStatus, op: "gte" as const, stacks }],
+    physMultiplier: 0,
+    attributeMultiplier: 0,
+    physFixed: WAVE_FIXED * 10,
+    attributeFixed: 0,
+  })
+  const waveAt = (frame: number, patch: Partial<Skill["hits"][number]> = {}) =>
+    makeHit({ frame, physMultiplier: 0, physFixed: WAVE_FIXED, ...patch })
+  const spendHit = (conditions: Skill["hits"][number]["conditions"] = undefined, frame = 0) =>
+    makeHit({
+      frame,
+      physMultiplier: 0,
+      physFixed: 0,
+      conditions,
+      triggers: [
+        {
+          kind: "meterDelta",
+          targetId: METER_ID,
+          stacks: -1000,
+          condition: null,
+          meterSpendCapToCurrent: 1000,
+          recordSpendAsStatus: recordedStatus,
+        },
+      ],
+    })
+  const damagesOf = (result: ReturnType<typeof simulateTimeline>, skillName: string) =>
+    result
+      .timeline!.filter((event) => event.skillName === skillName && event.damage > 0)
+      .map((event) => event.damage)
+  const BOOST_FLOOR = 5
+
+  it("lets a buff effect on later waves read the spend recorded mid-cast, and hits before it read zero", () => {
     const converts = makeSkill(CLASS, {
       name: "Converts",
+      castFrames: 60,
+      receives: [SPEND_PROBE_ID],
+      hits: [waveAt(5), spendHit(undefined, 10), waveAt(30), waveAt(40)],
+    })
+    const result = simulateTimeline(timelineInputs(rotationOf([converts]), [converts]))
+    const [earlyWave, firstWave, secondWave] = damagesOf(result, "Converts")
+    expect(firstWave).toBeGreaterThan(earlyWave * BOOST_FLOOR)
+    expect(secondWave).toBeGreaterThan(earlyWave * BOOST_FLOOR)
+  })
+
+  it("keeps a recorded spend readable by a hit landing after the cast's own length", () => {
+    const converts = makeSkill(CLASS, {
+      name: "Converts",
+      castFrames: 60,
+      receives: [SPEND_PROBE_ID],
+      hits: [waveAt(5), spendHit(undefined, 10), waveAt(100)],
+    })
+    const result = simulateTimeline(timelineInputs(rotationOf([converts]), [converts]))
+    const [earlyWave, lateWave] = damagesOf(result, "Converts")
+    expect(lateWave).toBeGreaterThan(earlyWave * BOOST_FLOOR)
+  })
+
+  it("does not carry a spend into a later cast whose spend did not fire", () => {
+    const converts = makeSkill(CLASS, {
+      name: "Converts",
+      castFrames: 60,
+      receives: [SPEND_PROBE_ID],
+      hits: [waveAt(5), spendHit(undefined, 10), waveAt(30)],
+    })
+    const declines = makeSkill(CLASS, {
+      name: "Declines",
+      castFrames: 60,
+      receives: [SPEND_PROBE_ID],
+      hits: [spendHit([{ buffId: "neverGrantedStatus", op: "gte", stacks: 1 }], 10), waveAt(30)],
+    })
+    const result = simulateTimeline(
+      timelineInputs(rotationOf([converts, declines]), [converts, declines]),
+    )
+    const [earlyWave, convertsWave] = damagesOf(result, "Converts")
+    const [declinesWave] = damagesOf(result, "Declines")
+    expect(convertsWave).toBeGreaterThan(earlyWave * BOOST_FLOOR)
+    expect(declinesWave).toBeCloseTo(earlyWave, 6)
+  })
+
+  it("lets a projectile wave landing after the next spending cast has started still read its own cast's spend", () => {
+    const slowWave = {
+      speedMetersPerSecond: 1,
+      maxTravelFrames: 150,
+    }
+    const converts = makeSkill(CLASS, {
+      name: "Converts Slow",
       castFrames: 30,
+      receives: [SPEND_PROBE_ID],
+      hits: [waveAt(5), spendHit(undefined, 10), waveAt(30, { projectile: slowWave })],
+    })
+    const next = makeSkill(CLASS, {
+      name: "Next Spender",
+      castFrames: 30,
+      hits: [spendHit()],
+    })
+    const result = simulateTimeline(timelineInputs(rotationOf([converts, next]), [converts, next]))
+    const nextCastFrame = Math.round(result.casts![1].timeSec * 60)
+    const events = result.timeline!.filter(
+      (event) => event.skillName === "Converts Slow" && event.damage > 0,
+    )
+    const earlyWave = events[0]
+    const slowEvent = events.at(-1)!
+    expect(slowEvent.frame).toBeGreaterThan(nextCastFrame)
+    expect(slowEvent.damage).toBeGreaterThan(earlyWave.damage * BOOST_FLOOR)
+  })
+
+  it("selects a variant at cast start, so it does not see a spend its own cast records later", () => {
+    const converts = makeSkill(CLASS, {
+      name: "Converts",
+      castFrames: 60,
       hits: [
-        makeHit({
-          frame: 0,
-          physMultiplier: 0,
-          physFixed: 1,
-          variants: [
-            {
-              id: "converts-hit-0-boosted",
-              label: "Boosted",
-              conditions: [{ buffId: recordedStatus, op: "gte", stacks: 1 }],
-              physMultiplier: 0,
-              attributeMultiplier: 0,
-              physFixed: 1000,
-              attributeFixed: 0,
-            },
-          ],
-        }),
-        makeHit({
-          frame: 20,
-          physMultiplier: 0,
-          physFixed: 0,
-          triggers: [
-            {
-              kind: "meterDelta",
-              targetId: METER_ID,
-              stacks: -1000,
-              condition: null,
-              meterSpendCapToCurrent: 1000,
-              recordSpendAsStatus: recordedStatus,
-            },
-          ],
-        }),
+        waveAt(5),
+        spendHit(undefined, 10),
+        waveAt(30, { variants: [boostedVariant("converts-late-variant-boosted")] }),
       ],
     })
     const result = simulateTimeline(timelineInputs(rotationOf([converts]), [converts]))
-    // physFixed 1000 (the boosted variant) only lands if hit 0 already reads
-    // the amount hit 1's own spend, later in this same cast, deducts.
-    expect(result.perSkill.find((row) => row.name === "Converts")?.expectedDamage).toBeGreaterThan(
-      100,
+    const [earlyWave, lateWave] = damagesOf(result, "Converts")
+    expect(lateWave).toBeCloseTo(earlyWave, 6)
+  })
+
+  it("applies a spend listed ahead of a gain on the same hit to the meter before the gain", () => {
+    const drains = makeSkill(CLASS, {
+      name: "Drains Meter",
+      castFrames: 12,
+      meterCosts: [{ meterId: METER_ID, amount: 75 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const spendsThenGains = makeSkill(CLASS, {
+      name: "Spends Then Gains",
+      castFrames: 60,
+      receives: [SPEND_PROBE_ID],
+      hits: [
+        waveAt(5),
+        {
+          ...spendHit(undefined, 10),
+          triggers: [
+            ...spendHit().triggers,
+            { kind: "meterDelta", targetId: METER_ID, stacks: 20, condition: null },
+          ],
+        },
+        waveAt(30),
+      ],
+    })
+    const result = simulateTimeline(
+      timelineInputs(rotationOf([drains, spendsThenGains]), [drains, spendsThenGains]),
     )
+    const [earlyWave, laterWave] = damagesOf(result, "Spends Then Gains")
+    const boostRatio = laterWave / earlyWave
+    expect(boostRatio).toBeGreaterThan(4)
+    expect(boostRatio).toBeLessThan(10)
   })
 })
 
@@ -639,7 +776,7 @@ describe("a buff's meter modifier", () => {
   })
 })
 
-describe("the meter simulates once and replays onto the real ledger", () => {
+describe("a meter's value on the ledger", () => {
   it("a build module reading the live value and the resolved max sees exactly what the legality check gated on", () => {
     const spendsHalf = makeSkill(CLASS, {
       name: "Spends Half",

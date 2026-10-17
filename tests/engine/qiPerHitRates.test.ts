@@ -20,6 +20,7 @@ import { droneDotSpec } from "../../src/data/skills/silkbind-jade/droneTick"
 import { fireOilBurnMechanic } from "../../src/data/consumables/divinecraftMechanics"
 import { ROLE } from "../../src/data/skills/ids"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
+import { driveMechanic } from "../helpers/driveMechanic"
 import { QiBar } from "../../src/engine/qiBar"
 import type { Debuff } from "../../src/engine/debuff"
 
@@ -77,18 +78,17 @@ describe("built-in Qi rates match the in-game table", () => {
       inputs: { divinecraft: "fire" } as MechanicSetup["inputs"],
       classId: "bellstrikeUmbra",
       fps: 60,
-      rotationDurationSec: 10,
-      windowStartSec: 0,
-      hitTimesSec: [0],
-      weaponHitTimesSec: [0],
-      dotTickTimesSec: [],
       qiPhaseAt: () => "normal",
       paramOn: () => false,
       paramTier: () => 0,
       hasBuffEngine: false,
       effectiveRates: { precision: 1, critRate: 1, affinityRate: 1 },
+      collectHistory: false,
     }
-    const events = fireOilBurnMechanic().extraEvents?.({}, setup) ?? []
+    const events = driveMechanic(fireOilBurnMechanic(), setup, {
+      hitTimesSec: [0],
+      windowEndSec: 10,
+    }).filter((event) => event.name !== "Divinecraft - Fire Explosion")
     expect(events.length).toBeGreaterThan(0)
     for (const event of events) {
       expect(event.qiRate).toBe(0.6)

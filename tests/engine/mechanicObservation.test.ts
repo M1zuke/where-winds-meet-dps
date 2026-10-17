@@ -19,6 +19,7 @@ let probeAddsDirectAffinity = false
 
 registerMechanic<object>({
   id: "observationProbe",
+  needsAffinityChance: true,
   prepare: (setup) => {
     observedEvents = []
     callLog = []

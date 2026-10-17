@@ -3,8 +3,7 @@
 import {
   HAWKWING_BONUS_PER_STACK,
   HAWKWING_MAX_STACKS,
-  hawkwingStacksSchedule,
-  type HawkwingStacksSchedule,
+  HawkwingTracker,
 } from "../../engine/buffs/hawkwing"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 import { FOUR_PIECE_SIZE, setPieceCount } from "../../engine/setPieces"
@@ -16,7 +15,7 @@ import { FOUR_PIECE_SIZE, setPieceCount } from "../../engine/setPieces"
 // term alone predicts.
 const AFFINITY_PROC_CAP = 0.4
 
-type State = { schedule: HawkwingStacksSchedule }
+type State = { tracker: HawkwingTracker }
 
 // A factory rather than a module-level constant so this file need not import
 // `hawkwing.ts` — `hawkwing.ts` imports this to declare the mechanic instead.
@@ -29,25 +28,25 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
       const proc =
         Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
         setup.inputs.directAffinityRate
-      // In-game values as of 2026-09-26: a DoT tick rolls the same affinity
-      // chance as a direct hit, so it procs a stack too.
-      const procTimesSec = [...setup.hitTimesSec, ...setup.dotTickTimesSec].sort(
-        (left, right) => left - right,
-      )
-      return {
-        schedule: hawkwingStacksSchedule(procTimesSec, proc, setup.rotationDurationSec, setup.rng),
-      }
+      return { tracker: new HawkwingTracker(proc, setup.rng, setup.collectHistory) }
+    },
+
+    // In-game values as of 2026-10-17: every hit, DoT tick, detonation burst
+    // and summoned hit rolls the affinity chance, and the stack lands after
+    // that event's own damage.
+    observeEvent(state, event) {
+      if (!event.canRollAffinity) return
+      state.tracker.roll(event.timeSec, event.occurrence)
     },
 
     contributeAt(state, frame, _skill, setup) {
-      const bonus =
-        state.schedule.getExpectedStacksAtTime(frame / setup.fps) * HAWKWING_BONUS_PER_STACK
+      const bonus = state.tracker.expectedStacksAt(frame / setup.fps) * HAWKWING_BONUS_PER_STACK
       return { context: { hawkwingPhysBonus: bonus, bellstrikeAttackPctBonus: bonus } }
     },
 
     display(state, timeSec, prePull) {
       if (prePull) return []
-      const stacks = Math.round(state.schedule.getExpectedStacksAtTime(timeSec))
+      const stacks = Math.round(state.tracker.expectedStacksAt(timeSec))
       if (stacks < 1) return []
       return [
         {

@@ -233,43 +233,43 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 - **Registry order is load-bearing.** Contributions apply in it and float
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.
-- **A stochastic effect is a seeded whole-rotation schedule**, not a buff def —
-  a def cannot express a per-hit roll. Say so in the module when you add one. It
-  must **accept the run's generator when the engine supplies one** and realise a
-  single trajectory instead of averaging its own fixed-seed sweep; without one it
-  averages as before. A schedule that ignores the generator keeps reporting an
-  expectation on a run that has none, and understates the spread.
-- **A hit rolls a proc whether it is laid by the rotation or summoned by a
-  trigger.** A mechanic that builds its schedule from hit times reads every
-  hit-driven schedule the engine exposes, not only the rotation's own laid
-  hits. This is structural; do not work around it per mechanic.
-- **A stochastic schedule's own origin is the earliest event it reacts to**,
-  never the DPS window's own start — the two coincide whenever the window
-  itself opens on that same event, but a schedule anchored to the window's
-  start instead would reshuffle itself the day an earlier event is correctly
-  found to open the window, with nothing about the rotation's own hits or
-  ticks having changed. A mechanic genuinely timed off the fight's own clock,
-  rather than off a hit it reacts to, is the one exception.
-- **A mechanic whose trigger is a hit's own outcome observes the run**
-  (`observeEvent`) instead of building a schedule from hit times. The engine
-  hands it every scored damage event — a hit, a DoT tick or a mechanic's extra
-  event — once, in processing order and after the event is scored, with the
-  chance the event's outcome was an affinity read **without the mechanic's own
-  contribution**, and on a run that rolls hits the outcome it rolled.
-  `contributeAt` reads the state left by every event already observed, so an
-  event resolving later on the same frame reads what an earlier one set up and
-  the event that sets a state up never reads it.
-- **A DoT tick may feed a proc schedule too**, opted into separately from a
-  hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
-  from the same layout pass, at each debuff's own tick interval, through the
-  one per-pulse planner the event loop's own tick entries use too, so the two
-  cannot diverge.
-  It carries the layout pass's own limit: a detonation's sub-cast and a DoT a
-  `castSkill` trigger summons are not on it, the same gap `hitTimesSec` has
-  for a summoned hit's own detonation follow-up — and a resource-gated or
-  buff-gated DoT's ticks are an upper bound rather than exact, since the
-  resource's own sequential consumption check and the buff history both
-  only exist as the event loop runs.
+- **A stochastic effect is an online tracker**, not a buff def — a def cannot
+  express a per-hit roll. It sees every scored event as the run reaches it and
+  answers each query from the events already seen, never from a schedule built
+  ahead of the run. Say so in the module when you add one. It must **accept the
+  run's generator when the engine supplies one** and realise a single
+  trajectory instead of averaging; without one it averages 500 trajectories,
+  each on its own fixed stream, so an unseeded run reproduces exactly. A seeded
+  run hands every mechanic its own substream of the run's seed, never one
+  generator shared between them, so adding a mechanic never moves another's
+  draws. A tracker that ignores the generator keeps reporting an expectation on
+  a run that has none, and understates the spread.
+- **Every scored event is offered to the mechanics once, in processing order**
+  (`observeEvent`), and a mechanic opts into the kinds it listens to: a hit, a
+  DoT tick that actually fired, a detonation's burst, a summoned hit, a
+  mechanic's own extra event. A hit rolls a proc whether it is laid by the
+  rotation or summoned by a trigger; a tick stopped by a resource or buff gate
+  is never offered. Each event carries whether it is a direct hit — every hit,
+  a tick whose DoT declares `directHit`, and a mechanic's own extra event as
+  that event declares — so a mechanic that rolls on direct hits only ignores
+  any other event. It also carries whether it can roll Affinity at all
+  (guaranteed-normal damage cannot). This is structural; do not work around it
+  per mechanic.
+- **A proc the game applies before the event's own damage** (`beforeEvent`)
+  reaches that event; **one it applies after** (`observeEvent`) reaches the
+  events that follow, and the event that rolls a state never reads it.
+  `contributeAt` reads the state left by every event already offered, so an
+  event resolving later on the same frame reads what an earlier one set up.
+- **A mechanic that reads an event's own affinity outcome** declares
+  `needsAffinityChance` and receives the chance the event's outcome was an
+  affinity read **without the mechanic's own contribution**, and on a run that
+  rolls hits the outcome it rolled.
+- **A mechanic acts on the clock or on events, never on a schedule of the
+  whole run.** One timed off the fight's own clock schedules its own events
+  from `start`; one that reacts to hits schedules them from the hits it
+  observes. Neither knows where the fight window ends: the engine drops an
+  event past a fixed window's end and stops at the last damaging hit of a
+  window with no fixed length.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two
   are numerically identical.

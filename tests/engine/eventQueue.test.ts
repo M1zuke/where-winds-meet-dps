@@ -12,15 +12,26 @@ function queueWithPoppedFrame(
 }
 
 describe("events sharing a frame", () => {
-  it("run a deferred grant ahead of a cast start on that frame", () => {
+  it("run a meter event and a deferred grant ahead of the frame's hits, and a cast start after them", () => {
     const queue = new EventQueue<QueuedEvent>()
     queue.push({ kind: "castStart", frame: 50 })
-    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 50 })
     queue.push({ kind: "hit", frame: 50 })
+    queue.push({ kind: "deferredGrant", frame: 50, subFrame: 50 })
+    queue.push({ kind: "meter", frame: 50 })
+    expect(
+      [queue.pop(), queue.pop(), queue.pop(), queue.pop()].map((event) => event?.kind),
+    ).toEqual(["meter", "deferredGrant", "hit", "castStart"])
+  })
+
+  it("decide a release gate after the cast start and ahead of the tick launches on that frame", () => {
+    const queue = new EventQueue<QueuedEvent>()
+    queue.push({ kind: "tickLaunch", frame: 50 })
+    queue.push({ kind: "gate", frame: 50 })
+    queue.push({ kind: "castStart", frame: 50 })
     expect([queue.pop(), queue.pop(), queue.pop()].map((event) => event?.kind)).toEqual([
-      "deferredGrant",
       "castStart",
-      "hit",
+      "gate",
+      "tickLaunch",
     ])
   })
 

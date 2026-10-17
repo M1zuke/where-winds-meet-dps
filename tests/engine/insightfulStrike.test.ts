@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeSkill } from "../../src/engine/skill"
-import type { MechanicSetup } from "../../src/engine/mechanics/types"
+import type { MechanicHost, MechanicSetup } from "../../src/engine/mechanics/types"
 import type { Inputs } from "../../src/engine/types"
 import { insightfulStrike } from "../../src/data/innerWays/insightfulStrike"
 import { insightfulStrikeMechanic } from "../../src/data/innerWays/insightfulStrikeMechanic"
@@ -25,16 +25,12 @@ function setupFor(mindMethods: Inputs["mindMethods"]): MechanicSetup {
     inputs: mingInputs(mindMethods),
     classId: CLASS_ID,
     fps: FPS,
-    rotationDurationSec: 60,
-    windowStartSec: 0,
-    hitTimesSec: [],
-    weaponHitTimesSec: [],
-    dotTickTimesSec: [],
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,
     hasBuffEngine: true,
     effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.42 },
+    collectHistory: false,
   }
 }
 
@@ -50,7 +46,19 @@ function stateAfterEvents(
 ) {
   const state = mechanic.prepare(setup)!
   for (const timeSec of eventTimesSec)
-    mechanic.observeEvent?.(state, { timeSec, occurrence: 1, affinityChance }, setup)
+    mechanic.observeEvent?.(
+      state,
+      {
+        timeSec,
+        occurrence: 1,
+        affinityChance,
+        source: "hit",
+        direct: true,
+        canRollAffinity: true,
+      },
+      setup,
+      {} as MechanicHost,
+    )
   return state
 }
 

@@ -431,7 +431,7 @@ describe("a hit landing after the end of its own cast", () => {
     })
   }
 
-  it("applies at the hit's frame for a cast legality read in the layout pass", () => {
+  it("applies at the hit's frame for a cast legality read", () => {
     const early = { ...filler("Early", 10), castConditions: [markerAbsent] }
     const wait = filler("Wait", 60)
     const late = { ...filler("Late", 10), castConditions: [markerHeld] }

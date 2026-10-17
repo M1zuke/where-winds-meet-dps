@@ -25,6 +25,11 @@ export interface WindowEndEdit {
 
 export const UNOWNED = Number.NEGATIVE_INFINITY
 
+export interface OwnerScope {
+  ids: ReadonlySet<string>
+  owner: number
+}
+
 export interface StatusView {
   activeIdsAt(frame: number): string[]
   isActiveAt(id: string, frame: number): boolean
@@ -98,12 +103,19 @@ export class StatusLedger implements StatusView {
     Array<{ frame: number; value: number; owner: number; seq: number }>
   >()
   private readonly permanentOpened = new Set<string>()
+  private readonly permanentWindows: StatusWindow[] = []
   private writeSeq = 0
 
   constructor(
     private readonly spanStart: number,
-    private readonly spanEnd: number,
+    private spanEnd: number,
   ) {}
+
+  setSpanEnd(spanEnd: number): void {
+    for (const window of this.permanentWindows)
+      if (window.end === this.spanEnd) window.end = spanEnd
+    this.spanEnd = spanEnd
+  }
 
   // How many writes this ledger has taken so far — pair with `asOf` to give a
   // query a view that stops just before a write it must not see.
@@ -128,6 +140,8 @@ export class StatusLedger implements StatusView {
     if (this.permanentOpened.has(id)) return
     this.permanentOpened.add(id)
     this.pushWindow(id, Math.max(this.spanStart, causedAtFrame ?? this.spanStart), this.spanEnd)
+    const windows = this.windows.get(id)!
+    this.permanentWindows.push(windows[windows.length - 1])
   }
 
   constrainWindows(id: string, intervals: readonly { start: number; end: number }[]): void {
@@ -277,17 +291,19 @@ export class StatusLedger implements StatusView {
   // A view that only sees writes strictly before `beforeSeq` — what a hit's
   // own damage query reads, so a status its own trigger just opened cannot
   // reach its own hit.
-  asOf(beforeSeq: number): StatusView {
+  asOf(beforeSeq: number, ownerScope?: OwnerScope): StatusView {
     const windowsFor = (id: string): StatusWindow[] =>
       (this.windows.get(id) ?? []).filter((window) => (window.seq ?? 0) < beforeSeq)
     const activeAt = (id: string, frame: number): boolean =>
       windowsFor(id).some((window) => frame >= window.start && frame < window.end)
+    const inScope = (id: string, entry: { owner: number }): boolean =>
+      !ownerScope || !ownerScope.ids.has(id) || entry.owner === ownerScope.owner
     const stackValueAt = (id: string, frame: number): number => {
       let bestFrame = Number.NEGATIVE_INFINITY
       let bestSeq = -1
       let found = 0
       for (const entry of this.stacks.get(id) ?? []) {
-        if (entry.seq >= beforeSeq || entry.frame > frame) continue
+        if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
         if (entry.frame > bestFrame || (entry.frame === bestFrame && entry.seq > bestSeq)) {
           bestFrame = entry.frame
           bestSeq = entry.seq
@@ -322,7 +338,7 @@ export class StatusLedger implements StatusView {
         let latestDrop: number | undefined
         let previousValue = 0
         for (const entry of this.stacks.get(id) ?? []) {
-          if (entry.seq >= beforeSeq || entry.frame > frame) continue
+          if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
           if (previousValue >= threshold && entry.value < threshold) latestDrop = entry.frame
           previousValue = entry.value
         }

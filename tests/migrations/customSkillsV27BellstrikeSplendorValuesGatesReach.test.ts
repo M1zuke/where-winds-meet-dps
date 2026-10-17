@@ -27,14 +27,17 @@ import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from ".
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV26File from "./testCustomSkills/v26/store.json"
 
 const healLatestSplendorHops = (skill: unknown): unknown =>
-  healSplendorRootMotion(
-    healPrepullVagrantSwordBoltTiming(healTargetDistanceReachAndDisplacement(skill)),
+  healSwordMorphConversion(
+    healSplendorRootMotion(
+      healPrepullVagrantSwordBoltTiming(healTargetDistanceReachAndDisplacement(skill)),
+    ),
   )
 
 const CLASS = "bellstrikeSplendor"

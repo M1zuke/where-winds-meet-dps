@@ -48,7 +48,7 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     expect(chip).toMatchObject({ stacks: 150, maxStacks: 200 })
   })
 
-  it("the same default also resolves a hit variant's cast-length gate — the seeded ledger and the layout pass agree", () => {
+  it("the same default also resolves a hit variant's cast-length gate", () => {
     const skill = makeSkill(CLASS, {
       name: "Gated filler",
       castFrames: 90,

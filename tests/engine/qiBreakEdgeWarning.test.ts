@@ -5,6 +5,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import { QI_EDGE_MARGIN_SEC } from "../../src/engine/qiBreakEdge"
+import { registerMechanic } from "../../src/engine/mechanics"
 import type { EngineRunOptions, Inputs } from "../../src/engine/types"
 import { builtinSkill, testRotation } from "../builtins"
 import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
@@ -141,5 +142,34 @@ describe("Qi break edge re-score is read-only", () => {
     const totals = simulateTimeline(inputs, { ...options, seed: 7, collect: "totals" })
     expect(full.totalDamage).toBe(totals.totalDamage)
     expect(full.outcomeCounts).toEqual(totals.outcomeCounts)
+  })
+})
+
+let edgeProbeBoostsAfterEvent = false
+
+registerMechanic<{ boosted: boolean }>({
+  id: "edgeProbe",
+  prepare: () => (edgeProbeBoostsAfterEvent ? { boosted: false } : null),
+  contributeAt: (state) =>
+    state.boosted ? { effects: [{ statKey: "allDamageBoost", amount: 1 }] } : null,
+  observeEvent: (state) => {
+    state.boosted = true
+  },
+})
+
+describe("Qi break edge re-score reads a hit as it was scored", () => {
+  const single = rotationInputs(MYSTIC_SKILL.dragonHeadPlus, 1)
+  const options = breakEndingAt(firstHitFrame(single) + 6)
+  const shareWithProbe = (enabled: boolean) => {
+    edgeProbeBoostsAfterEvent = enabled
+    try {
+      return simulateTimeline(single, options).qiEdgeWarnings![0].shareOfTotal
+    } finally {
+      edgeProbeBoostsAfterEvent = false
+    }
+  }
+
+  it("is unmoved by what a mechanic writes after observing that same hit", () => {
+    expect(shareWithProbe(true)).toBe(shareWithProbe(false))
   })
 })
