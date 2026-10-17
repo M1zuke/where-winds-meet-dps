@@ -71,6 +71,7 @@ import {
   skillKey,
 } from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
+import { MultiSelect } from "../../../components/select/MultiSelect"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
@@ -810,15 +811,21 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               <span className={styles.permanentLabel}>
                 {t("rotation.editor.permanentBuffsDebuffs")}
               </span>
-              <BuffMultiSelect
+              <MultiSelect
                 label={t("rotation.editor.permanentBuffs")}
-                buffs={classBuffs}
+                options={classBuffs.map((buff) => ({
+                  id: buff.id,
+                  label: buff.name || "(unnamed)",
+                }))}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
               />
-              <BuffMultiSelect
+              <MultiSelect
                 label={t("rotation.editor.permanentDebuffs")}
-                buffs={classDebuffs}
+                options={classDebuffs.map((buff) => ({
+                  id: buff.id,
+                  label: buff.name || "(unnamed)",
+                }))}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
               />
@@ -1096,50 +1103,5 @@ function OpeningStackPips({
         />
       ))}
     </span>
-  )
-}
-
-function BuffMultiSelect({
-  label,
-  buffs,
-  selected,
-  onChange,
-}: {
-  label: string
-  buffs: readonly { id: string; name: string }[]
-  selected: string[]
-  onChange: (ids: string[]) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const selectedSet = new Set(selected)
-  const count = selected.length
-  const toggle = (id: string) => {
-    const next = new Set(selectedSet)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    onChange([...next])
-  }
-  return (
-    <div className={styles.buffSelect}>
-      <button type="button" className="btn" onClick={() => setOpen((prev) => !prev)}>
-        {label}
-        {count > 0 ? ` (${count})` : ""} ▾
-      </button>
-      {open && (
-        <div className={styles.buffDropdown}>
-          {buffs.length === 0 && <div className={styles.buffEmpty}>—</div>}
-          {buffs.map((buff) => (
-            <label key={buff.id} className={styles.buffOption}>
-              <input
-                type="checkbox"
-                checked={selectedSet.has(buff.id)}
-                onChange={() => toggle(buff.id)}
-              />
-              <span>{buff.name || "(unnamed)"}</span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
   )
 }
