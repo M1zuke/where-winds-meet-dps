@@ -83,8 +83,16 @@ function withoutHiddenEdits(
   return clone
 }
 
+export interface WindowObserver {
+  opened?(id: string, window: StatusWindow): void
+  extended?(id: string, window: StatusWindow): void
+  cut?(id: string, window: StatusWindow): void
+}
+
 export class StatusLedger implements StatusView {
   private readonly windows = new Map<string, StatusWindow[]>()
+  private readonly windowIds = new WeakMap<StatusWindow, string>()
+  private observer: WindowObserver | null = null
   private readonly stacks = new Map<
     string,
     Array<{ frame: number; value: number; owner: number; seq: number }>
@@ -103,17 +111,23 @@ export class StatusLedger implements StatusView {
     return this.writeSeq
   }
 
+  observeWindows(observer: WindowObserver): void {
+    this.observer = observer
+  }
+
   pushWindow(id: string, start: number, end: number, owner: number = UNOWNED): void {
     const window: StatusWindow = { start, end, owner, seq: this.writeSeq++ }
     const existing = this.windows.get(id)
     if (existing) existing.push(window)
     else this.windows.set(id, [window])
+    this.windowIds.set(window, id)
+    this.observer?.opened?.(id, window)
   }
 
-  openPermanent(id: string): void {
+  openPermanent(id: string, causedAtFrame?: number): void {
     if (this.permanentOpened.has(id)) return
     this.permanentOpened.add(id)
-    this.pushWindow(id, this.spanStart, this.spanEnd)
+    this.pushWindow(id, Math.max(this.spanStart, causedAtFrame ?? this.spanStart), this.spanEnd)
   }
 
   constrainWindows(id: string, intervals: readonly { start: number; end: number }[]): void {
@@ -130,14 +144,21 @@ export class StatusLedger implements StatusView {
   recordStack(id: string, frame: number, value: number, owner: number = UNOWNED): void {
     const entry = { frame, value, owner, seq: this.writeSeq++ }
     const existing = this.stacks.get(id)
-    if (existing) existing.push(entry)
-    else this.stacks.set(id, [entry])
+    if (!existing) {
+      this.stacks.set(id, [entry])
+      return
+    }
+    let insertAt = existing.length
+    while (insertAt > 0 && existing[insertAt - 1].frame > frame) insertAt--
+    existing.splice(insertAt, 0, entry)
   }
 
   extendWindow(window: StatusWindow, frame: number, nextEnd: number, owner: number): void {
     const amount = nextEnd - window.end
     window.end = nextEnd
     if (amount > 0) (window.extensions ??= []).push({ frame, amount, owner })
+    const id = this.windowIds.get(window)
+    if (id !== undefined) this.observer?.extended?.(id, window)
   }
 
   cutWindowsAt(id: string, frame: number, owner: number): void {
@@ -149,6 +170,8 @@ export class StatusLedger implements StatusView {
     const amount = window.end - frame
     window.end = frame
     if (amount > 0) (window.cuts ??= []).push({ frame, amount, owner })
+    const id = this.windowIds.get(window)
+    if (id !== undefined) this.observer?.cut?.(id, window)
   }
 
   throughOwner(ownerLimit: number, unownedThroughFrame = Number.POSITIVE_INFINITY): StatusLedger {

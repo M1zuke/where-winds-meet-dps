@@ -3,8 +3,8 @@
 // worth their probability of being up.
 import {
   BITTER_SEASON_MAX_STACKS,
+  BitterSeasonEnvelope,
   bitterSeasonDebuffId,
-  bitterSeasonEnvelopeWindows,
   bitterSeasonPoisonSchedule,
   bitterSeasonStackSchedule,
   type BitterSeasonPoisonSchedule,
@@ -17,6 +17,7 @@ import { tierFromStacks, type InnerWayDef } from "../../definitions/innerWays/in
 import { INNER_WAY_ID } from "./ids"
 import { innerWayDefs } from "../../definitions/innerWays/defStore"
 import { poisonExtensionForClass } from "../../definitions/classes/poisonExtensions"
+import { UNOWNED, type StatusWindow } from "../../engine/ledger"
 import type { BuffStatEffect } from "../../engine/buff"
 import type { Inputs } from "../../engine/types"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
@@ -79,6 +80,11 @@ interface State {
   // inner way adds none — but its poison still ticks.
   suppressed: boolean
   poison: BitterSeasonPoisonSchedule | null
+  poisonDraws: number[]
+  knownExtensionCount: number
+  envelope: BitterSeasonEnvelope | null
+  openedWindows: StatusWindow[]
+  lastFrame: number
 }
 
 // A hoisted factory, not a plain object: `bitterSeason.ts` declares this as
@@ -105,13 +111,18 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
         baseTargetDefense: getBreakthrough(setup.inputs.breakthrough).defense,
         suppressed: henZhiActive(setup.inputs),
         poison: null,
+        poisonDraws: [],
+        knownExtensionCount: 0,
+        envelope: null,
+        openedWindows: [],
+        lastFrame: 0,
       }
     },
 
     // The poison's own windows: bounded to the guaranteed-proc envelope rather
     // than one span covering the rotation, since `activeProbAtTime` is 0
     // outside it and no expected damage is lost by not ticking there.
-    seedStatuses(state, target, setup) {
+    advanceStatuses(state, untilFrame, target, setup) {
       if (setup.rotationDurationSec <= 0 || setup.hitTimesSec.length === 0) return
       if (!target.hasStatus(state.debuffId)) return
       const durationFrames = target.statusDurationFrames(state.debuffId) ?? 0
@@ -127,28 +138,53 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
       const maxRemainingSec = extension?.maxRemainingSec ?? Infinity
       const poisonDurationSec = durationFrames / setup.fps
 
-      state.poison = bitterSeasonPoisonSchedule(
-        setup.hitTimesSec,
-        state.tuning.procChance,
-        poisonDurationSec,
-        setup.rotationDurationSec,
-        extensionTimesSec,
-        maxRemainingSec,
-        setup.rng,
-      )
-      for (const envelope of bitterSeasonEnvelopeWindows(
-        setup.hitTimesSec,
-        poisonDurationSec,
-        extensionTimesSec,
-        maxRemainingSec,
-      )) {
-        target.ledger.pushWindow(
-          state.debuffId,
-          Math.round(envelope.startSec * setup.fps),
-          Math.round(envelope.endSec * setup.fps),
+      if (state.poison === null || extensionTimesSec.length !== state.knownExtensionCount) {
+        state.knownExtensionCount = extensionTimesSec.length
+        const draws = state.poisonDraws
+        let drawn = 0
+        state.poison = bitterSeasonPoisonSchedule(
+          setup.hitTimesSec,
+          state.tuning.procChance,
+          poisonDurationSec,
+          setup.rotationDurationSec,
+          extensionTimesSec,
+          maxRemainingSec,
+          setup.rng
+            ? () => {
+                if (drawn === draws.length) draws.push(setup.rng!())
+                return draws[drawn++]
+              }
+            : undefined,
         )
       }
-      target.ledger.recordStack(state.debuffId, Math.round(setup.hitTimesSec[0] * setup.fps), 1)
+
+      state.envelope ??= new BitterSeasonEnvelope(
+        setup.hitTimesSec,
+        poisonDurationSec,
+        maxRemainingSec,
+      )
+      state.envelope.advance(extensionTimesSec, untilFrame / setup.fps)
+      if (Number.isFinite(untilFrame)) state.lastFrame = untilFrame
+      state.envelope.windowsSoFar().forEach((envelope, index) => {
+        const endFrame = Math.round(envelope.endSec * setup.fps)
+        if (index >= state.openedWindows.length) {
+          target.ledger.pushWindow(
+            state.debuffId,
+            Math.round(envelope.startSec * setup.fps),
+            endFrame,
+          )
+          const pushed = target.ledger.windowsOf(state.debuffId)
+          state.openedWindows.push(pushed[pushed.length - 1])
+          if (index === 0)
+            target.ledger.recordStack(
+              state.debuffId,
+              Math.round(setup.hitTimesSec[0] * setup.fps),
+              1,
+            )
+        } else if (endFrame > state.openedWindows[index].end) {
+          target.ledger.extendWindow(state.openedWindows[index], state.lastFrame, endFrame, UNOWNED)
+        }
+      })
     },
 
     contributeAt(state, frame, _skill, setup) {

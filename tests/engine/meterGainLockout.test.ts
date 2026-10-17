@@ -204,3 +204,54 @@ describe("a meterCosts entry with atFrame", () => {
     expect(levelsOf([observer, idle, lateObserver])).toEqual([80, 80, 80, 60])
   })
 })
+
+describe("a trigger declared for the cast's end on a hit landing after that end", () => {
+  function levelsAfter(skills: Skill[]) {
+    const library = [spender, ...skills]
+    const result = simulateTimeline({
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: library,
+      activeCustomRotation: testRotation(CLASS, {
+        steps: library.map((skill) => makeStep({ skillId: skill.id })),
+      }),
+      unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
+    })
+    return result.casts!.map(
+      (cast) => cast.meterLevels!.find((level) => level.id === METER_ID)!.amount,
+    )
+  }
+
+  it("applies a meterDelta at the hit's frame, so a cast starting before it does not see the gain", () => {
+    const wait = skillWith("Wait", 60)
+    const lateGain = skillWith("Late Gain", 5, {
+      hits: [
+        hitWith(40, [
+          makeTrigger({
+            kind: "meterDelta",
+            targetId: METER_ID,
+            stacks: 10,
+            appliesOnCastEnd: true,
+          }),
+        ]),
+      ],
+    })
+    const control = skillWith("Late Gain", 5, { hits: [hitWith(40)] })
+    const withGain = levelsAfter([lateGain, observer, wait, { ...observer, id: "after" }])
+    const without = levelsAfter([control, observer, wait, { ...observer, id: "after" }])
+    expect(withGain[2]).toBe(without[2])
+    expect(withGain[4]).toBe(without[4]! + 10)
+  })
+
+  it("applies a cooldownCut at the hit's frame, so a cast starting before it stays locked out", () => {
+    const granter = skillWith("First", 12, { hits: [hitWith(0, [lockedGain()])] })
+    const later = skillWith("Second", 12, { hits: [hitWith(0, [lockedGain()])] })
+    const plain = skillWith("Plain", 12)
+    const lateRelease = skillWith("Late Release", 12, { hits: [hitWith(40, [release()])] })
+    expect(endLevel([granter, lateRelease, later])).toBe(endLevel([granter, lateRelease, plain]))
+    const wait = skillWith("Wait", 60)
+    expect(endLevel([granter, lateRelease, wait, later])).toBe(
+      endLevel([granter, lateRelease, wait, plain]) + 10,
+    )
+  })
+})

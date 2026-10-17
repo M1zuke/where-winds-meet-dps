@@ -283,7 +283,17 @@ Rules:
 - A status the player only gains once the granting cast is over opens at that
   cast's end, declared on the trigger. Never emulate it by moving the trigger to
   a later hit: a hit's frame is where it lands, not where a window starts, and a
-  cast's end is usually past every hit it has.
+  cast's end is usually past every hit it has. In the layout pass and the event
+  loop alike it is decided at the cast's end, so its conditions read the
+  statuses standing there.
+- **A write caused by a hit never lands before that hit.** A trigger declared
+  for the end of its cast applies at the later of the cast's end and the
+  causing hit's frame, in the layout pass and the event loop alike. No window,
+  stack write or event is ever placed at a frame earlier than the event being
+  processed. A sub-cast's hits land no earlier than the hit that cast them, a
+  `permanent` status active from the fight's start spans the whole fight, and
+  one opened by a trigger opens at its causing event. A DoT's first pulse never
+  precedes its window's start (a negative `firstTickOffsetFrames` reads as 0).
 - **A trigger may open its own grant at a length other than the target
   status's own** (`durationFrames`): that grant's window uses it in place of
   the status's declared duration, for that grant alone.
@@ -375,7 +385,8 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A debuff whose source is a summon declares `recall`** (a tag and the
   exempt skill ids): a rotation step whose skill carries the tag ends the
   running window at its own start, ticks included, unless its skill is exempt
-  or a DoT tick.
+  or a DoT tick. The cut lands ahead of that frame's hits, so every read from
+  the step's start on sees the window gone.
 - **A buff with no stat effects is legitimate.** A pure state marker that a hit
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
@@ -408,10 +419,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   buff covering that frame, the target's stack count is set to the declared
   value. A refresh never fires it, an extension moves the frame it fires at,
   a permanent-activation buff never fires it, and each window fires at most
-  once. The reset lands in the layout pass and the event loop alike, so a hit
-  variant or cast length gated on the target sees it from that frame on. It
-  may also declare `requiresBuffId`: the reset only lands if that other
-  status has a live window at the same frame. When that status is absent the
+  once. The reset lands in both the layout pass and the event loop: the layout
+  pass applies it from that frame on, the event loop after that frame's hits
+  and ticks. It may also declare `requiresBuffId`: the reset only lands if that
+  other status has a live window at the same frame. When that status is absent the
   lapse resets nothing, unless `elseStacks` is set, in which case it resets to
   that value.
 - **A buff may count damaging hits** (`stacksPerDamagingHit`): every damaging
@@ -872,14 +883,14 @@ total tally read for one that lands inside the DPS window, crit/affinity/
 abrasion/broken bonus included — feeds a formula that yields that event's Qi,
 which the bar spends. It cannot simulate in the layout pass the way a meter or
 the target distance does, since it needs a hit's damage before that damage
-itself exists; instead it is computed in pass 2, in time order, alongside
-`totalDamage`.
+itself exists; instead it is computed in the event loop, in time order,
+alongside `totalDamage`.
 
 - **A schedule, never the live bar, is what every gate reads.** The layout
-  pass, the buff-engine prepass and pass 1 all need the break before pass 2's
-  damage exists, so they read a `QiSchedule` — the target's break windows, a
-  step function of its Qi fraction, and the compatibility phase view. Pass 2
-  may additionally read the bar's own live state for the event it is scoring
+  pass, the buff-engine prepass and a hit's triggers read a `QiSchedule` — the
+  target's break windows, a step function of its Qi fraction, and the
+  compatibility phase view. The event loop may additionally
+  read the bar's own live state for the event it is scoring
   (`ctx.target.qiFraction`, `ctx.target.qiBroken`).
 - **The circularity resolves by a fixed-point iteration**: the whole run
   simulates with one schedule, the bar it produces becomes the next schedule,
@@ -909,8 +920,8 @@ itself exists; instead it is computed in pass 2, in time order, alongside
   lands (an on-hit stack, a trigger) sees the break. The break's end is
   unchanged: the start frame plus the break length, exclusive. A schedule
   therefore answers a read as `beforeHit` (the start frame is outside) or
-  `afterHit` (the start frame is inside); pass 2 reads the live bar ahead of
-  applying the event's own Qi, so it is exact for events sharing the frame.
+  `afterHit` (the start frame is inside); the event loop reads the live bar ahead
+  of applying the event's own Qi, so it is exact for events sharing the frame.
 - **The bar accrues Qi from every damaging hit or tick on the target, whether
   or not that event lands inside the DPS window.** The target takes it in
   game regardless of where the fight-timer window sits — a pre-pull one
@@ -925,8 +936,8 @@ itself exists; instead it is computed in pass 2, in time order, alongside
   its own number this way, rather than through the compatibility phase
   window's approximation of it.
 - **A run reports every damaging event that sits within `QI_EDGE_MARGIN_SEC`
-  of a break edge and whose damage depends on which side it falls.** Pass 2
-  re-scores each such event once more, reading the Qi state of the frame
+  of a break edge and whose damage depends on which side it falls.** The event
+  loop re-scores each such event once more, reading the Qi state of the frame
   across the edge through every gate it passes — buffs, mechanics, behaviours
   and the broken-target bonus alike, never a tag list — and sums the absolute
   differences per skill and edge. A skill whose sum reaches

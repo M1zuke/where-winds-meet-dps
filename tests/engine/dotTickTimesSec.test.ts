@@ -71,7 +71,7 @@ describe("MechanicSetup.dotTickTimesSec", () => {
     expect(capturedSchedule).toEqual([0, 1, 2])
   })
 
-  it("drops an additionalTicks offset whose requiresBuff never holds, same as pass 1's own entries", () => {
+  it("drops an additionalTicks offset whose requiresBuff never holds, same as the event loop's own entries", () => {
     const debuff = makeDebuff(CLASS, {
       name: "Probe DoT With Extra Tick",
       durationFrames: 180,

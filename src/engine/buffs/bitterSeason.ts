@@ -199,42 +199,68 @@ export interface BitterSeasonEnvelopeWindow {
 // deterministically. Because a real proc chance can only end a run earlier
 // than this, `activeProbAtTime` is provably 0 outside these windows — so they
 // bound tick emission without dropping any expected damage.
+export class BitterSeasonEnvelope {
+  private readonly closed: BitterSeasonEnvelopeWindow[] = []
+  private currentStart: number | null = null
+  private currentEnd = -Infinity
+  private hitIdx = 0
+  private extIdx = 0
+
+  constructor(
+    private readonly hitTimesSec: readonly number[],
+    private readonly poisonDurationSec: number,
+    private readonly maxRemainingSec: number,
+  ) {}
+
+  advance(extensionTimesSec: readonly number[], untilSec: number): void {
+    if (this.hitTimesSec.length === 0 || this.poisonDurationSec <= 0) return
+    for (;;) {
+      const nextHitTime =
+        this.hitIdx < this.hitTimesSec.length ? this.hitTimesSec[this.hitIdx] : Infinity
+      const nextExtTime =
+        this.extIdx < extensionTimesSec.length ? extensionTimesSec[this.extIdx] : Infinity
+      if (Math.min(nextHitTime, nextExtTime) === Infinity) break
+      if (Math.min(nextHitTime, nextExtTime) > untilSec) break
+      if (nextHitTime <= nextExtTime) {
+        if (this.currentStart === null || nextHitTime > this.currentEnd) {
+          if (this.currentStart !== null)
+            this.closed.push({ startSec: this.currentStart, endSec: this.currentEnd })
+          this.currentStart = nextHitTime
+          this.currentEnd = nextHitTime + this.poisonDurationSec
+        } else {
+          this.currentEnd = Math.max(this.currentEnd, nextHitTime + this.poisonDurationSec)
+        }
+        this.hitIdx++
+      } else {
+        // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
+        if (this.currentStart !== null && this.currentEnd > nextExtTime) {
+          this.currentEnd = Math.max(
+            this.currentEnd,
+            Math.min(
+              this.currentEnd + BITTER_SEASON_ZENITH_EXTENSION_SEC,
+              nextExtTime + this.maxRemainingSec,
+            ),
+          )
+        }
+        this.extIdx++
+      }
+    }
+  }
+
+  windowsSoFar(): BitterSeasonEnvelopeWindow[] {
+    return this.currentStart === null
+      ? [...this.closed]
+      : [...this.closed, { startSec: this.currentStart, endSec: this.currentEnd }]
+  }
+}
+
 export function bitterSeasonEnvelopeWindows(
   hitTimesSec: readonly number[],
   poisonDurationSec: number,
   extensionTimesSec: readonly number[],
   maxRemainingSec: number,
 ): BitterSeasonEnvelopeWindow[] {
-  if (hitTimesSec.length === 0 || poisonDurationSec <= 0) return []
-
-  const windows: BitterSeasonEnvelopeWindow[] = []
-  let currentStart: number | null = null
-  let currentEnd = -Infinity
-  let hitIdx = 0
-  let extIdx = 0
-  while (hitIdx < hitTimesSec.length || extIdx < extensionTimesSec.length) {
-    const nextHitTime = hitIdx < hitTimesSec.length ? hitTimesSec[hitIdx] : Infinity
-    const nextExtTime = extIdx < extensionTimesSec.length ? extensionTimesSec[extIdx] : Infinity
-    if (nextHitTime <= nextExtTime) {
-      if (currentStart === null || nextHitTime > currentEnd) {
-        if (currentStart !== null) windows.push({ startSec: currentStart, endSec: currentEnd })
-        currentStart = nextHitTime
-        currentEnd = nextHitTime + poisonDurationSec
-      } else {
-        currentEnd = Math.max(currentEnd, nextHitTime + poisonDurationSec)
-      }
-      hitIdx++
-    } else {
-      // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
-      if (currentStart !== null && currentEnd > nextExtTime) {
-        currentEnd = Math.max(
-          currentEnd,
-          Math.min(currentEnd + BITTER_SEASON_ZENITH_EXTENSION_SEC, nextExtTime + maxRemainingSec),
-        )
-      }
-      extIdx++
-    }
-  }
-  if (currentStart !== null) windows.push({ startSec: currentStart, endSec: currentEnd })
-  return windows
+  const envelope = new BitterSeasonEnvelope(hitTimesSec, poisonDurationSec, maxRemainingSec)
+  envelope.advance(extensionTimesSec, Infinity)
+  return envelope.windowsSoFar()
 }

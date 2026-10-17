@@ -97,8 +97,15 @@ export interface TimelineMechanic<State = unknown> {
     skill: Skill | undefined,
     setup: MechanicSetup,
   ): MechanicContribution | null
-  // Windows a mechanic opens itself, rather than through a hit's triggers.
-  seedStatuses?(state: State, target: MechanicSeedTarget, setup: MechanicSetup): void
+  // Windows a mechanic opens itself, rather than through a hit's triggers —
+  // called as the fight reaches each hit frame, and once with `Infinity` after
+  // the last event.
+  advanceStatuses?(
+    state: State,
+    untilFrame: number,
+    target: MechanicSeedTarget,
+    setup: MechanicSetup,
+  ): void
   // What a DoT tick from this debuff is worth at this frame — the probability
   // it is actually up. `null` means "not mine".
   tickWeightAt?(state: State, debuffId: string, frame: number, setup: MechanicSetup): number | null

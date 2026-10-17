@@ -262,12 +262,14 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 - **A DoT tick may feed a proc schedule too**, opted into separately from a
   hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
   from the same layout pass, at each debuff's own tick interval, through the
-  one function pass 1's own tick entries walk too, so the two cannot diverge.
+  one per-pulse planner the event loop's own tick entries use too, so the two
+  cannot diverge.
   It carries the layout pass's own limit: a detonation's sub-cast and a DoT a
   `castSkill` trigger summons are not on it, the same gap `hitTimesSec` has
   for a summoned hit's own detonation follow-up — and a resource-gated DoT's
   ticks are an upper bound rather than exact, since the resource's own
-  sequential consumption check cannot run ahead of pass 1 without corrupting it.
+  sequential consumption check cannot run ahead of the event loop without
+  corrupting it.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two
   are numerically identical.

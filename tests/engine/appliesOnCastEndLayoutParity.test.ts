@@ -1,6 +1,6 @@
 // docs/TIMELINE.md § Triggers: "A status the player only gains once the
 // granting cast is over opens at that cast's end, declared on the trigger."
-// The layout pass and pass 1 each keep their own status ledger and must
+// The layout pass and the event loop each keep their own status ledger and must
 // apply this identically, or a step laid out mid-cast can see a grant the
 // live scoring pass has not opened yet (or vice versa). Every skill and buff
 // below is placeholder content authored only for this file.
@@ -107,7 +107,7 @@ describe("a next cast landing between a granting hit's frame and its cast's end"
     expect(result.warnings.some((warning) => warning.includes("Next Step"))).toBe(false)
   })
 
-  it("a hit variant reading the same grant sees exactly what pass 1 scores, not the boosted row", () => {
+  it("a hit variant reading the same grant sees exactly what the event loop scores, not the boosted row", () => {
     const nextStepRow = result.perSkill.find((row) => row.name === "Next Step")
     expect(nextStepRow?.count).toBe(1)
     expect(nextStepRow?.expectedDamage).toBeLessThan(100)

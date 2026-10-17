@@ -1,7 +1,10 @@
 export const EVENT_KIND_PRIORITY = {
   recall: -1,
+  statusRecall: -1,
+  castEnd: -0.75,
   castStart: -0.5,
   hit: 0,
+  mechanicStep: 0.25,
   tickLaunch: 0.5,
   tick: 1,
   extra: 2,
@@ -23,12 +26,22 @@ interface QueueEntry<Event extends QueuedEvent> {
 export class EventQueue<Event extends QueuedEvent> {
   private readonly heap: QueueEntry<Event>[] = []
   private nextSeq = 0
+  private lastPoppedFrame = Number.NEGATIVE_INFINITY
 
   get size(): number {
     return this.heap.length
   }
 
-  push(event: Event): void {
+  constructor(private readonly onLateEvent?: (frame: number, lastPoppedFrame: number) => void) {}
+
+  push(queued: Event): void {
+    let event = queued
+    if (event.frame < this.lastPoppedFrame) {
+      if (import.meta.env.DEV)
+        throw new Error(`Event at frame ${event.frame} queued after frame ${this.lastPoppedFrame}`)
+      this.onLateEvent?.(event.frame, this.lastPoppedFrame)
+      event = { ...event, frame: this.lastPoppedFrame }
+    }
     this.heap.push({ event, seq: this.nextSeq++ })
     let index = this.heap.length - 1
     while (index > 0) {
@@ -39,9 +52,14 @@ export class EventQueue<Event extends QueuedEvent> {
     }
   }
 
+  peek(): Event | undefined {
+    return this.heap[0]?.event
+  }
+
   pop(): Event | undefined {
     if (this.heap.length === 0) return undefined
     const first = this.heap[0]
+    this.lastPoppedFrame = first.event.frame
     const last = this.heap.pop()!
     if (this.heap.length > 0) {
       this.heap[0] = last
@@ -60,10 +78,6 @@ export class EventQueue<Event extends QueuedEvent> {
       }
     }
     return first.event
-  }
-
-  *drain(): Generator<Event> {
-    for (let event = this.pop(); event; event = this.pop()) yield event
   }
 
   private precedes(left: QueueEntry<Event>, right: QueueEntry<Event>): boolean {
