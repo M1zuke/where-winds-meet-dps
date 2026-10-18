@@ -16,13 +16,7 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    kind's retained response, read in the `useState` initializer and projected by
    the same function its listener uses — never replayed into state from an
    effect. **Never** run the engine in a render-path memo outside that one
-   baseline pass. The simulated Qi schedule's own fixed-point iteration runs
-   its several internal passes inside that one engine pass — it is not a
-   second call, in this rule's count or in the worker's. **Every repeated
-   sweep warm-starts** its own iteration from the baseline's already-converged
-   schedule instead of re-seeding from the default break, carried
-   down through its own request kind and hook the same way the baseline's DPS
-   already is. **Inside one worker request, a repeated engine pass is answered
+   baseline pass. **Inside one worker request, a repeated engine pass is answered
    from that request's memo**, keyed by an exact encoding of the pass's inputs
    and options, bounded, and discarded when the request ends; nothing else
    memoizes engine passes. An engine pass stays a pure function of its inputs

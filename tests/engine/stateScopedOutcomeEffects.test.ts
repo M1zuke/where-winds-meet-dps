@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { finalCritAtLeast, forceOutcome } from "../../src/engine/effects/effect"
 import { makeSkill } from "../../src/engine/skill"
@@ -20,13 +20,13 @@ describe("finalCritAtLeast returned from effects(ctx), scoped by phase", () => {
   }
 
   it("carries the rule only while the scoped phase holds", () => {
-    const exhausted = new BuffEngine({ qiBreakTime: 0, bossBreakDuration: 30 }, [], [module])
+    const exhausted = buffEngineWith({}, [], [module], exhaustedFrom(0, 30))
     expect(exhausted.calculateDamageEffects(anySkill(), 1).conditionalFinalCrit).toEqual({
       threshold: 0.7,
       bonusBelowThreshold: 0.15,
     })
 
-    const normalPhase = new BuffEngine({ qiBreakTime: 100, bossBreakDuration: 10 }, [], [module])
+    const normalPhase = buffEngineWith({}, [], [module])
     expect(normalPhase.calculateDamageEffects(anySkill(), 1).conditionalFinalCrit).toBeNull()
   })
 
@@ -41,7 +41,7 @@ describe("finalCritAtLeast returned from effects(ctx), scoped by phase", () => {
       summary: "test",
       effects: [],
     }
-    const engine = new BuffEngine({}, [], [declarative])
+    const engine = buffEngineWith({}, [], [declarative])
     expect(engine.calculateDamageEffects(anySkill(), 1).conditionalFinalCrit).toEqual({
       threshold: 0.75,
       bonusBelowThreshold: 0.1,
@@ -68,7 +68,7 @@ describe("forceOutcome('noAbrasion') returned from effects(ctx), scoped by anoth
   }
 
   it("fires only while the other status is down", () => {
-    const engine = new BuffEngine({}, [], [gate, module])
+    const engine = buffEngineWith({}, [], [gate, module])
     expect(engine.calculateDamageEffects(anySkill(), 1).forceNoAbrasion).toBe(true)
 
     engine.applyBuff("gate", 1)

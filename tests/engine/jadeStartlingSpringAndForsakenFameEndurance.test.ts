@@ -1,7 +1,7 @@
 // Scoped to the unvalidated Silkbind Jade class and to placeholder skills on
 // another class: wiring, not a damage anchor.
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { landDamageHit } from "../helpers/landDamageHit"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -45,7 +45,7 @@ describe("Startling Spring stacks", () => {
   const fiveHit = builtinSkill(JADE, SKILL.fanheavypursuit5Hit)
   const hitSeconds = fiveHit.hits.map((hit) => hit.frame / FPS)
   const engine = () => {
-    const created = new BuffEngine({}, [], [pursuitChargedBoost])
+    const created = buffEngineWith({}, [], [pursuitChargedBoost])
     for (const second of hitSeconds) landDamageHit(created, second, fiveHit)
     return created
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 import { BUFF } from "../../src/data/skills/buffs/ids"
@@ -12,7 +12,7 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
   const params = { artOfResistance: true, artOfResistanceTier: 6 }
 
   it("is active only in the window after the source buff ends, not before or long after", () => {
-    const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
+    const engine = buffEngineWith(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
     expect(engine.calculateDamageEffects(skill, 4).breakdown.resistanceResolve).toBeUndefined()
@@ -22,7 +22,7 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
   })
 
   it("uses the same shield-then-resolve timing for a goldenBody-cancel cast as for any other", () => {
-    const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
+    const engine = buffEngineWith(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:goldenBodyCancel", 0, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
     expect(engine.calculateDamageEffects(skill, 10.4).breakdown.resistanceResolve).toBeUndefined()
@@ -30,7 +30,7 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
   })
 
   it("is cancelled by a reapply of the source buff before the window would have ended", () => {
-    const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
+    const engine = buffEngineWith(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     engine.processSkillCast("cast:probe", 12, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
@@ -40,7 +40,7 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
   })
 
   it("a routine refresh BEFORE the source buff would have expired doesn't spuriously activate the end-triggered buff", () => {
-    const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
+    const engine = buffEngineWith(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     engine.processSkillCast("cast:probe", 5, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
@@ -49,7 +49,7 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
   })
 
   it("is inert without artOfResistance tier 6", () => {
-    const engine = new BuffEngine({}, allBuffDefsDeduped(), groupBuffDefs())
+    const engine = buffEngineWith({}, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     expect(
       engine.calculateDamageEffects(tagged("AnySkill"), 8).breakdown.resistanceResolve,

@@ -1,7 +1,8 @@
 // Scoped to Stonesplit Strength's user-placed modules; not a measured DPS
 // anchor (docs/TESTING.md § "Class scoping").
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { defaultInputs } from "../../src/engine/defaults"
 import { hitDealsDamage } from "../../src/engine/skill"
@@ -92,7 +93,7 @@ describe("Snowbreak Spring", () => {
   })
 
   it("spends Inner Passion at the press and still pays the 1.76 ratio on the strike 34 f later", () => {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { classId: CLASS_ID, [PARAM.frostCladNight]: true, frostCladNightTier: 6 },
       buffDefsForClass(CLASS_ID),
       groupBuffDefs(),
@@ -229,16 +230,11 @@ describe("Jadeware", () => {
 
 describe("Charge Enhancement", () => {
   const exhausted = () =>
-    new BuffEngine(
-      {
-        classId: CLASS_ID,
-        steadfastDevotion: true,
-        steadfastDevotionTier: 6,
-        qiBreakTime: 0,
-        bossBreakDuration: 100,
-      },
+    buffEngineWith(
+      { classId: CLASS_ID, steadfastDevotion: true, steadfastDevotionTier: 6 },
       buffDefsForClass(CLASS_ID),
       groupBuffDefs(),
+      exhaustedFrom(0, 100),
     )
 
   const release = (target: BuffEngine, time: number, lastHitSec: number, consumes = false) =>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
@@ -19,7 +19,7 @@ const MIXED_RECEIVES = [BUFF.mistwillowHeavyBuff, BUFF.mistwillowLightBuff, BUFF
 // as of 2026-09-24), so every stance test wears the set as that class unless
 // it deliberately probes a different one.
 function engine(armorSet?: string, classId = "silkbindJade") {
-  return new BuffEngine(armorSet ? { armorSet, classId } : {}, GLOBAL_BUFF_DEFS, [])
+  return buffEngineWith(armorSet ? { armorSet, classId } : {}, GLOBAL_BUFF_DEFS, [])
 }
 function lightProbe(name: string) {
   return makeSkill("test", { name, tags: ["attack:light"], receives: LIGHT_RECEIVES })

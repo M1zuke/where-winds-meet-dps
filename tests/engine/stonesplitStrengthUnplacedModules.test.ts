@@ -2,7 +2,7 @@
 // anchor (docs/TESTING.md § "Class scoping").
 import { describe, expect, it } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
@@ -222,7 +222,7 @@ describe("Burning Heart stages 1 and 2", () => {
 
 describe("the low-stage consume def", () => {
   const engineWith = (params: Record<string, unknown>) =>
-    new BuffEngine({ classId: CLASS_ID, ...params }, buffDefsForClass(CLASS_ID), groupBuffDefs())
+    buffEngineWith({ classId: CLASS_ID, ...params }, buffDefsForClass(CLASS_ID), groupBuffDefs())
 
   const withInnerPassion = (params: Record<string, unknown>) => {
     const engine = engineWith(params)

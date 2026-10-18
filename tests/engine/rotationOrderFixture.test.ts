@@ -1,6 +1,6 @@
 // Refactor guard, NOT a correctness anchor — docs/TESTING.md § "Locked
 // fixtures assert unchanged, never right". The Qi bar is scripted to each
-// rotation's converged breaks, so a moved figure is purely an ordering effect.
+// rotation's computed breaks, so a moved figure is purely an ordering effect.
 // Regenerate with UPDATE_ROTATION_ORDER=1.
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
@@ -21,7 +21,7 @@ const REGENERATE = process.env.UPDATE_ROTATION_ORDER === "1"
 
 type BreakFrames = readonly (readonly [startFrame: number, endFrame: number])[]
 
-const CONVERGED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
+const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
   "builtin-bellstrikeUmbra-36-bbs": [[1606, 2206]],
   "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1665, 2265]],
   "builtin-bellstrikeUmbra-38-bbs": [[1637, 2237]],
@@ -67,7 +67,7 @@ function figuresWithScriptedBreaks(classId: string, rotationId: string): Rotatio
     activeCustomRotation: null,
   })
   const result = runEngine(applySetBonuses(inputs), {
-    fixedQiBreaks: CONVERGED_BREAK_FRAMES[rotationId].map(([startFrame, endFrame]) => ({
+    fixedQiBreaks: COMPUTED_BREAK_FRAMES[rotationId].map(([startFrame, endFrame]) => ({
       startSec: startFrame / FPS,
       durationSec: (endFrame - startFrame) / FPS,
       lowQiLeadSec: 0,
@@ -86,9 +86,9 @@ const recorded: Record<string, RotationFigures> = {}
 const stored: Record<string, RotationFigures> =
   !REGENERATE && existsSync(FIXTURE_PATH) ? JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) : {}
 
-describe("every built-in rotation under its scripted converged Qi breaks", () => {
+describe("every built-in rotation under its scripted computed Qi breaks", () => {
   it("pins a break for every built-in rotation and for nothing else", () => {
-    expect(Object.keys(CONVERGED_BREAK_FRAMES).sort()).toEqual(
+    expect(Object.keys(COMPUTED_BREAK_FRAMES).sort()).toEqual(
       BUILTIN_ROTATIONS.map(({ rotation }) => rotation.id).sort(),
     )
   })

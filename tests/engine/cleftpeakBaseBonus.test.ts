@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { landDamageHit } from "../helpers/landDamageHit"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
@@ -10,7 +11,7 @@ import { cleftpeak } from "../../src/data/sets/cleftpeak"
 const OTHER_CLASS = "bellstrikeUmbra"
 
 function engine(armorSet?: string) {
-  return new BuffEngine({ classId: OTHER_CLASS, armorSet }, buffDefsForClass(OTHER_CLASS))
+  return buffEngineWith({ classId: OTHER_CLASS, armorSet }, buffDefsForClass(OTHER_CLASS))
 }
 
 function allDamageBoostFor(engineUnderTest: BuffEngine, skillType: string, time: number) {

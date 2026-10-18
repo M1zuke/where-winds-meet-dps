@@ -258,8 +258,8 @@
     }
   },
   "builtin-silkbindJade-20-dh-video-60s": {
-    "dps": 74476.87198966958,
-    "totalDamage": 4103675.6466307943,
+    "dps": 74440.90978204794,
+    "totalDamage": 4101694.1289908416,
     "damageBySkill": {
       "UmbQ": 408286.7904944516,
       "Umb HeavyLight": 72443.59391569882,
@@ -267,7 +267,7 @@
       "Divinecraft - Fire": 60466.42678565844,
       "Divinecraft - Fire Explosion": 10001.673395281607,
       "UmbDroneLaunch": 41645.735084351094,
-      "UmbDrone (DoT)": 1988993.7152903378,
+      "UmbDrone (DoT)": 1987012.197650385,
       "FanLightCharged": 503832.0709772453,
       "Yi River": 41225.65755321067,
       "FanQCancel": 36411.86945039247,
@@ -309,8 +309,8 @@
     }
   },
   "builtin-silkbindJade-standardized-1-7": {
-    "dps": 50375.34522997453,
-    "totalDamage": 3145940.3096119096,
+    "dps": 50341.4133714005,
+    "totalDamage": 3143821.2650439613,
     "damageBySkill": {
       "UmbQ Prepull": 34501.636928755404,
       "Umb HeavyLight": 73105.88739669132,
@@ -319,7 +319,7 @@
       "UmbQ": 434688.31866607093,
       "Divinecraft - Fire Explosion": 10196.964470801608,
       "UmbDroneLaunch[20hit]": 43304.93870613295,
-      "UmbDrone[20hit] (DoT)": 1282592.4147924238,
+      "UmbDrone[20hit] (DoT)": 1280473.3702244754,
       "FanLightCharged": 504204.65011885104,
       "Soaring": 205265.5988490132,
       "Toad[Cancel]": 121724.65406397337,

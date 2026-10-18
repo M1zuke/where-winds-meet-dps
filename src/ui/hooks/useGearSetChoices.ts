@@ -21,7 +21,6 @@ export function useGearSetChoices(
   inputs: Inputs,
   target: SetChoiceTarget | null,
   applyToGroup: boolean,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): GearSetChoicesResult {
   const [received, setReceived] = useState<GearSetChoicesWorkerResponse | null>(() =>
     retainedResponse("gearSetChoices"),
@@ -34,8 +33,8 @@ export function useGearSetChoices(
 
   useEffect(() => {
     if (!target) return
-    postToDpsWorker({ kind: "gearSetChoices", inputs, target, applyToGroup, baselineQiBreaks })
-  }, [inputs, target, applyToGroup, baselineQiBreaks])
+    postToDpsWorker({ kind: "gearSetChoices", inputs, target, applyToGroup })
+  }, [inputs, target, applyToGroup])
 
   if (!target) return NO_TARGET_RESULT
   const matches =

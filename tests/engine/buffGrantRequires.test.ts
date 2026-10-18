@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { GRANT_REQUIRES_DEFAULT, type BuffModule } from "../../src/engine/buffs/buffModule"
 import { buffGateSatisfied, requiresLabel } from "../../src/engine/buffs/catalog"
 import { stat } from "../../src/engine/effects/effect"
@@ -34,38 +35,38 @@ function stacksAt(engine: BuffEngine, time: number): number {
 
 describe("a buff module's grantRequires", () => {
   it("grants from a cast tag mapped to an empty requirement with no gate at all", () => {
-    const engine = new BuffEngine({}, [], [module])
+    const engine = buffEngineWith({}, [], [module])
     engine.processSkillCast("cast:ungated", 0, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(1, 6)
   })
 
   it("blocks a cast tag mapped to its own requirement while that requirement is unmet", () => {
-    const engine = new BuffEngine({}, [], [module])
+    const engine = buffEngineWith({}, [], [module])
     engine.processSkillCast("cast:gated", 0, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(0, 6)
   })
 
   it("grants from a cast tag mapped to its own requirement once that requirement is met", () => {
-    const engine = new BuffEngine({ someParam: true, someParamTier: 6 }, [], [module])
+    const engine = buffEngineWith({ someParam: true, someParamTier: 6 }, [], [module])
     engine.processSkillCast("cast:gated", 0, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(1, 6)
   })
 
   it("an unmapped cast tag grants with no gate at all — a grantRequires module carries no requires", () => {
-    const engine = new BuffEngine({}, [], [module])
+    const engine = buffEngineWith({}, [], [module])
     engine.processSkillCast("cast:unmapped", 0, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(1, 6)
   })
 
   it("a gated source is blocked while another source still writes the shared pool", () => {
-    const engine = new BuffEngine({}, [], [module])
+    const engine = buffEngineWith({}, [], [module])
     engine.processSkillCast("cast:ungated", 0, {}, false, ["shared-pool"])
     engine.processSkillCast("cast:gated", 1, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 1.1)).toBeCloseTo(1, 6)
   })
 
   it("several ungated sources still write into the one shared stack pool", () => {
-    const engine = new BuffEngine({ someParam: true, someParamTier: 6 }, [], [module])
+    const engine = buffEngineWith({ someParam: true, someParamTier: 6 }, [], [module])
     engine.processSkillCast("cast:ungated", 0, {}, false, ["shared-pool"])
     engine.processSkillCast("cast:gated", 1, {}, false, ["shared-pool"])
     expect(stacksAt(engine, 1.1)).toBeCloseTo(2, 6)
@@ -103,19 +104,19 @@ describe("a grantRequires default entry — the fallback for every source the ma
   }
 
   it("blocks an unmapped source while the default's own requirement is unmet", () => {
-    const engine = new BuffEngine({}, [], [defaultedModule])
+    const engine = buffEngineWith({}, [], [defaultedModule])
     engine.processSkillCast("cast:unmapped", 0, {}, false, ["defaulted-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(0, 6)
   })
 
   it("grants an unmapped source once the default's own requirement is met", () => {
-    const engine = new BuffEngine({ someParam: true }, [], [defaultedModule])
+    const engine = buffEngineWith({ someParam: true }, [], [defaultedModule])
     engine.processSkillCast("cast:unmapped", 0, {}, false, ["defaulted-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(1, 6)
   })
 
   it("prefers a named source's own entry over the default", () => {
-    const engine = new BuffEngine({ someParam: true }, [], [defaultedModule])
+    const engine = buffEngineWith({ someParam: true }, [], [defaultedModule])
     engine.processSkillCast("cast:gated", 0, {}, false, ["defaulted-pool"])
     expect(stacksAt(engine, 0.1)).toBeCloseTo(0, 6)
   })
@@ -141,7 +142,7 @@ describe("grantRequires keyed by a tag family instead of one skill's own cast ta
   }
 
   it("matches a tag the granting skill carries once its own cast tag finds no entry", () => {
-    const engine = new BuffEngine({}, [], [familyModule])
+    const engine = buffEngineWith({}, [], [familyModule])
     const skill = taggedSkill("StrongMember", ["family:strong"])
     engine.processSkillCast(
       "cast:strong-member",
@@ -155,14 +156,14 @@ describe("grantRequires keyed by a tag family instead of one skill's own cast ta
   })
 
   it("blocks a tag-matched source while its own requirement is unmet", () => {
-    const engine = new BuffEngine({}, [], [familyModule])
+    const engine = buffEngineWith({}, [], [familyModule])
     const skill = taggedSkill("WeakMember", ["family:weak"])
     engine.processSkillCast("cast:weak-member", 0, {}, false, ["family-pool"], new Set(skill.tags))
     expect(stacksAt(engine, 0.1)).toBeCloseTo(0, 6)
   })
 
   it("prefers an exact cast-tag entry over a tag-family match", () => {
-    const engine = new BuffEngine({}, [], [familyModule])
+    const engine = buffEngineWith({}, [], [familyModule])
     const skill = taggedSkill("ExactMatch", ["family:weak"])
     engine.processSkillCast("family:strong", 0, {}, false, ["family-pool"], new Set(skill.tags))
     expect(stacksAt(engine, 0.1)).toBeCloseTo(1, 6)
@@ -183,19 +184,19 @@ describe("a buff module's function-valued maxStacks", () => {
   }
 
   it("resolves once at registration against the run's own params", () => {
-    const below = new BuffEngine({ someParam: true, someParamTier: 3 }, [], [tieredModule])
+    const below = buffEngineWith({ someParam: true, someParamTier: 3 }, [], [tieredModule])
     for (let hitIndex = 0; hitIndex < 5; hitIndex++)
       below.processSkillCast(`hit-${hitIndex}`, hitIndex, {}, false, ["tiered-cap"])
     expect(stacksAt(below, 4.5)).toBeCloseTo(3, 6)
 
-    const above = new BuffEngine({ someParam: true, someParamTier: 6 }, [], [tieredModule])
+    const above = buffEngineWith({ someParam: true, someParamTier: 6 }, [], [tieredModule])
     for (let hitIndex = 0; hitIndex < 12; hitIndex++)
       above.processSkillCast(`hit-${hitIndex}`, hitIndex, {}, false, ["tiered-cap"])
     expect(stacksAt(above, 11.5)).toBeCloseTo(10, 6)
   })
 
   it("does not re-read the build's params after registration", () => {
-    const engine = new BuffEngine({ someParam: true, someParamTier: 3 }, [], [tieredModule])
+    const engine = buffEngineWith({ someParam: true, someParamTier: 3 }, [], [tieredModule])
     engine.params.someParamTier = 6
     for (let hitIndex = 0; hitIndex < 12; hitIndex++)
       engine.processSkillCast(`hit-${hitIndex}`, hitIndex, {}, false, ["tiered-cap"])

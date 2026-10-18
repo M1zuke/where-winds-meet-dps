@@ -3,6 +3,7 @@ export const EVENT_KIND_PRIORITY = {
   castEnd: -0.75,
   deferredGrant: -0.75,
   hit: 0,
+  grantAfterHits: 0.1,
   castStart: 0.25,
   gate: 0.3,
   tickLaunch: 0.5,

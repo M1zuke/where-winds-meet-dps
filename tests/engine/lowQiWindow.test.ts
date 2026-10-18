@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest"
-import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
+import { QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
 import { landDamageHit } from "../helpers/landDamageHit"
+import {
+  buffEngineWith,
+  DEFAULT_QI_BREAK_WINDOW,
+  exhaustedFrom,
+  scriptedQiBar,
+} from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { hitDealsDamage } from "../../src/engine/skill"
@@ -8,12 +14,10 @@ import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import { ENDLESS_GALE_GATE } from "../../src/data/classes/bellstrike-splendor/gates"
 import { endlessGaleMountainsMightExtend } from "../../src/data/skills/bellstrike-splendor/buffs/endlessGaleCostReductionGrant"
-import { paramsFromInputs } from "../../src/engine/buffs/params"
-import { defaultInputs } from "../../src/engine/defaults"
 
 describe("the low-Qi lead window", () => {
   it("precedes the break window and ends where it begins", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, belowQiTime: 20, bossBreakDuration: 10 }, [])
+    const engine = buffEngineWith({}, [], [], scriptedQiBar(DEFAULT_QI_BREAK_WINDOW))
     expect(engine.qiPhase(19.9)).toBe("normal")
     expect(engine.qiPhase(20)).toBe("below30")
     expect(engine.qiPhase(24.9)).toBe("below30")
@@ -23,38 +27,28 @@ describe("the low-Qi lead window", () => {
   })
 
   it("is absent when no lead is configured", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    const engine = buffEngineWith({}, [], [], exhaustedFrom(25, 10))
     expect(engine.qiPhase(24.9)).toBe("normal")
-    expect(engine.lowQiWindow()).toBeNull()
-  })
-
-  it("is derived from the default window's lead", () => {
-    expect(paramsFromInputs(defaultInputs).belowQiTime).toBe(20)
-  })
-
-  it("reports its own span for the rotation timeline", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, belowQiTime: 20, bossBreakDuration: 10 }, [])
-    expect(engine.lowQiWindow()).toEqual({ start: 20, end: 25 })
   })
 })
 
 describe("Qi Imbalance as a low-Qi source", () => {
   it("counts as low Qi outside the lead window", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    const engine = buffEngineWith({}, [], [], exhaustedFrom(25, 10))
     expect(engine.qiPhase(5)).toBe("normal")
     engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
     expect(engine.qiPhase(5)).toBe("below30")
   })
 
   it("stops counting once its window expires", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    const engine = buffEngineWith({}, [], [], exhaustedFrom(25, 10))
     engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
     expect(engine.qiPhase(13.9)).toBe("below30")
     expect(engine.qiPhase(14)).toBe("normal")
   })
 
   it("never downgrades a broken target back to low Qi", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    const engine = buffEngineWith({}, [], [], exhaustedFrom(25, 10))
     engine.applyBuff(QI_IMBALANCE_STATUS, 24, 15)
     expect(engine.qiPhase(26)).toBe("exhausted")
   })
@@ -73,7 +67,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
     const spearQ = builtinSkillsForClass("bellstrikeSplendor").find(
       (skill) => skill.id === SKILL.spearq,
     )!
-    const engine = new BuffEngine({ classId: "bellstrikeSplendor" }, defs)
+    const engine = buffEngineWith({ classId: "bellstrikeSplendor" }, defs)
     landDamageHit(engine, 1, spearQ)
     expect(engine.qiPhase(2)).toBe("below30")
   })
@@ -116,7 +110,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
       (skill) => skill.id === SKILL.swordq,
     )!
     const hitLandsAt = (params: Record<string, unknown>) => {
-      const engine = new BuffEngine({ classId: "bellstrikeSplendor", ...params }, defs)
+      const engine = buffEngineWith({ classId: "bellstrikeSplendor", ...params }, defs)
       landDamageHit(engine, 1, swordQ)
       return engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 2)
     }
@@ -125,7 +119,7 @@ describe("Qi Imbalance as a low-Qi source", () => {
   })
 
   it("starts with the hit and not before it", () => {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { classId: "bellstrikeSplendor", mountainsMight: true },
       buffDefsForClass("bellstrikeSplendor"),
     )
@@ -138,12 +132,6 @@ describe("Qi Imbalance as a low-Qi source", () => {
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 21 / 60)).toBe(false)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 14.9)).toBe(true)
     expect(engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 22 / 60 + 15.1)).toBe(false)
-  })
-
-  it("leaves the timeline band showing only the clock-driven span", () => {
-    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
-    engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
-    expect(engine.lowQiWindow()).toBeNull()
   })
 })
 

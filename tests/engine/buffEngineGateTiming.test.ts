@@ -1,6 +1,7 @@
 // Modules below are placeholder content authored only for this file, except the built-in buffs the authored-timing cases read.
 import { describe, expect, it } from "vitest"
-import { BuffEngine, type DeferredBuffGrant } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine, DeferredBuffGrant } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { catalogBuffDefs } from "../../src/engine/buffs/data"
 import { applyBuff } from "../../src/engine/effects/effect"
@@ -40,7 +41,7 @@ function deferringCasts(
 
 describe("a buff-engine gate reads the history as of the time it asks about", () => {
   it("derives the stacks a grant adds to from the window standing at its own time", () => {
-    const engine = new BuffEngine({}, [placeholder("pool", { maxStacks: 5, duration: 20 })])
+    const engine = buffEngineWith({}, [placeholder("pool", { maxStacks: 5, duration: 20 })])
     grantAt(engine, 3, "pool")
     grantAt(engine, 10, "pool")
     grantAt(engine, 5, "pool")
@@ -48,7 +49,7 @@ describe("a buff-engine gate reads the history as of the time it asks about", ()
   })
 
   it("counts a cooldown from the last grant at or before the grant's own time", () => {
-    const engine = new BuffEngine({}, [placeholder("cooled", { cooldown: 12, duration: 5 })])
+    const engine = buffEngineWith({}, [placeholder("cooled", { cooldown: 12, duration: 5 })])
     grantAt(engine, 0, "cooled")
     grantAt(engine, 30, "cooled")
     grantAt(engine, 13, "cooled")
@@ -56,7 +57,7 @@ describe("a buff-engine gate reads the history as of the time it asks about", ()
   })
 
   it("refreshes a window that was live at the cast, not one a later grant opened", () => {
-    const engine = new BuffEngine({}, [placeholder("refreshed", { refreshOnAnyCast: true })])
+    const engine = buffEngineWith({}, [placeholder("refreshed", { refreshOnAnyCast: true })])
     grantAt(engine, 0, "refreshed")
     grantAt(engine, 30, "refreshed")
     engine.processSkillCast("cast:other", 5, {}, false, [])
@@ -64,7 +65,7 @@ describe("a buff-engine gate reads the history as of the time it asks about", ()
   })
 
   it("requires the window a trigger names to be live at the trigger's own time", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       placeholder("gate"),
       placeholder("gated", { requiresActiveBuffOnTrigger: "gate", duration: 4 }),
     ])
@@ -75,7 +76,7 @@ describe("a buff-engine gate reads the history as of the time it asks about", ()
   })
 
   it("spends a stack from the pool standing at the cast, not from a later grant's window", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       placeholder("pool", { maxStacks: 3, stacks: () => 3, duration: 20 }),
       placeholder("consumer", {
         perCastConsume: { property: "consumesInnerPassion", from: "pool" },
@@ -90,7 +91,7 @@ describe("a buff-engine gate reads the history as of the time it asks about", ()
 
 describe("a grant that lands after the call that declared it", () => {
   it("is not in the history until it is committed at its own time", () => {
-    const engine = new BuffEngine({}, [placeholder("landing", { buffAppliesOnCastEnd: true })])
+    const engine = buffEngineWith({}, [placeholder("landing", { buffAppliesOnCastEnd: true })])
     const [grant] = deferringCasts(engine, [{ time: 0, buffId: "landing", castTime: 3 }])
     expect(grant.timeSec).toBe(3)
     expect(engine.isBuffActiveAtTime("landing", 3.5)).toBe(false)
@@ -99,7 +100,7 @@ describe("a grant that lands after the call that declared it", () => {
   })
 
   it("reads what blocks it from the history at the time it lands", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       placeholder("landing", { buffAppliesOnCastEnd: true, blockedWhileActive: ["blocker"] }),
       placeholder("blocker"),
     ])
@@ -110,7 +111,7 @@ describe("a grant that lands after the call that declared it", () => {
   })
 
   it("counts its cooldown from the last grant before it lands, not before it was declared", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       placeholder("landing", { buffAppliesOnCastEnd: true, cooldown: 12 }),
     ])
     const deferred = deferringCasts(engine, [
@@ -122,25 +123,24 @@ describe("a grant that lands after the call that declared it", () => {
   })
 
   it("reads its trigger phase at the time it lands", () => {
-    const params = { qiBreakTime: 25, bossBreakDuration: 10 }
     const module = placeholder("landing", {
       buffAppliesOnCastEnd: true,
       triggerPhase: "exhausted",
       duration: 4,
     })
-    const insideBreak = new BuffEngine(params, [module])
+    const insideBreak = buffEngineWith({}, [module], [], exhaustedFrom(25, 10))
     for (const grant of deferringCasts(insideBreak, [{ time: 24, buffId: "landing", castTime: 2 }]))
       grant.commit()
     expect(insideBreak.isBuffActiveAtTime("landing", 27)).toBe(true)
 
-    const beforeBreak = new BuffEngine(params, [module])
+    const beforeBreak = buffEngineWith({}, [module], [], exhaustedFrom(25, 10))
     for (const grant of deferringCasts(beforeBreak, [{ time: 20, buffId: "landing", castTime: 2 }]))
       grant.commit()
     expect(beforeBreak.isBuffActiveAtTime("landing", 23)).toBe(false)
   })
 
   it("is applied at once when it lands on the call's own time", () => {
-    const engine = new BuffEngine({}, [placeholder("immediate")])
+    const engine = buffEngineWith({}, [placeholder("immediate")])
     expect(deferringCasts(engine, [{ time: 2, buffId: "immediate", castTime: 3 }])).toEqual([])
     expect(engine.isBuffActiveAtTime("immediate", 2)).toBe(true)
   })
@@ -152,7 +152,7 @@ describe("an on-damage grant", () => {
     placeholder("stack", { maxStacks: 5, stackOnDamage: true, ...patch })
 
   it("decided pre-score counts for the hit that caused it", () => {
-    const engine = new BuffEngine({}, [stack({ damageGrantTiming: "preScore" })])
+    const engine = buffEngineWith({}, [stack({ damageGrantTiming: "preScore" })])
     engine.processDamageHitPreScore(EVENT_SEC)
     expect(engine.getHistoricalBuffStacks("stack", EVENT_SEC)).toBe(1)
     engine.processDamageHitPostQi(EVENT_SEC)
@@ -160,7 +160,7 @@ describe("an on-damage grant", () => {
   })
 
   it("decided post-Qi does not count for the hit that caused it", () => {
-    const engine = new BuffEngine({}, [stack({ damageGrantTiming: "postQi" })])
+    const engine = buffEngineWith({}, [stack({ damageGrantTiming: "postQi" })])
     engine.processDamageHitPreScore(EVENT_SEC)
     expect(engine.getHistoricalBuffStacks("stack", EVENT_SEC + 1)).toBe(0)
     engine.processDamageHitPostQi(EVENT_SEC)
@@ -169,9 +169,12 @@ describe("an on-damage grant", () => {
   })
 
   it("that declares no timing stays before scoring, gated on the bar after the hit", () => {
-    const engine = new BuffEngine({ qiBreakTime: 0, bossBreakDuration: 100 }, [
-      stack({ stackOnDamagePhase: "exhausted" }),
-    ])
+    const engine = buffEngineWith(
+      {},
+      [stack({ stackOnDamagePhase: "exhausted" })],
+      [],
+      exhaustedFrom(0, 100),
+    )
     engine.processDamageHitPreScore(EVENT_SEC)
     expect(engine.getHistoricalBuffStacks("stack", EVENT_SEC)).toBe(1)
   })
@@ -195,7 +198,7 @@ describe("an on-damage grant", () => {
           requiresBuffActive: "source",
         }),
       }
-      const engine = new BuffEngine(
+      const engine = buffEngineWith(
         {},
         order.map((id) => definitions[id]),
       )
@@ -207,7 +210,7 @@ describe("an on-damage grant", () => {
   )
 
   it("runs a module's own grant when its source is rate-limited out on that hit", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       placeholder("chained", {
         maxStacks: 5,
         stackOnDamage: true,
@@ -234,7 +237,7 @@ describe("a damage-over-time tick", () => {
     placeholder("stack", { maxStacks: 5, stackOnDamage: true, ...patch })
 
   it("feeds a pre-score grant that listens to any damage", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       stack({ damageGrantTiming: "preScore", damageGrantListensTo: "anyDamage" }),
     ])
     engine.processDamageHitPreScore(TICK_SEC, undefined, "tick")
@@ -242,7 +245,7 @@ describe("a damage-over-time tick", () => {
   })
 
   it("feeds a post-Qi grant that listens to any damage", () => {
-    const engine = new BuffEngine({}, [
+    const engine = buffEngineWith({}, [
       stack({ damageGrantTiming: "postQi", damageGrantListensTo: "anyDamage" }),
     ])
     engine.processDamageHitPostQi(TICK_SEC, undefined, false, "tick")
@@ -250,11 +253,11 @@ describe("a damage-over-time tick", () => {
   })
 
   it("feeds no grant that listens to direct hits only", () => {
-    const preScore = new BuffEngine({}, [stack({ damageGrantTiming: "preScore" })])
+    const preScore = buffEngineWith({}, [stack({ damageGrantTiming: "preScore" })])
     preScore.processDamageHitPreScore(TICK_SEC, undefined, "tick")
     expect(preScore.getHistoricalBuffStacks("stack", TICK_SEC)).toBe(0)
 
-    const postQi = new BuffEngine({}, [stack({ damageGrantTiming: "postQi" })])
+    const postQi = buffEngineWith({}, [stack({ damageGrantTiming: "postQi" })])
     postQi.processDamageHitPostQi(TICK_SEC, undefined, false, "tick")
     expect(postQi.getHistoricalBuffStacks("stack", TICK_SEC + 1e-5)).toBe(0)
   })

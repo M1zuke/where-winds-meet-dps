@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { landDamageHit } from "../helpers/landDamageHit"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
@@ -18,7 +19,7 @@ import { cleftpeak } from "../../src/data/sets/cleftpeak"
 const CLASS = "stonesplitStrength"
 
 function engine(params: Record<string, unknown> = {}) {
-  return new BuffEngine({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
+  return buffEngineWith({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
 }
 
 function skill(name: string, tags: string[], castTag: string, receives: string[] = []) {

@@ -1,6 +1,5 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import type { QiPhase } from "../effects/context"
 import { activeRotationForInputs } from "../activeRotation"
 import { DEFAULT_PREFERRED_DISTANCE_METERS } from "../distance"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
@@ -9,7 +8,6 @@ import { SET_BY_ID } from "../../definitions/sets/registry"
 import { resolveActiveSets } from "../setBonuses"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
-import { DEFAULT_QI_BREAK_WINDOW } from "../qiBreak"
 import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
 import {
   FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM,
@@ -20,17 +18,6 @@ export { paramNumOf, paramOnOf, paramTierOf } from "./paramTier"
 
 function tierKey(param: string): string {
   return param + "Tier"
-}
-
-export function clockQiPhase(params: BuffParams, timeSec: number): QiPhase {
-  const qiBreakTime = (params.qiBreakTime as number) ?? 25
-  const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-  const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-  const healerExtension = (params.healerBreakExtension as number) ?? 0
-  const breakEnd = qiBreakTime + bossBreakDuration + healerExtension
-  if (timeSec >= qiBreakTime && timeSec < breakEnd) return "exhausted"
-  if (timeSec >= belowQiTime && timeSec < qiBreakTime) return "below30"
-  return "normal"
 }
 
 export function paramsFromInputs(inputs: Inputs): BuffParams {
@@ -58,13 +45,6 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     params[def.buffParam] = true
     params[tierKey(def.buffParam)] = tier
   }
-
-  const breakExtensionBonus = inputs.combatSettings?.breakExtension ? 12 : 0
-  if (breakExtensionBonus !== 0) {
-    params.qiBreakTime = DEFAULT_QI_BREAK_WINDOW.startSec
-    params.bossBreakDuration = DEFAULT_QI_BREAK_WINDOW.durationSec + breakExtensionBonus
-  }
-  params.belowQiTime = DEFAULT_QI_BREAK_WINDOW.startSec - DEFAULT_QI_BREAK_WINDOW.lowQiLeadSec
 
   if (inputs.combatSettings?.script) params[inputs.combatSettings.script] = true
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true

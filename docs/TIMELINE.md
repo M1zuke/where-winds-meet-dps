@@ -302,9 +302,10 @@ Rules:
   with its windows untouched. Such a trigger ignores its own stack delta and
   never extends; the target write fires the cap payout like any other write.
 - **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
-  Qi schedule's phase at its frame — the simulated bar's own break and low-Qi
-  span, never a status — is the named one. A stagger or control state the
-  source material gates on is expressed as the `exhausted` phase.
+  Qi bar's phase at the trigger's position in the event order — the simulated
+  bar's own break and low-Qi span, never a status — is the named one. A
+  stagger or control state the source material gates on is expressed as the
+  `exhausted` phase.
 - **A trigger may require a build-level param and tier** (`requiresParam`,
   `requiresMinTier`): it fires only while the build carries that param, and at
   or above that tier when given — the per-trigger counterpart of a status's
@@ -584,10 +585,17 @@ for applying, `receives` for boosting — never by the module itself.
   lands at after any projectile flight, not the cast's start — for a state the
   game applies off a hit. Its trigger phase and its cooldown are read at that
   moment, and its cooldown compares within float tolerance, counted from the
-  last grant and never from a stack spent. A cast that landed
-  no hit grants at its start; cast end and a per-site delay take precedence. A
-  grant on the cast's end lands at the cast length the active hit variant
-  selects, not the skill's base length.
+  last grant and never from a stack spent. A cast that landed no hit grants at
+  its start; cast end and a per-site delay take precedence. A grant on the
+  cast's end lands at the cast length the active hit variant selects, not the
+  skill's base length.
+- **A module's `triggerPhase` is read before or after the frame's hits**
+  (`triggerPhaseTiming`). `beforeHits`, the default, reads the bar as it stands
+  when the grant lands, before the Qi of the hits landing on that frame, so the
+  hit that empties the bar is not seen as broken. `afterHits` defers a grant
+  that lands after its cast's last hit until the frame's hits have spent their
+  Qi, even at a zero offset, and reads the bar they left. Set it from whether
+  the game reads the phase before the hit's damage or after its damage and Qi.
 - **A module may stack per granting hit** (`stackOnGrantingHit`): every
   damaging hit of a cast whose skill lists the module in `triggersBuffs` grants
   one stack at that hit's own landing time, just after the hit's own damage —
@@ -600,7 +608,8 @@ for applying, `receives` for boosting — never by the module itself.
   (`blockedWhileActive`: the grant lands neither a window nor a refresh) **and
   may end other modules' windows where it lands** (`dispelsOnGrant`). Both read
   the buff history at the grant's own time. A module's `triggerPhase` may list
-  several Qi phases; it holds in any of them.
+  several Qi gates, phases and fraction thresholds alike; it holds in any of
+  them.
 - **Every buff-engine gate reads the buff history as of the time it asks
   about**, never a module's latest window: a cooldown, a rate limit,
   `requiresActiveBuffOnTrigger`, `refreshOnAnyCast`, a stack spend and the
@@ -613,12 +622,11 @@ for applying, `receives` for boosting — never by the module itself.
   before the hit's own Qi and counts for that hit's own damage; `postQi` reads
   the bar after the hit's own Qi and counts for later events only. A module
   granted pre-score does not run its own pre-score grants for that same hit:
-  only its stat effects apply. A grant that declares none is decided before
-  scoring, gated on the bar as it stands after the hit. Set it from when the
-  game applies the grant: before the hit's damage (`preScore`) or after its
-  damage and Qi (`postQi`). It is the only thing that separates the two, so a
-  grant without a Qi gate chooses only whether it reaches its own hit. A
-  pre-score grant that needs a buff or state (`requiresBuffActive`,
+  only its stat effects apply. A grant that declares none is `preScore`. Set it
+  from when the game applies the grant: before the hit's damage (`preScore`) or
+  after its damage and Qi (`postQi`). It is the only thing that separates the
+  two, so a grant without a Qi gate chooses only whether it reaches its own
+  hit. A pre-score grant that needs a buff or state (`requiresBuffActive`,
   `stackOnDamageOnlyWhileActive`, `perHitConsume.from`) reads it as of the
   event's start, before any grant of that event, so a buff added by this event
   never enables a grant and the module definition order never matters.
@@ -644,10 +652,14 @@ for applying, `receives` for boosting — never by the module itself.
 ## Event order
 
 - **Events on one frame run in a fixed order**: meter events, cast-end
-  triggers and deferred grants due, the frame's hits in the order they were queued, a cast's start, a
-  release-gate decision, a DoT tick's launch, its landing, a mechanic's own
-  events, then echo releases. A status expiry due on the frame runs after all
-  of them.
+  triggers and deferred grants due, the frame's hits in the order they were
+  queued, a grant that reads the bar after the frame's hits
+  (`triggerPhaseTiming`), a cast's start, a release-gate decision, a DoT
+  tick's launch, its landing, a mechanic's own events, then echo releases. A
+  status expiry due on the frame runs after all of them.
+- **A buff a damage-over-time tick's debuff declares is granted after that
+  tick's own damage and Qi**: the tick never receives it, and a phase gate on
+  it reads the bar the tick left.
 - **A cast starts after the hits landing on its start frame**, so its
   conditions, variants and length read what those hits wrote.
 - **Every decision reads the state as of the event it belongs to**: nothing a
@@ -921,28 +933,19 @@ abrasion/broken bonus included — feeds a formula that yields that event's Qi,
 which the bar spends. It is computed in the event loop, in time order,
 alongside `totalDamage`, since it needs a hit's damage.
 
-- **A schedule, never the live bar, is what every gate reads.** A cast's
-  decisions and a hit's triggers read a `QiSchedule` — the
-  target's break windows, a step function of its Qi fraction, and the
-  compatibility phase view. The event loop may additionally
-  read the bar's own live state for the event it is scoring
-  (`ctx.target.qiFraction`, `ctx.target.qiBroken`) and for a hit's own
-  on-damage grants.
-- **The circularity resolves by a fixed-point iteration**: the whole run
-  simulates with one schedule, the bar it produces becomes the next schedule,
-  and the run repeats until the break frames stop moving or a small iteration
-  cap is reached — seeded from one fixed default break. A rotation carries no
-  break of its own, and the converged schedule must not depend on the seed.
-  A run that reaches the cap
-  without converging keeps the last schedule and reports a warning, never an
-  error. A test-harness-only run option may pin the schedule to an exact set
-  of windows for one pass with no iteration; it is never read from `Inputs`,
-  storage or the UI.
+- **The run is one chronological pass, and every gate reads the live bar** as
+  it stands at that event's position in the § "Event order": a cast's
+  decisions, a hit's triggers, a buff's phase or fraction gate, a resource's
+  exhausted flag and every damage-time read see the Qi of every event that ran
+  before them and none of one that runs after. A rotation carries no break of
+  its own and no pass reads a break another pass produced. A test-harness-only
+  run option may script the bar to an exact set of windows that every read
+  sees from the window's first frame; it is never read from `Inputs`, storage
+  or the UI.
 - **A run option may hand the bar another run's per-hit Qi damage log.** The bar
   then spends that log at its own recorded frames, in order within each frame,
-  instead of this run's damage, and the iteration seeds from that run's breaks.
-  Only the graduation comparison sets it; it is never read from `Inputs`,
-  storage or the UI.
+  instead of this run's damage. Only the graduation comparison sets it; it is
+  never read from `Inputs`, storage or the UI.
 - **The bar starts at its capacity; a hit landing while it is at zero deals
   no Qi**, the mass lost outright. The event that brings it to zero opens a
   timed break; at the break's end the bar is set back to a refill value and,
@@ -951,13 +954,15 @@ alongside `totalDamage`, since it needs a hit's damage.
 - **The event that brings the bar to zero is scored outside its own break.**
   Every damage-time read for that event — the broken-target bonus, a Qi-empty
   damage gate, a phase, `qiBroken` or fraction gate — sees the bar as it stood
-  before the event's own Qi. Every later event, one on the same frame included,
-  is inside the break. A grant the emptying event causes after its damage
-  lands (a post-Qi stack, a trigger) sees the break. The break's end is
-  unchanged: the start frame plus the break length, exclusive. A schedule
-  therefore answers a read as `beforeHit` (the start frame is outside) or
-  `afterHit` (the start frame is inside); the event loop reads the live bar ahead
-  of applying the event's own Qi, so it is exact for events sharing the frame.
+  before the event's own Qi. Every event that runs after it, one on the same
+  frame included, is inside the break, and every event that ran before it, one
+  on the same frame included, is not. A grant the emptying event causes after
+  its damage lands (a post-Qi stack, a trigger) sees the break. The break's end
+  is unchanged: the start frame plus the break length, exclusive.
+- **Same-frame order at a break is an engine convention, not a game fact**: a
+  hit that empties the bar is seen as broken by a cast starting on that frame,
+  and a tick that empties it is not, because a cast starts after the frame's
+  hits and before its ticks.
 - **The bar accrues Qi from every damaging hit or tick on the target, whether
   or not that event lands inside the DPS window.** The target takes it in
   game regardless of where the fight-timer window sits — a pre-pull one
@@ -966,21 +971,25 @@ alongside `totalDamage`, since it needs a hit's damage.
   capacity, refill, break length, post-break immunity and the index the
   formula reads off it are the chosen target's own data, next to its HP.
 - **A gate that keys on a Qi phase may instead key on a genuine fraction
-  threshold** (a `qiBelow` gate, alongside the phase itself wherever a phase
-  gate is authored): it holds once the bar's own fraction crosses under that
-  threshold, broken included — an in-game rule stated as a percentage reads
-  its own number this way, rather than through the compatibility phase
-  window's approximation of it.
+  threshold** (`qiBelow` or `qiAtMost`, alongside the phase itself wherever a
+  phase gate is authored): it holds while the bar's own fraction is under or at
+  most that threshold, and a broken bar reads fraction 0 — an in-game rule
+  stated as a percentage reads its own number this way, rather than through the
+  compatibility phase window's approximation of it.
 - **A run reports every damaging event that sits within `QI_EDGE_MARGIN_SEC`
   of a break edge and whose damage depends on which side it falls.** The event
   loop re-scores each such event once more, reading the Qi state of the frame
   across the edge through every gate it passes — buffs, mechanics, behaviours
   and the broken-target bonus alike, never a tag list — and sums the absolute
-  differences per skill and edge. A skill whose sum reaches
+  differences per skill and edge. A break is not known until the event that
+  opens it, so an event scored outside a break is re-scored against a broken
+  bar when it is scored and counted towards the start edge only once a break
+  opens within the margin after it. A skill whose sum reaches
   `QI_EDGE_MIN_SHARE_OF_TOTAL` of the run's total damage yields one structured
   `Result.qiEdgeWarnings` entry, rendered through the catalogue. The re-score
-  is read-only: it never writes the Qi bar, the status ledger, a meter or any
-  reported figure, and it adds no `runEngine` pass.
+  is read-only: it never writes the Qi bar, the status ledger, a meter, any
+  reported figure or the run's roll stream, it runs on detail runs only, and it
+  adds no `runEngine` pass.
 
 ## Procedural behaviour
 

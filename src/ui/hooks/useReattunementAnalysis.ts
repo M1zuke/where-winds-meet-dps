@@ -48,7 +48,6 @@ function receivedReattunement(
 export function useReattunementAnalysis(
   inputs: Inputs,
   selectedPieceId: string | null,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): ReattunementAnalysisResult {
   const [received, setReceived] = useState<ReceivedReattunement | null>(() =>
     receivedReattunement(retainedResponse("reattunement")),
@@ -63,8 +62,8 @@ export function useReattunementAnalysis(
 
   useEffect(() => {
     if (!selectedPieceId) return
-    postToDpsWorker({ kind: "reattunement", inputs, pieceId: selectedPieceId, baselineQiBreaks })
-  }, [inputs, selectedPieceId, baselineQiBreaks])
+    postToDpsWorker({ kind: "reattunement", inputs, pieceId: selectedPieceId })
+  }, [inputs, selectedPieceId])
 
   if (!selectedPieceId) return NO_SELECTION_RESULT
   return {

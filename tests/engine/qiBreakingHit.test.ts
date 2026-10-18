@@ -71,13 +71,30 @@ describe("the event that empties the Qi bar", () => {
   })
 })
 
+describe("the start-edge warning of a break nobody knew about yet", () => {
+  const inputs = inputsFor(EMPTYING_QI)
+
+  it("is computed on detail runs only", () => {
+    expect(simulateTimeline(inputs, {}).qiEdgeWarnings).toBeDefined()
+    expect(simulateTimeline(inputs, { collect: "totals" }).qiEdgeWarnings).toBeUndefined()
+  })
+
+  it("leaves a seeded run's roll stream and figures untouched", () => {
+    const detail = simulateTimeline(inputs, { seed: 7 })
+    const totals = simulateTimeline(inputs, { seed: 7, collect: "totals" })
+    expect(detail.qiEdgeWarnings).toBeDefined()
+    expect(detail.totalDamage).toBe(totals.totalDamage)
+    expect(detail.outcomeCounts).toEqual(totals.outcomeCounts)
+    expect(detail.qiBreaks).toEqual(totals.qiBreaks)
+  })
+})
+
 describe("the Qi bar's readings at the frame that empties it", () => {
   const bar = new QiBar(BAR, FPS)
   bar.apply(0, 400, "direct")
   const preHitFraction = bar.fractionAtFrame(60)
   const preHitBroken = bar.isBrokenAtFrame(60)
   bar.apply(60, 400, "direct")
-  const schedule = bar.schedule()
 
   it("reads the bar as it stood before the emptying event", () => {
     expect(preHitBroken).toBe(false)
@@ -89,22 +106,16 @@ describe("the Qi bar's readings at the frame that empties it", () => {
     expect(bar.fractionAtFrame(60)).toBe(0)
   })
 
-  it("schedules the start frame outside the break before the hit and inside it after", () => {
-    expect(schedule.isBroken(60 / FPS, "beforeHit")).toBe(false)
-    expect(schedule.isBroken(61 / FPS, "beforeHit")).toBe(true)
-    expect(schedule.isBroken(60 / FPS, "afterHit")).toBe(true)
-    expect(schedule.phaseAt(60 / FPS, "beforeHit")).not.toBe("exhausted")
-    expect(schedule.fractionAt(60 / FPS, "beforeHit")).toBeCloseTo(0.5, 9)
-    expect(schedule.fractionAt(60 / FPS, "afterHit")).toBe(0)
+  it("still reads the frame before the break as it stood", () => {
+    expect(bar.readerAtFrame(59).isBroken(0)).toBe(false)
+    expect(bar.readerAtFrame(59).fractionAt(0)).toBeCloseTo(0.5, 9)
   })
 
-  it("keeps the break end exclusive under both readings", () => {
+  it("keeps the break end exclusive", () => {
     const endFrame = 60 + 10 * FPS
-    for (const reading of ["beforeHit", "afterHit"] as const) {
-      expect(schedule.isBroken((endFrame - 1) / FPS, reading)).toBe(true)
-      expect(schedule.isBroken(endFrame / FPS, reading)).toBe(false)
-      expect(schedule.fractionAt(endFrame / FPS, reading)).toBe(1)
-    }
+    expect(bar.isBrokenAtFrame(endFrame - 1)).toBe(true)
+    expect(bar.isBrokenAtFrame(endFrame)).toBe(false)
+    expect(bar.fractionAtFrame(endFrame)).toBe(1)
   })
 })
 
@@ -121,49 +132,65 @@ const postQiStack: BuffModule = {
   effects: [],
 }
 
-describe("a grant caused by the event that empties the bar", () => {
+describe("a grant decided around the event that empties the bar", () => {
   const emptyingFrame = 60
-  const bar = new QiBar(BAR, FPS)
-  bar.apply(emptyingFrame, 800, "direct")
-  const schedule = bar.schedule()
   const emptyingSec = emptyingFrame / FPS
-  const nextFrameSec = (emptyingFrame + 1) / FPS
+  const sameFrameLaterSec = emptyingSec + SAME_FRAME_STEP_SEC
 
-  function engineWith(params: Record<string, unknown>, ...modules: BuffModule[]): BuffEngine {
-    const engine = new BuffEngine(params, modules, [])
-    engine.attachQiSchedule(schedule)
-    return engine
+  function halfSpentBar(): QiBar {
+    const bar = new QiBar(BAR, FPS)
+    bar.apply(0, 400, "direct")
+    return bar
+  }
+
+  function engineOver(bar: QiBar, ...modules: BuffModule[]): BuffEngine {
+    return new BuffEngine({}, bar, modules, [])
   }
 
   it("is decided against the bar before the event's Qi when it counts for that event", () => {
+    const bar = halfSpentBar()
     const engine = new BuffEngine(
       { breakingPoint: true, breakingPointTier: 5 },
+      bar,
       [],
       [disintegrationBuffDef()],
     )
-    engine.attachQiSchedule(schedule)
     engine.processDamageHitPreScore(emptyingSec)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, emptyingSec)).toBe(0)
-    engine.processDamageHitPreScore(nextFrameSec)
-    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, nextFrameSec)).toBe(1)
+    bar.apply(emptyingFrame, 400, "direct")
+    engine.processDamageHitPreScore(sameFrameLaterSec)
+    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, sameFrameLaterSec)).toBe(1)
   })
 
   it("sees the break when it is decided after the event's Qi", () => {
-    const engine = engineWith({}, postQiStack)
+    const bar = halfSpentBar()
+    const engine = engineOver(bar, postQiStack)
+    bar.apply(emptyingFrame, 400, "direct")
     engine.processDamageHitPostQi(emptyingSec)
-    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, nextFrameSec)).toBe(1)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, sameFrameLaterSec)).toBe(1)
+  })
+
+  it("misses the break when it is decided before the event's Qi", () => {
+    const bar = halfSpentBar()
+    const engine = engineOver(bar, postQiStack)
+    engine.processDamageHitPostQi(emptyingSec)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, sameFrameLaterSec)).toBe(0)
   })
 
   it("does not reach the event it was decided after, only the next one on its frame", () => {
-    const engine = engineWith({}, postQiStack)
+    const bar = halfSpentBar()
+    const engine = engineOver(bar, postQiStack)
+    bar.apply(emptyingFrame, 400, "direct")
     engine.processDamageHitPostQi(emptyingSec)
     expect(engine.getHistoricalBuffStacks(POST_QI_STACK, emptyingSec)).toBe(0)
-    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, emptyingSec + SAME_FRAME_STEP_SEC)).toBe(1)
+    expect(engine.getHistoricalBuffStacks(POST_QI_STACK, sameFrameLaterSec)).toBe(1)
   })
 
-  it("is not itself gated on the break by a damage-time read", () => {
-    const engine = engineWith({})
+  it("reads the break from the moment the event's Qi has applied", () => {
+    const bar = halfSpentBar()
+    const engine = engineOver(bar)
     expect(engine.qiBroken(emptyingSec)).toBe(false)
-    expect(engine.qiBroken(nextFrameSec)).toBe(true)
+    bar.apply(emptyingFrame, 400, "direct")
+    expect(engine.qiBroken(emptyingSec)).toBe(true)
   })
 })

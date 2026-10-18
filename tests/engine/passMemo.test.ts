@@ -19,7 +19,6 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
   const engineInputs = applySetBonuses(withDerivedStats(inputs))
   const baseline = runEngine(engineInputs)
   const baselineDps = baseline.dps
-  const baselineQiBreaks = baseline.qiBreaks
   const equippedPiece = engineInputs.inventory.find(
     (piece) => engineInputs.equipped[piece.slot] === piece.id,
   )
@@ -29,34 +28,18 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
   }))
   const jobs: Record<string, () => unknown> = {
     equippedDeltas: () =>
-      workerCompute.computeEquippedDeltas({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
+      workerCompute.computeEquippedDeltas({ reqId: 1, inputs: engineInputs, baselineDps }),
     dpsDeltas: () =>
       workerCompute.computeDpsDeltas({
         reqId: 1,
         inputs: engineInputs,
         baselineDps,
         pieceIds: engineInputs.inventory.map((piece) => piece.id),
-        baselineQiBreaks,
       }),
     ranking: () =>
-      workerCompute.computeRankingRequest({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
+      workerCompute.computeRankingRequest({ reqId: 1, inputs: engineInputs, baselineDps }),
     gearAnalysis: () =>
-      workerCompute.computeGearAnalysisRequest({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
+      workerCompute.computeGearAnalysisRequest({ reqId: 1, inputs: engineInputs, baselineDps }),
     arsenalTiles: () => workerCompute.computeArsenalTiles({ reqId: 1, inputs }),
     rotationDps: () =>
       workerCompute.computeRotationDps({ reqId: 1, inputs: engineInputs, options }),
@@ -80,37 +63,20 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
         inputs: engineInputs,
         baselineDps,
         pieceId,
-        baselineQiBreaks,
       })
     jobs.retunement = () =>
-      workerCompute.computeRetunement({
-        reqId: 1,
-        inputs: engineInputs,
-        pieceId,
-        baselineQiBreaks,
-      })
+      workerCompute.computeRetunement({ reqId: 1, inputs: engineInputs, pieceId })
     jobs.reattunement = () =>
-      workerCompute.computeReattunement({
-        reqId: 1,
-        inputs: engineInputs,
-        pieceId,
-        baselineQiBreaks,
-      })
+      workerCompute.computeReattunement({ reqId: 1, inputs: engineInputs, pieceId })
     jobs.gearSetChoices = () =>
       workerCompute.computeGearSetChoices({
         reqId: 1,
         inputs,
         target: { kind: "piece", pieceId },
         applyToGroup: true,
-        baselineQiBreaks,
       })
     jobs.wordMax = () =>
-      workerCompute.computeWordMax({
-        reqId: 1,
-        inputs: engineInputs,
-        piece: equippedPiece,
-        baselineQiBreaks,
-      })
+      workerCompute.computeWordMax({ reqId: 1, inputs: engineInputs, piece: equippedPiece })
   }
   return jobs
 }

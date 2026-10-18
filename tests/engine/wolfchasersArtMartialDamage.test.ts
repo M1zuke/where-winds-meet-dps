@@ -1,6 +1,6 @@
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { wolfchasersArtMartialDamageBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeSkill } from "../../src/engine/skill"
@@ -45,14 +45,14 @@ describe("Wolfchaser's Art martial-art damage — BuffEngine unit", () => {
   const skillReceivingBuff = () => makeSkill(CLASS, { name: "receiver", receives: [BUFF_ID] })
 
   it("adds allDamageBoost +10% from tier 3 on, for a skill that lists it in receives", () => {
-    const engine = new BuffEngine(TIER_3, [], [wolfchasersArtMartialDamageBuffDef()])
+    const engine = buffEngineWith(TIER_3, [], [wolfchasersArtMartialDamageBuffDef()])
     expect(engine.calculateDamageEffects(skillReceivingBuff(), 0).effects).toEqual([
       { statKey: "allDamageBoost", amount: 0.1 },
     ])
   })
 
   it("is off below tier 3", () => {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { wolfchasersArt: true, wolfchasersArtTier: 2 },
       [],
       [wolfchasersArtMartialDamageBuffDef()],
@@ -61,7 +61,7 @@ describe("Wolfchaser's Art martial-art damage — BuffEngine unit", () => {
   })
 
   it("does not affect a skill that does not list it in receives", () => {
-    const engine = new BuffEngine(TIER_3, [], [wolfchasersArtMartialDamageBuffDef()])
+    const engine = buffEngineWith(TIER_3, [], [wolfchasersArtMartialDamageBuffDef()])
     const unrelated = makeSkill(CLASS, { name: "unrelated", receives: [] })
     expect(engine.calculateDamageEffects(unrelated, 0).effects).toHaveLength(0)
   })

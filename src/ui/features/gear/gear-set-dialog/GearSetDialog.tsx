@@ -23,7 +23,6 @@ export type GearSetDialogTarget =
 interface Props {
   inputs: Inputs
   target: GearSetDialogTarget
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
   onApply(setId: string | null, applyToGroup: boolean): void
   onClose(): void
 }
@@ -53,7 +52,7 @@ function signedDps(delta: number): string {
   return `+${formatNumber(0, DPS_DIGITS)}`
 }
 
-export function GearSetDialog({ inputs, target, baselineQiBreaks, onApply, onClose }: Props) {
+export function GearSetDialog({ inputs, target, onApply, onClose }: Props) {
   const { t } = useI18n()
   const titleId = useId()
   const filterRef = useRef<HTMLInputElement | null>(null)
@@ -71,7 +70,7 @@ export function GearSetDialog({ inputs, target, baselineQiBreaks, onApply, onClo
     return bowSlot !== null ? { kind: "bow", slot: bowSlot } : null
   }, [pieceId, bowSlot, isEquipped])
   const groupApplies = applyToGroup && !isBow
-  const choices = useGearSetChoices(inputs, workerTarget, groupApplies, baselineQiBreaks)
+  const choices = useGearSetChoices(inputs, workerTarget, groupApplies)
 
   const levelText = t("common.levelShort").replace("{n}", String(target.piece.level))
   const slotLabel =

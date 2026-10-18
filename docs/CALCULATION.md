@@ -118,8 +118,7 @@ qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMulti
 - `player.qiIndex` and the broken-target bonus's own size are base-stat data,
   not engine literals — read next to the other per-level base-stat values.
 - docs/TIMELINE.md § "Qi bar" has the bar itself: where the state lives, the
-  break rules, and the schedule every earlier pass reads instead of the live
-  bar.
+  break rules and what every gate reads.
 
 ## Calculation rules
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { makeSkill } from "../../src/engine/skill"
@@ -13,7 +14,7 @@ const SHIELD_APPLIES_AFTER = 0.5
 const SHIELD_DURATION = 10
 
 function engineWithSet(armorSet?: string) {
-  return new BuffEngine(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
+  return buffEngineWith(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
 }
 
 function critDamageAt(engine: BuffEngine, time: number): number | undefined {

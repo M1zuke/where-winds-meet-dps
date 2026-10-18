@@ -8,7 +8,7 @@ import { defaultCombatSettings } from "../../src/engine/types"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeStep } from "../../src/engine/rotation"
 import { makeSkill } from "../../src/engine/skill"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { EngineRunOptions, Inputs } from "../../src/engine/types"
 import { builtinSkill, testRotation as makeRotation } from "../builtins"
@@ -56,14 +56,14 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
     expect(surgingWaves!.affectsAll).toBeUndefined()
 
     const dragonHeadHit = makeSkill("test", { name: "probe", receives: ["surgingWaves"] })
-    const engine = new BuffEngine({}, GLOBAL_BUFF_DEFS)
+    const engine = buffEngineWith({}, GLOBAL_BUFF_DEFS)
     engine.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engine.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.0125 * 8,
     })
 
-    const engineWithAllies = new BuffEngine({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
+    const engineWithAllies = buffEngineWith({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
     engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engineWithAllies.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",

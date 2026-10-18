@@ -448,7 +448,6 @@ function AppInner() {
                   customGraduationBuild={customGraduationBuild}
                   onChange={setInputs}
                   currentDps={result.dps}
-                  baselineQiBreaks={result.qiBreaks}
                 />
               }
             />

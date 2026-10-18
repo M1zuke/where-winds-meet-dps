@@ -1,7 +1,7 @@
 // Soul Shaken (hand-ported in `src/engine/buffs/mechanics.ts` since it lives
 // in the `debuffDefinitions` bucket the extractor doesn't read).
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { makeSkill } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
@@ -30,7 +30,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
   const TIER_6 = { wolfchasersArt: true, wolfchasersArtTier: 6 }
 
   it("SpearHeavy (5-hit cast) ramps to 5 stacks ⇒ +50% all-damage on Bleed Tick", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy", 0, { hitCount: 5, castTime: 1.5 }, false, [
       "soulShaken",
     ])
@@ -39,7 +39,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("does not affect an unrelated skill", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy", 0, { hitCount: 5, castTime: 1.5 }, false, [
       "soulShaken",
     ])
@@ -49,21 +49,21 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("SpearHeavy grants a stack with no wolfchasersArt requirement — the Drifting Thrust path is ungated", () => {
-    const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith({}, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy1Hit", 0, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 0.1)
     expect(allDamageBoostSum(result.effects)).toBeCloseTo(0.1, 6)
   })
 
   it("SpearQ grants no stack without wolfchasersArt tier 6 — the Sober Sorrow path is gated", () => {
-    const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith({}, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearQ", 0, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 0.1)
     expect(result.effects).toHaveLength(0)
   })
 
   it("SpearHeavy's ungated grant and SpearQ's gated attempt still write into the same Soul Shaken stack pool", () => {
-    const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith({}, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy1Hit", 0, {}, false, ["soulShaken"])
     engine.processSkillCast("cast:spearQ", 1, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 1.1)
@@ -71,7 +71,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("SpearHeavy and SpearQ casts stack into the same Soul Shaken window", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy1Hit", 0, {}, false, ["soulShaken"])
     engine.processSkillCast("cast:spearQ", 1, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 1.1)
@@ -79,14 +79,14 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("SpearQ grants a stack at wolfchasersArt tier 6 even when Soul Shaken isn't already active", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearQ", 0, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 0.1)
     expect(allDamageBoostSum(result.effects)).toBeCloseTo(0.1, 6)
   })
 
   it("a single 5-hit SpearQ cast at wolfchasersArt tier 6 stacks Soul Shaken to 5 (+50%)", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearQ", 0, { hitCount: 5, castTime: 1.417 }, false, [
       "soulShaken",
     ])
@@ -95,7 +95,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("a later SpearQ cast renews Soul Shaken instead of letting the window lapse", () => {
-    const engine = new BuffEngine(TIER_6, [], [soulShakenBuffDef()])
+    const engine = buffEngineWith(TIER_6, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearQ", 0, { hitCount: 5, castTime: 1.417 }, false, [
       "soulShaken",
     ])

@@ -117,7 +117,6 @@ describe("the silkbind Jade drone family deals no Qi inside the post-refill immu
     bar.apply(0, 800, "direct")
     // Refill lands at frame 600 (10 s); the direct-hit immunity runs to 840 (14 s).
     bar.apply(600 + 30, 50, "direct")
-    const schedule = bar.schedule()
-    expect(schedule.fractionAt((600 + 30) / FPS)).toBe(1)
+    expect(bar.fractionAt((600 + 30) / FPS)).toBe(1)
   })
 })

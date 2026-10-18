@@ -23,6 +23,18 @@ describe("events sharing a frame", () => {
     ).toEqual(["meter", "deferredGrant", "hit", "castStart"])
   })
 
+  it("settle a Qi-gated grant after the frame's hits and ahead of the cast start", () => {
+    const queue = new EventQueue<QueuedEvent>()
+    queue.push({ kind: "castStart", frame: 50 })
+    queue.push({ kind: "grantAfterHits", frame: 50, subFrame: 50 })
+    queue.push({ kind: "hit", frame: 50 })
+    expect([queue.pop(), queue.pop(), queue.pop()].map((event) => event?.kind)).toEqual([
+      "hit",
+      "grantAfterHits",
+      "castStart",
+    ])
+  })
+
   it("decide a release gate after the cast start and ahead of the tick launches on that frame", () => {
     const queue = new EventQueue<QueuedEvent>()
     queue.push({ kind: "tickLaunch", frame: 50 })

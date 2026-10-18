@@ -366,17 +366,8 @@ export type OutcomeCounts = Record<HitOutcome, number>
 export interface EngineRunOptions {
   seed?: number
   collect?: "full" | "totals"
-  // A prior run's own converged Qi breaks (docs/UI.md § "The rules",
-  // "warm-start") — seeds the first pass of the fixed-point iteration instead
-  // of the rotation's authored window.
-  qiScheduleSeedBreaks?: readonly {
-    startFrame: number
-    endFrame: number
-    immuneUntilFrame: number
-  }[]
-  // Test-harness only: pins the Qi schedule to exactly these windows for a
-  // single pass, no fixed-point iteration. Never read from `Inputs`, storage
-  // or the UI.
+  // Test-harness only: every Qi gate reads exactly these windows instead of the
+  // simulated bar. Never read from `Inputs`, storage or the UI.
   fixedQiBreaks?: readonly QiBreakWindow[]
   qiDamageLog?: QiDamageLog
 }
@@ -433,8 +424,6 @@ export interface Result {
   qiBreaks?: readonly { startSec: number; endSec: number }[]
   qiTrace?: QiTrace
   qiDamageLog?: QiDamageLog
-  // How many fixed-point passes the simulated schedule took to converge.
-  qiIterations?: number
   casts?: RotationCast[]
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { landDamageHit } from "../helpers/landDamageHit"
+import { buffEngineWith, DEFAULT_QI_BREAK_WINDOW, scriptedQiBar } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
+import type { QiReader } from "../../src/engine/qiBar"
 import { makeSkill } from "../../src/engine/skill"
 import { stat } from "../../src/engine/effects/effect"
 
@@ -32,13 +34,13 @@ const boostDef: BuffModule = {
   effects: [stat("allDamageBoost", 0.15)],
 }
 
-const PHASED = { belowQiTime: 20, qiBreakTime: 25, bossBreakDuration: 10 }
+const PHASED = scriptedQiBar(DEFAULT_QI_BREAK_WINDOW)
 
 const qualifier = makeSkill("test", { name: "Qualifier", receives: [POOL, BOOST] })
 const bystander = makeSkill("test", { name: "Bystander" })
 
-function engineWithPool(params: Record<string, unknown> = {}): BuffEngine {
-  return new BuffEngine(params, [poolDef, boostDef])
+function engineWithPool(qiReader?: QiReader): BuffEngine {
+  return buffEngineWith({}, [poolDef, boostDef], [], qiReader)
 }
 
 function boostAmount(engine: BuffEngine, time: number): number | undefined {

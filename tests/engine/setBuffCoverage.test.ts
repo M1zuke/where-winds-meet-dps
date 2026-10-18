@@ -3,7 +3,8 @@ import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { PROP } from "../../src/data/skills/ids"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkill } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -77,9 +78,11 @@ describe("every Martial Art skill activates Jadeware", () => {
 
 describe("Jadeware pays out both bonuses for the whole window", () => {
   const engineWithSet = (armorSet: string) =>
-    new BuffEngine(
-      { classId: "bellstrikeSplendor", armorSet, qiBreakTime: 25, bossBreakDuration: 10 },
+    buffEngineWith(
+      { classId: "bellstrikeSplendor", armorSet },
       buffDefsForClass("bellstrikeSplendor"),
+      [],
+      exhaustedFrom(25, 10),
     )
 
   const contributionAt = (engine: BuffEngine, time: number, damageSoFar = 0) => {
@@ -101,28 +104,16 @@ describe("Jadeware pays out both bonuses for the whole window", () => {
   })
 
   it("contributes both bonuses well outside any break, once the target has taken any Qi damage", () => {
-    const engine = new BuffEngine(
-      {
-        classId: "bellstrikeSplendor",
-        armorSet: "jadeware",
-        qiBreakTime: 100,
-        bossBreakDuration: 10,
-        targetMaxHp: 100,
-      },
+    const engine = buffEngineWith(
+      { classId: "bellstrikeSplendor", armorSet: "jadeware", targetMaxHp: 100 },
       buffDefsForClass("bellstrikeSplendor"),
     )
     expect(contributionAt(engine, 25.5, 1)).toBeCloseTo(0.175, 10)
   })
 
   it("contributes nothing outside any break while the target is still at full Qi", () => {
-    const engine = new BuffEngine(
-      {
-        classId: "bellstrikeSplendor",
-        armorSet: "jadeware",
-        qiBreakTime: 100,
-        bossBreakDuration: 10,
-        targetMaxHp: 100,
-      },
+    const engine = buffEngineWith(
+      { classId: "bellstrikeSplendor", armorSet: "jadeware", targetMaxHp: 100 },
       buffDefsForClass("bellstrikeSplendor"),
     )
     expect(contributionAt(engine, 25.5, 0)).toBeUndefined()

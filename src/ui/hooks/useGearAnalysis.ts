@@ -17,11 +17,7 @@ interface ReceivedAnalysis {
 
 const NO_ROWS: GearSlotAnalysisRow[] = []
 
-export function useGearAnalysis(
-  engineInputs: Inputs,
-  baselineDps: number,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
-): GearAnalysisResult {
+export function useGearAnalysis(engineInputs: Inputs, baselineDps: number): GearAnalysisResult {
   const [received, setReceived] = useState<ReceivedAnalysis | null>(
     () => retainedResponse("gearAnalysis") ?? null,
   )
@@ -34,8 +30,8 @@ export function useGearAnalysis(
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "gearAnalysis", inputs: engineInputs, baselineDps, baselineQiBreaks })
-  }, [engineInputs, baselineDps, baselineQiBreaks])
+    postToDpsWorker({ kind: "gearAnalysis", inputs: engineInputs, baselineDps })
+  }, [engineInputs, baselineDps])
 
   return {
     rows: received?.rows ?? NO_ROWS,

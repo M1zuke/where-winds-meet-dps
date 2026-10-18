@@ -11,7 +11,8 @@ import { makeDebuff } from "../../src/engine/debuff"
 import { DEBUFF, SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import type { StatusView } from "../../src/engine/ledger"
 import type { Inputs } from "../../src/engine/types"
@@ -145,7 +146,7 @@ describe("Mistwing — target health penetration", () => {
   }
 
   function penetrationEngine(inebriate: boolean): BuffEngine {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { mistwing: true, mistwingTier: 6, targetMaxHp: TARGET_MAX_HP, classId: CLASS },
       buffDefsForClass(CLASS),
     )

@@ -9,7 +9,6 @@ import styles from "./GearAnalysisPanel.module.scss"
 interface Props {
   engineInputs: Inputs
   currentDps: number
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 type GainKey = "retuneGain" | "reattuneGain" | "relayGain"
@@ -69,13 +68,9 @@ function RankCell({ gain, rank }: { gain: number | null; rank: number | undefine
   )
 }
 
-export function GearAnalysisPanel({ engineInputs, currentDps, baselineQiBreaks }: Props) {
+export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
   const { t } = useI18n()
-  const { rows, allSlotsLoss, isPending } = useGearAnalysis(
-    engineInputs,
-    currentDps,
-    baselineQiBreaks,
-  )
+  const { rows, allSlotsLoss, isPending } = useGearAnalysis(engineInputs, currentDps)
 
   if (rows.length === 0) {
     return (

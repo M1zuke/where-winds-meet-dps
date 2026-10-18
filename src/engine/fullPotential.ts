@@ -1,13 +1,11 @@
 import type { EngineRunOptions, GearLevel, GearPiece, GearSlot, Inputs } from "./types"
-import { runEngine } from "./dps"
+import { runEngine, TOTALS_RUN } from "./dps"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { getWordSpecs } from "./itemRanking"
 import { attunementMax, attunementsFor } from "./attunements"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
-import { engineRunOptionsFrom } from "./qiBar"
-import { FPS } from "./timeline"
 
 function slotEmptyBaseline(slot: GearSlot, inputs: Inputs): Inputs {
   const equippedId = inputs.equipped[slot]
@@ -29,7 +27,6 @@ function bestRetunedVariant(
   const baseRun = runEngine(applyPieceContribution(baseline, piece, +1), options)
   let bestPiece = piece
   let bestDps = baseRun.dps
-  const sweepOptions = engineRunOptionsFrom(baseRun.qiBreaks, FPS)
 
   for (const slotIndex of rerollableSlots(piece)) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -42,7 +39,7 @@ function bestRetunedVariant(
         index === slotIndex ? { word, value, retuned: true } : existing,
       ) as GearPiece["words"]
       const candidate: GearPiece = { ...piece, words: swappedWords }
-      const dps = runEngine(applyPieceContribution(baseline, candidate, +1), sweepOptions).dps
+      const dps = runEngine(applyPieceContribution(baseline, candidate, +1), options).dps
       if (dps > bestDps) {
         bestDps = dps
         bestPiece = candidate
@@ -65,14 +62,13 @@ function applyBestAttunement(
   const baseRun = runEngine(applyPieceContribution(baseline, piece, +1), options)
   let bestPiece = piece
   let bestDps = baseRun.dps
-  const sweepOptions = engineRunOptionsFrom(baseRun.qiBreaks, FPS)
   for (const opt of opts) {
     const candidate: GearPiece = {
       ...piece,
       attunement: opt.id,
       attunementValue: attunementMax(opt, level),
     }
-    const dps = runEngine(applyPieceContribution(baseline, candidate, +1), sweepOptions).dps
+    const dps = runEngine(applyPieceContribution(baseline, candidate, +1), options).dps
     if (dps > bestDps) {
       bestDps = dps
       bestPiece = candidate
@@ -94,7 +90,7 @@ export interface FullPotentialDps {
 export function getFTPiece(
   piece: GearPiece,
   inputs: Inputs,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
 ): FullPotential {
   const baseline = slotEmptyBaseline(piece.slot, inputs)
   const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
@@ -107,30 +103,21 @@ export function getFTPiece(
     }
   }
 
-  const referenceRun = runEngine(applyPieceContribution(baseline, piece, +1), options)
-  const sweepOptions = engineRunOptionsFrom(referenceRun.qiBreaks, FPS)
-
-  const retuned = bestRetunedVariant(piece, inputs, baseline, piece.level, sweepOptions)
-  const retunedDps = runEngine(applyPieceContribution(baseline, retuned, +1), sweepOptions).dps
+  const retuned = bestRetunedVariant(piece, inputs, baseline, piece.level, options)
+  const retunedDps = runEngine(applyPieceContribution(baseline, retuned, +1), options).dps
   const relayed = bestRetunedVariant(
     maxRelayedClone(piece, inputs, breakthroughLevel),
     inputs,
     baseline,
     breakthroughLevel,
-    sweepOptions,
+    options,
   )
-  const relayedDps = runEngine(applyPieceContribution(baseline, relayed, +1), sweepOptions).dps
+  const relayedDps = runEngine(applyPieceContribution(baseline, relayed, +1), options).dps
   const relayWins = relayedDps > retunedDps
   const level = relayWins ? breakthroughLevel : piece.level
 
   return {
-    piece: applyBestAttunement(
-      relayWins ? relayed : retuned,
-      inputs,
-      baseline,
-      level,
-      sweepOptions,
-    ),
+    piece: applyBestAttunement(relayWins ? relayed : retuned, inputs, baseline, level, options),
     level,
   }
 }
@@ -138,7 +125,7 @@ export function getFTPiece(
 export function ftDpsWhenEquipped(
   piece: GearPiece,
   inputs: Inputs,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
 ): FullPotentialDps {
   const baseline = slotEmptyBaseline(piece.slot, inputs)
   const ft = getFTPiece(piece, inputs, options)
@@ -151,7 +138,7 @@ export function ftDpsWhenEquipped(
 export function ftDpsWithSlotEmpty(
   slot: GearSlot,
   inputs: Inputs,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
 ): number {
   return runEngine(slotEmptyBaseline(slot, inputs), options).dps
 }

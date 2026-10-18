@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { landDamageHit } from "../helpers/landDamageHit"
 import { disintegrationBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
@@ -15,20 +15,21 @@ function statAmount(effects: { statKey: string; amount: number }[], statKey: str
 
 const BELOW_PERFECT_DODGE = { breakingPoint: true, breakingPointTier: 5 }
 const AT_PERFECT_DODGE = { breakingPoint: true, breakingPointTier: 6 }
-const EXHAUSTED_FROM_START = { qiBreakTime: 0, bossBreakDuration: 100 }
+const EXHAUSTED_FROM_START = exhaustedFrom(0, 100)
 
 describe("Disintegration — damage route", () => {
   it("gains no stack from a damaging hit outside the Exhausted phase", () => {
-    const engine = new BuffEngine(BELOW_PERFECT_DODGE, [], [disintegrationBuffDef()])
+    const engine = buffEngineWith(BELOW_PERFECT_DODGE, [], [disintegrationBuffDef()])
     landDamageHit(engine, 1)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 1)).toBe(0)
   })
 
   it("gains one stack per damaging hit inside the Exhausted phase", () => {
-    const engine = new BuffEngine(
-      { ...BELOW_PERFECT_DODGE, ...EXHAUSTED_FROM_START },
+    const engine = buffEngineWith(
+      BELOW_PERFECT_DODGE,
       [],
       [disintegrationBuffDef()],
+      EXHAUSTED_FROM_START,
     )
     landDamageHit(engine, 0.1)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0.1)).toBe(1)
@@ -37,20 +38,22 @@ describe("Disintegration — damage route", () => {
   })
 
   it("stops stacking at five", () => {
-    const engine = new BuffEngine(
-      { ...BELOW_PERFECT_DODGE, ...EXHAUSTED_FROM_START },
+    const engine = buffEngineWith(
+      BELOW_PERFECT_DODGE,
       [],
       [disintegrationBuffDef()],
+      EXHAUSTED_FROM_START,
     )
     for (let hit = 0; hit < 8; hit++) landDamageHit(engine, hit * 0.01)
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0.07)).toBe(5)
   })
 
   it("holds a stack for five seconds", () => {
-    const engine = new BuffEngine(
-      { ...BELOW_PERFECT_DODGE, ...EXHAUSTED_FROM_START },
+    const engine = buffEngineWith(
+      BELOW_PERFECT_DODGE,
       [],
       [disintegrationBuffDef()],
+      EXHAUSTED_FROM_START,
     )
     landDamageHit(engine, 0)
     expect(engine.isBuffActiveAtTime(BUFF.disintegration, 4.9)).toBe(true)
@@ -60,30 +63,31 @@ describe("Disintegration — damage route", () => {
 
 describe("Disintegration — Perfect Dodge trigger route", () => {
   it("a Perfect Dodge at the Perfect Dodge tier adds 5 stacks in any (normal) phase", () => {
-    const engine = new BuffEngine(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
+    const engine = buffEngineWith(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
     engine.processSkillCast("cast:perfectDodge", 0, {}, false, [BUFF.disintegration])
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 0)).toBe(5)
   })
 
   it("a second Perfect Dodge inside the 15 s window adds nothing", () => {
-    const engine = new BuffEngine(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
+    const engine = buffEngineWith(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
     engine.processSkillCast("cast:perfectDodge", 0, {}, false, [BUFF.disintegration])
     engine.processSkillCast("cast:perfectDodge", 1, {}, false, [BUFF.disintegration])
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 1.5)).toBe(5)
   })
 
   it("a Perfect Dodge after the 15 s window grants 5 stacks again", () => {
-    const engine = new BuffEngine(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
+    const engine = buffEngineWith(AT_PERFECT_DODGE, [], [disintegrationBuffDef()])
     engine.processSkillCast("cast:perfectDodge", 0, {}, false, [BUFF.disintegration])
     engine.processSkillCast("cast:perfectDodge", 16, {}, false, [BUFF.disintegration])
     expect(engine.getHistoricalBuffStacks(BUFF.disintegration, 16.5)).toBe(5)
   })
 
   it("below the Perfect Dodge tier, a Perfect Dodge adds no stacks and does not refresh an existing window", () => {
-    const engine = new BuffEngine(
-      { ...BELOW_PERFECT_DODGE, ...EXHAUSTED_FROM_START },
+    const engine = buffEngineWith(
+      BELOW_PERFECT_DODGE,
       [],
       [disintegrationBuffDef()],
+      EXHAUSTED_FROM_START,
     )
     landDamageHit(engine, 0)
     engine.processSkillCast("cast:perfectDodge", 3, {}, false, [BUFF.disintegration])
@@ -94,10 +98,11 @@ describe("Disintegration — Perfect Dodge trigger route", () => {
 
 describe("Disintegration — per-stack magnitude", () => {
   it("reaches the panel as physical penetration and crit damage boost, scaling per stack", () => {
-    const engine = new BuffEngine(
-      { ...BELOW_PERFECT_DODGE, ...EXHAUSTED_FROM_START },
+    const engine = buffEngineWith(
+      BELOW_PERFECT_DODGE,
       [],
       [disintegrationBuffDef()],
+      EXHAUSTED_FROM_START,
     )
     landDamageHit(engine, 0)
     const oneStack = engine.calculateDamageEffects(anySkill(), 0)

@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { defineBuff } from "../../src/definitions/skills/buffDef"
-import { warmStartQiSchedule } from "../../src/engine/qiBar"
 import { stat } from "../../src/engine/effects/effect"
 import { blossomBarrage } from "../../src/data/innerWays/blossomBarrage"
 import { BUFF } from "../../src/data/skills/buffs/ids"
-
-const FPS = 60
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 
 const lateGrant = defineBuff({
   id: "lateGrant",
@@ -31,7 +29,7 @@ function cast(buffs: BuffEngine, ids: string[], props: Record<string, number> = 
 
 describe("a grant that lands after the cast's last hit", () => {
   it("opens that long after the last landed hit instead of at the cast's start", () => {
-    const buffs = new BuffEngine({}, [lateGrant])
+    const buffs = buffEngineWith({}, [lateGrant])
     cast(buffs, ["lateGrant"], { lastHitSec: 0.8, castTime: 1.5 })
     expect(buffs.isBuffActiveAtTime("lateGrant", 10.82)).toBe(false)
     expect(buffs.isBuffActiveAtTime("lateGrant", 10.84)).toBe(true)
@@ -40,13 +38,13 @@ describe("a grant that lands after the cast's last hit", () => {
   })
 
   it("opens at the cast's start when the cast landed no hit", () => {
-    const buffs = new BuffEngine({}, [lateGrant])
+    const buffs = buffEngineWith({}, [lateGrant])
     cast(buffs, ["lateGrant"], { castTime: 1.5 })
     expect(buffs.isBuffActiveAtTime("lateGrant", 10.01)).toBe(true)
   })
 
   it("yields to a grant on the cast's end", () => {
-    const buffs = new BuffEngine({}, [castEndGrant])
+    const buffs = buffEngineWith({}, [castEndGrant])
     cast(buffs, ["castEndGrant"], { lastHitSec: 0.8, castTime: 1.5 })
     expect(buffs.isBuffActiveAtTime("castEndGrant", 11.4)).toBe(false)
     expect(buffs.isBuffActiveAtTime("castEndGrant", 11.6)).toBe(true)
@@ -61,7 +59,7 @@ describe("a grant that lands after the cast's last hit", () => {
       cooldown: 1,
       effects: [],
     })
-    const buffs = new BuffEngine({}, [cooledDown])
+    const buffs = buffEngineWith({}, [cooledDown])
     cast(buffs, ["cooledDown"], { lastHitSec: 0 }, 10)
     cast(buffs, ["cooledDown"], { lastHitSec: 0 }, 10.5)
     expect(buffs.isBuffActiveAtTime("cooledDown", 15.2)).toBe(false)
@@ -86,16 +84,7 @@ describe("one grant dispelling or blocking another", () => {
     dispelsOnGrant: ["plain"],
     effects: [stat("allDamageBoost", 0.15)],
   })
-  const engine = () => {
-    const buffs = new BuffEngine({}, [plain, supreme])
-    buffs.attachQiSchedule(
-      warmStartQiSchedule(
-        [{ startFrame: 15 * FPS, endFrame: 30 * FPS, immuneUntilFrame: 30 * FPS }],
-        FPS,
-      ),
-    )
-    return buffs
-  }
+  const engine = () => buffEngineWith({}, [plain, supreme], [], exhaustedFrom(15, 15))
 
   it("a later grant of the dispelling one ends the window of the other where it lands", () => {
     const buffs = engine()
@@ -126,7 +115,7 @@ describe("one grant dispelling or blocking another", () => {
 
 describe("Blossom Barrage's Combo", () => {
   const umbrellaCast = (tier: number) => {
-    const buffs = new BuffEngine(
+    const buffs = buffEngineWith(
       { blossomBarrage: true, blossomBarrageTier: tier },
       blossomBarrage.buffDefs ?? [],
     )

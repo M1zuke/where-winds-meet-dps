@@ -1,12 +1,10 @@
-import { runEngine } from "./dps"
+import { runEngine, TOTALS_RUN } from "./dps"
 import { applyPieceContribution, maxRelayedClone } from "./gearStats"
 import { getWordSpecs } from "./itemRanking"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
 import { attunementMax, attunementsFor } from "./attunements"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import { engineRunOptionsFrom } from "./qiBar"
-import { FPS } from "./timeline"
 import { GEAR_SLOTS } from "./types"
 import type { EngineRunOptions, GearLevel, GearPiece, GearSlot, Inputs } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
@@ -26,20 +24,12 @@ function equippedPiece(inputs: Inputs, slot: GearSlot): GearPiece | null {
   return inputs.inventory.find((piece) => piece.id === equippedId) ?? null
 }
 
-function dpsWithPieceRun(
-  slotEmpty: Inputs,
-  piece: GearPiece,
-  options: EngineRunOptions | undefined,
-) {
-  return runEngine(applyPieceContribution(slotEmpty, piece, +1), options)
-}
-
 function dpsWithPiece(
   slotEmpty: Inputs,
   piece: GearPiece,
   options: EngineRunOptions | undefined,
 ): number {
-  return dpsWithPieceRun(slotEmpty, piece, options).dps
+  return runEngine(applyPieceContribution(slotEmpty, piece, +1), options).dps
 }
 
 function bestRetuneDps(
@@ -104,7 +94,7 @@ function relayedDps(
 export function computeAllSlotsUnequipLoss(
   inputs: Inputs,
   baselineDps: number,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
 ): number {
   const pieces = GEAR_SLOTS.map((slot) => equippedPiece(inputs, slot)).filter(
     (piece): piece is GearPiece => piece !== null,
@@ -120,7 +110,7 @@ export function computeAllSlotsUnequipLoss(
 export function computeGearAnalysis(
   inputs: Inputs,
   baselineDps: number,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
   slots: readonly GearSlot[] = GEAR_SLOTS,
 ): GearSlotAnalysisRow[] {
   const pool = poolForClass(inputs.classId)
@@ -141,16 +131,14 @@ export function computeGearAnalysis(
 
     const slotEmpty = applyPieceContribution(inputs, piece, -1)
     const gainOver = (dps: number | null) => (dps === null ? null : dps - baselineDps)
-    const equipRun = dpsWithPieceRun(slotEmpty, piece, options)
-    const slotOptions = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
 
     return {
       slot,
       pieceId: piece.id,
-      retuneGain: gainOver(bestRetuneDps(slotEmpty, piece, pool, inputs, slotOptions)),
-      reattuneGain: gainOver(bestReattuneDps(slotEmpty, piece, inputs.classId, slotOptions)),
-      relayGain: gainOver(relayedDps(slotEmpty, piece, inputs, breakthroughLevel, slotOptions)),
-      unequipLoss: baselineDps - runEngine(slotEmpty, slotOptions).dps,
+      retuneGain: gainOver(bestRetuneDps(slotEmpty, piece, pool, inputs, options)),
+      reattuneGain: gainOver(bestReattuneDps(slotEmpty, piece, inputs.classId, options)),
+      relayGain: gainOver(relayedDps(slotEmpty, piece, inputs, breakthroughLevel, options)),
+      unequipLoss: baselineDps - runEngine(slotEmpty, options).dps,
     }
   })
 }

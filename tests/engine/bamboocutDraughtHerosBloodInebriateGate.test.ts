@@ -10,7 +10,8 @@ import { makeHit, makeSkill } from "../../src/engine/skill"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { deepdazeEntryTriggers } from "../../src/data/skills/bamboocut-draught/buffs/deepdazeEntry"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { herosBloodInebriate } from "../../src/data/skills/bamboocut-draught/heros-blood-inebriate"
 import type { Inputs } from "../../src/engine/types"
@@ -97,7 +98,7 @@ describe("Hero's Blood - Inebriate cannot trigger Abrasion, only at 200+ Binge P
   }
 
   function engineWithBinge(stacks: number): BuffEngine {
-    const engine = new BuffEngine({ classId: "bamboocutDraught" }, [
+    const engine = buffEngineWith({ classId: "bamboocutDraught" }, [
       bingePointsStandIn,
       ...buffDefsForClass("bamboocutDraught"),
     ])

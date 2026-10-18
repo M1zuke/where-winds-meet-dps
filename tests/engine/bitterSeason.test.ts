@@ -23,7 +23,7 @@ import { testRotation as makeRotation } from "../builtins"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import type { Inputs } from "../../src/engine/types"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { DEFAULT_QI_BREAK_WINDOW } from "../helpers/qiBars"
 
 interface TrackerEvent {
   kind: "hit" | "extension"

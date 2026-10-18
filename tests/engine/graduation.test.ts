@@ -13,7 +13,6 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
 import { engineRunOptionsSharingQiOf } from "../../src/engine/qiBar"
-import { FPS } from "../../src/engine/timeline"
 import {
   followedGraduationBuild,
   followedGraduationBuildAmong,
@@ -377,17 +376,14 @@ function prep(inputs: Inputs): Inputs {
 
 function ratedOnBenchmarkQi(inputs: Inputs): Result {
   const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
-  return runEngine(
-    prep(graduationRatedInputs(inputs)!),
-    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
-  )
+  return runEngine(prep(graduationRatedInputs(inputs)!), engineRunOptionsSharingQiOf(benchmarkRun))
 }
 
 function relayedOnBenchmarkQi(inputs: Inputs): Result {
   const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
   return runEngine(
     prep(graduationInputs(inputs, "relayed")!),
-    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
+    engineRunOptionsSharingQiOf(benchmarkRun),
   )
 }
 
@@ -396,8 +392,7 @@ describe("the rated side shares the benchmark's Qi", () => {
     const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
 
     expect(
-      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun, FPS))
-        .dps,
+      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun)).dps,
     ).toBe(benchmarkRun.dps)
   })
 
@@ -409,10 +404,6 @@ describe("the rated side shares the benchmark's Qi", () => {
     expect(ratedOnBenchmarkQiRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
     expect(ratedOnOwnQi.qiBreaks).not.toEqual(benchmarkRun.qiBreaks)
     expect(ratedOnBenchmarkQiRun.dps).not.toBe(ratedOnOwnQi.dps)
-  })
-
-  it("converges the rated run in one pass", () => {
-    expect(ratedOnBenchmarkQi(FOLLOWING).qiIterations).toBe(1)
   })
 
   it("leaves a run given no Qi damage log simulating its own bar", () => {

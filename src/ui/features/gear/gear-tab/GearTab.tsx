@@ -47,7 +47,6 @@ interface Props {
   customGraduationBuild: CustomGraduationBuild | null
   onChange(next: Inputs): void
   currentDps: number
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 export function GearTab({
@@ -57,7 +56,6 @@ export function GearTab({
   customGraduationBuild,
   onChange,
   currentDps,
-  baselineQiBreaks,
 }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -90,14 +88,9 @@ export function GearTab({
 
   const isEquipped = !!selectedPiece && equipped[selectedPiece.slot] === selectedPiece.id
 
-  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
+  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps)
   const previewPieceId = selectedPiece && !isEquipped ? selectedPiece.id : null
-  const previewDelta = useSelectedPieceDelta(
-    engineInputs,
-    currentDps,
-    previewPieceId,
-    baselineQiBreaks,
-  )
+  const previewDelta = useSelectedPieceDelta(engineInputs, currentDps, previewPieceId)
   const previewMatches = previewDelta.forPieceId === previewPieceId
   const selectedDelta = !selectedPiece
     ? undefined
@@ -111,11 +104,11 @@ export function GearTab({
     : previewDelta.isPending || !previewMatches
 
   const retuneTargetId = selectedPiece?.id ?? null
-  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
+  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId)
   const retuneRowsMatch = retunement.forPieceId === retuneTargetId
-  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
+  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId)
   const reattuneOptsMatch = reattunement.forPieceId === retuneTargetId
-  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece, baselineQiBreaks)
+  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece)
   const wordMaxRowsMatch = wordMax.forPieceId === (selectedPiece?.id ?? null)
 
   function commitGearChange(nextInventory: GearPiece[], nextEquipped: EquippedSlots): void {
@@ -374,11 +367,7 @@ export function GearTab({
             />
             <SubTabPanel>
               {sub === "analysis" && (
-                <GearAnalysisPanel
-                  engineInputs={engineInputs}
-                  currentDps={currentDps}
-                  baselineQiBreaks={baselineQiBreaks}
-                />
+                <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
               )}
               {sub === "inventory" && (
                 <GearInventoryPanel
@@ -390,7 +379,6 @@ export function GearTab({
                   onClearSlotFilter={() => setSelectedSlot(null)}
                   engineInputs={engineInputs}
                   currentDps={currentDps}
-                  baselineQiBreaks={baselineQiBreaks}
                 />
               )}
             </SubTabPanel>
@@ -411,7 +399,6 @@ export function GearTab({
         <GearSetDialog
           inputs={configuredInputs}
           target={setDialogTarget}
-          baselineQiBreaks={baselineQiBreaks}
           onApply={applySetChoice}
           onClose={() => setSetDialogOpen(false)}
         />

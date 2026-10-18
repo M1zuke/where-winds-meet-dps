@@ -78,10 +78,12 @@ describe("a stored Qi break override no longer changes what the engine runs", ()
     expect(after).toBe(before)
   })
 
-  it("every run iterates the simulated Qi bar — no single-pass manual mode exists", () => {
+  it("every run breaks where its own damage empties the bar, never at the stored window", () => {
     const override = { startSec: 30, durationSec: 12, lowQiLeadSec: 3 }
     const imported = importProfile(JSON.stringify(profileFileWith(override)))
     const result = runEngine(engineInputsFrom(imported.inputs))
-    expect(result.qiIterations).toBeGreaterThanOrEqual(2)
+    expect(result.qiBreaks).toBeDefined()
+    expect(result.qiBreaks!.some((qiBreak) => qiBreak.startSec === override.startSec)).toBe(false)
+    expect(result.qiBreakWindow?.startSec).toBe(result.qiBreaks![0]?.startSec)
   })
 })

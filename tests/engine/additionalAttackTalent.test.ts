@@ -1,6 +1,6 @@
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { computeSkillDamage } from "../../src/engine/formula"
@@ -22,7 +22,7 @@ function skill(receives: string[]) {
 }
 
 function fixedDamagePctBonusAt(breakthrough: number, receives: string[]): number {
-  const engine = new BuffEngine({ breakthrough }, [], umbraOwnBuffDefs())
+  const engine = buffEngineWith({ breakthrough }, [], umbraOwnBuffDefs())
   return engine.calculateDamageEffects(skill(receives), 0).artBonuses.fixedDamagePctBonus ?? 0
 }
 

@@ -7,7 +7,6 @@ import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
 import { graduationBuildsFor } from "../../src/definitions/graduationBuilds/registry"
 import { graduationInputs } from "../../src/engine/graduation"
-import { qiScheduleSeedBreaksFrom } from "../../src/engine/qiBar"
 import { FPS } from "../../src/engine/timeline"
 import type { EngineRunOptions } from "../../src/engine/types"
 
@@ -90,10 +89,6 @@ describe("the computed Qi break of every built-in rotation", () => {
       expect(breakFramesOf(result)).toEqual(COMPUTED_BREAK_FRAMES[rotation.id])
     })
 
-    it("converges without a warning", () => {
-      expect(result.warnings.filter((warning) => warning.includes("Qi break"))).toEqual([])
-    })
-
     it("reports its first break as the window the lane draws", () => {
       expect(result.qiBreakWindow?.startSec).toBe(result.qiBreaks![0].startSec)
       expect(result.qiBreakWindow?.endSec).toBe(result.qiBreaks![0].endSec)
@@ -101,27 +96,12 @@ describe("the computed Qi break of every built-in rotation", () => {
   })
 })
 
-describe("the computed Qi break does not depend on where the iteration starts", () => {
+describe("the computed Qi break does not read a stored value", () => {
   const [{ classId, rotation }] = BUILTIN_ROTATIONS
 
   it("ignores a Qi break value stored on a custom rotation", () => {
     const stored = { qiBreak: { startSec: 5, durationSec: 10, lowQiLeadSec: 5 } }
     const withStoredValue = graduationRun(classId, rotation.id, undefined, stored)
     expect(breakFramesOf(withStoredValue)).toEqual(COMPUTED_BREAK_FRAMES[rotation.id])
-  })
-
-  it("reaches the same fixed point from a seed far from it", () => {
-    const farSeed = qiScheduleSeedBreaksFrom([{ startSec: 3, endSec: 13 }], FPS)
-    const seeded = graduationRun(classId, rotation.id, { qiScheduleSeedBreaks: farSeed })
-    expect(breakFramesOf(seeded)).toEqual(COMPUTED_BREAK_FRAMES[rotation.id])
-  })
-
-  it("settles on its own result in one verifying run when seeded with it", () => {
-    const converged = graduationRun(classId, rotation.id)
-    const seeded = graduationRun(classId, rotation.id, {
-      qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(converged.qiBreaks, FPS),
-    })
-    expect(seeded.qiIterations).toBe(1)
-    expect(seeded.qiBreaks).toEqual(converged.qiBreaks)
   })
 })

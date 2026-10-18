@@ -24,6 +24,7 @@ export interface CastBuffResult {
 
 export interface DeferredBuffGrant {
   timeSec: number
+  settlesAfterHits?: true
   commit(): void
 }
 
@@ -41,13 +42,7 @@ import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
-import {
-  fixedQiSchedule,
-  scheduleQiReader,
-  type QiReader,
-  type QiReading,
-  type QiSchedule,
-} from "../qiBar"
+import type { QiReader } from "../qiBar"
 import { EXTENSION_PARTICLES, WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
 import { AFTER_HIT_SEC } from "./frameOrder"
 
@@ -99,9 +94,6 @@ const DEFAULT_DURATION = 15
 const COOLDOWN_TOLERANCE = 1e-9
 const DEFER_EPSILON_SEC = 1e-9
 
-function damageGrantReading(module: BuffModule): QiReading {
-  return module.damageGrantTiming === "preScore" ? "beforeHit" : "afterHit"
-}
 // `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}
@@ -138,11 +130,6 @@ export class BuffEngine {
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
   private statuses: TimelineStatuses | null = null
-  private qiSchedule: QiSchedule | null = null
-  private qiReader: QiReader | null = null
-  private defaultQiSchedule: QiSchedule | null = null
-  private defaultQiReader: QiReader | null = null
-  private defaultQiReaderSchedule: QiSchedule | null = null
   private readonly extensions = new Map<string, WindowExtensionEnsemble>()
   private extensionGenerator: (() => number) | undefined
 
@@ -154,51 +141,13 @@ export class BuffEngine {
     this.statuses = statuses
   }
 
-  // Absent — the case for a fixture or a unit test that probes `qiPhase`
-  // directly off `params` — a fixed schedule stands in, built from the same
-  // clock-style params `paramsFromInputs` still seeds either way.
-  attachQiSchedule(schedule: QiSchedule, reader: QiReader = scheduleQiReader(schedule)): void {
-    this.qiSchedule = schedule
-    this.qiReader = reader
-  }
-
   attachQiReader(reader: QiReader): void {
     this.qiReader = reader
   }
 
-  private readerOrDefault(): QiReader {
-    if (this.qiReader) return this.qiReader
-    const schedule = this.scheduleOrDefault()
-    if (this.defaultQiReaderSchedule !== schedule) {
-      this.defaultQiReader = scheduleQiReader(schedule)
-      this.defaultQiReaderSchedule = schedule
-    }
-    return this.defaultQiReader!
-  }
-
-  private scheduleOrDefault(): QiSchedule {
-    if (this.qiSchedule) return this.qiSchedule
-    if (!this.defaultQiSchedule) {
-      const params = this.params
-      const qiBreakTime = (params.qiBreakTime as number) ?? 25
-      const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-      const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-      const healerExt = (params.healerBreakExtension as number) ?? 0
-      const fps = this.statuses?.fps ?? 60
-      this.defaultQiSchedule = fixedQiSchedule(
-        {
-          startSec: qiBreakTime,
-          durationSec: bossBreakDuration + healerExt,
-          lowQiLeadSec: qiBreakTime - belowQiTime,
-        },
-        fps,
-      )
-    }
-    return this.defaultQiSchedule
-  }
-
   constructor(
     params: BuffParams,
+    private qiReader: QiReader,
     modules: readonly BuffModule[],
     groupModules: readonly BuffModule[] = [],
   ) {
@@ -259,30 +208,18 @@ export class BuffEngine {
     return this.requirementsMet(module.requires)
   }
 
-  qiPhase(time: number, reading: QiReading = "beforeHit"): QiPhase {
-    const readerPhase = this.readerOrDefault().phaseAt(time, reading)
+  qiPhase(time: number): QiPhase {
+    const readerPhase = this.qiReader.phaseAt(time)
     if (readerPhase !== "normal") return readerPhase
     return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
-  qiFraction(time: number, reading: QiReading = "beforeHit"): number {
-    return this.readerOrDefault().fractionAt(time, reading)
+  qiFraction(time: number): number {
+    return this.qiReader.fractionAt(time)
   }
 
-  qiBroken(time: number, reading: QiReading = "beforeHit"): boolean {
-    return this.readerOrDefault().isBroken(time, reading)
-  }
-
-  qiBreakWindow(): { start: number; end: number } | null {
-    const first = this.scheduleOrDefault().breaks[0]
-    return first ? { start: first.startSec, end: first.endSec } : null
-  }
-
-  // The Qi Imbalance window is already its own lane in the timeline; this is
-  // the schedule's own low-Qi lead before the first break.
-  lowQiWindow(): { start: number; end: number } | null {
-    const span = this.scheduleOrDefault().firstLowQiSpan()
-    return span ? { start: span.startSec, end: span.endSec } : null
+  qiBroken(time: number): boolean {
+    return this.qiReader.isBroken(time)
   }
 
   private statusActive(id: string, time: number, statusesView?: StatusView): boolean {
@@ -372,14 +309,14 @@ export class BuffEngine {
     }
     return {
       timeSec: time,
-      phase: this.qiPhase(time, "beforeHit"),
+      phase: this.qiPhase(time),
       build,
       target: {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
         distanceMeters: this.targetDistanceMeters(time, statusesView),
-        qiFraction: this.qiFraction(time, "beforeHit"),
-        qiBroken: this.qiBroken(time, "beforeHit"),
+        qiFraction: this.qiFraction(time),
+        qiBroken: this.qiBroken(time),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),
@@ -637,11 +574,8 @@ export class BuffEngine {
     return state
   }
 
-  private triggerPhaseHolds(module: BuffModule, time: number, reading: QiReading): boolean {
-    const gate = module.triggerPhase
-    if (!gate) return true
-    const phase = this.qiPhase(time, reading)
-    return Array.isArray(gate) ? gate.includes(phase) : gate === phase
+  private triggerPhaseHolds(module: BuffModule, time: number): boolean {
+    return !module.triggerPhase || this.qiGateHolds(module.triggerPhase, time)
   }
 
   private runCastEffects(module: BuffModule, time: number, selfStacks: number): void {
@@ -737,7 +671,7 @@ export class BuffEngine {
           runKey: event.runKey ?? null,
           latenessMaxSec:
             spec.lateness && tagSet.has(spec.lateness.property) ? spec.lateness.maxSec : 0,
-          conditionsHold: this.triggerPhaseHolds(module, event.timeSec, "beforeHit"),
+          conditionsHold: this.triggerPhaseHolds(module, event.timeSec),
           cooldownSec: this.resolveCooldown(module, event.timeSec),
           requiredWindowId: module.requiresActiveBuffOnTrigger ?? null,
           particles: event.particles ?? null,
@@ -901,9 +835,11 @@ export class BuffEngine {
           : afterLastHit
             ? time + props.lastHitSec! + module.buffAppliesAfterLastHitSec!
             : time + (module.buffAppliesAfterSec ?? 0)
-    if (deferGrant && applyTime > time + DEFER_EPSILON_SEC) {
+    const settlesAfterHits = afterLastHit && module.triggerPhaseTiming === "afterHits"
+    if (deferGrant && (settlesAfterHits || applyTime > time + DEFER_EPSILON_SEC)) {
       deferGrant({
         timeSec: applyTime,
+        ...(settlesAfterHits ? { settlesAfterHits: true as const } : {}),
         commit: () =>
           this.commitTriggeredGrant(module, castTag, time, applyTime, props, afterLastHit, true),
       })
@@ -923,7 +859,7 @@ export class BuffEngine {
   ): void {
     const triggerTime = deferred ? applyTime : time
     const gateTime = deferred || afterLastHit ? applyTime : time
-    if (!this.triggerPhaseHolds(module, gateTime, "afterHit")) return
+    if (!this.triggerPhaseHolds(module, gateTime)) return
     if (
       module.requiresActiveBuffOnTrigger &&
       !this.isBuffActive(module.requiresActiveBuffOnTrigger, triggerTime)
@@ -1059,7 +995,7 @@ export class BuffEngine {
   ): void {
     if (module.perHitConsume) this.processPerHitConsume(module, stampTime, tagSet)
     if (!module.stackOnDamage) return
-    if (!this.stackOnDamagePhaseHolds(module, readTime, damageGrantReading(module))) return
+    if (!this.stackOnDamagePhaseHolds(module, readTime)) return
     if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) return
     if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, stampTime)
     else if (this.canGrantDamageStack(module, stampTime))
@@ -1077,17 +1013,21 @@ export class BuffEngine {
     return this.gateOk(module, castTagOf(skill), tagSet)
   }
 
-  private static qiGateHolds(gate: QiGate, phase: QiPhase, fraction: number): boolean {
-    return typeof gate === "object" ? fraction < gate.qiBelow : gate === phase
+  private static singleGateHolds(gate: QiGate, phase: QiPhase, fraction: number): boolean {
+    if (typeof gate === "string") return gate === phase
+    if ("qiBelow" in gate) return fraction < gate.qiBelow
+    return fraction <= gate.qiAtMost
   }
 
-  private stackOnDamagePhaseHolds(module: BuffModule, time: number, reading: QiReading): boolean {
-    const gate = module.stackOnDamagePhase
-    if (!gate) return true
-    const phase = this.qiPhase(time, reading)
-    const fraction = this.qiFraction(time, reading)
+  private qiGateHolds(gate: QiGate | readonly QiGate[], time: number): boolean {
+    const phase = this.qiPhase(time)
+    const fraction = this.qiFraction(time)
     const gates: readonly QiGate[] = Array.isArray(gate) ? gate : [gate as QiGate]
-    return gates.some((g) => BuffEngine.qiGateHolds(g, phase, fraction))
+    return gates.some((candidate) => BuffEngine.singleGateHolds(candidate, phase, fraction))
+  }
+
+  private stackOnDamagePhaseHolds(module: BuffModule, time: number): boolean {
+    return !module.stackOnDamagePhase || this.qiGateHolds(module.stackOnDamagePhase, time)
   }
 
   private canGrantDamageStack(module: BuffModule, time: number): boolean {
@@ -1188,7 +1128,7 @@ export class BuffEngine {
     const alternative = module.perCastConsume?.phaseAlternative
     if (!alternative) return false
     if (alternative.requires && !this.requirementsMet(alternative.requires)) return false
-    const phase = this.qiPhase(time, "beforeHit")
+    const phase = this.qiPhase(time)
     return Array.isArray(alternative.phase)
       ? alternative.phase.includes(phase)
       : alternative.phase === phase

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { QiReader } from "../../src/engine/qiBar"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { landDamageHit } from "../helpers/landDamageHit"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
@@ -9,8 +11,12 @@ import { PROP } from "../../src/data/skills/ids"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
-function engineWithSet(armorSet: string, params: Record<string, unknown> = {}): BuffEngine {
-  return new BuffEngine({ classId: "test", armorSet, ...params }, GLOBAL_BUFF_DEFS)
+function engineWithSet(
+  armorSet: string,
+  params: Record<string, unknown> = {},
+  qiReader?: QiReader,
+): BuffEngine {
+  return buffEngineWith({ classId: "test", armorSet, ...params }, GLOBAL_BUFF_DEFS, [], qiReader)
 }
 
 describe("Ivorybloom — crit rate and crit damage, permanent on a dummy", () => {
@@ -233,13 +239,13 @@ describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi 
   })
 
   it("contributes nothing against a target at full Qi with no Qi Imbalance", () => {
-    const engine = engineWithSet("swallowcall", { qiBreakTime: 100, bossBreakDuration: 10 })
+    const engine = engineWithSet("swallowcall")
     const result = engine.calculateDamageEffects(lightAttack, 0)
     expect(result.artBonuses.minPhysPctBonus).toBeUndefined()
   })
 
   it("adds +6% physical and attribute attack once the target's Qi bar has broken", () => {
-    const engine = engineWithSet("swallowcall", { qiBreakTime: 1, bossBreakDuration: 10 })
+    const engine = engineWithSet("swallowcall", {}, exhaustedFrom(1, 10))
     const result = engine.calculateDamageEffects(lightAttack, 1.5)
     expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
     expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.06, 10)
@@ -247,13 +253,8 @@ describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi 
   })
 
   it("adds it against a target in Qi Imbalance even at full Qi", () => {
-    const engine = new BuffEngine(
-      {
-        classId: "bellstrikeSplendor",
-        armorSet: "swallowcall",
-        qiBreakTime: 100,
-        bossBreakDuration: 10,
-      },
+    const engine = buffEngineWith(
+      { classId: "bellstrikeSplendor", armorSet: "swallowcall" },
       buffDefsForClass("bellstrikeSplendor"),
     )
     engine.triggerDeclaredBuffs([BUFF.qiImbalance], "cast:test", 0)
