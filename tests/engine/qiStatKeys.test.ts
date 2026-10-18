@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/bleed-tick"
@@ -14,7 +15,7 @@ const genericHit = makeSkill("bellstrikeUmbra", {
 })
 
 function engineWithSoulShakenStacks(stacks: number): BuffEngine {
-  const engine = new BuffEngine(
+  const engine = buffEngineWith(
     { classId: "bellstrikeUmbra" },
     buffDefsForClass("bellstrikeUmbra"),
     groupBuffDefs(),
@@ -60,8 +61,8 @@ describe("Soul-Shaken's Qi-only bonus", () => {
 
 describe("Qi Imbalance's Qi-only bonus", () => {
   it("adds 10% Qi damage taken in every phase, without touching HP damage outside the break", () => {
-    const engine = new BuffEngine(
-      { classId: "bellstrikeSplendor", qiBreakTime: 100, bossBreakDuration: 10 },
+    const engine = buffEngineWith(
+      { classId: "bellstrikeSplendor" },
       buffDefsForClass("bellstrikeSplendor"),
     )
     const effects = engine.calculateDamageEffects(bleedTick, 1, [BUFF.qiImbalance]).effects

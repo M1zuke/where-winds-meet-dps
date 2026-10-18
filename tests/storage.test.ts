@@ -34,7 +34,9 @@ import {
 } from "../src/engine/derivedInputs"
 import { LATEST_PROFILES_VERSION } from "../src/migrations"
 import { SET_ID } from "../src/data/sets/ids"
-import { SET_DEFS } from "../src/data/sets"
+import { GEAR_SET_DEFS } from "../src/definitions/sets/registry"
+import { carriedSets } from "./migrations/legacyProfile"
+import { withGearSet } from "./helpers/withGearSet"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
@@ -45,7 +47,8 @@ import {
   getMindMethodContributions,
 } from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
-import { allowedInnerWaysForClass, applyArmorSet, applyBowSet } from "../src/engine/panel"
+import { allowedInnerWaysForClass } from "../src/engine/panel"
+import { applySetBonuses } from "../src/engine/setBonuses"
 
 type StoredGearPiece = Omit<GearPiece, "words"> & {
   words: readonly { word: string; value: number; retuned: boolean }[]
@@ -97,9 +100,9 @@ describe("storage", () => {
   })
 
   it("initialInputs returns the saved blob when present", () => {
-    const next: Inputs = { ...defaultInputs, set: SET_ID.jadeware }
+    const next: Inputs = withGearSet(defaultInputs, SET_ID.jadeware, { fabricatePieces: true })
     saveInputs(next)
-    expect(initialInputs().set).toBe(SET_ID.jadeware)
+    expect(carriedSets(initialInputs())).toContain(SET_ID.jadeware)
   })
 
   it("loadInputs is null when the saved blob is malformed", () => {
@@ -112,6 +115,13 @@ describe("storage", () => {
     expect(loadInputs()).toBeNull()
   })
 })
+
+function legacyInputsWithSet(set: string): Inputs {
+  return {
+    ...withGearSet(defaultInputs, null, { fabricatePieces: true }),
+    set,
+  } as unknown as Inputs
+}
 
 describe("profiles carry selections only — derived stats are never persisted", () => {
   const PROFILES_KEY = "wwm.profiles"
@@ -135,8 +145,9 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(persistedInputs.classId).toBe(defaultInputs.classId)
     expect(persistedInputs.breakthrough).toBe(defaultInputs.breakthrough)
     expect(persistedInputs.arsenal).toBe(defaultInputs.arsenal)
-    expect(persistedInputs.set).toBe(defaultInputs.set)
-    expect(persistedInputs.bowSet).toBe(defaultInputs.bowSet)
+    expect("set" in persistedInputs).toBe(false)
+    expect("bowSet" in persistedInputs).toBe(false)
+    expect(persistedInputs.bowGear).toEqual(defaultInputs.bowGear)
     expect(persistedInputs.food).toBe(defaultInputs.food)
     expect(persistedInputs.mindMethods).toEqual(defaultInputs.mindMethods)
     expect(persistedInputs.inventory).toEqual(defaultInputs.inventory)
@@ -1784,34 +1795,41 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
   })
 
   it("a legacy wwm.inputs blob naming its set by display name rolls into a profile with the current id", () => {
-    saveInputs({ ...defaultInputs, set: "Hawking" })
+    saveInputs(legacyInputsWithSet("Hawking"))
     const { profiles } = loadProfiles()
     expect(profiles).toHaveLength(1)
-    expect(profiles[0].inputs.set).toBe("hawkwing")
+    expect(carriedSets(profiles[0].inputs)).toContain("hawkwing")
   })
 
-  it("keeps an unrecognised set stored and grants nothing for it", () => {
-    saveInputs({ ...defaultInputs, set: "A Set From Another Build" })
+  it("keeps an unrecognised set stored on the pieces and grants nothing for it", () => {
+    saveInputs(legacyInputsWithSet("A Set From Another Build"))
     const { profiles } = loadProfiles()
     const stored = profiles[0].inputs
-    expect(stored.set).toBe("A Set From Another Build")
-    expect(applyArmorSet(stored)).toEqual(stored)
+    expect(carriedSets(stored)).toContain("A Set From Another Build")
+    expect(applySetBonuses(stored)).toEqual(stored)
   })
 
   it("round-trips an already-migrated id unchanged", () => {
-    saveInputs({ ...defaultInputs, set: "jadeware" })
+    saveInputs(legacyInputsWithSet("jadeware"))
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.set).toBe("jadeware")
+    expect(carriedSets(profiles[0].inputs)).toContain("jadeware")
   })
 
-  it.each([...SET_DEFS.map((set) => set.id)])(
+  it.each([...GEAR_SET_DEFS.map((set) => set.id)])(
     "keeps %s, including a set registered after the legacy name table was frozen",
     (setId) => {
-      saveInputs({ ...defaultInputs, set: setId })
+      saveInputs(legacyInputsWithSet(setId))
       const { profiles } = loadProfiles()
-      expect(profiles[0].inputs.set).toBe(setId)
+      expect(carriedSets(profiles[0].inputs)).toContain(setId)
     },
   )
+
+  it("removes an armor-group set from the build without writing it onto a piece", () => {
+    saveInputs(legacyInputsWithSet("calmwaters"))
+    const { profiles } = loadProfiles()
+    expect(carriedSets(profiles[0].inputs).filter(Boolean)).toEqual([])
+    expect("set" in profiles[0].inputs).toBe(false)
+  })
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
@@ -1988,7 +2006,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     const inputs = profiles[0].inputs
     expect(inputs.classId).toBe(defaultInputs.classId)
 
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
+    const result = runEngine(applySetBonuses(withDerivedStats(inputs)))
     expect(result.dps).toBeGreaterThan(0)
     expect(result.warnings.some((warning) => /error|exception/i.test(warning))).toBe(false)
   })
@@ -2170,5 +2188,77 @@ describe("enhancement level hydration (additive, no version bump)", () => {
       enhancements: { ...defaultInputs.enhancements, disc: 70 },
     }
     expect(loadFirstWith(stored as unknown as Record<string, unknown>).enhancements.disc).toBe(70)
+  })
+})
+
+describe("hydrateInputs — sets on pieces and the bow pair", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => localStorage.clear())
+  afterEach(() => localStorage.clear())
+
+  function loadWith(overrides: Record<string, unknown>): Inputs {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs: { ...defaultInputs, ...overrides } }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  const bowPiece = { level: 100, rarity: "legendary", set: "crit" }
+
+  it("heals a missing or invalid bow gear container to empty", () => {
+    expect(loadWith({ bowGear: undefined }).bowGear).toEqual({ bow: null, thumbRing: null })
+    expect(loadWith({ bowGear: "nonsense" }).bowGear).toEqual({ bow: null, thumbRing: null })
+  })
+
+  it("snaps a bow level to the nearest valid level and repairs an invalid rarity", () => {
+    const healed = loadWith({
+      bowGear: {
+        bow: { ...bowPiece, level: 98, rarity: "mythic" },
+        thumbRing: { ...bowPiece, level: 40 },
+      },
+    }).bowGear
+    expect(healed.bow).toMatchObject({ level: 96, rarity: "legendary" })
+    expect(healed.thumbRing?.level).toBe(91)
+  })
+
+  it("turns an empty bow set into none and keeps an unknown one as stored", () => {
+    const healed = loadWith({
+      bowGear: {
+        bow: { ...bowPiece, set: "" },
+        thumbRing: { ...bowPiece, set: "setFromALaterBuild" },
+      },
+    }).bowGear
+    expect(healed.bow?.set).toBeNull()
+    expect(healed.thumbRing?.set).toBe("setFromALaterBuild")
+  })
+
+  it("keeps a bow piece's label and note through the text sanitizer", () => {
+    const healed = loadWith({
+      bowGear: { bow: { ...bowPiece, label: "  Mine  ", note: "x".repeat(600) }, thumbRing: null },
+    }).bowGear
+    expect(healed.bow?.label).toBe("Mine")
+    expect(healed.bow?.note).toHaveLength(500)
+  })
+
+  it("keeps a piece's set, healing a renamed id and keeping an unknown string", () => {
+    const piece = (id: string, set: unknown) => ({
+      ...withGearSet(defaultInputs, null, { fabricatePieces: true }).inventory[0],
+      id,
+      set,
+    })
+    const inputs = loadWith({
+      inventory: [piece("a", "Hawking"), piece("b", "setFromALaterBuild"), piece("c", "")],
+      equipped: { ...EMPTY_EQUIPPED },
+    })
+    expect(inputs.inventory.map((entry) => entry.set)).toEqual([
+      "hawkwing",
+      "setFromALaterBuild",
+      undefined,
+    ])
   })
 })

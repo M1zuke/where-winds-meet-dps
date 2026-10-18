@@ -43,7 +43,6 @@ function run(steps: string[]) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [clearsEveryCooldown, grantConsecutivePunches],
     activeCustomRotation: makeRotation(CLASS, {
       steps: steps.map((id) => makeStep({ skillId: id })),

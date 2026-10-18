@@ -19,6 +19,8 @@ export const fluteOfTheTidesFull = defineSkill({
   // animation, 2026-09-24.
   castFrames: 198,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 50,
   // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.
   reachMeters: 40,
   approach: "stationary",

@@ -11,6 +11,7 @@ import { BUFF } from "../../src/data/skills/buffs/ids"
 import { ATTACK } from "../../src/data/skills/ids"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { builtinSkill, testRotation } from "../builtins"
+import { withGearSet } from "../helpers/withGearSet"
 
 const CLASS = "bamboocutDraught"
 
@@ -63,15 +64,20 @@ describe("heavy attacks of Bamboocut Draught grant the heavy stance and receive 
 
 describe("the Mistwillow stances open on the first light and heavy hit", () => {
   function stanceBuffsOnHeavyAttack(armorSet: string | null): string[] {
-    const result = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      set: armorSet,
-      activeCustomRotation: testRotation(CLASS, {
-        steps: [SKILL.bloombreak, SKILL.boundvessel].map((skillId) => makeStep({ skillId })),
-        openingStacks: { [STATUS.bingePoints]: 100 },
-      }),
-    })
+    const result = runEngine(
+      withGearSet(
+        {
+          ...defaultInputs,
+          classId: CLASS,
+          activeCustomRotation: testRotation(CLASS, {
+            steps: [SKILL.bloombreak, SKILL.boundvessel].map((skillId) => makeStep({ skillId })),
+            openingStacks: { [STATUS.bingePoints]: 100 },
+          }),
+        },
+        armorSet,
+        { fabricatePieces: true },
+      ),
+    )
     const heavyCast = result.casts!.find(
       (cast) => cast.skillName === builtinSkill(CLASS, SKILL.boundvessel).name,
     )!

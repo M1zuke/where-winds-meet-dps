@@ -19,6 +19,7 @@ let probeAddsDirectAffinity = false
 
 registerMechanic<object>({
   id: "observationProbe",
+  needsAffinityChance: true,
   prepare: (setup) => {
     observedEvents = []
     callLog = []
@@ -77,7 +78,6 @@ function run(options?: { seed: number }) {
     {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: skills,
       customBuffs: [],
       activeCustomRotation: testRotation(CLASS, {

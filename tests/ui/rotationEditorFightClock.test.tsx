@@ -29,7 +29,6 @@ describe("the Rotation Editor's fight-clock cast times", () => {
       classId: CLASS,
       customSkills: skills,
       activeCustomRotation: rotation,
-      set: null,
     }
     const result = simulateTimeline(inputs)
     expect(result.fightStartSec).toBeGreaterThan(0)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { hiddenTimelineBuffIds } from "../../src/engine/buffs/catalog"
 import { stat } from "../../src/engine/effects/effect"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
@@ -18,6 +18,7 @@ function statusView(active: boolean): StatusView {
     remainingFramesAt: () => undefined,
     framesSinceLastEnd: () => undefined,
     framesSinceStacksBelowThreshold: () => undefined,
+    frameStacksLastReachedThreshold: () => undefined,
     windowsOf: () => [],
   }
 }
@@ -42,7 +43,7 @@ const marker: BuffModule = {
 }
 
 function engineWith(active: boolean) {
-  const engine = new BuffEngine({}, [gated, marker])
+  const engine = buffEngineWith({}, [gated, marker])
   engine.attachStatuses({ view: statusView(active), fps: 60 })
   return engine
 }

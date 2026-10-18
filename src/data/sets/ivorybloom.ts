@@ -6,6 +6,7 @@ import { SET_ID } from "./ids"
 // which only the buff engine can read.
 export const ivorybloom = defineSet({
   id: SET_ID.ivorybloom,
+  group: "gear",
   name: "Ivorybloom",
   siteKey: "ivorybloom",
   // In-game values as of 2026-09-24.

@@ -1,13 +1,24 @@
 import type {
   ArsenalScores,
+  BowGear,
+  BowGearLevel,
+  BowPiece,
   EnhancementLevels,
   GearPiece,
+  GearRarity,
   Inputs,
   ScriptId,
   StoredProfile,
   UnclaimedOddityNodes,
 } from "./engine/types"
-import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
+import {
+  BOW_GEAR_LEVELS,
+  EMPTY_BOW_GEAR,
+  EMPTY_EQUIPPED,
+  GEAR_RARITIES,
+  GEAR_SLOTS,
+  defaultCombatSettings,
+} from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import {
@@ -122,9 +133,12 @@ import {
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
   migrateDivinecraftField,
+  migrateFoodField,
+  resolveStoredBreakthrough,
   movePreferredDistanceOntoRotation,
   moveCustomBuildWeaponsToMartialArtSlots,
   moveWeaponsToMartialArtSlots,
+  moveSetsOntoGearPieces,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -217,15 +231,6 @@ function isStoredProfile(x: unknown): x is StoredProfile {
   return true
 }
 
-const VALID_BREAKTHROUGHS = new Set([12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
-
-const LEGACY_TARGET_TO_BREAKTHROUGH: Record<string, number> = {
-  "81": 12,
-  "86": 13,
-  "91": 14,
-  "96": 16,
-}
-
 // For the standalone `wwm.customRotations` store; rotations inside a profile
 // go through the version chain instead.
 function migrateRotationIds<T>(rotation: T): T {
@@ -299,6 +304,35 @@ function sanitizeRetunedOutWords(value: unknown): string[] {
   return value.filter((entry): entry is string => typeof entry === "string" && entry !== "")
 }
 
+function nearestBowGearLevel(stored: unknown): BowGearLevel {
+  if (typeof stored !== "number" || Number.isNaN(stored)) return BOW_GEAR_LEVELS[0]
+  return BOW_GEAR_LEVELS.reduce((nearest, level) =>
+    Math.abs(level - stored) < Math.abs(nearest - stored) ? level : nearest,
+  )
+}
+
+function sanitizeBowPiece(stored: unknown): BowPiece | null {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return null
+  const piece = stored as Record<string, unknown>
+  const label = sanitizeGearPieceText(piece.label, 40)
+  const note = sanitizeGearPieceText(piece.note, 500)
+  return {
+    level: nearestBowGearLevel(piece.level),
+    rarity: GEAR_RARITIES.includes(piece.rarity as GearRarity)
+      ? (piece.rarity as GearRarity)
+      : "legendary",
+    set: typeof piece.set === "string" && piece.set !== "" ? (piece.set as BowPiece["set"]) : null,
+    ...(label ? { label } : {}),
+    ...(note ? { note } : {}),
+  }
+}
+
+function sanitizeBowGear(stored: unknown): BowGear {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return { ...EMPTY_BOW_GEAR }
+  const container = stored as Record<string, unknown>
+  return { bow: sanitizeBowPiece(container.bow), thumbRing: sanitizeBowPiece(container.thumbRing) }
+}
+
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
 // is frozen at the display names V11 knew, so it recognises neither a set
 // retired since nor one added since, and run alone it clears a legitimate
@@ -350,7 +384,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
   const next: Inputs = movePreferredDistanceOntoRotation(
-    migrateDivinecraftField(rest as unknown as Record<string, unknown>),
+    migrateFoodField(migrateDivinecraftField(rest as unknown as Record<string, unknown>)),
   ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
@@ -361,11 +395,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
   Object.assign(next, moveWeaponsToMartialArtSlots(next as unknown as Record<string, unknown>))
+  const withSetsOnPieces = moveSetsOntoGearPieces(next as unknown as Record<string, unknown>)
+  delete (next as unknown as Record<string, unknown>).set
+  delete (next as unknown as Record<string, unknown>).bowSet
+  Object.assign(next, withSetsOnPieces)
   next.graduationBuildId = repairGraduationBuildId(next.classId, next.graduationBuildId)
   next.selectedBuiltinRotationId = dropRetiredRotationId(
     migrateEntityId(next.selectedBuiltinRotationId),
   )
-  next.set = selectableSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)
   }
@@ -376,12 +413,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     }
     delete (next as unknown as Record<string, unknown>).siteBuffParams
   }
-  const legacyTargetId = (inputs as Inputs & { targetId?: string }).targetId
-  if (typeof next.breakthrough !== "number" || !VALID_BREAKTHROUGHS.has(next.breakthrough)) {
-    const trial =
-      typeof legacyTargetId === "string" ? (legacyTargetId.match(/^(\d+)/)?.[1] ?? "") : ""
-    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? defaultBreakthrough()
-  }
+  next.breakthrough = resolveStoredBreakthrough(inputs as unknown as Record<string, unknown>)
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
@@ -405,11 +437,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   }
   if (typeof next.selectedBuiltinRotationId !== "string") next.selectedBuiltinRotationId = null
   delete (next as unknown as Record<string, unknown>).calcMode
-  // A selection this build has no option for is another build's, kept as
-  // stored: it matches no bonus here, and the panel that offers the choices
-  // shows none of them selected. Only a missing or non-string value falls back.
-  const storedBowSet = (next as unknown as Record<string, unknown>).bowSet
-  if (typeof storedBowSet !== "string" || storedBowSet === "") next.bowSet = null
+  next.bowGear = sanitizeBowGear(next.bowGear)
   const storedArsenal = (next as unknown as Record<string, unknown>).arsenal
   if (typeof storedArsenal !== "string" || storedArsenal === "") {
     next.arsenal = defaultArsenalForClass(next.classId)
@@ -423,6 +451,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       label: _rawLabel,
       note: _rawNote,
       retunedOutWords: _rawRetunedOutWords,
+      set: storedSet,
       ...rest
     } = p
     void _legacyName
@@ -430,6 +459,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
     void _rawLabel
     void _rawNote
     void _rawRetunedOutWords
+    const set =
+      typeof storedSet === "string" && storedSet !== "" ? selectableSetId(storedSet) : null
     const isNew = p.isNew === true
     const label = sanitizeGearPieceText(p.label, 40)
     const note = sanitizeGearPieceText(p.note, 500)
@@ -442,6 +473,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       relayed: typeof p.relayed === "boolean" ? p.relayed : false,
       attunement: typeof p.attunement === "string" ? migrateAttunementId(p.attunement) : "",
       attunementValue: typeof p.attunementValue === "number" ? p.attunementValue : 0,
+      ...(set ? { set } : {}),
       ...(isNew ? { isNew: true } : {}),
       ...(label ? { label } : {}),
       ...(note ? { note } : {}),
@@ -582,6 +614,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
     if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
+    if (typeof next.divinecraftRefinement !== "string") next.divinecraftRefinement = null
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
     // reads; `lowEndurance`, `missingEnduranceAtHit` and `enduranceAtRelease`
@@ -602,7 +635,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       healerPanaceaFan:
         typeof r.healerPanaceaFan === "boolean" ? r.healerPanaceaFan : def.healerPanaceaFan,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
-      // Kept as stored even when unrecognised, same as `bowSet`/`arsenal` above.
+      // Kept as stored even when unrecognised, same as `arsenal` above.
       script: typeof r.script === "string" && r.script !== "" ? (r.script as ScriptId) : def.script,
       dragonHeadFullStacks:
         typeof r.dragonHeadFullStacks === "boolean"
@@ -1054,6 +1087,19 @@ function builtinKeyframesLeadFor(id: string): boolean | undefined {
   return builtinKeyframesLeadById.get(id)
 }
 
+// `vitalityCost` is authored on the built-in module, never edited in the Skill
+// Editor, the same reasoning as `startLatency` above.
+let builtinVitalityCostById: Map<string, number> | null = null
+function builtinVitalityCostFor(id: string): number | undefined {
+  if (!builtinVitalityCostById) {
+    builtinVitalityCostById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.vitalityCost) builtinVitalityCostById.set(skill.id, skill.vitalityCost)
+  }
+  return builtinVitalityCostById.get(id)
+}
+
 // `cancelledBy` is authored on the built-in module, never edited in the
 // Skill Editor, the same reasoning as `startLatency` above — a renamed copy
 // of a cancel-form skill keeps its Deflect Cancel.
@@ -1328,6 +1374,7 @@ function hydrateSkill(s: Skill): Skill {
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
     keyframesLeadByRenderFrame: builtinKeyframesLeadFor(id) ?? s.keyframesLeadByRenderFrame,
+    vitalityCost: builtinVitalityCostFor(id) ?? s.vitalityCost,
     cancelledBy:
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),

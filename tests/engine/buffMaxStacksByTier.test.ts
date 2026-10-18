@@ -21,7 +21,6 @@ function timelineInputs(
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
     ...patch,
   }
 }

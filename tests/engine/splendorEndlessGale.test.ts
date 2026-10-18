@@ -27,7 +27,6 @@ function windows(skillIds: string[], mountainsMight: boolean) {
     activeCustomRotation: testRotation(CLASS, {
       steps: skillIds.map((skillId) => makeStep({ skillId })),
     }),
-    set: null,
   })
   const framesOf = (id: string) =>
     (result.buffWindows ?? [])

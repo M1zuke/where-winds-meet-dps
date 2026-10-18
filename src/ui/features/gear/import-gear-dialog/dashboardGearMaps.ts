@@ -1,12 +1,9 @@
-import type { GearSlot } from "../../../../engine/types"
+import type { BowSlot, GearSlot } from "../../../../engine/types"
 
 /**
  * Game equip-slot ids as used by the official dashboard's `wearEquips` /
  * `wearEquipsDetailed` maps. Mapping confirmed against a live account
  * (user report, 2026-08-11).
- *
- * Slot 9 is the thumb ring and slot 21 the bow; neither is a modeled gear slot — the
- * bow is `Inputs.bowSet`, not a `GearPiece` — so both are hidden from the preview.
  *
  * A key mapped to null is a game slot we know about and have no app slot for; a
  * key that is absent entirely means the payload surprised us.
@@ -18,8 +15,11 @@ export const GAME_SLOT_TO_GEAR_SLOT: Readonly<Record<string, GearSlot | null>> =
   "4": "armor",
   "5": "greaves",
   "8": "bracer",
-  "9": null,
   "10": "disc",
   "11": "pendant",
-  "21": null,
+}
+
+export const GAME_SLOT_TO_BOW_SLOT: Readonly<Record<string, BowSlot>> = {
+  "9": "thumbRing",
+  "21": "bow",
 }

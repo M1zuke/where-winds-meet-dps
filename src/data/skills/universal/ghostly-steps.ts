@@ -16,6 +16,8 @@ export const ghostlySteps = defineSkill({
   triggersBuffs: [BUFF.mirage],
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 35,
   // In-game values as of 2026-09-28: not its own attack, no approach — a
   // large reach keeps this stationary cast from capping the live distance.
   reachMeters: 100,

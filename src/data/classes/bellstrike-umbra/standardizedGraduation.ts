@@ -2,7 +2,7 @@ import type { StandardizedGraduation } from "../../../definitions/graduationBuil
 
 export const BELLSTRIKE_UMBRA_STANDARDIZED: StandardizedGraduation = {
   encounter: {
-    food: true,
+    food: "bestAvailable",
     script: "voidrotScript",
     divinecraft: "fire",
     fragrantOrchidBathBean: true,

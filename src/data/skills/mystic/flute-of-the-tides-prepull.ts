@@ -17,6 +17,8 @@ export const fluteOfTheTidesPrepull = defineSkill({
   castTag: CAST.fluteOfTheTidesPrepull,
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 50,
   // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.
   reachMeters: 40,
   approach: "stationary",

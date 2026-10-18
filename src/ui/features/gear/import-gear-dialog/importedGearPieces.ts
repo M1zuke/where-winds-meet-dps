@@ -8,8 +8,9 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
-import { EMPTY_EQUIPPED, GEAR_LEVELS, emptyGearWord } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, GEAR_LEVELS, emptyGearWord, isWeaponSlot } from "../../../../engine/types"
 import type {
+  BowGear,
   EquippedSlots,
   GearLevel,
   GearPiece,
@@ -28,7 +29,8 @@ import {
 import { martialArtDefinition } from "../../../../definitions/martialArts/registry"
 import { newGearPieceId } from "../../../../storage"
 import { AFFIX_ID_TO_STAT_LINE } from "./affixStatLineTable"
-import { targetKey } from "./dashboardGearPayload"
+import { bowPieces, targetKey } from "./dashboardGearPayload"
+import { gearSetForSuffix } from "./gearSetSuffixes"
 import { resolveInnerWays } from "./importedInnerWays"
 import type {
   AffixTarget,
@@ -362,6 +364,17 @@ export function equippedFromImported(pieces: readonly GearPiece[]): EquippedSlot
   return equipped
 }
 
+export function toBowGear(result: GearImportResult): BowGear {
+  const bowGear: BowGear = { bow: null, thumbRing: null }
+  for (const piece of bowPieces(result)) {
+    if (piece.slot.kind !== "bow" || !piece.bow) continue
+    const { reading, set } = piece.bow
+    if (reading.kind !== "importable") continue
+    bowGear[piece.slot.slot] = { level: reading.level, rarity: reading.rarity, set }
+  }
+  return bowGear
+}
+
 export function toGearPieces(result: GearImportResult, overrides: IdentityOverrides): GearPiece[] {
   return importablePieces(result).map((piece) => {
     const slot = (piece.slot as { kind: "mapped"; slot: GearSlot }).slot
@@ -382,11 +395,14 @@ export function toGearPieces(result: GearImportResult, overrides: IdentityOverri
         ? { id: attunement.target.attunementId, value: attunement.value }
         : null
 
+    const setId = isWeaponSlot(slot) ? gearSetForSuffix(piece.suffix) : null
+
     return {
       id: newGearPieceId(),
       slot,
       level,
       rarity,
+      ...(setId ? { set: setId } : {}),
       minPhys: base.minPhys,
       maxPhys: base.maxPhys,
       hp: base.hp,

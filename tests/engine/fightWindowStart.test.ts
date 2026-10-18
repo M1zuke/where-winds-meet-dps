@@ -376,3 +376,33 @@ describe("a DoT tick can start the fight, and its own triggers fire regardless",
     expect(withTriggers.totalDamage).toBeGreaterThan(without.totalDamage)
   })
 })
+
+describe("a fixed window that no hit or tick opens", () => {
+  it("still counts what a mechanic's own timed events deal inside the window", () => {
+    const grant = makeSkill(CLASS, {
+      name: "Grant",
+      castFrames: 10,
+      hits: [makeHit({ frame: 0 })],
+    })
+    const inputs: Inputs = {
+      ...defaultInputs,
+      classId: CLASS,
+      divinecraft: null,
+      mindMethods: [
+        { name: "Morale Chant", stacks: "tier 6" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+      ],
+      customSkills: [grant],
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [makeStep({ skillId: grant.id })],
+        fixedWindowSec: 30,
+      }),
+    }
+    const result = simulateTimeline(inputs)
+    const yiRiver = result.perSkill.find((entry) => entry.name === "Yi River")
+    expect(yiRiver?.count).toBeGreaterThan(0)
+    expect(result.totalDamage).toBe(yiRiver?.expectedDamage)
+  })
+})

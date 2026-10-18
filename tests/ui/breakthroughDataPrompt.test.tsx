@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 const { MockWorker, STALE_INNER_WAY } = vi.hoisted(() => {
@@ -40,11 +40,15 @@ const AT_CONFIRMED_BREAKTHROUGH = BREAKTHROUGH_RELEASES.filter(
 const ASKED_CLASS = "Stonesplit Strength"
 const CONFIRMED_CLASS = "Bellstrike Umbra"
 
+function dialogCloseButton(): HTMLElement {
+  return within(screen.getByRole("dialog")).getByRole("button", { name: "Close" })
+}
+
 function dismissDialog(): void {
   act(() => {
     vi.advanceTimersByTime(15_000)
   })
-  fireEvent.click(screen.getByRole("button", { name: "Close" }))
+  fireEvent.click(dialogCloseButton())
 }
 
 function chooseClass(className: string): void {
@@ -85,11 +89,11 @@ describe("asking for breakthrough data as the active class changes", () => {
   it("holds the close for fifteen seconds", () => {
     render(<App />)
 
-    expect(screen.getByRole("button", { name: "Close" })).toBeDisabled()
+    expect(dialogCloseButton()).toBeDisabled()
     act(() => {
       vi.advanceTimersByTime(15_000)
     })
-    expect(screen.getByRole("button", { name: "Close" })).toBeEnabled()
+    expect(dialogCloseButton()).toBeEnabled()
   })
 
   it("asks nothing when the profile moves to a class whose inner ways are confirmed", () => {

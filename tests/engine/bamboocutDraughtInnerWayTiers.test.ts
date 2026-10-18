@@ -11,7 +11,8 @@ import { makeDebuff } from "../../src/engine/debuff"
 import { DEBUFF, SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import type { StatusView } from "../../src/engine/ledger"
 import type { Inputs } from "../../src/engine/types"
@@ -38,7 +39,6 @@ function runPeakfall(mindMethods: Inputs["mindMethods"], bingePoints = 100) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: SKILL.peakfall })],
@@ -73,7 +73,6 @@ describe("Skyspeak", () => {
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: mindMethodsWith(INNER_WAY_ID.skyspeak, tier),
       customSkills: [idlePastHerosBloodCooldown],
       activeCustomRotation: makeRotation(CLASS, {
@@ -143,11 +142,12 @@ describe("Mistwing — target health penetration", () => {
     remainingFramesAt: () => undefined,
     framesSinceLastEnd: () => undefined,
     framesSinceStacksBelowThreshold: () => undefined,
+    frameStacksLastReachedThreshold: () => undefined,
     windowsOf: () => [],
   }
 
   function penetrationEngine(inebriate: boolean): BuffEngine {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { mistwing: true, mistwingTier: 6, targetMaxHp: TARGET_MAX_HP, classId: CLASS },
       buffDefsForClass(CLASS),
     )
@@ -220,7 +220,6 @@ describe("Mistwing — the target's health follows every damage event, not just 
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       breakthrough: BREAKTHROUGH,
       mindMethods,
       customSkills,
@@ -358,7 +357,6 @@ describe("Volutefit", () => {
       return runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         mindMethods,
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: SKILL.herosBlood })],

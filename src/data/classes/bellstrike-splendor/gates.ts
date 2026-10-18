@@ -173,13 +173,12 @@ export const BATTLE_ANTHEM_CHARGE_COST_INCREASE_GATE: Buff = defineGateBuff({
 })
 
 // In-game values as of 2026-09-26: mirrors the target's own Qi Imbalance
-// window (a class-buff engine status, invisible to the layout pass) so
-// Mountain's Might's own per-hit Endurance gain can gate on it there.
+// window so Mountain's Might's own per-hit Endurance gain can gate on it.
 export const QI_IMBALANCE_MARKER_GATE: Buff = defineGateBuff({
   id: BUFF.qiImbalanceMarker,
   classId: CLASS_ID,
   name: "Qi Imbalance (Endurance marker)",
-  description: "Mirrors the target's own Qi Imbalance window for the layout pass.",
+  description: "Mirrors the target's own Qi Imbalance window.",
   scope: "player",
   activation: "triggered",
   durationFrames: 900,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import {
   DERIVED_STAT_FIELDS,
   withDerivedStats,
@@ -8,7 +8,8 @@ import {
 } from "../../src/engine/derivedInputs"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V6__dropDerivedStats } from "../../src/migrations/V6__dropDerivedStats"
-import type { Inputs, StoredProfile } from "../../src/engine/types"
+import { EMPTY_BOW_GEAR, type Inputs } from "../../src/engine/types"
+import type { StoredProfile } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v5/bellstrikeUmbra.json"
 
 type LegacyFile = { v: number; profile: StoredProfile }
@@ -26,7 +27,7 @@ const inputsOf = (blob: RawProfilesBlob) =>
   (blob.profiles[0] as { inputs: Record<string, unknown> }).inputs
 
 function pipelineDps(inputs: Inputs): ReturnType<typeof runEngine> {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
+  return runEngine(applySetBonuses(withDerivedStats({ ...inputs, bowGear: EMPTY_BOW_GEAR })))
 }
 
 // Gear-word contributions are measured by diffing `ctx` before/after applying

@@ -6,6 +6,7 @@ import { SET_ID } from "./ids"
 // remaining HP fraction, which only the buff engine can read.
 export const swayingHeights = defineSet({
   id: SET_ID.swayingHeights,
+  group: "gear",
   name: "Swaying Heights",
   siteKey: "swayingHeights",
   // In-game values as of 2026-09-24.

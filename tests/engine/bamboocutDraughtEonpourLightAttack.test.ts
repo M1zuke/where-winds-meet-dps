@@ -44,7 +44,6 @@ function runLightAttack(
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     customSkills: [lightAttackSkill],
     activeCustomRotation: makeRotation(CLASS, {

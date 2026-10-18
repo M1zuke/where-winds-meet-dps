@@ -26,7 +26,6 @@ function run(skillIds: string[], customSkills: Skill[] = []) {
     classId: CLASS_ID,
     customSkills,
     customBuffs: [],
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     activeCustomRotation: testRotation(CLASS_ID, {
       steps: skillIds.map((skillId) => makeStep({ skillId })),

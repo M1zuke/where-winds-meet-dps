@@ -1,93 +1,129 @@
 import { describe, expect, it } from "vitest"
 import { computeSkillDamage, type FormulaContext } from "../../src/engine/formula"
 import { hawkwingMechanic } from "../../src/data/sets/hawkwingMechanic"
-import { hawkwingStacksSchedule } from "../../src/engine/buffs/hawkwing"
 import { SET_ID } from "../../src/data/sets/ids"
 import { defaultInputs } from "../../src/engine/defaults"
 import { mulberry32 } from "../../src/engine/rng"
-import type { MechanicSetup } from "../../src/engine/mechanics/types"
+import type {
+  MechanicEventSource,
+  MechanicHost,
+  MechanicObservedEvent,
+  MechanicSetup,
+} from "../../src/engine/mechanics/types"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const CLASS = "bellstrikeUmbra"
 
-function setupWith(
-  hitTimesSec: number[],
-  dotTickTimesSec: number[],
-  windowStartSec = 0,
-): MechanicSetup {
+function setupWith(patch: Partial<MechanicSetup> = {}): MechanicSetup {
   return {
-    inputs: { ...defaultInputs, classId: CLASS, set: SET_ID.hawkwing, directAffinityRate: 0 },
+    inputs: {
+      ...defaultInputs,
+      classId: CLASS,
+      ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
+      directAffinityRate: 0,
+    },
     classId: CLASS,
     fps: 60,
-    rotationDurationSec: 10,
-    windowStartSec,
-    hitTimesSec,
-    weaponHitTimesSec: hitTimesSec,
-    dotTickTimesSec,
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,
     hasBuffEngine: false,
     effectiveRates: { precision: 1, critRate: 0, affinityRate: 1 },
+    collectHistory: true,
     rng: mulberry32(1),
+    ...patch,
   }
 }
 
-describe("Hawkwing procs off a DoT tick, not only a cast hit", () => {
-  it("ramps stacks from dotTickTimesSec alone when the rotation lands no direct hit", () => {
-    const setup = setupWith([], [0.1, 0.2, 0.3, 0.4, 0.5])
-    const state = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(setup)!
+const NO_HOST = {} as MechanicHost
 
-    const stacksAt = (timeSec: number) => state.schedule.getExpectedStacksAtTime(timeSec)
-    expect(stacksAt(0.5)).toBeGreaterThan(0)
+function event(
+  source: MechanicEventSource,
+  timeSec: number,
+  canRollAffinity = true,
+): MechanicObservedEvent {
+  return {
+    source,
+    timeSec,
+    occurrence: 1,
+    direct: source !== "tick",
+    canRollAffinity,
+    affinityChance: 0,
+  }
+}
+
+function mechanicAndState(setup: MechanicSetup) {
+  const mechanic = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing")
+  return { mechanic, state: mechanic.prepare(setup)! }
+}
+
+describe("Hawkwing rolls off every scored damage event that can roll Affinity", () => {
+  it("ramps stacks from DoT ticks alone when the rotation lands no direct hit", () => {
+    const setup = setupWith()
+    const { mechanic, state } = mechanicAndState(setup)
+    for (const timeSec of [0.1, 0.2, 0.3, 0.4, 0.5])
+      mechanic.observeEvent!(state, event("tick", timeSec), setup, NO_HOST)
+    expect(state.tracker.expectedStacksAt(0.5)).toBeGreaterThan(0)
   })
 
-  it("matches a schedule built from the merged, sorted hit and tick times", () => {
-    const setup = setupWith([0.15, 0.45], [0.1, 0.2, 0.3, 0.4, 0.5])
-    const state = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(setup)!
-
-    const expectedSchedule = hawkwingStacksSchedule(
-      [0.1, 0.15, 0.2, 0.3, 0.4, 0.45, 0.5],
-      0.4,
-      10,
-      mulberry32(1),
+  it("rolls the same for a hit and for a tick", () => {
+    const hitSetup = setupWith()
+    const tickSetup = setupWith()
+    const hitSide = mechanicAndState(hitSetup)
+    const tickSide = mechanicAndState(tickSetup)
+    for (const timeSec of [0.1, 0.2, 0.3]) {
+      hitSide.mechanic.observeEvent!(hitSide.state, event("hit", timeSec), hitSetup, NO_HOST)
+      tickSide.mechanic.observeEvent!(tickSide.state, event("tick", timeSec), tickSetup, NO_HOST)
+    }
+    expect(tickSide.state.tracker.expectedStacksAt(0.5)).toBe(
+      hitSide.state.tracker.expectedStacksAt(0.5),
     )
-    for (let step = 0; step < 200; step++) {
-      const timeSec = step * 0.05
-      expect(state.schedule.getExpectedStacksAtTime(timeSec)).toBe(
-        expectedSchedule.getExpectedStacksAtTime(timeSec),
-      )
-    }
   })
 
-  it("a later windowStartSec, hit and tick times unchanged, does not move the schedule", () => {
-    const hitTimesSec = [0.15, 0.45]
-    const dotTickTimesSec = [0.1, 0.2, 0.3, 0.4, 0.5]
-    const atZero = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(
-      setupWith(hitTimesSec, dotTickTimesSec, 0),
-    )!
-    const atLaterStart = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(
-      setupWith(hitTimesSec, dotTickTimesSec, 5),
-    )!
-    for (let step = 0; step < 200; step++) {
-      const timeSec = step * 0.05
-      expect(atLaterStart.schedule.getExpectedStacksAtTime(timeSec)).toBe(
-        atZero.schedule.getExpectedStacksAtTime(timeSec),
-      )
-    }
+  it("rolls on a mechanic's own extra event that can roll Affinity", () => {
+    const setup = setupWith()
+    const { mechanic, state } = mechanicAndState(setup)
+    for (const timeSec of [0.1, 0.2, 0.3])
+      mechanic.observeEvent!(state, event("extra", timeSec), setup, NO_HOST)
+    expect(state.tracker.expectedStacksAt(0.5)).toBeGreaterThan(0)
+  })
+
+  it("ignores an event that can never roll Affinity, whatever its source", () => {
+    const setup = setupWith()
+    const { mechanic, state } = mechanicAndState(setup)
+    for (const source of ["hit", "tick", "extra"] as const)
+      for (const timeSec of [0.1, 0.2, 0.3])
+        mechanic.observeEvent!(state, event(source, timeSec, false), setup, NO_HOST)
+    expect(state.tracker.expectedStacksAt(0.5)).toBe(0)
   })
 })
 
 describe("Hawkwing's per-stack bonus", () => {
-  it("grants 1.8% to Physical and Bellstrike attack per stack", () => {
-    const setup = { ...setupWith([0.1, 0.2, 0.3, 0.4, 0.5], []), rng: undefined }
-    const mechanic = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing")
-    const state = mechanic.prepare(setup)!
-    const stacks = state.schedule.getExpectedStacksAtTime(0.5)
+  it("grants 1.8% to Physical and Bellstrike attack per stack, from the first roll on", () => {
+    const setup = setupWith({ rng: undefined })
+    const { mechanic, state } = mechanicAndState(setup)
+    expect(mechanic.contributeAt?.(state, 30, undefined, setup)?.context?.hawkwingPhysBonus).toBe(0)
+    for (const timeSec of [0.1, 0.2, 0.3, 0.4, 0.5])
+      mechanic.observeEvent!(state, event("hit", timeSec), setup, NO_HOST)
+    const stacks = state.tracker.expectedStacksAt(0.5)
     expect(stacks).toBeGreaterThan(0)
     expect(stacks).not.toBe(Math.round(stacks))
-    const contribution = mechanic.contributeAt?.(state, 30, undefined as never, setup)
+    const contribution = mechanic.contributeAt?.(state, 30, undefined, setup)
     expect(contribution?.context?.hawkwingPhysBonus).toBeCloseTo(stacks * 0.018, 12)
     expect(contribution?.context?.bellstrikeAttackPctBonus).toBeCloseTo(stacks * 0.018, 12)
+  })
+
+  it("holds no bonus for the event that rolls the stack until it has been observed", () => {
+    const setup = setupWith({
+      rng: undefined,
+      effectiveRates: { precision: 1, critRate: 0, affinityRate: 1 },
+    })
+    const { mechanic, state } = mechanicAndState(setup)
+    const before = mechanic.contributeAt?.(state, 30, undefined, setup)
+    mechanic.observeEvent!(state, event("hit", 0.5), setup, NO_HOST)
+    const after = mechanic.contributeAt?.(state, 30, undefined, setup)
+    expect(before?.context?.hawkwingPhysBonus).toBe(0)
+    expect(after?.context?.hawkwingPhysBonus).toBeGreaterThan(0)
   })
 
   const baseCtx: FormulaContext = {
@@ -114,7 +150,6 @@ describe("Hawkwing's per-stack bonus", () => {
     effectiveDefense: 0,
     fatigueDamageTaken: 0,
     hasSixHenZhi: false,
-    food: false,
     set: null,
     divinecraft: null,
     classSpecificAttunement: {},

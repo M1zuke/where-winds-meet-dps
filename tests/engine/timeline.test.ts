@@ -119,11 +119,9 @@ describe("timeline — no-buff parity with the formula kernel", () => {
     const hit = makeHit({ frame: 0, physMultiplier: 2, physFixed: 50 })
     const skill = makeSkill(CLASS, { name: "Solo", castFrames: 60, hits: [hit] })
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
-    // set: null — the default build's Hawkwing 4-piece is a rotation-wide
-    // time-averaged proc a bare buildContext() call can't reproduce.
     // divinecraft: null — the default Fire Oil's Burn ticks on its own
     // schedule, independent of this one hit.
-    const inputs = { ...timelineInputs(rotation, [skill], []), set: null, divinecraft: null }
+    const inputs = { ...timelineInputs(rotation, [skill], []), divinecraft: null }
     const r = simulateTimeline(inputs)
 
     const ctx = buildContext(inputs)
@@ -359,7 +357,6 @@ describe("timeline — per-stack DoT damage table", () => {
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
     const inputs = {
       ...timelineInputs(rotation, [sword], [], [bleed]),
-      set: null,
       divinecraft: null,
     }
     const r = simulateTimeline(inputs)
@@ -376,7 +373,6 @@ describe("timeline — per-stack DoT damage table", () => {
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
     const inputs = {
       ...timelineInputs(rotation, [sword], [], [bleed]),
-      set: null,
       divinecraft: null,
     }
     const r = simulateTimeline(inputs)
@@ -392,7 +388,6 @@ describe("timeline — per-stack DoT damage table", () => {
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
     const inputs = {
       ...timelineInputs(rotation, [sword], [], [bleed]),
-      set: null,
       divinecraft: null,
     }
     const r = simulateTimeline(inputs)

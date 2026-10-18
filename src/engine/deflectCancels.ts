@@ -1,5 +1,5 @@
 // The automatic Deflect Cancel a cancel-form step carries — see docs/
-// TIMELINE.md § "Identity and tags". Pure functions only: the layout pass
+// TIMELINE.md § "Identity and tags". Pure functions only: the timeline
 // owns the sequencing, this module only owns which steps need one inserted.
 
 import { cancelledByOf, type Skill } from "./skill"

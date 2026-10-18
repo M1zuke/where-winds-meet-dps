@@ -1,4 +1,4 @@
-import type { GearSlot } from "../../../../engine/types"
+import type { BowSlot, GearSlot } from "../../../../engine/types"
 import { martialArtForWeaponSlot } from "../../../../definitions/classes/registry"
 import { martialArtKey } from "../../../../i18n/contentKeys"
 
@@ -22,5 +22,14 @@ export function gearSlotLabelKey(slot: GearSlot, classId: string): string {
       return "gear.slot.greaves"
     case "bracer":
       return "gear.slot.bracer"
+  }
+}
+
+export function bowSlotLabelKey(slot: BowSlot): string {
+  switch (slot) {
+    case "bow":
+      return "gear.slot.bow"
+    case "thumbRing":
+      return "gear.slot.thumbRing"
   }
 }

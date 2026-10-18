@@ -3,7 +3,7 @@
 // gear set — never from a manual toggle. See `src/engine/buffs/params.ts` /
 // `src/data/innerWays/`.
 import { describe, it, expect } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
@@ -16,6 +16,7 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { ODDITY_MAX_ENDURANCE_PARAM } from "../../src/data/resources/enduranceMeter"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 
 function taggedSkill(name: string, tags: string[] = []) {
@@ -43,7 +44,7 @@ describe("paramsFromInputs — build derivation", () => {
         { ...emptyMindMethod },
         { ...emptyMindMethod },
       ],
-      set: SET_ID.cleftpeak,
+      ...gearSetFields(SET_ID.cleftpeak, { fabricatePieces: true }),
     }
     const params = paramsFromInputs(inputs)
     expect(params.wolfchasersArt).toBe(true)
@@ -110,7 +111,6 @@ describe("paramsFromInputs — build derivation", () => {
         param === "armorSet" ||
         param === "classId" ||
         param === "spec" ||
-        param === "belowQiTime" ||
         param === "minPhysAttack" ||
         param === "maxPhysAttack" ||
         param === "whiteCritRate" ||
@@ -186,15 +186,21 @@ describe("build-driven enablement moves timeline DPS", () => {
 
 describe("set enablement registers a requiresSet buff", () => {
   it("Jadeware registers jadeware; Hawking does not", () => {
-    const withSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: SET_ID.jadeware }),
+    const withSet = buffEngineWith(
+      paramsFromInputs({
+        ...defaultInputs,
+        ...gearSetFields(SET_ID.jadeware, { fabricatePieces: true }),
+      }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
     expect(withSet.definitions.has("jadeware")).toBe(true)
 
-    const withoutSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawkwing }),
+    const withoutSet = buffEngineWith(
+      paramsFromInputs({
+        ...defaultInputs,
+        ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
+      }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
@@ -213,7 +219,7 @@ describe("time-windowed application", () => {
         effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("X", 0, {}, false, ["windowed"])
     expect(engine.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
       statKey: "allDamageBoost",

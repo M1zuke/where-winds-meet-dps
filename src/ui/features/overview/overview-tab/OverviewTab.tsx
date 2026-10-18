@@ -5,34 +5,29 @@ import { syncClassPermanent } from "../../../utils/classSetup"
 import { resyncDefaultTalentsForBreakthrough } from "../../../../definitions/baseStats"
 import { slotInnerWayId } from "../../../../definitions/innerWays/registry"
 import { useItemRanking } from "../../../hooks/useItemRanking"
-import { useSetTileDps } from "../../../hooks/useSetTileDps"
 import { ClassSelect } from "../class-select/ClassSelect"
 import { BreakthroughSelect } from "../breakthrough-select/BreakthroughSelect"
 import { MindMethodsPanel } from "../mind-methods-panel/MindMethodsPanel"
-import { EncounterSettingsPanel } from "../encounter-settings-panel/EncounterSettingsPanel"
-import { SetBonusesPanel } from "../set-bonuses-panel/SetBonusesPanel"
+import { EquippedStatLinesPanel } from "../equipped-stat-lines-panel/EquippedStatLinesPanel"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { ItemRankingTable } from "../item-ranking-table/ItemRankingTable"
 import styles from "./OverviewTab.module.scss"
 
 export function OverviewTab({
   inputs,
+  configuredInputs,
   engineInputs,
   onChange,
   result,
 }: {
   inputs: Inputs
+  configuredInputs: Inputs
   engineInputs: Inputs
   onChange: (next: Inputs) => void
   result: Result
 }) {
   const { t } = useI18n()
-  const { rows: rankingRows, isPending: rankingPending } = useItemRanking(
-    engineInputs,
-    result.dps,
-    result.qiBreaks,
-  )
-  const { data: tileDps, isPending: tilesPending } = useSetTileDps(inputs)
+  const { rows: rankingRows, isPending: rankingPending } = useItemRanking(engineInputs, result.dps)
   const slottedInnerWays = inputs.mindMethods.filter((slot) => slotInnerWayId(slot)).length
   return (
     <div className={styles.overviewGrid}>
@@ -60,24 +55,7 @@ export function OverviewTab({
           </div>
           <MindMethodsPanel inputs={inputs} onChange={onChange} />
         </div>
-        <div className="panel">
-          <h2>{t("overview.encounterSettings")}</h2>
-          <EncounterSettingsPanel inputs={inputs} onChange={onChange} />
-        </div>
-      </div>
-
-      <div className={styles.sets}>
-        <div className="panel">
-          <h2>{t("overview.setBonuses")}</h2>
-          <SetBonusesPanel
-            inputs={inputs}
-            onChange={onChange}
-            armorDpsByKey={tileDps?.armorDpsByKey}
-            bowDpsByChoice={tileDps?.bowDpsByChoice}
-            arsenalDpsByChoice={tileDps?.arsenalDpsByChoice}
-            isPending={tilesPending}
-          />
-        </div>
+        <EquippedStatLinesPanel inputs={configuredInputs} />
       </div>
 
       <div className={styles.stats}>

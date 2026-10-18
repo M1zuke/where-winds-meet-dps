@@ -74,7 +74,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
-      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+      triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 60.4,
@@ -85,6 +85,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
       triggers: [
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
         energySurgeEnduranceGain,
         wushuangStanceConsume,
       ],

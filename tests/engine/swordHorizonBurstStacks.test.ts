@@ -123,7 +123,7 @@ describe("Sword Horizon tier 6 re-adds 2 Bleeding stacks as the Blood Burst land
     expect(startFramesOf(result, twoStacksAfterBurst)).toEqual([])
   })
 
-  it("is the same in the layout a later step's cast condition reads", () => {
+  it("is the same for a later step's cast condition", () => {
     const withSpirit = run({
       swordHorizonTier: "tier 6",
       spirit: 1,

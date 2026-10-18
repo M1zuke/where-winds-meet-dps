@@ -9,9 +9,13 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV100File from "./testCustomSkills/v100/store.json"
+
+const healLatestSplendorHops = (skill: unknown): unknown =>
+  healSwordMorphConversion(healSplendorRootMotion(skill))
 
 const STORE = storeV100File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const HEALED_IDS = [
@@ -42,7 +46,7 @@ describe("custom-skills v100 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSplendorRootMotion(healSkill(clone(skillIn(STORE, id)))) as Skill
+    const healed = healLatestSplendorHops(healSkill(clone(skillIn(STORE, id)))) as Skill
     const live = builtinOf(id)
     expect(healed.hits).toEqual(live.hits)
     expect(healed.castFrames).toBe(live.castFrames)
@@ -83,7 +87,7 @@ describe("V101__wushuangStanceVagrantSwordStartOrder — called directly", () =>
     const after = V101__wushuangStanceVagrantSwordStartOrder.migrate(clone(STORE))
     expect(after.v).toBe(101)
     for (const id of HEALED_IDS)
-      expect((healSplendorRootMotion(skillIn(after, id)) as Skill).hits, id).toEqual(
+      expect((healLatestSplendorHops(skillIn(after, id)) as Skill).hits, id).toEqual(
         builtinOf(id).hits,
       )
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID])

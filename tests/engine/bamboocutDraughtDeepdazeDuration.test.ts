@@ -40,7 +40,6 @@ function runEntry(mindMethods: Inputs["mindMethods"]) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {
@@ -74,7 +73,6 @@ describe("Inebriate - Deepdaze duration", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: skyspeakAt(3),
       customSkills: [grantDeepdaze, idlePad],
       activeCustomRotation: makeRotation(CLASS, {
@@ -94,7 +92,6 @@ describe("Inebriate - Deepdaze duration", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: skyspeakAt(3),
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.skystrikeGauntletsEx })],
@@ -108,7 +105,6 @@ describe("Inebriate - Deepdaze duration", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: [grantDeepdaze, idlePad],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [
@@ -151,7 +147,6 @@ describe("Inebriate - Deepdaze duration", () => {
       const result = runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         mindMethods: skyspeakAt(3),
         customSkills: [grantDeepdaze, extend, idlePad],
         activeCustomRotation: makeRotation(CLASS, {

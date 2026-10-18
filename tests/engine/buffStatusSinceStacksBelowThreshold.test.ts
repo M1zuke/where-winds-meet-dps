@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { StatusLedger } from "../../src/engine/ledger"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
@@ -26,7 +27,7 @@ const payoutModule: BuffModule = {
 }
 
 function engineWithCounterLedger(): { engine: BuffEngine; ledger: StatusLedger } {
-  const engine = new BuffEngine({}, [], [payoutModule])
+  const engine = buffEngineWith({}, [], [payoutModule])
   const ledger = new StatusLedger(0, 3600)
   engine.attachStatuses({ view: ledger, fps: FPS })
   return { engine, ledger }

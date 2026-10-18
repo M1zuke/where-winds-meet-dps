@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import type { GearLevel, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
-import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { BOW_SLOTS, GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { selectableGearLevels } from "../shared/selectableGearLevels"
 import { statLineLabel } from "../../../../data/stats/statLines"
@@ -12,12 +13,14 @@ import {
   innerWayTierKey,
   martialArtKey,
   rarityKey,
+  setKey,
   statLineKey,
 } from "../../../../i18n/contentKeys"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import previewStyles from "../shared/gearPreview.module.scss"
-import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { BOW_SET_NAME_KEYS } from "../shared/buildSetKeys"
+import { bowSlotLabelKey, gearSlotLabelKey } from "../shared/gearSlotKeys"
 import { martialArtName } from "../../../../definitions/martialArts/registry"
 import { GEAR_LEVEL_KEYS } from "../shared/gearLevelKeys"
 import { unsupportedInnerWayNames } from "./importedInnerWays"
@@ -32,6 +35,7 @@ import {
   type ImportedInnerWay,
   type ImportedPiece,
 } from "./dashboardGearPayload"
+import { gearSetForSuffix } from "./gearSetSuffixes"
 import { effectiveIdentity, type IdentityOverrides } from "./importedGearPieces"
 import type { GearImportDraft } from "./useGearImportDraft"
 import styles from "./gearImport.module.scss"
@@ -63,6 +67,8 @@ export function GearImportPreview({
     summary,
     pieces,
     shown,
+    bowGear,
+    shownBow,
     innerWays,
     mindMethods,
     overrides,
@@ -89,7 +95,12 @@ export function GearImportPreview({
     .map((equipped) => martialArtLabel(equipped, t))
 
   const filledSlots = new Set(pieces.map((piece) => piece.slot))
-  const emptiedSlots = GEAR_SLOTS.filter((slot) => !filledSlots.has(slot))
+  const emptiedSlotLabels = [
+    ...GEAR_SLOTS.filter((slot) => !filledSlots.has(slot)).map((slot) =>
+      t(gearSlotLabelKey(slot, classId)),
+    ),
+    ...BOW_SLOTS.filter((slot) => !bowGear[slot]).map((slot) => t(bowSlotLabelKey(slot))),
+  ]
   const assumedIdentitySlots = shown
     .filter((piece) => piece.slot.kind === "mapped" && piece.identity?.rarity == null)
     .map((piece) => (piece.slot as { slot: GearSlot }).slot)
@@ -228,6 +239,17 @@ export function GearImportPreview({
         ))}
       </div>
 
+      {shownBow.length > 0 && (
+        <>
+          <div className="section-label">{t("gear.importGearDialog.bowAndThumbRing")}</div>
+          <div className={previewStyles.pieceList}>
+            {shownBow.map((piece) => (
+              <BowPiecePreview key={piece.gameSlotId} piece={piece} />
+            ))}
+          </div>
+        </>
+      )}
+
       {assumedIdentitySlots.length > 0 && (
         <div className="warnings">
           ⚠ {t("gear.importGearDialog.thesePiecesReportHint")}:{" "}
@@ -236,10 +258,10 @@ export function GearImportPreview({
         </div>
       )}
 
-      {warnAboutDisplacedSlots && emptiedSlots.length > 0 && (
+      {warnAboutDisplacedSlots && emptiedSlotLabels.length > 0 && (
         <div className="warnings">
-          ⚠ {emptiedSlots.length} {t("gear.importGearDialog.slotsArenTInThis")}:{" "}
-          {emptiedSlots.map((slot) => t(gearSlotLabelKey(slot, classId))).join(", ")}
+          ⚠ {emptiedSlotLabels.length} {t("gear.importGearDialog.slotsArenTInThis")}:{" "}
+          {emptiedSlotLabels.join(", ")}
         </div>
       )}
     </>
@@ -261,6 +283,29 @@ function identityHintKey(piece: ImportedPiece): string {
   if (piece.identity?.rarity) return "gear.importGearDialog.identityRarityFromBaseStats"
   if (piece.observedBaseStats) return "gear.importGearDialog.identityFromUnknownTier"
   return "gear.importGearDialog.identityAssumed"
+}
+
+function BowPiecePreview({ piece }: { piece: ImportedPiece }) {
+  const { t } = useI18n()
+  if (piece.slot.kind !== "bow" || !piece.bow) return null
+  const { reading, set } = piece.bow
+
+  return (
+    <div className={previewStyles.piece}>
+      <div className={previewStyles.pieceHead}>
+        <span className={previewStyles.pieceSlot}>{t(bowSlotLabelKey(piece.slot.slot))}</span>
+        <span className="hint">
+          {reading.kind === "importable"
+            ? [
+                t("common.levelShort").replace("{n}", String(reading.level)),
+                t(rarityKey(reading.rarity)),
+                t(set ? BOW_SET_NAME_KEYS[set] : "common.noSet"),
+              ].join(" · ")
+            : t("gear.importGearDialog.bowCarriesNoSet")}
+        </span>
+      </div>
+    </div>
+  )
 }
 
 function PiecePreview({
@@ -302,11 +347,20 @@ function PiecePreview({
   const slot = piece.slot.slot
   const identity = effectiveIdentity(piece, allPieces, overrides)
   const base = gearBaseStatsFor({ slot, ...identity })
+  const importedSetId = isWeaponSlot(slot) ? gearSetForSuffix(piece.suffix) : null
+  const setLabel = !isWeaponSlot(slot)
+    ? null
+    : importedSetId
+      ? t(setKey(importedSetId), SET_BY_ID[importedSetId]?.name)
+      : piece.suffix !== null
+        ? t("gear.importGearDialog.unknownSet")
+        : null
 
   return (
     <div className={previewStyles.piece}>
       <div className={previewStyles.pieceHead}>
         <span className={previewStyles.pieceSlot}>{t(gearSlotLabelKey(slot, classId))}</span>
+        {setLabel && <span className="hint">{setLabel}</span>}
         <span className="hint">
           {isWeaponSlot(slot)
             ? `${t("common.minPhys")} ${base.minPhys} · ${t("common.maxPhys")} ${base.maxPhys}`

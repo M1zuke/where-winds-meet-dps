@@ -31,13 +31,18 @@ export function registerMechanic<State>(mechanic: TimelineMechanic<State>): void
 export interface PreparedMechanic {
   mechanic: AnyMechanic
   state: unknown
+  setup: MechanicSetup
 }
 
-export function prepareMechanics(setup: MechanicSetup): PreparedMechanic[] {
+export function prepareMechanics(
+  setup: MechanicSetup,
+  substreamFor?: (mechanicId: string) => () => number,
+): PreparedMechanic[] {
   const prepared: PreparedMechanic[] = []
   for (const mechanic of registered) {
-    const state = mechanic.prepare(setup)
-    if (state !== null && state !== undefined) prepared.push({ mechanic, state })
+    const own: MechanicSetup = substreamFor ? { ...setup, rng: substreamFor(mechanic.id) } : setup
+    const state = mechanic.prepare(own)
+    if (state !== null && state !== undefined) prepared.push({ mechanic, state, setup: own })
   }
   return prepared
 }

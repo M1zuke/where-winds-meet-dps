@@ -10,7 +10,7 @@ const SKELETON_ROWS = [88, 64, 71, 45]
 const OUTCOMES = [
   {
     category: "critical",
-    labelKey: "simulation.outcomeMix.category.critical",
+    labelKey: "common.critical",
     hitsOf: (run: ParseRun) => run.criticalHits,
     damageOf: (detail: ParseRunDetail) => detail.outcomeDamage.crit,
   },

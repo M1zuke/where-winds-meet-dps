@@ -7,6 +7,7 @@ import { SET_ID } from "./ids"
 // authored for the build it belongs to, not active there.
 export const swiftGale = defineSet({
   id: SET_ID.swiftGale,
+  group: "gear",
   name: "Swift Gale",
   siteKey: "swiftGale",
   // In-game values as of 2026-09-24.

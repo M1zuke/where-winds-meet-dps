@@ -1,6 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { useAnchoredDropdown } from "../../hooks/useAnchoredDropdown"
+import { Fragment, useRef, useState } from "react"
+import { DropdownGroupLabel, DropdownList, DropdownOption } from "../dropdown-list/DropdownList"
 import styles from "./Select.module.scss"
 
 export interface SelectOption<Value extends string> {
@@ -53,24 +52,10 @@ export function Select<Value extends string>({
   const [open, setOpen] = useState(false)
   const [highlight, setHighlight] = useState(0)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const listRef = useRef<HTMLUListElement>(null)
-  const position = useAnchoredDropdown(open, triggerRef)
 
   const selectedIndex = options.findIndex((option) => option.value === value)
   const selected = selectedIndex === -1 ? undefined : options[selectedIndex]
   const isEmpty = !value || !selected
-
-  useEffect(() => {
-    if (!open) return
-    function dismiss(event: MouseEvent) {
-      const target = event.target as Node
-      if (triggerRef.current?.contains(target)) return
-      if (listRef.current?.contains(target)) return
-      setOpen(false)
-    }
-    document.addEventListener("mousedown", dismiss)
-    return () => document.removeEventListener("mousedown", dismiss)
-  }, [open])
 
   function openList() {
     setHighlight(selectedIndex === -1 ? firstEnabledIndex(options, 1) : selectedIndex)
@@ -86,12 +71,6 @@ export function Select<Value extends string>({
   }
 
   function onKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Escape") {
-      if (!open) return
-      event.preventDefault()
-      setOpen(false)
-      return
-    }
     if (!open) {
       if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter") {
         event.preventDefault()
@@ -144,54 +123,30 @@ export function Select<Value extends string>({
         </span>
         <span className={styles.chevron} aria-hidden="true" />
       </button>
-      {open &&
-        position &&
-        createPortal(
-          <ul
-            ref={listRef}
-            className={styles.list}
-            role="listbox"
-            aria-label={ariaLabel}
-            style={{
-              left: position.left,
-              minWidth: position.width,
-              top: position.top,
-              bottom: position.bottom,
-              maxHeight: position.maxHeight,
-            }}
-          >
-            {options.map((option, index) => (
-              <Fragment key={option.value}>
-                {option.group && option.group !== options[index - 1]?.group && (
-                  <li role="presentation" className={styles.group}>
-                    {option.group}
-                  </li>
-                )}
-                <li
-                  role="option"
-                  data-value={option.value}
-                  aria-selected={option.value === value}
-                  aria-disabled={option.disabled}
-                  className={
-                    styles.option +
-                    (index === highlight ? ` ${styles.highlighted}` : "") +
-                    (option.value === value ? ` ${styles.selected}` : "") +
-                    (option.disabled ? ` ${styles.disabled}` : "")
-                  }
-                  onMouseDown={(event) => {
-                    event.preventDefault()
-                    commit(index)
-                  }}
-                  onMouseEnter={() => !option.disabled && setHighlight(index)}
-                >
-                  <span className={styles.optionLabel}>{option.label}</span>
-                  {option.meta && <span className={styles.optionMeta}>{option.meta}</span>}
-                </li>
-              </Fragment>
-            ))}
-          </ul>,
-          document.body,
-        )}
+      <DropdownList
+        open={open}
+        anchorRef={triggerRef}
+        onClose={() => setOpen(false)}
+        ariaLabel={ariaLabel}
+      >
+        {options.map((option, index) => (
+          <Fragment key={option.value}>
+            {option.group && option.group !== options[index - 1]?.group && (
+              <DropdownGroupLabel label={option.group} />
+            )}
+            <DropdownOption
+              value={option.value}
+              label={option.label}
+              meta={option.meta}
+              selected={option.value === value}
+              highlighted={index === highlight}
+              disabled={option.disabled}
+              onSelect={() => commit(index)}
+              onHover={() => setHighlight(index)}
+            />
+          </Fragment>
+        ))}
+      </DropdownList>
     </>
   )
 }

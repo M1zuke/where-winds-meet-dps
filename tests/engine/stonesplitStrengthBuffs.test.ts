@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
+import { landDamageHit } from "../helpers/landDamageHit"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
@@ -17,7 +19,7 @@ import { cleftpeak } from "../../src/data/sets/cleftpeak"
 const CLASS = "stonesplitStrength"
 
 function engine(params: Record<string, unknown> = {}) {
-  return new BuffEngine({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
+  return buffEngineWith({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
 }
 
 function skill(name: string, tags: string[], castTag: string, receives: string[] = []) {
@@ -63,7 +65,7 @@ describe("Throat-Pierced", () => {
     times: readonly number[],
     generated = false,
   ): void {
-    for (const time of times) target.processDamageHit(time, stonesplitSkill(skillId), generated)
+    for (const time of times) landDamageHit(target, time, stonesplitSkill(skillId), generated)
   }
 
   const evenlySpaced = (count: number, from = 0) =>
@@ -204,26 +206,26 @@ describe("Cleftpeak", () => {
 
   it("adds a +1%/stack allDamageBoost on any damaging hit, reaching every skill", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
-    for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
+    for (let hit = 0; hit < 4; hit++) landDamageHit(ridged, hit * 0.1)
     expect(statOf(ridged, plain(), 0.5, "allDamageBoost")).toBeCloseTo(0.04, 9)
 
-    ridged.processDamageHit(0.4)
+    landDamageHit(ridged, 0.4)
     expect(statOf(ridged, plain(), 0.5, "allDamageBoost")).toBeCloseTo(0.05, 9)
   })
 
   it("adds a further +8% allDamageBoost at five stacks, only on the skills that carry the property", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
-    for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
+    for (let hit = 0; hit < 4; hit++) landDamageHit(ridged, hit * 0.1)
     expect(statOf(ridged, boosted(), 0.5, "allDamageBoost")).toBeCloseTo(0.04, 9)
 
-    ridged.processDamageHit(0.4)
+    landDamageHit(ridged, 0.4)
     expect(statOf(ridged, boosted(), 0.5, "allDamageBoost")).toBeCloseTo(0.05 + 0.08, 9)
     expect(statOf(ridged, plain(), 0.5, "allDamageBoost")).toBeCloseTo(0.05, 9)
   })
 
   it("lets its 5.1-second window lapse", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
-    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
+    for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1)
     expect(statOf(ridged, boosted(), 6, "allDamageBoost")).toBe(0)
     expect(statOf(ridged, plain(), 6, "allDamageBoost")).toBe(0)
   })
@@ -295,6 +297,7 @@ describe("the class's skill critical damage — steps by white Critical Rate", (
         remainingFramesAt: () => undefined,
         framesSinceLastEnd: () => undefined,
         framesSinceStacksBelowThreshold: () => undefined,
+        frameStacksLastReachedThreshold: () => undefined,
         windowsOf: () => [],
       },
       fps: 60,

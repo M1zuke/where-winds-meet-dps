@@ -2,16 +2,28 @@ import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definiti
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
+  StandardizedEncounter,
   StandardizedGraduation,
   StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
-import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
+import {
+  BEST_AVAILABLE_FOOD,
+  STANDARDIZED_ENCOUNTER_OFF,
+} from "../definitions/graduationBuilds/graduationBuildDef"
+import { bestRecipeAttackFoodAt } from "../data/consumables/foods"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
-import type { EquippedSlots, GearLevel, Inputs, MindMethodSlot } from "./types"
-import { EMPTY_EQUIPPED } from "./types"
+import type {
+  BowGearLevel,
+  BowPiece,
+  EquippedSlots,
+  GearLevel,
+  Inputs,
+  MindMethodSlot,
+} from "./types"
+import { BOW_GEAR_LEVELS, EMPTY_EQUIPPED, WEAPON_SLOTS } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
 
@@ -21,6 +33,11 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
   const equipped = { ...EMPTY_EQUIPPED }
   for (const piece of build.gear) equipped[piece.slot] = piece.id
   return equipped
+}
+
+function bowGearLevelFor(gearLevel: GearLevel): BowGearLevel | null {
+  if (gearLevel < BOW_GEAR_LEVELS[0]) return null
+  return BOW_GEAR_LEVELS.find((level) => level >= gearLevel) ?? null
 }
 
 function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
@@ -50,18 +67,36 @@ export function standardizedInnerWaysForClass(
   return null
 }
 
+export function resolveStandardizedFood(
+  food: StandardizedEncounter["food"],
+  breakthrough: number,
+): Inputs["food"] {
+  return food === BEST_AVAILABLE_FOOD ? bestRecipeAttackFoodAt(breakthrough) : food
+}
+
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
   const standardized = build.standardized
   if (!standardized) return inputs
-  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
+  const {
+    dummyMode,
+    food,
+    hpFood,
+    divinecraft,
+    divinecraftRefinement,
+    shareDebuff5HenZhi,
+    shareEasyHurt,
+    ...combat
+  } = {
     ...STANDARDIZED_ENCOUNTER_OFF,
     ...standardized.encounter,
   }
   return {
     ...inputs,
     dummyMode,
-    food,
+    food: resolveStandardizedFood(food, inputs.breakthrough),
+    hpFood,
     divinecraft,
+    divinecraftRefinement,
     shareDebuff5HenZhi,
     shareEasyHurt,
     combatSettings: { ...combat },
@@ -145,15 +180,18 @@ export function graduationInputs(
 ): Inputs | null {
   const followed = followedGraduationBuild(inputs)
   if (!followed) return null
-  const build = graduationBuildAtLevel(
-    followed,
-    variant,
-    gearLevelForBreakthrough(inputs.breakthrough),
-  )
+  const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
+  const build = graduationBuildAtLevel(followed, variant, gearLevel)
   const inventory = build.gear.map((piece) => ({
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
+    ...(build.set && WEAPON_SLOTS.includes(piece.slot) ? { set: build.set } : {}),
   }))
+  const bowLevel = bowGearLevelFor(gearLevel)
+  const bowPiece: BowPiece | null =
+    build.bowSet && bowLevel !== null
+      ? { level: bowLevel, rarity: "legendary", set: build.bowSet }
+      : null
   const equipped = equippedSlots(build)
   return standardizedGraduationInputs(
     {
@@ -165,8 +203,7 @@ export function graduationInputs(
       qiDamageIndexMultiplier: 0,
       inventory,
       equipped,
-      set: build.set,
-      bowSet: build.bowSet,
+      bowGear: { bow: bowPiece && { ...bowPiece }, thumbRing: bowPiece && { ...bowPiece } },
       arsenal: build.arsenal,
       martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
         (talent) => ({

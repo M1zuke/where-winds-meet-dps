@@ -16,6 +16,8 @@ export const poet4 = defineSkill({
   castTag: CAST.poet4,
   castFrames: 39,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 6,
   // In-game values as of 2026-09-28: every other mystic art is a stationary
   // cast, and this one carries no engagement-range field to read — reach is
   // an assumption (the class's own default melee reach).

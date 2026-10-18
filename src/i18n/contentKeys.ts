@@ -75,6 +75,14 @@ export function setKey(setId: string): string {
   return `content.set.${setId}`
 }
 
+export function setFourPieceKey(setId: string): string {
+  return `content.setFourPiece.${setId}`
+}
+
+export function setFourPieceFullKey(setId: string): string {
+  return `content.setFourPieceFull.${setId}`
+}
+
 export function attunementKey(attunementId: string, classId?: string | null): string {
   return classId
     ? `content.attunement.${attunementId}.${classId}`

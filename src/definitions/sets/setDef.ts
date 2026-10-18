@@ -22,13 +22,14 @@ export interface SetPanelBonus {
 export interface SetDef {
   id: string
   name: string
+  group: "gear" | "armor"
   /** The reference site's own key, compared against a `BuffModule.requires.set`
    * and `BuffParams.armorSet` — undefined for a set no buff ever gates on. */
   siteKey?: string
   formulaBonus?: SetFormulaBonus
   panelBonus?: SetPanelBonus
   mechanics?: readonly MechanicRegistration[]
-  // Set true in `BuffParams` only while this set is the one equipped — the
+  // Set true in `BuffParams` only while this set's 4-piece is active — the
   // generic param a hit trigger's own `requiresParam`/condition reads,
   // mirroring an inner way's own `buffParam`, for a set-gated mechanic
   // `BuffModule.requires.set` cannot reach (it only gates a class-buff

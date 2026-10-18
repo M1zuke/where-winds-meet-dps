@@ -25,7 +25,6 @@ function markerWindowsStartingAt(skillIds: string[]) {
     activeCustomRotation: testRotation(CLASS, {
       steps: skillIds.map((skillId) => makeStep({ skillId })),
     }),
-    set: null,
   })
   return (result.buffWindows ?? [])
     .filter((window) => window.id === BUFF.qiImbalanceMarker)

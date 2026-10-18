@@ -1,13 +1,13 @@
 // Scoped to the unvalidated Silkbind Jade class: wiring, not a damage anchor.
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
-import { warmStartQiSchedule } from "../../src/engine/qiBar"
+import { QiBar } from "../../src/engine/qiBar"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { makeSkill } from "../../src/engine/skill"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { CAST, PROP } from "../../src/data/skills/ids"
 
-const FPS = 60
 const LAST_HIT_SEC = 0.55
 const LINGERING_BONE_DELAY_SEC = 0.03
 const MARK_GRANTS = [BUFF.lingeringBone, BUFF.starReacherSupreme, BUFF.starReacher]
@@ -16,25 +16,12 @@ const DIRECT_DOT_TICK = makeSkill("test", { name: "Tick", isDotTick: true })
 const DRONE_TICK = makeSkill("test", { name: "Drone tick", tags: [PROP.isDrone] })
 
 function engine(tier: number, breakSeconds?: [start: number, end: number]) {
-  const result = new BuffEngine(
+  return buffEngineWith(
     { classId: "silkbindJade", starReacher: true, starReacherTier: tier },
     buffDefsForClass("silkbindJade"),
     [],
+    breakSeconds && exhaustedFrom(breakSeconds[0], breakSeconds[1] - breakSeconds[0]),
   )
-  if (breakSeconds)
-    result.attachQiSchedule(
-      warmStartQiSchedule(
-        [
-          {
-            startFrame: breakSeconds[0] * FPS,
-            endFrame: breakSeconds[1] * FPS,
-            immuneUntilFrame: breakSeconds[1] * FPS,
-          },
-        ],
-        FPS,
-      ),
-    )
-  return result
 }
 
 function applyMark(buffs: BuffEngine, castSec: number) {
@@ -88,6 +75,44 @@ describe("Star Reacher's Lingering Bone window", () => {
     const buffs = engine(2, [20, 30])
     applyMark(buffs, 25)
     expect(physicalAttackPercent(buffs, 26)).toBeCloseTo(0.075)
+  })
+
+  describe("splits at 30% of the target's Qi", () => {
+    const CAPACITY = 100
+    const barSpent = (spent: number) => {
+      const bar = new QiBar(
+        { max: CAPACITY, refill: CAPACITY, breakSec: 60, directImmunitySec: 0, takenIndex: 1 },
+        60,
+      )
+      bar.apply(0, spent, "direct")
+      return bar
+    }
+    const markedAt = (spent: number) => {
+      const buffs = buffEngineWith(
+        { classId: "silkbindJade", starReacher: true, starReacherTier: 6 },
+        buffDefsForClass("silkbindJade"),
+        [],
+        barSpent(spent),
+      )
+      applyMark(buffs, 10)
+      return physicalAttackPercent(buffs, 11)
+    }
+
+    it("opens the +15% window at exactly 30%", () => {
+      expect(markedAt(70)).toBeCloseTo(0.15)
+    })
+
+    it("opens the +7.5% window just above 30%", () => {
+      expect(markedAt(69)).toBeCloseTo(0.075)
+    })
+
+    it("opens the +15% window on a broken bar", () => {
+      expect(markedAt(CAPACITY)).toBeCloseTo(0.15)
+    })
+
+    it("opens the +7.5% window on a full bar", () => {
+      expect(markedAt(0)).toBeCloseTo(0.075)
+    })
   })
 
   it("is refreshed by a floating umbrella projectile on a marked target, once per second", () => {

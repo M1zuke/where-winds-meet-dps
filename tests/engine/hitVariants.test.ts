@@ -16,6 +16,7 @@ import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -30,7 +31,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[] = [])
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 
@@ -572,15 +572,14 @@ describe("hit variant — frame override", () => {
   })
 })
 
-// The buff engine's prepass (docs/TIMELINE.md § "Hit variants") is fed
-// exclusively from this walk, ahead of the real simulation — the class-buff
-// system's own Cleftpeak stack (a build-wide, ungated-by-skill "every
-// damaging hit grants a stack" module) is the only externally observable
-// read of what the prepass believes a hit's own landing frame was.
-describe("hit variant frame override — seen by the buff-engine prepass", () => {
+// The class-buff system's own Cleftpeak stack (a build-wide, ungated-by-skill
+// "every damaging hit grants a stack" module) is the only externally
+// observable read of what the buff engine believes a hit's own landing frame
+// was.
+describe("hit variant frame override — seen by the buff engine", () => {
   function skillGrantingAt(variantFrame: number): Skill {
     return makeSkill(CLASS, {
-      name: "Prepass Frame Carrier",
+      name: "Variant Frame Carrier",
       castFrames: 110,
       hits: [
         makeHit({ frame: 50, physMultiplier: 1, physFixed: 1000 }),
@@ -590,7 +589,7 @@ describe("hit variant frame override — seen by the buff-engine prepass", () =>
           physFixed: 1,
           variants: [
             {
-              id: "hv-prepass-frame",
+              id: "hv-variant-frame",
               label: "Later",
               conditions: [],
               physMultiplier: 1,
@@ -612,16 +611,12 @@ describe("hit variant frame override — seen by the buff-engine prepass", () =>
       customSkills: [skill],
       customBuffs: [],
       activeCustomRotation: makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] }),
-      set: SET_ID.cleftpeak,
+      ...gearSetFields(SET_ID.cleftpeak, { fabricatePieces: true }, umbraInputs),
     }
     return simulateTimeline(inputs).timeline!.find((event) => event.frame === 50)!.damage
   }
 
   it("a later variant frame delays the stack this hit grants, so an earlier fixed hit in the same cast lands before it, unboosted", () => {
-    // Granting before frame 50 (the fixed hit) lets its stack reach that hit;
-    // granting after it, at the resolved variant frame, does not — the
-    // prepass would only blur this distinction by reading the bare frame 10
-    // (itself before 50) regardless of which case is under test.
     const grantsBeforeFixedHit = damageOfFixedHit(5)
     const grantsAfterFixedHit = damageOfFixedHit(100)
     expect(grantsAfterFixedHit).toBeLessThan(grantsBeforeFixedHit)

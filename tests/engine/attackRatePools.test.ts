@@ -13,7 +13,6 @@ const NEUTRAL_CONTEXT: Partial<FormulaContext> = {
   directCritPanel: 0,
   directAffinityPanel: 0,
   effectiveDefense: 0,
-  food: false,
   physDmgBoostPanel: 0,
   attributeDmgBoostPanel: 0,
   critDmgBoostPanel: 0,
@@ -22,11 +21,13 @@ const NEUTRAL_CONTEXT: Partial<FormulaContext> = {
   hasSixHenZhi: false,
   smallPhys: 1000,
   largePhys: 1000,
+  foodPhysAttack: { min: 0, max: 0 },
+  flatPhysAttack: { min: 0, max: 0 },
   bellstrike: { min: 1000, max: 1000, pen: 0 },
 }
 
 const baseContext = (overrides: Partial<FormulaContext> = {}): FormulaContext => ({
-  ...buildContext({ ...defaultInputs, classId: "bellstrikeUmbra", set: null }),
+  ...buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" }),
   ...NEUTRAL_CONTEXT,
   ...overrides,
 })

@@ -103,9 +103,7 @@ export const swordHeavyCharged = defineSkill({
       physFixed: 506.24,
       attributeFixed: 276.08,
       conditions: THREE_WAVE_RELEASE_CONDITIONS,
-      // In-game values as of 2026-09-25: the Sword Morph conversion reads the
-      // Endurance the charge drain left once it stops, near this last wave.
-      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+      triggers: [energySurgeCooldownCut],
     }),
     hit(3, {
       // In-game values as of 2026-10-15: the three-wave event fires at the
@@ -116,9 +114,12 @@ export const swordHeavyCharged = defineSkill({
       physFixed: 0,
       attributeFixed: 0,
       conditions: THREE_WAVE_RELEASE_CONDITIONS,
+      // In-game values as of 2026-09-25: the Sword Morph conversion reads the
+      // Endurance the charge drain left once it stops, at the release.
       triggers: [
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
         energySurgeEnduranceGain,
       ],
     }),

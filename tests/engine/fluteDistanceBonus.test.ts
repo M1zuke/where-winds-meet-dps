@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { CAST } from "../../src/data/skills/ids"
 import { makeSkill } from "../../src/engine/skill"
 
 function engineAt(distanceMeters: number) {
-  return new BuffEngine({ distanceMeters }, GLOBAL_BUFF_DEFS, [])
+  return buffEngineWith({ distanceMeters }, GLOBAL_BUFF_DEFS, [])
 }
 
 function allDamageBoostAt(engine: BuffEngine, time: number, isDotTick = false): number | undefined {

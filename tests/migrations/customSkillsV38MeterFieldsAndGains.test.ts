@@ -727,7 +727,7 @@ describe("every healed skill survives the hydrator too", () => {
       { meterId: "endurance", perSecond: 20, fromFrame: 12.6, stopAfterSec: 1.2 },
     ])
     expect(skill.meterFreezes).toEqual([{ meterId: "endurance", fromFrame: 12 }])
-    const spend = skill.hits[2]!.triggers.find(
+    const spend = skill.hits[3]!.triggers.find(
       (trigger) => trigger.kind === "meterDelta" && trigger.targetId === "endurance",
     )
     expect(spend?.meterSpendCapToCurrent).toBe(20)

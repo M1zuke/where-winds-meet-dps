@@ -1,0 +1,71 @@
+@use "breakpoints";
+
+.toast {
+  flex: 0 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  max-height: min(40vh, 320px);
+  padding: 8px 4px 8px 12px;
+  background: #3a2a1a;
+  border: 1px solid #aa6a30;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  font-size: 0.85em;
+  color: #e8b878;
+  animation: slideIn 0.2s ease-out;
+}
+
+.lines {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+
+.closeButton {
+  flex: none;
+  align-self: flex-start;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: 1.4em;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  background: rgba(232, 184, 120, 0.18);
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .closeButton {
+    width: 44px;
+    height: 44px;
+    margin: -8px 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

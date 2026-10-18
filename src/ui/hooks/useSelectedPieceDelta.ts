@@ -34,7 +34,6 @@ export function useSelectedPieceDelta(
   inputs: Inputs,
   baselineDps: number,
   pieceId: string | null,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): SelectedPieceDeltaResult {
   const [received, setReceived] = useState<ReceivedDelta | null>(() =>
     receivedDelta(retainedResponse("selectedPieceDelta")),
@@ -49,8 +48,8 @@ export function useSelectedPieceDelta(
 
   useEffect(() => {
     if (!pieceId) return
-    postToDpsWorker({ kind: "selectedPieceDelta", inputs, baselineDps, pieceId, baselineQiBreaks })
-  }, [inputs, baselineDps, pieceId, baselineQiBreaks])
+    postToDpsWorker({ kind: "selectedPieceDelta", inputs, baselineDps, pieceId })
+  }, [inputs, baselineDps, pieceId])
 
   if (!pieceId) return NO_PIECE_RESULT
   return { delta: received?.delta, forPieceId: received?.pieceId ?? null, isPending }

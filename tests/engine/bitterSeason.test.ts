@@ -2,13 +2,12 @@
 import { describe, expect, it } from "vitest"
 import {
   bitterSeasonDebuffId,
-  bitterSeasonEnvelopeWindows,
-  bitterSeasonPoisonSchedule,
-  bitterSeasonStackSchedule,
+  BitterSeasonEnvelope,
+  BitterSeasonTracker,
   BITTER_SEASON_MAX_STACKS,
 } from "../../src/engine/buffs/bitterSeason"
 import { bitterSeasonTuningAtTier } from "../../src/data/innerWays/bitterSeason"
-import { mulberry32 } from "../../src/engine/rng"
+import { MulberryBank, mulberry32 } from "../../src/engine/rng"
 import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/innerWays/swordHorizonZenith"
 import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
 
@@ -24,102 +23,171 @@ import { testRotation as makeRotation } from "../builtins"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import type { Inputs } from "../../src/engine/types"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { DEFAULT_QI_BREAK_WINDOW } from "../helpers/qiBars"
 
-describe("bitterSeasonPoisonSchedule", () => {
+interface TrackerEvent {
+  kind: "hit" | "extension"
+  timeSec: number
+}
+
+function chronological(hitsSec: readonly number[], extensionsSec: readonly number[]) {
+  const events: TrackerEvent[] = [
+    ...hitsSec.map((timeSec) => ({ kind: "hit" as const, timeSec })),
+    ...extensionsSec.map((timeSec) => ({ kind: "extension" as const, timeSec })),
+  ]
+  return events.sort(
+    (left, right) =>
+      left.timeSec - right.timeSec || (left.kind === right.kind ? 0 : left.kind === "hit" ? -1 : 1),
+  )
+}
+
+function trackerAfter(options: {
+  hitsSec: readonly number[]
+  procChance: number
+  poisonDurationSec: number
+  extensionsSec?: readonly number[]
+  runRandom?: () => number
+}): BitterSeasonTracker {
+  const tracker = new BitterSeasonTracker(options.procChance, options.runRandom, true)
+  for (const event of chronological(options.hitsSec, options.extensionsSec ?? [])) {
+    if (event.kind === "hit") tracker.roll(event.timeSec, 1, options.poisonDurationSec)
+    else tracker.extendPoison(event.timeSec, ZENITH_CAP_SEC)
+  }
+  return tracker
+}
+
+function envelopeAfter(
+  hitsSec: readonly number[],
+  poisonDurationSec: number,
+  extensionsSec: readonly number[] = [],
+) {
+  const envelope = new BitterSeasonEnvelope(poisonDurationSec, ZENITH_CAP_SEC)
+  for (const event of chronological(hitsSec, extensionsSec)) {
+    if (event.kind === "hit") envelope.hit(event.timeSec)
+    else envelope.extension(event.timeSec)
+  }
+  return envelope.windowsSoFar()
+}
+
+describe("BitterSeasonTracker poison", () => {
   it("stays active for the poison duration after a single guaranteed proc", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
-    expect(schedule.activeProbAtTime(1)).toBe(1)
-    expect(schedule.activeProbAtTime(4.9)).toBe(1)
-    expect(schedule.activeProbAtTime(6)).toBe(0)
+    const tracker = trackerAfter({ hitsSec: [0], procChance: 1, poisonDurationSec: 5 })
+    expect(tracker.poisonActiveProbAt(1)).toBe(1)
+    expect(tracker.poisonActiveProbAt(4.9)).toBe(1)
+    expect(tracker.poisonActiveProbAt(6)).toBe(0)
   })
 
   it("a Zenith extension on an active poison pushes its end back 10 s", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3], ZENITH_CAP_SEC)
-    expect(schedule.activeProbAtTime(14.9)).toBe(1)
-    expect(schedule.activeProbAtTime(15.1)).toBe(0)
+    const tracker = trackerAfter({
+      hitsSec: [0],
+      procChance: 1,
+      poisonDurationSec: 5,
+      extensionsSec: [3],
+    })
+    expect(tracker.poisonActiveProbAt(14.9)).toBe(1)
+    expect(tracker.poisonActiveProbAt(15.1)).toBe(0)
   })
 
   it("a Zenith extension after the poison has already expired does not reopen it", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [6], ZENITH_CAP_SEC)
-    expect(schedule.activeProbAtTime(7)).toBe(0)
+    const tracker = trackerAfter({
+      hitsSec: [0],
+      procChance: 1,
+      poisonDurationSec: 5,
+      extensionsSec: [6],
+    })
+    expect(tracker.poisonActiveProbAt(7)).toBe(0)
   })
 
   it("caps each Zenith extension's resulting remaining duration at 16 s, re-evaluated per extension", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 40, [4, 9, 14], ZENITH_CAP_SEC)
-    expect(schedule.activeProbAtTime(29.9)).toBe(1)
-    expect(schedule.activeProbAtTime(30.1)).toBe(0)
+    const tracker = trackerAfter({
+      hitsSec: [0],
+      procChance: 1,
+      poisonDurationSec: 5,
+      extensionsSec: [4, 9, 14],
+    })
+    expect(tracker.poisonActiveProbAt(29.9)).toBe(1)
+    expect(tracker.poisonActiveProbAt(30.1)).toBe(0)
   })
 
   it("an empty extension list (no Zenith bar) gives the same curve as the unextended case", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
-    expect(schedule.activeProbAtTime(1)).toBe(1)
-    expect(schedule.activeProbAtTime(4.9)).toBe(1)
-    expect(schedule.activeProbAtTime(6)).toBe(0)
+    const tracker = trackerAfter({ hitsSec: [0], procChance: 1, poisonDurationSec: 5 })
+    expect(tracker.poisonActiveProbAt(1)).toBe(1)
+    expect(tracker.poisonActiveProbAt(4.9)).toBe(1)
+    expect(tracker.poisonActiveProbAt(6)).toBe(0)
   })
 
-  it("returns a zero schedule and does not throw for empty hits / zero proc chance / non-positive duration", () => {
-    expect(bitterSeasonPoisonSchedule([], 1, 5, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(0)
-    expect(bitterSeasonPoisonSchedule([0], 0, 5, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(
-      0,
-    )
-    expect(bitterSeasonPoisonSchedule([0], 1, 0, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(
-      0,
-    )
-    expect(bitterSeasonPoisonSchedule([0], 1, 5, 0, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(0)
+  it("stays at zero and does not throw with no hits, a zero proc chance or a non-positive duration", () => {
+    expect(
+      trackerAfter({ hitsSec: [], procChance: 1, poisonDurationSec: 5 }).poisonActiveProbAt(1),
+    ).toBe(0)
+    expect(
+      trackerAfter({ hitsSec: [0], procChance: 0, poisonDurationSec: 5 }).poisonActiveProbAt(1),
+    ).toBe(0)
+    expect(
+      trackerAfter({ hitsSec: [0], procChance: 1, poisonDurationSec: 0 }).poisonActiveProbAt(1),
+    ).toBe(0)
+  })
+
+  it("answers an earlier time from the state the rolls before it left", () => {
+    const tracker = trackerAfter({ hitsSec: [0, 20], procChance: 1, poisonDurationSec: 5 })
+    expect(tracker.poisonActiveProbAt(3)).toBe(1)
+    expect(tracker.poisonActiveProbAt(10)).toBe(0)
+    expect(tracker.poisonActiveProbAt(21)).toBe(1)
   })
 })
 
-describe("bitterSeasonPoisonSchedule.remainingActiveSecAtTime", () => {
+describe("BitterSeasonTracker.poisonRemainingSecAt", () => {
   it("counts down toward 0 as the poison's nominal duration elapses, assuming no further hits", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
-    expect(schedule.remainingActiveSecAtTime(1)).toBe(4)
-    expect(schedule.remainingActiveSecAtTime(6)).toBe(0)
+    const tracker = trackerAfter({ hitsSec: [0], procChance: 1, poisonDurationSec: 5 })
+    expect(tracker.poisonRemainingSecAt(1)).toBe(4)
+    expect(tracker.poisonRemainingSecAt(6)).toBe(0)
   })
 
-  it("does not keep counting future hits — it decays even though the schedule as a whole is dense", () => {
-    const hits = [0, 0.5, 1, 1.5, 2]
-    const schedule = bitterSeasonPoisonSchedule(hits, 1, 5, 20, [], ZENITH_CAP_SEC)
-    // The last hit is at 2s, so from 2s the guaranteed window ends at 7s —
-    // "remaining" should reflect that, not the rest of the rotation.
-    expect(schedule.remainingActiveSecAtTime(2)).toBe(5)
-    expect(schedule.remainingActiveSecAtTime(8)).toBe(0)
+  it("does not keep counting future hits — it decays even though the hit train is dense", () => {
+    const tracker = trackerAfter({
+      hitsSec: [0, 0.5, 1, 1.5, 2],
+      procChance: 1,
+      poisonDurationSec: 5,
+    })
+    expect(tracker.poisonRemainingSecAt(2)).toBe(5)
+    expect(tracker.poisonRemainingSecAt(8)).toBe(0)
   })
 
   it("reflects a Zenith extension that landed while the poison was active", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3], ZENITH_CAP_SEC)
-    expect(schedule.remainingActiveSecAtTime(4)).toBe(11)
+    const tracker = trackerAfter({
+      hitsSec: [0],
+      procChance: 1,
+      poisonDurationSec: 5,
+      extensionsSec: [3],
+    })
+    expect(tracker.poisonRemainingSecAt(4)).toBe(11)
   })
 
-  it("is 0 for an empty/zero-guarded schedule", () => {
+  it("is 0 before anything has rolled", () => {
     expect(
-      bitterSeasonPoisonSchedule([], 1, 5, 20, [], ZENITH_CAP_SEC).remainingActiveSecAtTime(1),
+      trackerAfter({ hitsSec: [], procChance: 1, poisonDurationSec: 5 }).poisonRemainingSecAt(1),
     ).toBe(0)
   })
 })
 
-describe("bitterSeasonEnvelopeWindows", () => {
+describe("BitterSeasonEnvelope", () => {
   it("refreshes a single window across hits closer together than the poison duration", () => {
-    const windows = bitterSeasonEnvelopeWindows([0, 1, 2], 5, [], ZENITH_CAP_SEC)
-    expect(windows).toEqual([{ startSec: 0, endSec: 7 }])
+    expect(envelopeAfter([0, 1, 2], 5)).toEqual([{ startSec: 0, endSec: 7 }])
   })
 
   it("splits into separate windows across a gap wider than the poison duration", () => {
-    const windows = bitterSeasonEnvelopeWindows([0, 20], 5, [], ZENITH_CAP_SEC)
-    expect(windows).toEqual([
+    expect(envelopeAfter([0, 20], 5)).toEqual([
       { startSec: 0, endSec: 5 },
       { startSec: 20, endSec: 25 },
     ])
   })
 
   it("extends the window that is active when the extension lands", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [3], ZENITH_CAP_SEC)
-    expect(windows).toEqual([{ startSec: 0, endSec: 15 }])
+    expect(envelopeAfter([0], 5, [3])).toEqual([{ startSec: 0, endSec: 15 }])
   })
 
   it("does not extend a window that has already closed", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [6], ZENITH_CAP_SEC)
-    expect(windows).toEqual([{ startSec: 0, endSec: 5 }])
+    expect(envelopeAfter([0], 5, [6])).toEqual([{ startSec: 0, endSec: 5 }])
   })
 
   it("caps each extension's resulting remaining duration at 16 s, re-evaluated per extension — not a lifetime cap (Sword Horizon logic, not Bitter Season specific)", () => {
@@ -127,41 +195,46 @@ describe("bitterSeasonEnvelopeWindows", () => {
     // -> 16 s (capped) -> 5 s elapse -> 11 s left -> Zenith hit -> 16 s
     // (capped again, since remaining had decayed back under 16 s by the time
     // this hit landed).
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [4, 9, 14], ZENITH_CAP_SEC)
-    // Poison starts at t=0 (ends at 5, i.e. "1 s left" at t=4).
-    // t=4: remaining 1 -> min(1+10,16)=11 -> end 15.
-    // t=9: remaining 6 -> min(6+10,16)=16 -> end 25.
-    // t=14: remaining 11 -> min(11+10,16)=16 -> end 30.
-    expect(windows).toEqual([{ startSec: 0, endSec: 30 }])
+    expect(envelopeAfter([0], 5, [4, 9, 14])).toEqual([{ startSec: 0, endSec: 30 }])
   })
 
   it("a further extension arriving while remaining is already at the 16 s cap is a no-op", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [3, 8, 8], ZENITH_CAP_SEC)
-    // t=3: remaining 2 -> min(2+10,16)=12 -> end 15.
-    // t=8 (first): remaining 7 -> min(7+10,16)=16 -> end 24.
-    // t=8 (second, same instant): remaining already 16 -> min(16+10,16)=16 -> no change.
-    expect(windows).toEqual([{ startSec: 0, endSec: 24 }])
+    expect(envelopeAfter([0], 5, [3, 8, 8])).toEqual([{ startSec: 0, endSec: 24 }])
   })
 
-  it("returns no windows for an empty hit list or a non-positive poison duration", () => {
-    expect(bitterSeasonEnvelopeWindows([], 5, [], ZENITH_CAP_SEC)).toEqual([])
-    expect(bitterSeasonEnvelopeWindows([0], 0, [], ZENITH_CAP_SEC)).toEqual([])
+  it("returns no windows with no hits or a non-positive poison duration", () => {
+    expect(envelopeAfter([], 5)).toEqual([])
+    expect(envelopeAfter([0], 0)).toEqual([])
   })
 })
 
-describe("bitterSeasonStackSchedule", () => {
+describe("BitterSeasonTracker stacks", () => {
   it("reaches the 5-stack cap under a guaranteed proc and drops to 0 once the shared window lapses", () => {
-    const hits = [0, 0.1, 0.2, 0.3, 0.4]
-    const schedule = bitterSeasonStackSchedule(hits, 1, 20)
-    expect(schedule.expectedStacksAtTime(1)).toBe(5)
-    expect(schedule.maxStackProbAtTime(1)).toBe(1)
-    expect(schedule.expectedStacksAtTime(11)).toBe(0)
+    const tracker = trackerAfter({
+      hitsSec: [0, 0.1, 0.2, 0.3, 0.4],
+      procChance: 1,
+      poisonDurationSec: 5,
+    })
+    expect(tracker.expectedStacksAt(1)).toBe(5)
+    expect(tracker.maxStackProbAt(1)).toBe(1)
+    expect(tracker.expectedStacksAt(11)).toBe(0)
   })
 
-  it("returns a zero schedule and does not throw for empty hits / zero proc chance / non-positive duration", () => {
-    expect(bitterSeasonStackSchedule([], 1, 20).expectedStacksAtTime(1)).toBe(0)
-    expect(bitterSeasonStackSchedule([0], 0, 20).expectedStacksAtTime(1)).toBe(0)
-    expect(bitterSeasonStackSchedule([0], 1, 0).expectedStacksAtTime(1)).toBe(0)
+  it("stays at zero with no hits or a zero proc chance", () => {
+    expect(
+      trackerAfter({ hitsSec: [], procChance: 1, poisonDurationSec: 5 }).expectedStacksAt(1),
+    ).toBe(0)
+    expect(
+      trackerAfter({ hitsSec: [0], procChance: 0, poisonDurationSec: 5 }).expectedStacksAt(1),
+    ).toBe(0)
+  })
+
+  it("lands a rolled stack from the moment of the roll, never before it", () => {
+    const tracker = new BitterSeasonTracker(1, undefined, true)
+    expect(tracker.expectedStacksAt(2)).toBe(0)
+    tracker.roll(2, 1, 5)
+    expect(tracker.expectedStacksAt(2)).toBe(1)
+    expect(tracker.expectedStacksAt(1.9)).toBe(0)
   })
 })
 
@@ -499,23 +572,178 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
   })
 })
 
-describe("bitterSeasonStackSchedule under a parse run", () => {
-  const hits = Array.from({ length: 60 }, (_unused, index) => index * 0.3)
+describe("BitterSeasonTracker under a parse run", () => {
+  const hitsSec = Array.from({ length: 60 }, (_unused, index) => index * 0.3)
 
   it("averages 500 runs when given no rng", () => {
-    const schedule = bitterSeasonStackSchedule(hits, 0.15, 18)
+    const tracker = trackerAfter({ hitsSec, procChance: 0.15, poisonDurationSec: 5 })
     const fractional = Array.from({ length: 200 }, (_unused, step) =>
-      schedule.expectedStacksAtTime(step * 0.05),
+      tracker.expectedStacksAt(step * 0.05),
     ).filter((stacks) => !Number.isInteger(stacks))
     expect(fractional.length).toBeGreaterThan(0)
   })
 
   it("runs a single trajectory when given an rng", () => {
-    const schedule = bitterSeasonStackSchedule(hits, 0.15, 18, mulberry32(404))
+    const tracker = trackerAfter({
+      hitsSec,
+      procChance: 0.15,
+      poisonDurationSec: 5,
+      runRandom: mulberry32(404),
+    })
     for (let step = 0; step < 200; step++) {
-      const stacks = schedule.expectedStacksAtTime(step * 0.05)
+      const stacks = tracker.expectedStacksAt(step * 0.05)
       expect(Number.isInteger(stacks)).toBe(true)
       expect(stacks).toBeLessThanOrEqual(BITTER_SEASON_MAX_STACKS)
+    }
+  })
+})
+
+describe("BitterSeasonTracker grants stack and poison from one roll", () => {
+  const scriptedDraws = (draws: readonly number[]) => {
+    let consumed = 0
+    return {
+      draw: () => draws[consumed++ % draws.length]!,
+      consumed: () => consumed,
+    }
+  }
+
+  it("adds a stack and extends the poison together when the one draw procs", () => {
+    const script = scriptedDraws([0.05])
+    const tracker = new BitterSeasonTracker(0.1, script.draw, true)
+    tracker.roll(1, 1, 5)
+    expect(tracker.expectedStacksAt(1.5)).toBe(1)
+    expect(tracker.poisonActiveProbAt(1.5)).toBe(1)
+    expect(script.consumed()).toBe(1)
+  })
+
+  it("adds neither when the one draw misses", () => {
+    const script = scriptedDraws([0.95])
+    const tracker = new BitterSeasonTracker(0.1, script.draw, true)
+    tracker.roll(1, 1, 5)
+    expect(tracker.expectedStacksAt(1.5)).toBe(0)
+    expect(tracker.poisonActiveProbAt(1.5)).toBe(0)
+    expect(script.consumed()).toBe(1)
+  })
+
+  it("poisons exactly the trajectories that gained a stack on an unseeded run", () => {
+    const tracker = new BitterSeasonTracker(0.2, undefined, true)
+    tracker.roll(0, 1, 100)
+    const poisoned = tracker.poisonActiveProbAt(0.1)
+    expect(poisoned).toBeGreaterThan(0)
+    expect(tracker.expectedStacksAt(0.1)).toBe(poisoned)
+  })
+})
+
+const REFERENCE_SEED_OFFSET = 40217
+const REFERENCE_RUNS = 500
+
+interface ReferenceState {
+  stacks: Float64Array
+  stackEndSec: Float64Array
+  poisonEndSec: Float64Array
+}
+
+class SnapshotBitterSeason {
+  private readonly bank = new MulberryBank(REFERENCE_SEED_OFFSET, REFERENCE_RUNS)
+  private readonly live: ReferenceState = {
+    stacks: new Float64Array(REFERENCE_RUNS),
+    stackEndSec: new Float64Array(REFERENCE_RUNS).fill(-Infinity),
+    poisonEndSec: new Float64Array(REFERENCE_RUNS).fill(-Infinity),
+  }
+  private readonly history: { timeSec: number; state: ReferenceState }[] = []
+
+  constructor(private readonly procChance: number) {}
+
+  roll(timeSec: number, poisonDurationSec: number): void {
+    for (let sim = 0; sim < REFERENCE_RUNS; sim++) {
+      if (this.live.stacks[sim] > 0 && timeSec >= this.live.stackEndSec[sim])
+        this.live.stacks[sim] = 0
+      if (this.bank.next(sim) < this.procChance) {
+        this.live.stacks[sim] = Math.min(this.live.stacks[sim] + 1, BITTER_SEASON_MAX_STACKS)
+        this.live.stackEndSec[sim] = timeSec + 10
+        this.live.poisonEndSec[sim] = Math.max(
+          this.live.poisonEndSec[sim],
+          timeSec + poisonDurationSec,
+        )
+      }
+    }
+    this.record(timeSec)
+  }
+
+  extendPoison(timeSec: number, maxRemainingSec: number): void {
+    for (let sim = 0; sim < REFERENCE_RUNS; sim++) {
+      const end = this.live.poisonEndSec[sim]
+      if (end > timeSec)
+        this.live.poisonEndSec[sim] = Math.max(end, Math.min(end + 10, timeSec + maxRemainingSec))
+    }
+    this.record(timeSec)
+  }
+
+  private record(timeSec: number): void {
+    this.history.push({
+      timeSec,
+      state: {
+        stacks: this.live.stacks.slice(),
+        stackEndSec: this.live.stackEndSec.slice(),
+        poisonEndSec: this.live.poisonEndSec.slice(),
+      },
+    })
+  }
+
+  private stateAt(timeSec: number): ReferenceState | null {
+    const latest = this.history[this.history.length - 1]
+    if (!latest || timeSec >= latest.timeSec) return this.live
+    const earlier = this.history.filter((entry) => entry.timeSec <= timeSec)
+    return earlier[earlier.length - 1]?.state ?? null
+  }
+
+  readings(timeSec: number) {
+    const state = this.stateAt(timeSec)
+    if (!state) return { expected: 0, atMax: 0, active: 0, remaining: 0 }
+    let expected = 0
+    let atMax = 0
+    let active = 0
+    let remaining = 0
+    for (let sim = 0; sim < REFERENCE_RUNS; sim++) {
+      if (state.stacks[sim] > 0 && timeSec < state.stackEndSec[sim]) {
+        expected += state.stacks[sim]
+        if (state.stacks[sim] === BITTER_SEASON_MAX_STACKS) atMax++
+      }
+      if (timeSec < state.poisonEndSec[sim]) active++
+      remaining += Math.max(0, state.poisonEndSec[sim] - timeSec)
+    }
+    return {
+      expected: expected / REFERENCE_RUNS,
+      atMax: atMax / REFERENCE_RUNS,
+      active: active / REFERENCE_RUNS,
+      remaining: remaining / REFERENCE_RUNS,
+    }
+  }
+}
+
+describe("BitterSeasonTracker against a per-change snapshot reference", () => {
+  it("answers every reading bit-identically, across checkpoint boundaries and past times", () => {
+    const tracker = new BitterSeasonTracker(0.3, undefined, true)
+    const reference = new SnapshotBitterSeason(0.3)
+    const timing = mulberry32(77)
+    const queries = mulberry32(8)
+    let timeSec = 0.2
+    for (let count = 0; count < 300; count++) {
+      if (count % 11 === 5) {
+        tracker.extendPoison(timeSec, ZENITH_CAP_SEC)
+        reference.extendPoison(timeSec, ZENITH_CAP_SEC)
+      } else {
+        tracker.roll(timeSec, 1, 6)
+        reference.roll(timeSec, 6)
+      }
+      for (const queryTime of [timeSec, timeSec + queries() * 15, queries() * timeSec]) {
+        const expected = reference.readings(queryTime)
+        expect(tracker.expectedStacksAt(queryTime)).toBe(expected.expected)
+        expect(tracker.maxStackProbAt(queryTime)).toBe(expected.atMax)
+        expect(tracker.poisonActiveProbAt(queryTime)).toBe(expected.active)
+        expect(tracker.poisonRemainingSecAt(queryTime)).toBe(expected.remaining)
+      }
+      timeSec += timing() < 0.1 ? 0 : timing() * (timing() < 0.1 ? 14 : 0.7)
     }
   })
 })

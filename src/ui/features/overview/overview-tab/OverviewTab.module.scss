@@ -2,18 +2,14 @@
 
 .overviewGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-areas: "slots sets stats lift";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "slots stats lift";
   gap: 12px;
   align-items: start;
 }
 
 .slots {
   grid-area: slots;
-}
-
-.sets {
-  grid-area: sets;
 }
 
 .stats {
@@ -27,9 +23,7 @@
 @include breakpoints.below(breakpoints.$bp-1500) {
   .overviewGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-areas:
-      "slots sets stats"
-      "slots lift stats";
+    grid-template-areas: "slots stats lift";
   }
 }
 
@@ -38,8 +32,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
       "slots stats"
-      "sets stats"
-      "sets lift";
+      "lift stats";
   }
 }
 
@@ -48,7 +41,6 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       "slots"
-      "sets"
       "stats"
       "lift";
   }

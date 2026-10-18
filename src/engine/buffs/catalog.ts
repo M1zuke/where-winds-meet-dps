@@ -55,7 +55,7 @@ function summaryFromStaticEffects(effects: Effect[]): string {
 
 function moduleContribution(
   module: BuffModule,
-  tagSet: Set<string>,
+  tagSet: ReadonlySet<string>,
 ): { applies: boolean; text: string } {
   const applies = reaches(tagSet, module)
   const text =

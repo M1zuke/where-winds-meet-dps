@@ -1,14 +1,14 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import type { QiPhase } from "../effects/context"
 import { activeRotationForInputs } from "../activeRotation"
 import { DEFAULT_PREFERRED_DISTANCE_METERS } from "../distance"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
+import { resolveActiveSets } from "../setBonuses"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
+import { appliedRefinement } from "../../data/consumables/divinecraftRefinements"
 import { specForClass } from "./data"
-import { DEFAULT_QI_BREAK_WINDOW } from "../qiBreak"
 import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
 import {
   FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM,
@@ -21,17 +21,6 @@ function tierKey(param: string): string {
   return param + "Tier"
 }
 
-export function clockQiPhase(params: BuffParams, timeSec: number): QiPhase {
-  const qiBreakTime = (params.qiBreakTime as number) ?? 25
-  const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-  const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-  const healerExtension = (params.healerBreakExtension as number) ?? 0
-  const breakEnd = qiBreakTime + bossBreakDuration + healerExtension
-  if (timeSec >= qiBreakTime && timeSec < breakEnd) return "exhausted"
-  if (timeSec >= belowQiTime && timeSec < qiBreakTime) return "below30"
-  return "normal"
-}
-
 export function paramsFromInputs(inputs: Inputs): BuffParams {
   const params: BuffParams = {
     isTrainingDummy: !!inputs.dummyMode,
@@ -40,7 +29,8 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     targetMaxHp: getBreakthrough(inputs.breakthrough).targetHp,
   }
 
-  const equippedSet = inputs.set ? SET_BY_ID[inputs.set] : undefined
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
+  const equippedSet = fourPieceSet ? SET_BY_ID[fourPieceSet] : undefined
   if (equippedSet?.siteKey) params.armorSet = equippedSet.siteKey
   if (equippedSet?.buffParam) params[equippedSet.buffParam] = true
 
@@ -57,17 +47,14 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     params[tierKey(def.buffParam)] = tier
   }
 
-  const breakExtensionBonus = inputs.combatSettings?.breakExtension ? 12 : 0
-  if (breakExtensionBonus !== 0) {
-    params.qiBreakTime = DEFAULT_QI_BREAK_WINDOW.startSec
-    params.bossBreakDuration = DEFAULT_QI_BREAK_WINDOW.durationSec + breakExtensionBonus
-  }
-  params.belowQiTime = DEFAULT_QI_BREAK_WINDOW.startSec - DEFAULT_QI_BREAK_WINDOW.lowQiLeadSec
-
   if (inputs.combatSettings?.script) params[inputs.combatSettings.script] = true
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.divinecraft === "fire") params.divinecraftFire = true
+  if (inputs.divinecraft === "water") params.divinecraftWater = true
+  const refinementBuff = appliedRefinement(inputs)?.buff
+  if (refinementBuff === "heartPoison") params.divinecraftHeartPoison = true
+  if (refinementBuff === "temperedFire") params.divinecraftTemperedFire = true
 
   const oddityMaxEndurance = oddityEnduranceTotal(inputs.unclaimedOddityNodes)
   if (oddityMaxEndurance) params[ODDITY_MAX_ENDURANCE_PARAM] = oddityMaxEndurance

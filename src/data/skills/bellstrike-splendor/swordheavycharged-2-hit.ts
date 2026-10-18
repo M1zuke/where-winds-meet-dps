@@ -7,10 +7,10 @@ import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { VAGRANT_SWORD_2_HIT_MOTION } from "./rootMotion"
 import {
   energySurgeCooldownCut,
-  energySurgeReleaseGrantLate,
+  energySurgeReleaseTrigger,
   energySurgeEnduranceGain,
 } from "./buffs/energySurgeGrant"
-import { multiWaveWindowReleaseGrantLate } from "./buffs/multiWaveWindowGrant"
+import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
 import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import {
@@ -27,8 +27,6 @@ const DRAIN_WITH_CHARGE_RELEASE: MeterDrain[] = VAGRANT_SWORD_DRAIN.map((drain) 
   ...drain,
   chargeRelease: { fallbackSkillId: SKILL.swordHeavyCharged },
 }))
-
-const FIRST_WAVE_AFTER_RELEASE_FRAMES = 6.06
 
 export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
@@ -76,10 +74,7 @@ export const swordHeavyCharged2Hit = defineSkill({
       physFixed: 361.6,
       attributeFixed: 197.2,
       triggers: [
-        energySurgeReleaseGrantLate(FIRST_WAVE_AFTER_RELEASE_FRAMES),
-        multiWaveWindowReleaseGrantLate(FIRST_WAVE_AFTER_RELEASE_FRAMES),
         BATTLE_ANTHEM_ENDURANCE_GAIN,
-        energySurgeEnduranceGain,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
         energySurgeCooldownCut,
       ],
@@ -91,9 +86,22 @@ export const swordHeavyCharged2Hit = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
+      triggers: [energySurgeCooldownCut],
+    }),
+    hit(2, {
       // In-game values as of 2026-09-25: the Sword Morph conversion reads the
-      // Endurance the charge drain left once it stops, near this last wave.
-      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+      // Endurance the charge drain left once it stops, at the release.
+      frame: 84.6,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
+        energySurgeEnduranceGain,
+      ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

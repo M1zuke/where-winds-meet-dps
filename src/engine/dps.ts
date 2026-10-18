@@ -3,6 +3,8 @@ import { simulateTimeline } from "./timeline"
 import { activeRotationForInputs } from "./activeRotation"
 import { rememberedPass } from "./passMemo"
 
+export const TOTALS_RUN: EngineRunOptions = { collect: "totals" }
+
 export function runEngine(inputs: Inputs, options?: EngineRunOptions): Result {
   return rememberedPass(inputs, options, () => computePass(inputs, options))
 }

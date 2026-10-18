@@ -1,0 +1,200 @@
+@use "breakpoints";
+
+.surface.surface {
+  width: min(95vw, 960px);
+  height: min(980px, calc(100vh - 48px));
+  height: min(980px, calc(100dvh - 48px));
+  max-height: none;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+}
+
+.breakthroughChip {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  font-size: 0.78em;
+  color: var(--color-text-dim);
+  white-space: nowrap;
+}
+
+.dummyRow {
+  flex: none;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.nav {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+  width: 236px;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--color-text-dim);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+@include breakpoints.hoverable {
+  .tab:hover:not(.tabSelected) {
+    background: var(--color-surface-inset-hover);
+    color: var(--color-text);
+  }
+}
+
+.tab:focus-visible {
+  border-color: var(--color-accent-bright);
+}
+
+.tabSelected {
+  background: var(--color-surface-selected);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.tabIcon {
+  flex: none;
+  font-size: 1.25em;
+}
+
+.tabLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.badge {
+  flex: none;
+  min-width: 20px;
+  padding: 1px 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+  font-size: 0.78em;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-dim);
+}
+
+.tabSelected .badge {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 20px;
+}
+
+.activeCount {
+  margin-right: auto;
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+}
+
+.cancel,
+.done {
+  min-width: 96px;
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .nav {
+    width: 184px;
+  }
+
+  .tabIcon {
+    display: none;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .surface.surface {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    margin: -12px;
+    border: none;
+    border-radius: 0;
+  }
+
+  .dummyRow {
+    padding: 8px 12px;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .nav {
+    flex-direction: row;
+    width: auto;
+    padding: 8px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .tab {
+    flex: none;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .content {
+    padding: 12px;
+  }
+
+  .activeCount {
+    flex: 1 0 100%;
+  }
+
+  .cancel,
+  .done {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .closeButton {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

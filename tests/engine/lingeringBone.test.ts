@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { CAST } from "../../src/data/skills/ids"
@@ -12,7 +13,7 @@ import type { Inputs } from "../../src/engine/types"
 const MARK_DURATION = 5
 
 function jadeEngine() {
-  return new BuffEngine({ classId: "silkbindJade" }, buffDefsForClass("silkbindJade"), [])
+  return buffEngineWith({ classId: "silkbindJade" }, buffDefsForClass("silkbindJade"), [])
 }
 
 function applyMark(engine: BuffEngine, time: number) {

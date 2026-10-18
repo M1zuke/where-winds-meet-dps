@@ -17,7 +17,6 @@ function probeInputs(hitSeconds: readonly number[], divinecraft: Inputs["divinec
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     divinecraft,
     // Isolate the +1.5% all-damage boost from the target's own baseline
     // damage-taken bonus, which the formula sums alongside it.

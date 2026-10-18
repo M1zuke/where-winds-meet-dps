@@ -202,7 +202,6 @@ describe("ping and average fps — a skill's own further in-cast server waits le
           pingMs: 100,
           averageFps: 60,
           divinecraft: null,
-          set: null,
         }),
       )
     }

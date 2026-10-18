@@ -29,7 +29,6 @@ function breakingInputs(): Inputs {
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [emptier, filler],
     activeCustomRotation: testRotation(CLASS, {
       steps: [

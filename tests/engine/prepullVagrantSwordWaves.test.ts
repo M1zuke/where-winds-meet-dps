@@ -58,7 +58,6 @@ function runPrepullThenShadowStep() {
     classId: CLASS,
     mindMethods: swordMorph,
     activeCustomRotation: rotation,
-    set: null,
   })
 }
 
@@ -121,7 +120,6 @@ describe("the pre-pull Vagrant Sword lays out at the cast length its build selec
           makeStep({ skillId: SKILL.swordq }),
         ],
       }),
-      set: null,
     })
     const prepullCast = result.casts!.find((cast) => cast.skillName === PREPULL_NAME)!
     const nextCast = result.casts!.find((cast) => cast.skillName !== PREPULL_NAME)!

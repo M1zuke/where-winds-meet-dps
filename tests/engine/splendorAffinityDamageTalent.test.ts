@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest"
 import { belowSixtyEndurance } from "../../src/data/skills/bellstrike-splendor/buffs/belowSixtyEndurance"
 import { endlessGale } from "../../src/data/skills/bellstrike-splendor/buffs/endlessGale"
 import { BUFF } from "../../src/data/skills/buffs/ids"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkill } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -52,7 +52,7 @@ describe("the Nameless Spear Affinity DMG talent pays out once", () => {
   })
 
   it("adds up to one bonus across the window closing and the low-Endurance condition taking over", () => {
-    const engine = new BuffEngine(
+    const engine = buffEngineWith(
       { classId: CLASS, [ENDURANCE_MAX_PARAM]: 80 },
       buffDefsForClass(CLASS),
     )
@@ -65,6 +65,7 @@ describe("the Nameless Spear Affinity DMG talent pays out once", () => {
       remainingFramesAt: () => undefined,
       framesSinceLastEnd: () => undefined,
       framesSinceStacksBelowThreshold: () => undefined,
+      frameStacksLastReachedThreshold: () => undefined,
       windowsOf: () => [],
     }
     engine.attachStatuses({ view, fps: 60 })

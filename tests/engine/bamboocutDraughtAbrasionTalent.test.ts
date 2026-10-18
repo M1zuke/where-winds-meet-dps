@@ -23,7 +23,6 @@ function damageWithBingePoints(skillId: string, bingePoints: number): number {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     precision: 0.7,
     mindMethods: eonpourTier1,
     activeCustomRotation: testRotation(CLASS, {

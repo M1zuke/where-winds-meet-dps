@@ -19,6 +19,7 @@ import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { selectableGearLevels } from "../shared/selectableGearLevels"
+import { rebasePiece } from "../shared/rebasePiece"
 import {
   attunementLabelKey,
   attunementMax,
@@ -84,8 +85,10 @@ interface Props {
   wordMaxRows: WordMaxRow[]
   wordMaxPending: boolean
   showWordMax?: boolean
+  showIdentityFields?: boolean
   scanMarks?: ScanMarks
   onScanMarkCleared?(field: ScanMarkField): void
+  relayedRowLead?: ReactNode
 }
 
 export function GearPieceForm({
@@ -95,8 +98,10 @@ export function GearPieceForm({
   wordMaxRows,
   wordMaxPending,
   showWordMax = true,
+  showIdentityFields = true,
   scanMarks,
   onScanMarkCleared,
+  relayedRowLead,
 }: Props) {
   const { t } = useI18n()
   const [openRetuneRow, setOpenRetuneRow] = useState<number | null>(null)
@@ -204,15 +209,7 @@ export function GearPieceForm({
     onChange({ ...piece, ...fields })
   }
   function patchBase(fields: Partial<GearPiece>): void {
-    const merged = { ...piece, ...fields }
-    const base = gearBaseStatsFor(merged)
-    onChange({
-      ...merged,
-      minPhys: base.minPhys,
-      maxPhys: base.maxPhys,
-      hp: base.hp,
-      physDef: base.physDef,
-    })
+    onChange(rebasePiece(piece, fields))
   }
   function clampAndRound(
     lineIndex: number,
@@ -268,40 +265,42 @@ export function GearPieceForm({
           onClose={() => setOpenRetuneRow(null)}
         />
       )}
-      <div className={styles.identityRow}>
-        <Field label={t("common.type")}>
-          <Select
-            ariaLabel={t("common.type")}
-            value={piece.slot}
-            options={slotOptions}
-            className={markClassName("slot", "name")}
-            onChange={(value) => {
-              onScanMarkCleared?.("slot")
-              patchBase({ slot: value as GearSlot })
-            }}
-          />
-        </Field>
-        <Field label={t("gear.pieceForm.level")}>
-          <Select
-            ariaLabel={t("gear.pieceForm.level")}
-            value={String(piece.level)}
-            options={levelOptions}
-            className={markClassName("level", "name")}
-            onChange={(value) => {
-              onScanMarkCleared?.("level")
-              patchBase({ level: Number(value) as GearLevel })
-            }}
-          />
-        </Field>
-        <Field label={t("gear.pieceForm.rarity")}>
-          <Select
-            ariaLabel={t("gear.pieceForm.rarity")}
-            value={piece.rarity}
-            options={rarityOptions}
-            onChange={(value) => patchBase({ rarity: value as GearRarity })}
-          />
-        </Field>
-      </div>
+      {showIdentityFields && (
+        <div className={styles.identityRow}>
+          <Field label={t("common.type")}>
+            <Select
+              ariaLabel={t("common.type")}
+              value={piece.slot}
+              options={slotOptions}
+              className={markClassName("slot", "name")}
+              onChange={(value) => {
+                onScanMarkCleared?.("slot")
+                patchBase({ slot: value as GearSlot })
+              }}
+            />
+          </Field>
+          <Field label={t("gear.pieceForm.level")}>
+            <Select
+              ariaLabel={t("gear.pieceForm.level")}
+              value={String(piece.level)}
+              options={levelOptions}
+              className={markClassName("level", "name")}
+              onChange={(value) => {
+                onScanMarkCleared?.("level")
+                patchBase({ level: Number(value) as GearLevel })
+              }}
+            />
+          </Field>
+          <Field label={t("gear.pieceForm.rarity")}>
+            <Select
+              ariaLabel={t("gear.pieceForm.rarity")}
+              value={piece.rarity}
+              options={rarityOptions}
+              onChange={(value) => patchBase({ rarity: value as GearRarity })}
+            />
+          </Field>
+        </div>
+      )}
 
       <div className={styles.baseStats}>
         {weaponSide ? (
@@ -326,6 +325,7 @@ export function GearPieceForm({
           }
         >
           <span className={styles.relayedCell}>
+            {relayedRowLead && <span className={styles.relayedRowLead}>{relayedRowLead}</span>}
             <Switch
               checked={piece.relayed}
               label={t("gear.pieceForm.relayed")}
@@ -436,25 +436,6 @@ export function GearPieceForm({
             )
           })}
         </div>
-        {setChance !== null && (
-          <div className={styles.tunementSetChance}>
-            <span>
-              {t("gear.pieceForm.tunementSetChance")}
-              <HelpHint text={t("gear.pieceForm.tunementSetChanceHint")} />
-            </span>
-            <b>{formatSetChance(setChance)}</b>
-          </div>
-        )}
-        {oneRetuneTunedLines !== null && (
-          <div className={styles.tunementSetChance}>
-            <span>
-              {t("gear.pieceForm.tunedLinesOneRetuneChance")} ({t("gear.pieceForm.retunedLine")}{" "}
-              {oneRetuneTunedLines.lineIndex + 1})
-              <HelpHint text={t("gear.pieceForm.tunedLinesOneRetuneChanceHint")} />
-            </span>
-            <b>{formatSetChance(oneRetuneTunedLines.chance)}</b>
-          </div>
-        )}
       </div>
 
       {(() => {
@@ -501,6 +482,26 @@ export function GearPieceForm({
           </div>
         )
       })()}
+
+      {setChance !== null && (
+        <div className={styles.tunementSetChance}>
+          <span>
+            {t("gear.pieceForm.tunementSetChance")}
+            <HelpHint text={t("gear.pieceForm.tunementSetChanceHint")} />
+          </span>
+          <b>{formatSetChance(setChance)}</b>
+        </div>
+      )}
+      {oneRetuneTunedLines !== null && (
+        <div className={styles.tunementSetChance}>
+          <span>
+            {t("gear.pieceForm.tunedLinesOneRetuneChance")} ({t("gear.pieceForm.retunedLine")}{" "}
+            {oneRetuneTunedLines.lineIndex + 1})
+            <HelpHint text={t("gear.pieceForm.tunedLinesOneRetuneChanceHint")} />
+          </span>
+          <b>{formatSetChance(oneRetuneTunedLines.chance)}</b>
+        </div>
+      )}
     </fieldset>
   )
 }

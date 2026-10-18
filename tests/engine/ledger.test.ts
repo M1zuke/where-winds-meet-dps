@@ -34,6 +34,29 @@ describe("StatusLedger — stacks", () => {
     expect(led.stacksAt("unknown", 100)).toBe(0)
   })
 
+  it("answers by frame for an id written out of frame order", () => {
+    const led = ledger()
+    led.recordStack("bleed", 300, 5)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 3)
+
+    expect(led.stacksAt("bleed", 99)).toBe(0)
+    expect(led.stacksAt("bleed", 100)).toBe(1)
+    expect(led.stacksAt("bleed", 250)).toBe(3)
+    expect(led.stacksAt("bleed", 300)).toBe(5)
+    expect(led.stacksAt("bleed", 10_000)).toBe(5)
+  })
+
+  it("lets the later write win when two writes share a frame", () => {
+    const led = ledger()
+    led.recordStack("bleed", 200, 2)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 4)
+
+    expect(led.stacksAt("bleed", 200)).toBe(4)
+    expect(led.asOf(led.mark()).stacksAt("bleed", 200)).toBe(4)
+  })
+
   it("distinguishes never-recorded from recorded-as-zero", () => {
     const led = ledger()
     expect(led.hasStackHistory("bleed")).toBe(false)
@@ -156,6 +179,41 @@ describe("StatusLedger — framesSinceStacksBelowThreshold", () => {
     led.recordStack("points", 300, 20)
     expect(led.asOf(mark).framesSinceStacksBelowThreshold("points", 400, 60)).toBe(300)
     expect(led.framesSinceStacksBelowThreshold("points", 400, 60)).toBe(100)
+  })
+})
+
+describe("StatusLedger — frameStacksLastReachedThreshold", () => {
+  it("is undefined while the stacks have never reached the threshold", () => {
+    const led = ledger()
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+    led.recordStack("points", 50, 0)
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+  })
+
+  it("is the frame the stacks rose to the threshold, from that frame on", () => {
+    const led = ledger()
+    led.recordStack("points", 120, 1)
+    expect(led.frameStacksLastReachedThreshold("points", 119, 1)).toBeUndefined()
+    expect(led.frameStacksLastReachedThreshold("points", 120, 1)).toBe(120)
+    expect(led.frameStacksLastReachedThreshold("points", 900, 1)).toBe(120)
+  })
+
+  it("picks the latest rise after a drop and ignores a climb that stays above the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 10, 1)
+    led.recordStack("points", 20, 2)
+    led.recordStack("points", 30, 0)
+    led.recordStack("points", 40, 1)
+    expect(led.frameStacksLastReachedThreshold("points", 25, 1)).toBe(10)
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBe(40)
+  })
+
+  it("hides a rise recorded at or after the mark, through asOf", () => {
+    const led = ledger()
+    const mark = led.mark()
+    led.recordStack("points", 10, 1)
+    expect(led.asOf(mark).frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBe(10)
   })
 })
 

@@ -32,7 +32,8 @@ import { describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
-import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import type { DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
@@ -175,6 +176,7 @@ function dynamicDumpFor(classId: string) {
   // could reach, not just whatever the default build happens to enable.
   const params: Record<string, unknown> = { armorSet: "jadeware" }
   if (classId === SPELLED_OUT_CLASS_ID) params.maxPhysAttack = SPELLED_OUT_CLASS_MAX_PHYS_ATTACK
+  let highestMinBreakthrough = 0
   for (const module of allModules) {
     const requirements = [module.requires, ...Object.values(module.grantRequires ?? {})]
     for (const requires of requirements) {
@@ -182,10 +184,12 @@ function dynamicDumpFor(classId: string) {
         params[requires.param] = true
         params[requires.param + "Tier"] = 6
       }
+      highestMinBreakthrough = Math.max(highestMinBreakthrough, requires?.minBreakthrough ?? 0)
     }
   }
+  params.breakthrough = highestMinBreakthrough
 
-  const engine = new BuffEngine(params, buffs, group)
+  const engine = buffEngineWith(params, buffs, group, exhaustedFrom(25, 10))
   const castTags = allModules.map((module) => `probe:${module.id}`).sort()
   // Short enough to still be inside every probed module's own duration (so a
   // `stacksPerHit` module ramps toward its cap) while shorter than every

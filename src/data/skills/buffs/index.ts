@@ -6,6 +6,17 @@ import { lingeringBone } from "./lingeringBone"
 import { healerBuff } from "./healerBuff"
 import { wraithstrikeScript } from "./wraithstrikeScript"
 import { voidrotScript } from "./voidrotScript"
+import { opportunityScript } from "./opportunityScript"
+import { detachmentScript } from "./detachmentScript"
+import { convergenceScript } from "./convergenceScript"
+import { insightScript } from "./insightScript"
+import { voidskyScript } from "./voidskyScript"
+import { soullinkScript } from "./soullinkScript"
+import { karmaScript } from "./karmaScript"
+import { chaosScript } from "./chaosScript"
+import { purewrathScript } from "./purewrathScript"
+import { wavebornScript } from "./wavebornScript"
+import { clearfallScript } from "./clearfallScript"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
 import { cleftpeakStacks } from "./cleftpeakStacks"
 import { jadeware } from "./jadeware"
@@ -35,6 +46,9 @@ import {
 } from "./nonPlayerBaseDamage"
 import { poetFinalStrikeStack } from "./poetFinalStrikeStack"
 import { divinecraftFire } from "./divinecraftFire"
+import { divinecraftHeartPoison } from "./divinecraftHeartPoison"
+import { divinecraftTemperedFire } from "./divinecraftTemperedFire"
+import { divinecraftWater } from "./divinecraftWater"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
 import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
 import { toadVenomQiBonus } from "./toadVenomQiBonus"
@@ -53,6 +67,17 @@ import { totalAnnihilationSupremeShield } from "./totalAnnihilationSupremeShield
 export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   wraithstrikeScript,
   voidrotScript,
+  opportunityScript,
+  detachmentScript,
+  insightScript,
+  convergenceScript,
+  voidskyScript,
+  soullinkScript,
+  purewrathScript,
+  karmaScript,
+  chaosScript,
+  wavebornScript,
+  clearfallScript,
   vulnerabilityTeammate,
   jadeware,
   mirage,
@@ -96,6 +121,9 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   swallowcallLightAttackBoost,
   swiftGaleAirborneHeavyBoost,
   totalAnnihilationSupremeShield,
+  divinecraftWater,
+  divinecraftHeartPoison,
+  divinecraftTemperedFire,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

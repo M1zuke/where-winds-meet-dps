@@ -5,14 +5,12 @@ import {
   computeSkillDamage,
   CRIT_DAMAGE_MULTIPLIER_MAX,
   CRIT_DAMAGE_MULTIPLIER_MIN,
-  FOOD_MAX_PHYS_BONUS,
-  FOOD_MIN_PHYS_BONUS,
 } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
 import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { DEFAULT_QI_BREAK_WINDOW } from "../helpers/qiBars"
 import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
 import { makeDebuff } from "../../src/engine/debuff"
 import { makeStep } from "../../src/engine/rotation"
@@ -109,7 +107,6 @@ const baseCtx: FormulaContext = {
   effectiveDefense: 307,
   fatigueDamageTaken: 0,
   hasSixHenZhi: false,
-  food: false,
   set: null,
   divinecraft: null,
   classSpecificAttunement: {
@@ -148,16 +145,20 @@ describe("physical attack range normalization", () => {
   it("applies food before choosing the effective max phys", () => {
     const withFood = computeSkillDamage(
       MODAO_CHARGE,
-      { ...baseCtx, smallPhys: 1000, largePhys: 900, food: true },
+      {
+        ...baseCtx,
+        smallPhys: 1000,
+        largePhys: 900,
+        foodPhysAttack: { min: 120, max: 240 },
+      },
       1,
     )
     const foodFoldedIntoPanel = computeSkillDamage(
       MODAO_CHARGE,
       {
         ...baseCtx,
-        smallPhys: 1000 + FOOD_MIN_PHYS_BONUS,
-        largePhys: 900 + FOOD_MAX_PHYS_BONUS,
-        food: false,
+        smallPhys: 1000 + 120,
+        largePhys: 900 + 240,
       },
       1,
     )
@@ -513,7 +514,6 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
     return runEngine(
       {
         ...umbraInputs,
-        set: null,
         customSkills: [probeSkill],
         customDebuffs: [probeDot],
         activeCustomRotation: makeRotation("bellstrikeUmbra", {

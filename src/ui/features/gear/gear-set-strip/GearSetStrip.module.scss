@@ -1,0 +1,60 @@
+.setStrip {
+  display: flex;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.groupName {
+  font-size: 0.78em;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.setName {
+  font-weight: 600;
+}
+
+.count {
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tierChip {
+  padding: 0 6px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 3px;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tierChip.on {
+  border-color: var(--color-positive);
+  color: var(--color-positive);
+}
+
+.separator {
+  align-self: stretch;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.dim {
+  color: var(--color-text-muted);
+}

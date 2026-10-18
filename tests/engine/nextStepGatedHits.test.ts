@@ -21,7 +21,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[]): Inputs {
     customSkills: skills,
     customBuffs: [],
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 

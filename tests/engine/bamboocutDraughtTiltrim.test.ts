@@ -13,6 +13,7 @@ import { castlink } from "../../src/data/skills/bamboocut-draught/castlink"
 import { herosBlood } from "../../src/data/skills/bamboocut-draught/heros-blood"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const CLASS = "bamboocutDraught"
 
@@ -20,7 +21,7 @@ function runHerosBlood(bingePoints: number) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: SET_ID.tiltrim,
+    ...gearSetFields(SET_ID.tiltrim, { fabricatePieces: true }),
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: SKILL.herosBlood })],
       openingStacks: { [STATUS.bingePoints]: bingePoints },
@@ -36,7 +37,7 @@ function primeAndMeasure(primerCasts: number, measuredSkill: Skill) {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: SET_ID.tiltrim,
+    ...gearSetFields(SET_ID.tiltrim, { fabricatePieces: true }),
     activeCustomRotation: makeRotation(CLASS, {
       steps,
       openingStacks: { [STATUS.bingePoints]: 100 },
@@ -80,7 +81,7 @@ describe("Tiltrim", () => {
       const result = runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set,
+        ...gearSetFields(set, { fabricatePieces: true }),
         customSkills: [probe],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: probe.id }), makeStep({ skillId: probe.id })],
@@ -138,7 +139,7 @@ describe("Tiltrim", () => {
       runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set,
+        ...gearSetFields(set, { fabricatePieces: true }),
         customSkills: [deepdazeOpener, probe],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: deepdazeOpener.id }), makeStep({ skillId: probe.id })],
@@ -180,7 +181,7 @@ describe("Tiltrim", () => {
       runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set,
+        ...gearSetFields(set, { fabricatePieces: true }),
         customSkills: [tipsyDrop, probe],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: tipsyDrop.id }), makeStep({ skillId: probe.id })],

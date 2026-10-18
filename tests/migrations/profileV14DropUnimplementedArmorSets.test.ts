@@ -9,10 +9,10 @@
 // before this step runs.
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
-import { ARMOR_SET_OPTIONS } from "../../src/engine/panel"
+import { GEAR_SET_OPTIONS } from "../../src/engine/setBonuses"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V14__dropUnimplementedArmorSets } from "../../src/migrations/V14__dropUnimplementedArmorSets"
-import type { StoredProfile } from "../../src/engine/types"
+import { carriedSets, type StoredProfile } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v13/silkbindJade.json"
 
 const RETIRED_SET_IDS = ["starsAlign"]
@@ -54,7 +54,7 @@ describe("V14__dropUnimplementedArmorSets — called directly", () => {
     })
   }
 
-  for (const option of ARMOR_SET_OPTIONS.filter(
+  for (const option of GEAR_SET_OPTIONS.filter(
     (candidate) => !RETIRED_SET_IDS.includes(candidate.setKey),
   )) {
     it(`leaves the still-offered ${option.setKey} untouched`, () => {
@@ -113,12 +113,12 @@ describe("hydrateInputs — a retired set on a bare import", () => {
   for (const retired of RETIRED_SET_IDS) {
     it(`keeps ${retired} stored, for the step to drop when the profile walks the chain`, () => {
       const bare = withSet(clone(LEGACY.profile), retired)
-      expect(importProfile(JSON.stringify(bare)).inputs.set).toBe(retired)
+      expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain(retired)
     })
   }
 
   it("keeps a set that is still offered", () => {
     const bare = withSet(clone(LEGACY.profile), "mistwillow")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("mistwillow")
+    expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain("mistwillow")
   })
 })

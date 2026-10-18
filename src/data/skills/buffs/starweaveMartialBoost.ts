@@ -31,6 +31,7 @@ export const starweaveMartialBoost = defineBuff({
   duration: DURATION_SEC,
   maxStacks: MAX_STACKS,
   stackOnDamage: true,
+  damageGrantTiming: "preScore",
   stackOnDamageRateLimit: { count: 2, window: 1 },
   summary: "allDamageBoost +3%/stack (Martial Art Skill hits only, more at range)",
   effects: (ctx) => [
