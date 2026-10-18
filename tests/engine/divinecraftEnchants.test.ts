@@ -8,6 +8,7 @@ import { runEngine } from "../../src/engine/dps"
 import { makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
+import { driveMechanic } from "../helpers/driveMechanic"
 import type { Inputs, TimelineEvent } from "../../src/engine/types"
 import { testRotation as makeRotation } from "../builtins"
 
@@ -20,26 +21,29 @@ function consecutiveSeconds(first: number, last: number): number[] {
   return Array.from({ length: last - first + 1 }, (_, index) => first + index)
 }
 
-function setupWithHits(
-  divinecraft: Inputs["divinecraft"],
-  hitTimesSec: readonly number[],
-  rotationDurationSec = 60,
-): MechanicSetup {
+function setupFor(divinecraft: Inputs["divinecraft"]): MechanicSetup {
   return {
     inputs: { divinecraft } as MechanicSetup["inputs"],
     classId: CLASS,
     fps: FPS,
-    rotationDurationSec,
-    windowStartSec: 0,
-    hitTimesSec,
-    weaponHitTimesSec: hitTimesSec,
-    dotTickTimesSec: [],
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,
     hasBuffEngine: false,
     effectiveRates: { precision: 1, critRate: 1, affinityRate: 1 },
+    collectHistory: false,
   }
+}
+
+function poisonEvents(hitTimesSec: readonly number[], windowEndSec = 60) {
+  return driveMechanic(toxicPowderPoisonedMechanic(), setupFor("poison"), {
+    hitTimesSec,
+    windowEndSec,
+  })
+}
+
+function fireEvents(hitTimesSec: readonly number[], windowEndSec = 60) {
+  return driveMechanic(fireOilBurnMechanic(), setupFor("fire"), { hitTimesSec, windowEndSec })
 }
 
 function eventsNamed(timeline: TimelineEvent[] | undefined, name: string): TimelineEvent[] {
@@ -62,7 +66,6 @@ function probeInputs(
   return {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     divinecraft: "poison",
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
@@ -87,12 +90,7 @@ describe("Divinecraft: Poison — Poisoned ticks only with the poison enchant se
 
 describe("Divinecraft: Poison — Poisoned window", () => {
   const ticksFor = (hitTimesSec: number[], rotationDurationSec: number) =>
-    (
-      toxicPowderPoisonedMechanic().extraEvents?.(
-        {},
-        setupWithHits("poison", hitTimesSec, rotationDurationSec),
-      ) ?? []
-    ).map((event) => event.frame / FPS)
+    poisonEvents(hitTimesSec, rotationDurationSec).map((event) => event.frame / FPS)
 
   it("a single hit opens an 8 s window ticking every second from 0.5 s", () => {
     expect(ticksFor([0], 60)).toEqual([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5])
@@ -114,7 +112,7 @@ describe("Divinecraft: Poison — Poisoned window", () => {
 })
 
 describe("Divinecraft: Poison — the Poisoned row", () => {
-  const events = toxicPowderPoisonedMechanic().extraEvents?.({}, setupWithHits("poison", [0])) ?? []
+  const events = poisonEvents([0])
 
   it("is a fixed 0.16 weapon-attack row without an attribute track, flat terms, crit or affinity", () => {
     expect(events.length).toBeGreaterThan(0)
@@ -151,12 +149,9 @@ describe("Divinecraft: Poison — the Poisoned row", () => {
 
 describe("Divinecraft: Poison — enchant bonuses", () => {
   it("adds 5% Qi damage on every event while poison is selected, and nothing for fire", () => {
-    const contribution = toxicPowderPoisonedMechanic().contributeAt?.(
-      {},
-      0,
-      undefined,
-      setupWithHits("poison", [0]),
-    )
+    const mechanic = toxicPowderPoisonedMechanic()
+    const setup = setupFor("poison")
+    const contribution = mechanic.contributeAt?.(mechanic.prepare(setup)!, 0, undefined, setup)
     expect(contribution?.effects).toEqual([{ statKey: "qiDamageBoost", amount: 0.05 }])
     expect(fireOilBurnMechanic().contributeAt).toBeUndefined()
   })
@@ -174,37 +169,71 @@ describe("Divinecraft: Poison — enchant bonuses", () => {
 })
 
 describe("Divinecraft: Fire — Solid Foundation", () => {
-  const explosionsFor = (hitTimesSec: number[]) =>
-    (fireOilBurnMechanic().extraEvents?.({}, setupWithHits("fire", hitTimesSec)) ?? [])
+  const EXPLOSION_DELAY_FRAMES = 3
+  const explosionFramesFor = (hitTimesSec: number[], windowEndSec = 60) =>
+    fireEvents(hitTimesSec, windowEndSec)
       .filter((event) => event.name === EXPLOSION_NAME)
-      .map((event) => event.frame / FPS)
+      .map((event) => event.frame)
+  const framesAfter = (hitSec: number) => hitSec * FPS + EXPLOSION_DELAY_FRAMES
 
   it("the next direct hit after the fifth stack explodes", () => {
-    expect(explosionsFor(consecutiveSeconds(0, 5))).toEqual([5])
+    expect(explosionFramesFor(consecutiveSeconds(0, 5))).toEqual([framesAfter(5)])
+  })
+
+  it("the hit that grants Combustion does not explode", () => {
+    expect(explosionFramesFor(consecutiveSeconds(0, 4))).toEqual([])
   })
 
   it("four stacks and a sixth hit never reach Combustion", () => {
-    expect(explosionsFor([0, 1, 2, 3])).toEqual([])
+    expect(explosionFramesFor([0, 1, 2, 3])).toEqual([])
   })
 
   it("Combustion that expires without a direct hit produces no explosion", () => {
-    expect(explosionsFor([0, 1, 2, 3, 4, 10])).toEqual([])
+    expect(explosionFramesFor([0, 1, 2, 3, 4, 10])).toEqual([])
   })
 
   it("stacks refresh on each new stack and lapse after 5 s without one", () => {
-    expect(explosionsFor([0, 1, 2, 3, 9, 10, 11])).toEqual([])
-    expect(explosionsFor([0, 1.5, 3, 4.5, 6, 7])).toEqual([7])
+    expect(explosionFramesFor([0, 1, 2, 3, 9, 10, 11])).toEqual([])
+    expect(explosionFramesFor([0, 1.5, 3, 4.5, 6, 7])).toEqual([framesAfter(7)])
   })
 
-  it("gains no stacks during the 5 s cooldown after an explosion", () => {
-    expect(explosionsFor(consecutiveSeconds(0, 14))).toEqual([5])
-    expect(explosionsFor(consecutiveSeconds(0, 15))).toEqual([5, 15])
+  it("lands the explosion 3 frames after the hit that triggers it", () => {
+    expect(explosionFramesFor(consecutiveSeconds(0, 5))[0] - 5 * FPS).toBe(3)
+  })
+
+  it("explodes once per 10 s, on the first hit after the lockout", () => {
+    const everyHalfSecond = Array.from({ length: 80 }, (_, index) => index / 2)
+    expect(explosionFramesFor(everyHalfSecond)).toEqual([
+      framesAfter(2.5),
+      framesAfter(12.5),
+      framesAfter(22.5),
+      framesAfter(32.5),
+    ])
+  })
+
+  it("keeps Combustion up through an explosion, so the first hit after the lockout fires", () => {
+    expect(explosionFramesFor([0, 1, 2, 3, 4, 5, 9, 10, 11, 15])).toEqual([
+      framesAfter(5),
+      framesAfter(15),
+    ])
+  })
+
+  it("counts stacks during the lockout, the triggering hit and the explosion included", () => {
+    expect(explosionFramesFor([0, 1, 2, 3, 4, 5, 10, 11, 12, 15])).toEqual([
+      framesAfter(5),
+      framesAfter(15),
+    ])
+    expect(explosionFramesFor([0, 1, 2, 3, 4, 5, 10, 11, 15])).toEqual([framesAfter(5)])
+  })
+
+  it("never fires inside the lockout even with Combustion regained", () => {
+    expect(explosionFramesFor(consecutiveSeconds(0, 14))).toEqual([framesAfter(5)])
   })
 
   it("is a fixed 0.4 weapon-attack row without an attribute track, with its own breakdown row", () => {
-    const events = (
-      fireOilBurnMechanic().extraEvents?.({}, setupWithHits("fire", consecutiveSeconds(0, 5))) ?? []
-    ).filter((event) => event.name === EXPLOSION_NAME)
+    const events = fireEvents(consecutiveSeconds(0, 5)).filter(
+      (event) => event.name === EXPLOSION_NAME,
+    )
     expect(events).toHaveLength(1)
     expect(events[0].art).toMatchObject({
       physMultiplier: 0.4,

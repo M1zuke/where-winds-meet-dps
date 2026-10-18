@@ -1,6 +1,7 @@
 // Scoped to Silkbind Jade metadata and buff gating; not a measured DPS anchor.
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import { blossomBarrage } from "../../src/data/innerWays/blossomBarrage"
 import { SKILLS } from "../../src/data/skills/silkbind-jade"
 import { DEBUFFS } from "../../src/data/skills/silkbind-jade/debuffs"
@@ -8,7 +9,7 @@ import { DEBUFF, SKILL } from "../../src/data/skills/silkbind-jade/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { PROP } from "../../src/data/skills/ids"
 import { dotTickSkill, tickSourceSkillId } from "../../src/engine/dot"
-import { warmStartQiSchedule } from "../../src/engine/qiBar"
+import { QiBar } from "../../src/engine/qiBar"
 import type { Skill } from "../../src/engine/skill"
 import { CombatResource } from "../../src/engine/resources"
 import { blossomResource } from "../../src/data/classes/silkbind-jade/blossoms"
@@ -31,9 +32,11 @@ describe("Blossom Barrage Global 2.0 PvE", () => {
   const charged = SKILLS.find((skill) => skill.id === "silkbindJade-umblightcharge")!
   const drone = SKILLS.find((skill) => skill.id === "silkbindJade-umbdrone-20hit")!
   function engine(tier: number, marked = true, setupTime = 0) {
-    const result = new BuffEngine(
-      { blossomBarrage: true, blossomBarrageTier: tier, qiBreakTime: 5, bossBreakDuration: 5 },
+    const result = buffEngineWith(
+      { blossomBarrage: true, blossomBarrageTier: tier },
       blossomBarrage.buffDefs ?? [],
+      [],
+      exhaustedFrom(5, 5),
     )
     result.processSkillCast(
       "setup",
@@ -101,14 +104,11 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
   })()
 
   function engine(tier: number, comboAppliedAt = 0, breakDurationSec = 5, jittered = false) {
-    const result = new BuffEngine(
-      {
-        blossomBarrage: true,
-        blossomBarrageTier: tier,
-        qiBreakTime: 5,
-        bossBreakDuration: breakDurationSec,
-      },
+    const result = buffEngineWith(
+      { blossomBarrage: true, blossomBarrageTier: tier },
       jittered ? JITTERED_EXTENSION_DEFS : (blossomBarrage.buffDefs ?? []),
+      [],
+      exhaustedFrom(5, breakDurationSec),
     )
     result.processSkillCast("setup", comboAppliedAt, { castTime: 0 }, false, EXTENSION_BUFF_IDS)
     return result
@@ -161,13 +161,13 @@ describe("Blossom Barrage Combo - Extend Mark", () => {
 
   it("does not extend on the hit that empties the Qi bar, but does on the next qualifying hit", () => {
     const emptying = engine(4)
-    emptying.attachQiSchedule(
-      warmStartQiSchedule(
-        [{ startFrame: 5 * FPS, endFrame: 10 * FPS, immuneUntilFrame: 10 * FPS }],
-        FPS,
-      ),
+    const bar = new QiBar(
+      { max: 100, refill: 100, breakSec: 5, directImmunitySec: 0, takenIndex: 1 },
+      FPS,
     )
+    emptying.attachQiReader(bar)
     strike(emptying, SIX_BULLET_CAST, 5)
+    bar.apply(5 * FPS, 100, "direct")
     expect(emptying.liveFraction(BUFF.combo, COMBO_LIFETIME_SEC + 0.5)).toBe(0)
     strike(emptying, SIX_BULLET_CAST, 5.1)
     expect(emptying.liveFraction(BUFF.combo, COMBO_LIFETIME_SEC + 0.5)).toBe(1)
@@ -257,9 +257,11 @@ describe("Blossoms across Combo - Extend Mark outcomes", () => {
   const TIER_SIX_GAIN = 25
 
   function extendedByDroneRuns() {
-    const buffs = new BuffEngine(
-      { blossomBarrage: true, blossomBarrageTier: 4, qiBreakTime: 5, bossBreakDuration: 30 },
+    const buffs = buffEngineWith(
+      { blossomBarrage: true, blossomBarrageTier: 4 },
       JITTERED_EXTENSION_DEFS,
+      [],
+      exhaustedFrom(5, 30),
     )
     buffs.processSkillCast("setup", 0, { castTime: 0 }, false, [
       BUFF.combo,

@@ -1,5 +1,5 @@
 // Ground distance to a stationary target, simulated once per cast — see
-// docs/TIMELINE.md § "Target distance". Pure functions only: the layout pass
+// docs/TIMELINE.md § "Target distance". Pure functions only: the timeline
 // owns the sequencing, this module only owns the per-cast arithmetic.
 
 export type SkillApproach = "approach" | "stationary"

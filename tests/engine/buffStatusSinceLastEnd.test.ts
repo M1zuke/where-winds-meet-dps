@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { makeSkill } from "../../src/engine/skill"
@@ -40,30 +41,30 @@ function allDamageBoostAt(engine: BuffEngine, time: number): number | undefined 
 
 describe("ctx.status.secondsSinceLastEnd", () => {
   it("is null before the status has ever applied", () => {
-    const engine = new BuffEngine({}, [], [sourceModule, payoutModule])
+    const engine = buffEngineWith({}, [], [sourceModule, payoutModule])
     expect(allDamageBoostAt(engine, 0)).toBeUndefined()
   })
 
   it("pays out while the source status is still active", () => {
-    const engine = new BuffEngine({}, [], [sourceModule, payoutModule])
+    const engine = buffEngineWith({}, [], [sourceModule, payoutModule])
     engine.processSkillCast("cast:probe", 0, {}, false, [SOURCE_ID])
     expect(allDamageBoostAt(engine, 5)).toBe(0.1)
   })
 
   it("keeps paying out within the window after the source status's last window ended", () => {
-    const engine = new BuffEngine({}, [], [sourceModule, payoutModule])
+    const engine = buffEngineWith({}, [], [sourceModule, payoutModule])
     engine.processSkillCast("cast:probe", 0, {}, false, [SOURCE_ID])
     expect(allDamageBoostAt(engine, 14.9)).toBe(0.1)
   })
 
   it("stops paying out once the window after the source status's last window ended elapses", () => {
-    const engine = new BuffEngine({}, [], [sourceModule, payoutModule])
+    const engine = buffEngineWith({}, [], [sourceModule, payoutModule])
     engine.processSkillCast("cast:probe", 0, {}, false, [SOURCE_ID])
     expect(allDamageBoostAt(engine, 15.1)).toBeUndefined()
   })
 
   it("counts from the most recent closed window, not an earlier one", () => {
-    const engine = new BuffEngine({}, [], [sourceModule, payoutModule])
+    const engine = buffEngineWith({}, [], [sourceModule, payoutModule])
     engine.processSkillCast("cast:probe", 0, {}, false, [SOURCE_ID])
     engine.processSkillCast("cast:probe", 20, {}, false, [SOURCE_ID])
     expect(allDamageBoostAt(engine, 16)).toBeUndefined()

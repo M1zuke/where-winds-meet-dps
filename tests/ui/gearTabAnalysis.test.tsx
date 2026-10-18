@@ -73,6 +73,7 @@ function renderTab() {
       <ConfirmProvider>
         <GearTab
           inputs={inputs}
+          configuredInputs={inputs}
           engineInputs={inputs}
           customGraduationBuild={null}
           onChange={() => {}}

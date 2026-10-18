@@ -8,6 +8,7 @@ import {
   V103__splendorRootMotion,
   healSkill,
 } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -75,7 +76,7 @@ describe("custom-skills v102 fixture", () => {
 
 describe("healSkill", () => {
   it("lands the untouched pre-pull copy on the built-in", () => {
-    const healed = healSkill(clone(skillIn(STORE, PREPULL_ID))) as Skill
+    const healed = healSwordMorphConversion(healSkill(clone(skillIn(STORE, PREPULL_ID)))) as Skill
     expect(healed.displacement).toEqual(builtinOf(PREPULL_ID).displacement)
     expect(healed.hits).toEqual(builtinOf(PREPULL_ID).hits)
   })

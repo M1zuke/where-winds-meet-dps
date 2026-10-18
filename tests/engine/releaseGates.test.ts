@@ -30,7 +30,6 @@ function inputsFor(skills: Skill[], rotationSkills: Skill[]): Inputs {
     customSkills: skills,
     customBuffs: [],
     activeCustomRotation: rotation,
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
   }
 }

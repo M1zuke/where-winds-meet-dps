@@ -13,7 +13,6 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
 import { engineRunOptionsSharingQiOf } from "../../src/engine/qiBar"
-import { FPS } from "../../src/engine/timeline"
 import {
   followedGraduationBuild,
   followedGraduationBuildAmong,
@@ -23,10 +22,11 @@ import {
   repairGraduationBuildId,
   standardizedGraduationInputs,
 } from "../../src/engine/graduation"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import {
   defaultCombatSettings,
   GEAR_SLOTS,
+  WEAPON_SLOTS,
   type GearLevel,
   type Inputs,
   type Result,
@@ -47,7 +47,7 @@ const FOLLOWING: Inputs = {
 }
 
 function dpsFor(inputs = FOLLOWING): number {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs)))).dps
+  return runEngine(applySetBonuses(withDerivedStats(inputs))).dps
 }
 
 function fictionalBuild(id: string): GraduationBuild {
@@ -158,6 +158,27 @@ describe("graduation builds", () => {
     const build = graduationBuildAtLevel(followed, "maxRolls", GRADUATION_LEVEL)
     expect(build.gear).toEqual(followed.gear)
     expect(build.bowSet).toBe(followed.bowSet)
+  })
+
+  it("writes the build's authored set onto the four set-bearing pieces and nowhere else", () => {
+    const followed = followedGraduationBuild(FOLLOWING)!
+    const benchmarkInputs = graduationInputs(FOLLOWING)!
+    for (const piece of benchmarkInputs.inventory) {
+      expect(piece.set).toBe(WEAPON_SLOTS.includes(piece.slot) ? followed.set : undefined)
+    }
+  })
+
+  it("creates no bow pieces below gear level 91", () => {
+    const { bowGear } = graduationInputs({ ...FOLLOWING, breakthrough: 13 })!
+    expect(bowGear).toEqual({ bow: null, thumbRing: null })
+  })
+
+  it("writes the build's bow set onto both bow pieces at the gear level", () => {
+    const followed = followedGraduationBuild(FOLLOWING)!
+    const { bowGear } = graduationInputs({ ...FOLLOWING, breakthrough: 16 })!
+    expect(followed.bowSet).not.toBeNull()
+    expect(bowGear.bow).toEqual({ level: 96, rarity: "legendary", set: followed.bowSet })
+    expect(bowGear.thumbRing).toEqual(bowGear.bow)
   })
 
   it("always enables every class talent and claims every oddity", () => {
@@ -350,22 +371,19 @@ describe("graduation build follows the current breakthrough's gear level", () =>
 })
 
 function prep(inputs: Inputs): Inputs {
-  return applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+  return applySetBonuses(withDerivedStats(inputs))
 }
 
 function ratedOnBenchmarkQi(inputs: Inputs): Result {
   const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
-  return runEngine(
-    prep(graduationRatedInputs(inputs)!),
-    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
-  )
+  return runEngine(prep(graduationRatedInputs(inputs)!), engineRunOptionsSharingQiOf(benchmarkRun))
 }
 
 function relayedOnBenchmarkQi(inputs: Inputs): Result {
   const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
   return runEngine(
     prep(graduationInputs(inputs, "relayed")!),
-    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
+    engineRunOptionsSharingQiOf(benchmarkRun),
   )
 }
 
@@ -374,8 +392,7 @@ describe("the rated side shares the benchmark's Qi", () => {
     const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
 
     expect(
-      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun, FPS))
-        .dps,
+      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun)).dps,
     ).toBe(benchmarkRun.dps)
   })
 
@@ -387,10 +404,6 @@ describe("the rated side shares the benchmark's Qi", () => {
     expect(ratedOnBenchmarkQiRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
     expect(ratedOnOwnQi.qiBreaks).not.toEqual(benchmarkRun.qiBreaks)
     expect(ratedOnBenchmarkQiRun.dps).not.toBe(ratedOnOwnQi.dps)
-  })
-
-  it("converges the rated run in one pass", () => {
-    expect(ratedOnBenchmarkQi(FOLLOWING).qiIterations).toBe(1)
   })
 
   it("leaves a run given no Qi damage log simulating its own bar", () => {

@@ -20,6 +20,8 @@ export const tiltrimStack = defineBuff({
   duration: 5.1,
   maxStacks: 5,
   stackOnDamage: true,
+  damageGrantTiming: "preScore",
+  damageGrantListensTo: "anyDamage",
   summary: "Physical and Attribute Attack +1%/stack while stacks remain",
   effects: (ctx) => {
     if (!ctx.self.reachesEvent) return []

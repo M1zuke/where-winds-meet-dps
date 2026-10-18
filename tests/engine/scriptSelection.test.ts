@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, DEFAULT_QI_BREAK_WINDOW, scriptedQiBar } from "../helpers/qiBars"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { makeSkill } from "../../src/engine/skill"
@@ -14,18 +14,15 @@ import type { Inputs, QiBreakWindow, ScriptId } from "../../src/engine/types"
 // are `affectsAll`.
 const probe = () => makeSkill("test", { name: "probe" })
 
-// The low-Qi lead only exists once a `belowQiTime` is declared — mirroring
-// `paramsFromInputs`, which derives it from the rotation's lead-in seconds.
-// With it: normal below 20s, the declared lead from 20-25s, exhausted (the
-// break) 25-35s, normal again after — the engine's stand-in for "target Qi
-// below 40%" (see clockQiPhase).
-const LEAD_AND_BREAK_PARAMS = { belowQiTime: 20 }
+const LEAD_AND_BREAK = scriptedQiBar(DEFAULT_QI_BREAK_WINDOW)
 
 describe("script selection — rides the declared low-Qi lead and the break, because the engine models no Qi bar", () => {
   it("holds inside the low-Qi lead", () => {
-    const engine = new BuffEngine(
-      { wraithstrikeScript: true, ...LEAD_AND_BREAK_PARAMS },
+    const engine = buffEngineWith(
+      { wraithstrikeScript: true },
       GLOBAL_BUFF_DEFS,
+      [],
+      LEAD_AND_BREAK,
     )
     expect(engine.calculateDamageEffects(probe(), 22).effects).toContainEqual({
       statKey: "critDamageBoost",
@@ -34,9 +31,11 @@ describe("script selection — rides the declared low-Qi lead and the break, bec
   })
 
   it("holds inside the break", () => {
-    const engine = new BuffEngine(
-      { wraithstrikeScript: true, ...LEAD_AND_BREAK_PARAMS },
+    const engine = buffEngineWith(
+      { wraithstrikeScript: true },
       GLOBAL_BUFF_DEFS,
+      [],
+      LEAD_AND_BREAK,
     )
     expect(engine.calculateDamageEffects(probe(), 30).effects).toContainEqual({
       statKey: "critDamageBoost",
@@ -45,17 +44,21 @@ describe("script selection — rides the declared low-Qi lead and the break, bec
   })
 
   it("does not hold before the low-Qi lead starts", () => {
-    const engine = new BuffEngine(
-      { wraithstrikeScript: true, ...LEAD_AND_BREAK_PARAMS },
+    const engine = buffEngineWith(
+      { wraithstrikeScript: true },
       GLOBAL_BUFF_DEFS,
+      [],
+      LEAD_AND_BREAK,
     )
     expect(engine.calculateDamageEffects(probe(), 10).effects).toEqual([])
   })
 
   it("does not hold once the break ends", () => {
-    const engine = new BuffEngine(
-      { wraithstrikeScript: true, ...LEAD_AND_BREAK_PARAMS },
+    const engine = buffEngineWith(
+      { wraithstrikeScript: true },
       GLOBAL_BUFF_DEFS,
+      [],
+      LEAD_AND_BREAK,
     )
     expect(engine.calculateDamageEffects(probe(), 40).effects).toEqual([])
   })
@@ -63,9 +66,11 @@ describe("script selection — rides the declared low-Qi lead and the break, bec
 
 describe("script selection — one channel each", () => {
   it("Wraithstrike Script moves only the crit channel", () => {
-    const engine = new BuffEngine(
-      { wraithstrikeScript: true, ...LEAD_AND_BREAK_PARAMS },
+    const engine = buffEngineWith(
+      { wraithstrikeScript: true },
       GLOBAL_BUFF_DEFS,
+      [],
+      LEAD_AND_BREAK,
     )
     const effects = engine.calculateDamageEffects(probe(), 30).effects
     expect(effects).toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
@@ -73,10 +78,7 @@ describe("script selection — one channel each", () => {
   })
 
   it("Voidrot Script moves only the affinity channel", () => {
-    const engine = new BuffEngine(
-      { voidrotScript: true, ...LEAD_AND_BREAK_PARAMS },
-      GLOBAL_BUFF_DEFS,
-    )
+    const engine = buffEngineWith({ voidrotScript: true }, GLOBAL_BUFF_DEFS, [], LEAD_AND_BREAK)
     const effects = engine.calculateDamageEffects(probe(), 30).effects
     expect(effects).toContainEqual({ statKey: "affinityDamageBoost", amount: 0.1 })
     expect(effects.some((effect) => effect.statKey === "critDamageBoost")).toBe(false)

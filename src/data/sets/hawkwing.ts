@@ -7,6 +7,7 @@ const DISPLAY_NAME = "Hawkwing"
 
 export const hawkwing = defineSet({
   id: SET_ID.hawkwing,
+  group: "gear",
   name: DISPLAY_NAME,
   siteKey: "hawkwing",
   // The 4-piece ramp itself is time-averaged, not this flat value — see

@@ -3,14 +3,19 @@ import { statLineLabel } from "../../../../data/stats/statLines"
 import { statLineKey } from "../../../../i18n/contentKeys"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
 import {
+  BOW_SLOTS,
   GEAR_SLOTS,
+  type BowSet,
+  type BowSlot,
   type GearLevel,
   type GearSlot,
   type GearWordId,
   type WeaponName,
 } from "../../../../engine/types"
 import type { MartialArtId } from "../../../../data/martialArts/ids"
-import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
+import { parseBowItemId, type BowItemReading } from "./bowItemIds"
+import { GAME_SLOT_TO_BOW_SLOT, GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
+import { bowSetForSuffix } from "./gearSetSuffixes"
 import { DASHBOARD_MARTIAL_ART_IDS } from "./dashboardMartialArts"
 import { weaponTypeOfItem } from "./weaponItemTypes"
 
@@ -77,7 +82,10 @@ export interface ImportedInnerWay {
 }
 
 export type SlotResolution =
-  { kind: "mapped"; slot: GearSlot } | { kind: "noAppEquivalent" } | { kind: "unknownSlotId" }
+  | { kind: "mapped"; slot: GearSlot }
+  | { kind: "bow"; slot: BowSlot }
+  | { kind: "noAppEquivalent" }
+  | { kind: "unknownSlotId" }
 
 export interface EquippedMartialArt {
   rawId: number
@@ -90,9 +98,16 @@ export interface EquippedMartialArts {
   sub: EquippedMartialArt | null
 }
 
+export interface ImportedBow {
+  reading: BowItemReading
+  set: BowSet
+}
+
 export interface ImportedPiece {
   gameSlotId: string
   itemId: number | null
+  suffix: number | null
+  bow: ImportedBow | null
   weaponType: WeaponName | null
   weaponPlacedByGameSlot: boolean
   slot: SlotResolution
@@ -151,6 +166,9 @@ function firstNumber(source: Record<string, unknown>, keys: readonly string[]): 
 }
 
 function resolveSlot(gameSlotId: string): SlotResolution {
+  if (Object.prototype.hasOwnProperty.call(GAME_SLOT_TO_BOW_SLOT, gameSlotId)) {
+    return { kind: "bow", slot: GAME_SLOT_TO_BOW_SLOT[gameSlotId]! }
+  }
   if (!Object.prototype.hasOwnProperty.call(GAME_SLOT_TO_GEAR_SLOT, gameSlotId)) {
     return { kind: "unknownSlotId" }
   }
@@ -311,13 +329,20 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
     const tunements = all.filter((affix) => !affix.isAttunementAffix)
 
     const itemId = asNumber(wearEquips[gameSlotId]) ?? asNumber(detail?.no) ?? null
+    const suffix = exVo ? asNumber(exVo.suffix) : null
+    const slot = resolveSlot(gameSlotId)
 
     return {
       gameSlotId,
       itemId,
+      suffix,
+      bow:
+        slot.kind === "bow"
+          ? { reading: parseBowItemId(itemId), set: bowSetForSuffix(suffix) }
+          : null,
       weaponType: weaponTypeOfItem(itemId),
       weaponPlacedByGameSlot: false,
-      slot: resolveSlot(gameSlotId),
+      slot,
       observedBaseStats: readObservedBaseStats([exVo?.baseAttrs, detail, exVo]),
       identity: null,
       impliedLevel: null,
@@ -349,8 +374,18 @@ export function previewablePieces(result: GearImportResult): ImportedPiece[] {
   const order = (piece: ImportedPiece): number =>
     piece.slot.kind === "mapped" ? GEAR_SLOTS.indexOf(piece.slot.slot) : GEAR_SLOTS.length
   return result.pieces
-    .filter((piece) => piece.slot.kind !== "noAppEquivalent")
+    .filter((piece) => piece.slot.kind !== "noAppEquivalent" && piece.slot.kind !== "bow")
     .sort((left, right) => order(left) - order(right))
+}
+
+export function bowPieces(result: GearImportResult): ImportedPiece[] {
+  return result.pieces
+    .filter((piece) => piece.slot.kind === "bow")
+    .sort((left, right) => BOW_SLOTS.indexOf(bowSlotOf(left)) - BOW_SLOTS.indexOf(bowSlotOf(right)))
+}
+
+function bowSlotOf(piece: ImportedPiece): BowSlot {
+  return (piece.slot as { kind: "bow"; slot: BowSlot }).slot
 }
 
 /** A capture that lists the key as an extra came from a bookmarklet too old to carry it. */
@@ -435,6 +470,8 @@ export function buildImportDiagnostics(result: GearImportResult): string {
       pieces: result.pieces.map((piece) => ({
         gameSlotId: piece.gameSlotId,
         itemId: piece.itemId,
+        suffix: piece.suffix,
+        bow: piece.bow,
         weaponType: piece.weaponType,
         weaponPlacedByGameSlot: piece.weaponPlacedByGameSlot,
         slot: piece.slot,

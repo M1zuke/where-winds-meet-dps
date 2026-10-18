@@ -62,7 +62,7 @@ export function effectiveTickIntervalFrames(dot: DebuffDotSpec): number {
 }
 
 export function effectiveFirstTickOffsetFrames(dot: DebuffDotSpec): number {
-  const base = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames
+  const base = Math.max(0, dot.firstTickOffsetFrames ?? dot.tickIntervalFrames)
   return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
 }
 
@@ -211,20 +211,25 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
   return episodes
 }
 
-export interface DotTickPlan {
+export interface DotTickLaunch {
   frame: number
   // Where the pulse fires; `frame` is where its bullet lands. Equal for a
   // pulse with no projectile.
   launchFrame: number
   runFrame: number
-  weight: number
   stampLatenessFrames?: number
   requiresBuff?: string
   requiresBuffAtFrame?: number
   enhancedBy?: string
+}
+
+export interface DotTickLanding {
+  weight: number
   shape?: DotStackShape
   scale?: number
 }
+
+export type DotTickPlan = DotTickLaunch & DotTickLanding
 
 export interface DotPlanQuery {
   debuff: Debuff
@@ -238,91 +243,123 @@ export interface DotPlanQuery {
   weightAt(frame: number): number
 }
 
-export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
-  const { debuff, dot } = query
-  if (dot.tickIntervalFrames <= 0) return []
-  const interval = effectiveTickIntervalFrames(dot)
-  const firstOffset = effectiveFirstTickOffsetFrames(dot)
+export interface DotPulseQuery {
+  debuff: Debuff
+  dot: DebuffDotSpec
+  stacksAt(frame: number): number
+  distanceAt?(frame: number): number
+  inWindow(frame: number): boolean
+  weightAt(frame: number): number
+}
 
-  const perStack = (debuff.stackScaling ?? "flat") === "perStack"
+export interface DotPulseSchedule {
+  interval: number
+  firstOffset: number
+  offsets: readonly number[]
+}
+
+export function dotPulseSchedule(dot: DebuffDotSpec): DotPulseSchedule {
+  const interval = effectiveTickIntervalFrames(dot)
+  return {
+    interval,
+    firstOffset: effectiveFirstTickOffsetFrames(dot),
+    offsets: [0, ...(dot.additionalTicks?.offsetsFrames ?? [])].filter(
+      (offset) => offset >= 0 && offset < interval,
+    ),
+  }
+}
+
+export function planDotTickLaunch(
+  query: DotPulseQuery,
+  schedule: DotPulseSchedule,
+  pulse: number,
+  runIndex: number,
+  offset: number,
+): DotTickLaunch | null {
+  const { dot } = query
+  const { interval, firstOffset } = schedule
+  const at = pulse + offset
+  const launchFrame = Math.round(at)
+  const travelFrames =
+    dot.projectile && query.distanceAt
+      ? projectileTravelFrames(dot.projectile, query.distanceAt(launchFrame))
+      : 0
+  const frame = Math.round(at + travelFrames)
+  const runFrame = Math.round(pulse)
+  const stampLateness =
+    dot.rearmsToAbsoluteDeadline === true
+      ? { stampLatenessFrames: absoluteDeadlineLatenessFrames(runIndex, firstOffset, interval) }
+      : {}
+  const enhancingBuff = dot.additionalTicks?.requiresBuff
+  const requirement =
+    offset > 0
+      ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: runFrame }
+      : enhancingBuff
+        ? { enhancedBy: enhancingBuff }
+        : {}
+  if (frame < 0 || !query.inWindow(frame)) return null
+  return { frame, launchFrame, runFrame, ...stampLateness, ...requirement }
+}
+
+export function resolveDotTickLanding(
+  query: DotPulseQuery,
+  launch: Pick<DotTickLaunch, "frame">,
+): DotTickLanding | null {
+  const { debuff, dot } = query
+  const { frame } = launch
+  const weight = query.weightAt(frame)
+  if (weight <= 0) return null
+
   const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null
   const ladder = !shapes && dot.perStackMultipliers?.length ? dot.perStackMultipliers : null
+  if (shapes) {
+    const live = Math.max(1, query.stacksAt(frame))
+    return { weight, shape: shapes[Math.min(live, shapes.length) - 1] }
+  }
+  if (ladder) {
+    const live = Math.max(0, query.stacksAt(frame))
+    if (live === 0) return null
+    return { weight, scale: ladder[Math.min(live, ladder.length) - 1] }
+  }
+  const perStack = (debuff.stackScaling ?? "flat") === "perStack"
+  const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
+  if (perStack && count === 0) return null
+  return { weight, scale: count }
+}
+
+function planDotTick(
+  query: DotPulseQuery,
+  schedule: DotPulseSchedule,
+  pulse: number,
+  runIndex: number,
+  offset: number,
+): DotTickPlan | null {
+  const launch = planDotTickLaunch(query, schedule, pulse, runIndex, offset)
+  if (!launch) return null
+  const landing = resolveDotTickLanding(query, launch)
+  return landing ? { ...launch, ...landing } : null
+}
+
+export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
+  const { dot } = query
+  if (dot.tickIntervalFrames <= 0) return []
+  const schedule = dotPulseSchedule(dot)
 
   const plans: DotTickPlan[] = []
   for (const episode of mergeEpisodes(query.windows)) {
     // The accumulator stays exact while the frame it lands on is rounded, so a
     // fractional interval cannot compound its own rounding error.
     let runIndex = -1
-    for (let pulse = episode.start + firstOffset; pulse < episode.end; pulse += interval) {
+    for (
+      let pulse = episode.start + schedule.firstOffset;
+      pulse < episode.end;
+      pulse += schedule.interval
+    ) {
       runIndex++
-      for (const offset of [0, ...(dot.additionalTicks?.offsetsFrames ?? [])]) {
-        if (offset < 0 || offset >= interval) continue
-        const at = pulse + offset
-        if (at >= episode.end) continue
-        const launchFrame = Math.round(at)
-        const travelFrames =
-          dot.projectile && query.distanceAt
-            ? projectileTravelFrames(dot.projectile, query.distanceAt(launchFrame))
-            : 0
-        const frame = Math.round(at + travelFrames)
-        const runFrame = Math.round(pulse)
-        const stampLateness =
-          dot.rearmsToAbsoluteDeadline === true
-            ? {
-                stampLatenessFrames: absoluteDeadlineLatenessFrames(
-                  runIndex,
-                  firstOffset,
-                  interval,
-                ),
-              }
-            : {}
-        const enhancingBuff = dot.additionalTicks?.requiresBuff
-        const requirement =
-          offset > 0
-            ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: runFrame }
-            : enhancingBuff
-              ? { enhancedBy: enhancingBuff }
-              : {}
-        if (frame < 0 || !query.inWindow(frame)) continue
-        const weight = query.weightAt(frame)
-        if (weight <= 0) continue
-
-        if (shapes) {
-          const live = Math.max(1, query.stacksAt(frame))
-          plans.push({
-            frame,
-            launchFrame,
-            runFrame,
-            weight,
-            ...stampLateness,
-            ...requirement,
-            shape: shapes[Math.min(live, shapes.length) - 1],
-          })
-        } else if (ladder) {
-          const live = Math.max(0, query.stacksAt(frame))
-          if (live === 0) continue
-          plans.push({
-            frame,
-            launchFrame,
-            runFrame,
-            weight,
-            ...stampLateness,
-            ...requirement,
-            scale: ladder[Math.min(live, ladder.length) - 1],
-          })
-        } else {
-          const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
-          if (perStack && count === 0) continue
-          plans.push({
-            frame,
-            launchFrame,
-            runFrame,
-            weight,
-            ...stampLateness,
-            ...requirement,
-            scale: count,
-          })
-        }
+      for (const offset of schedule.offsets) {
+        if (pulse + offset >= episode.end) continue
+        const plan = planDotTick(query, schedule, pulse, runIndex, offset)
+        if (plan) plans.push(plan)
       }
     }
   }

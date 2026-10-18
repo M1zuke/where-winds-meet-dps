@@ -23,7 +23,14 @@ function observed(
 ): ConcentrationTracker {
   const tracker = new ConcentrationTracker(rulesFor(options.rules), options.random)
   for (const timeSec of eventTimesSec)
-    tracker.observe({ timeSec, occurrence: 1, affinityChance: options.affinityChance ?? 1 })
+    tracker.observe({
+      timeSec,
+      occurrence: 1,
+      affinityChance: options.affinityChance ?? 1,
+      source: "hit",
+      direct: true,
+      canRollAffinity: true,
+    })
   return tracker
 }
 
@@ -90,7 +97,14 @@ describe("ConcentrationTracker", () => {
   it("gives a hit on the same frame as the filling hit the buff when it resolves after it", () => {
     const tracker = observed([0, 0.5, 1])
     expect(tracker.activeShareNow(1.5)).toBe(0)
-    tracker.observe({ timeSec: 1.5, occurrence: 1, affinityChance: 1 })
+    tracker.observe({
+      timeSec: 1.5,
+      occurrence: 1,
+      affinityChance: 1,
+      source: "hit",
+      direct: true,
+      canRollAffinity: true,
+    })
     expect(tracker.activeShareNow(1.5)).toBe(1)
   })
 
@@ -134,6 +148,9 @@ describe("ConcentrationTracker", () => {
           timeSec,
           occurrence: 1,
           affinityChance: chances[index % chances.length]!,
+          source: "hit",
+          direct: true,
+          canRollAffinity: true,
         }),
       )
       return tracker.activeShareAtTime(19)
@@ -145,7 +162,14 @@ describe("ConcentrationTracker", () => {
   it("builds no Focus from an event that does not happen", () => {
     const tracker = new ConcentrationTracker(rulesFor(), alwaysAffinity)
     for (const timeSec of evenlySpaced(40, 0.5))
-      tracker.observe({ timeSec, occurrence: 0, affinityChance: 1 })
+      tracker.observe({
+        timeSec,
+        occurrence: 0,
+        affinityChance: 1,
+        source: "hit",
+        direct: true,
+        canRollAffinity: true,
+      })
     expect(tracker.activeShareAtTime(10)).toBe(0)
   })
 
@@ -182,6 +206,9 @@ describe("ConcentrationTracker under a parse run", () => {
       timeSec,
       occurrence: 1,
       affinityChance: 1,
+      source: "hit",
+      direct: true,
+      canRollAffinity: true,
       rolledAffinity,
     })
     for (const timeSec of FOUR_HITS) tracker.observe(event(timeSec, false))

@@ -42,7 +42,6 @@ function runDodges(steps: RotationStep[], inCarouse: boolean, bingePoints = 100)
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [idlePad, observer, gauntletsLead],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [
@@ -142,7 +141,6 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
       runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         customSkills: [twinBladesLead, observer],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: twinBladesLead.id }), makeStep({ skillId: observer.id })],
@@ -154,7 +152,6 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
       runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         customSkills: [twinBladesLead, observer],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [

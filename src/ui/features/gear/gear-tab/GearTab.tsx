@@ -1,6 +1,17 @@
 import { useState } from "react"
-import type { EquippedSlots, GearPiece, GearSlot, Inputs } from "../../../../engine/types"
-import { GEAR_SLOTS } from "../../../../engine/types"
+import type {
+  BowGear,
+  BowGearLevel,
+  BowPiece,
+  BowSlot,
+  EquippedSlots,
+  GearPiece,
+  GearSlot,
+  Inputs,
+} from "../../../../engine/types"
+import { BOW_SLOTS, GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
+import { withSetChoice } from "../../../../engine/setChoice"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -8,6 +19,9 @@ import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { GearSlotTiles } from "../gear-slot-tiles/GearSlotTiles"
 import { GearAnalysisPanel } from "../gear-analysis-panel/GearAnalysisPanel"
 import { GearDetailsPanel } from "../gear-details-panel/GearDetailsPanel"
+import { BowPieceDetails } from "../gear-details-panel/BowPieceDetails"
+import { GearSetDialog, type GearSetDialogTarget } from "../gear-set-dialog/GearSetDialog"
+import { GearSetStrip } from "../gear-set-strip/GearSetStrip"
 import { GearInventoryPanel } from "../gear-inventory-panel/GearInventoryPanel"
 import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
 import { GearSwapPreviewPanel } from "../gear-swap-preview-panel/GearSwapPreviewPanel"
@@ -28,25 +42,27 @@ import styles from "./GearTab.module.scss"
 
 interface Props {
   inputs: Inputs
+  configuredInputs: Inputs
   engineInputs: Inputs
   customGraduationBuild: CustomGraduationBuild | null
   onChange(next: Inputs): void
   currentDps: number
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 export function GearTab({
   inputs,
+  configuredInputs,
   engineInputs,
   customGraduationBuild,
   onChange,
   currentDps,
-  baselineQiBreaks,
 }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
   const [selectedPieceId, setSelectedPieceId] = useState<string | null>(null)
   const [selectedSlot, setSelectedSlot] = useState<GearSlot | null>(null)
+  const [selectedBowSlot, setSelectedBowSlot] = useState<BowSlot | null>(null)
+  const [setDialogOpen, setSetDialogOpen] = useState(false)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
@@ -72,14 +88,9 @@ export function GearTab({
 
   const isEquipped = !!selectedPiece && equipped[selectedPiece.slot] === selectedPiece.id
 
-  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
+  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps)
   const previewPieceId = selectedPiece && !isEquipped ? selectedPiece.id : null
-  const previewDelta = useSelectedPieceDelta(
-    engineInputs,
-    currentDps,
-    previewPieceId,
-    baselineQiBreaks,
-  )
+  const previewDelta = useSelectedPieceDelta(engineInputs, currentDps, previewPieceId)
   const previewMatches = previewDelta.forPieceId === previewPieceId
   const selectedDelta = !selectedPiece
     ? undefined
@@ -93,11 +104,11 @@ export function GearTab({
     : previewDelta.isPending || !previewMatches
 
   const retuneTargetId = selectedPiece?.id ?? null
-  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
+  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId)
   const retuneRowsMatch = retunement.forPieceId === retuneTargetId
-  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
+  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId)
   const reattuneOptsMatch = reattunement.forPieceId === retuneTargetId
-  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece, baselineQiBreaks)
+  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece)
   const wordMaxRowsMatch = wordMax.forPieceId === (selectedPiece?.id ?? null)
 
   function commitGearChange(nextInventory: GearPiece[], nextEquipped: EquippedSlots): void {
@@ -116,12 +127,51 @@ export function GearTab({
     commitGearChange(nextInventory, nextEquipped)
   }
 
+  const selectedBowPiece = selectedBowSlot ? inputs.bowGear[selectedBowSlot] : null
+
+  function updateBowPiece(slot: BowSlot, bowPiece: BowPiece | null): void {
+    onChange({ ...inputs, bowGear: { ...inputs.bowGear, [slot]: bowPiece } })
+  }
+
+  function addBowPiece(slot: BowSlot): void {
+    const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
+    updateBowPiece(slot, {
+      level: Math.max(gearLevel, 91) as BowGearLevel,
+      rarity: "legendary",
+      set: null,
+    })
+  }
+
+  async function deleteBowPiece(slot: BowSlot): Promise<void> {
+    if (!(await confirm(t("gear.deleteThisGearPiece")))) return
+    updateBowPiece(slot, null)
+  }
+
+  let setDialogTarget: GearSetDialogTarget | null = null
+  if (selectedBowSlot && selectedBowPiece) {
+    setDialogTarget = { kind: "bow", slot: selectedBowSlot, piece: selectedBowPiece }
+  } else if (selectedPiece && isWeaponSlot(selectedPiece.slot)) {
+    setDialogTarget = { kind: "piece", piece: selectedPiece, isEquipped }
+  }
+
+  function applySetChoice(setId: string | null, applyToGroup: boolean): void {
+    setSetDialogOpen(false)
+    if (selectedBowSlot) {
+      onChange(withSetChoice(inputs, { kind: "bow", slot: selectedBowSlot }, false, setId))
+    } else if (selectedPiece) {
+      onChange(
+        withSetChoice(inputs, { kind: "piece", pieceId: selectedPiece.id }, applyToGroup, setId),
+      )
+    }
+  }
+
   function openCreateDialog(): void {
     setNewPieceOpen(true)
   }
 
   function handleCreateSave(piece: GearPiece, mode: "store" | "equip"): void {
     setNewPieceOpen(false)
+    setSelectedBowSlot(null)
     setSelectedSlot(piece.slot)
     if (mode === "equip") {
       commitGearChange([...inventory, piece], { ...equipped, [piece.slot]: piece.id })
@@ -154,6 +204,7 @@ export function GearTab({
   }
 
   function selectInventoryRow(row: InventoryRow): void {
+    setSelectedBowSlot(null)
     setSelectedPieceId(row.piece.id)
     setSelectedSlot(row.piece.slot)
     if (row.piece.isNew) {
@@ -170,14 +221,15 @@ export function GearTab({
     imported: GearPiece[],
     mindMethods: Inputs["mindMethods"] | null,
     keepDisplaced: boolean,
+    importedBowGear: BowGear,
   ): Promise<void> {
     const displaced = GEAR_SLOTS.map((slot) => equipped[slot]).filter(
       (pieceId): pieceId is string => !!pieceId,
     )
     const filledSlots = new Set(imported.map((piece) => piece.slot))
-    const emptiedCount = GEAR_SLOTS.filter(
-      (slot) => equipped[slot] && !filledSlots.has(slot),
-    ).length
+    const emptiedCount =
+      GEAR_SLOTS.filter((slot) => equipped[slot] && !filledSlots.has(slot)).length +
+      BOW_SLOTS.filter((slot) => inputs.bowGear[slot] && !importedBowGear[slot]).length
     if (
       emptiedCount > 0 &&
       !(await confirm(
@@ -193,18 +245,31 @@ export function GearTab({
     const nextEquipped = equippedFromImported(imported)
 
     setImportOpen(false)
-    const next: Inputs = { ...inputs, inventory: [...kept, ...imported], equipped: nextEquipped }
+    const next: Inputs = {
+      ...inputs,
+      inventory: [...kept, ...imported],
+      equipped: nextEquipped,
+      bowGear: importedBowGear,
+    }
     onChange(mindMethods ? { ...next, mindMethods } : next)
     const first = imported[0]
     if (first) {
+      setSelectedBowSlot(null)
       setSelectedSlot(first.slot)
       setSelectedPieceId(first.id)
     }
   }
 
   function selectSlot(slot: GearSlot, pieceId: string | null): void {
+    setSelectedBowSlot(null)
     setSelectedSlot(slot)
     setSelectedPieceId(pieceId)
+  }
+
+  function selectBowSlot(slot: BowSlot): void {
+    setSelectedSlot(null)
+    setSelectedPieceId(null)
+    setSelectedBowSlot(slot)
   }
 
   return (
@@ -228,31 +293,48 @@ export function GearTab({
           </button>
         </div>
         <GearSlotTiles
+          inputs={inputs}
           inventory={inventory}
           profile={heirloomProfile}
           equipped={equipped}
           selectedPieceId={liveSelectedPieceId}
           selectedSlot={selectedSlot}
+          selectedBowSlot={selectedBowSlot}
           onSelectSlot={selectSlot}
+          onSelectBowSlot={selectBowSlot}
           dpsDeltas={equippedDeltas.deltas}
           dpsDeltasPending={equippedDeltas.isPending}
         />
+        <GearSetStrip inputs={inputs} />
       </div>
 
       <div className={styles.gearSplit}>
         <div className={styles.gearColumn}>
-          <GearDetailsPanel
-            piece={selectedPiece}
-            isEquipped={isEquipped}
-            inputs={inputs}
-            profile={heirloomProfile}
-            onChange={updatePiece}
-            onEquip={equipSelected}
-            onUnequip={unequipSelected}
-            onDelete={deletePiece}
-            wordMaxRows={wordMaxRowsMatch ? wordMax.rows : []}
-            wordMaxPending={wordMax.isPending || !wordMaxRowsMatch}
-          />
+          {selectedBowSlot ? (
+            <BowPieceDetails
+              slot={selectedBowSlot}
+              piece={selectedBowPiece}
+              inputs={inputs}
+              onChange={(bowPiece) => updateBowPiece(selectedBowSlot, bowPiece)}
+              onAdd={() => addBowPiece(selectedBowSlot)}
+              onDelete={() => deleteBowPiece(selectedBowSlot)}
+              onBrowseSets={() => setSetDialogOpen(true)}
+            />
+          ) : (
+            <GearDetailsPanel
+              piece={selectedPiece}
+              isEquipped={isEquipped}
+              inputs={inputs}
+              profile={heirloomProfile}
+              onChange={updatePiece}
+              onEquip={equipSelected}
+              onUnequip={unequipSelected}
+              onDelete={deletePiece}
+              onBrowseSets={() => setSetDialogOpen(true)}
+              wordMaxRows={wordMaxRowsMatch ? wordMax.rows : []}
+              wordMaxPending={wordMax.isPending || !wordMaxRowsMatch}
+            />
+          )}
           <RetunementAnalyzerPanel
             piece={retuneTargetId ? selectedPiece : null}
             profile={heirloomProfile}
@@ -285,11 +367,7 @@ export function GearTab({
             />
             <SubTabPanel>
               {sub === "analysis" && (
-                <GearAnalysisPanel
-                  engineInputs={engineInputs}
-                  currentDps={currentDps}
-                  baselineQiBreaks={baselineQiBreaks}
-                />
+                <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
               )}
               {sub === "inventory" && (
                 <GearInventoryPanel
@@ -301,7 +379,6 @@ export function GearTab({
                   onClearSlotFilter={() => setSelectedSlot(null)}
                   engineInputs={engineInputs}
                   currentDps={currentDps}
-                  baselineQiBreaks={baselineQiBreaks}
                 />
               )}
             </SubTabPanel>
@@ -317,6 +394,15 @@ export function GearTab({
           />
         </div>
       </div>
+
+      {setDialogOpen && setDialogTarget && (
+        <GearSetDialog
+          inputs={configuredInputs}
+          target={setDialogTarget}
+          onApply={applySetChoice}
+          onClose={() => setSetDialogOpen(false)}
+        />
+      )}
 
       {newPieceOpen && (
         <NewGearPieceDialog

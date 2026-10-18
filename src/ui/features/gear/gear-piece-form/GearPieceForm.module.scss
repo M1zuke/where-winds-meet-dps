@@ -91,6 +91,11 @@
   padding-bottom: 8px;
 }
 
+.relayedRowLead {
+  min-width: 0;
+  margin-right: auto;
+}
+
 .gearWordsGrid {
   display: grid;
   grid-template-columns: 1fr 88px 30px 30px 62px 58px;

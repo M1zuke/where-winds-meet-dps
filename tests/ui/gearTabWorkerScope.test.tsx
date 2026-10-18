@@ -56,6 +56,7 @@ function tabElement(inputs: Inputs) {
       <ConfirmProvider>
         <GearTab
           inputs={inputs}
+          configuredInputs={inputs}
           engineInputs={inputs}
           customGraduationBuild={null}
           onChange={() => {}}

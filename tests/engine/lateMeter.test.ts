@@ -136,6 +136,25 @@ describe("a meter that settles after the buff engine", () => {
     expect(levelBefore(settlement, steps[1]!)).toBe(3 * CHARGE - CHARGE + 300 + 300)
   })
 
+  it("applies a cast-end gain at its hit's frame when the hit lands after the cast's end", () => {
+    const lateGain = makeSkill("test", {
+      name: "Late gain (test)",
+      meterCosts: [{ meterId: charges.id, amount: CHARGE }],
+      hits: [
+        makeHit({
+          frame: 130,
+          triggers: [meterDelta({ target: charges.id, stacks: 300, appliesOnCastEnd: true })],
+        }),
+      ],
+    })
+    const steps = [
+      { ...stepAt(0), skill: lateGain },
+      { ...stepAt(120), skill: lateGain },
+    ]
+    const settlement = settle(steps, [hitOf(steps[0]!, lateGain, 130)], () => true)
+    expect(levelBefore(settlement, steps[1]!)).toBe(2 * CHARGE + 120)
+  })
+
   it("leaves a pre-pull cast untouched", () => {
     const prePull: LateMeterStep = { ...stepAt(-100), prePull: true }
     const steps = [prePull, stepAt(0)]

@@ -21,7 +21,6 @@ interface Props {
   onClearSlotFilter(): void
   engineInputs: Inputs
   currentDps: number
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -52,7 +51,6 @@ export function GearInventoryPanel({
   onClearSlotFilter,
   engineInputs,
   currentDps,
-  baselineQiBreaks,
 }: Props) {
   const { t } = useI18n()
 
@@ -65,7 +63,6 @@ export function GearInventoryPanel({
     engineInputs,
     currentDps,
     filteredRows.map((row) => row.piece.id),
-    baselineQiBreaks,
   )
   const visibleRows = sortInventoryRowsByDps(filteredRows, dpsDeltas)
 

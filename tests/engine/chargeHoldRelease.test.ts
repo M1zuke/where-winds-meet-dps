@@ -31,7 +31,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], patch: Partial<Inpu
     customSkills: skills,
     customBuffs: [],
     activeCustomRotation: rotation,
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     ...patch,
   }

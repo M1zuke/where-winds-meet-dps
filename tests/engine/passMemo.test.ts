@@ -6,7 +6,7 @@ import * as workerCompute from "../../src/engine/dpsWorker"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { defaultInputs } from "../../src/engine/defaults"
 import { passKey, withPassMemo } from "../../src/engine/passMemo"
 import { rotationOptions } from "../../src/ui/features/rotation/rotationOptions"
@@ -16,10 +16,9 @@ import profileFile from "./bamboocutDraughtMeasured.profile.json"
 const SEED = 7
 
 function workerJobs(inputs: Inputs): Record<string, () => unknown> {
-  const engineInputs = applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+  const engineInputs = applySetBonuses(withDerivedStats(inputs))
   const baseline = runEngine(engineInputs)
   const baselineDps = baseline.dps
-  const baselineQiBreaks = baseline.qiBreaks
   const equippedPiece = engineInputs.inventory.find(
     (piece) => engineInputs.equipped[piece.slot] === piece.id,
   )
@@ -29,35 +28,19 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
   }))
   const jobs: Record<string, () => unknown> = {
     equippedDeltas: () =>
-      workerCompute.computeEquippedDeltas({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
+      workerCompute.computeEquippedDeltas({ reqId: 1, inputs: engineInputs, baselineDps }),
     dpsDeltas: () =>
       workerCompute.computeDpsDeltas({
         reqId: 1,
         inputs: engineInputs,
         baselineDps,
         pieceIds: engineInputs.inventory.map((piece) => piece.id),
-        baselineQiBreaks,
       }),
     ranking: () =>
-      workerCompute.computeRankingRequest({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
+      workerCompute.computeRankingRequest({ reqId: 1, inputs: engineInputs, baselineDps }),
     gearAnalysis: () =>
-      workerCompute.computeGearAnalysisRequest({
-        reqId: 1,
-        inputs: engineInputs,
-        baselineDps,
-        baselineQiBreaks,
-      }),
-    setTiles: () => workerCompute.computeSetTiles({ reqId: 1, inputs }),
+      workerCompute.computeGearAnalysisRequest({ reqId: 1, inputs: engineInputs, baselineDps }),
+    arsenalTiles: () => workerCompute.computeArsenalTiles({ reqId: 1, inputs }),
     rotationDps: () =>
       workerCompute.computeRotationDps({ reqId: 1, inputs: engineInputs, options }),
     graduation: () => workerCompute.computeGraduation({ reqId: 1, inputs }),
@@ -80,29 +63,20 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
         inputs: engineInputs,
         baselineDps,
         pieceId,
-        baselineQiBreaks,
       })
     jobs.retunement = () =>
-      workerCompute.computeRetunement({
-        reqId: 1,
-        inputs: engineInputs,
-        pieceId,
-        baselineQiBreaks,
-      })
+      workerCompute.computeRetunement({ reqId: 1, inputs: engineInputs, pieceId })
     jobs.reattunement = () =>
-      workerCompute.computeReattunement({
+      workerCompute.computeReattunement({ reqId: 1, inputs: engineInputs, pieceId })
+    jobs.gearSetChoices = () =>
+      workerCompute.computeGearSetChoices({
         reqId: 1,
-        inputs: engineInputs,
-        pieceId,
-        baselineQiBreaks,
+        inputs,
+        target: { kind: "piece", pieceId },
+        applyToGroup: true,
       })
     jobs.wordMax = () =>
-      workerCompute.computeWordMax({
-        reqId: 1,
-        inputs: engineInputs,
-        piece: equippedPiece,
-        baselineQiBreaks,
-      })
+      workerCompute.computeWordMax({ reqId: 1, inputs: engineInputs, piece: equippedPiece })
   }
   return jobs
 }

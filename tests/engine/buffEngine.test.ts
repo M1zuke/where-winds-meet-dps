@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
@@ -24,7 +25,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: (ctx) => [stat("allDamageBoost", 0.05 * ctx.self.stacks)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("Multi", 0, { hitCount: 5, duration: 1 }, false, ["ramp"])
     const result = engine.calculateDamageEffects(taggedSkill("AnySkill"), 1.1)
     const total = result.effects
@@ -44,7 +45,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.1)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     for (const time of [0, 1, 2, 3]) engine.processSkillCast("Hit", time, {}, false, ["capped"])
     expect(engine.isBuffActiveAtTime("capped", 1)).toBe(true)
     expect(engine.calculateDamageEffects(taggedSkill("x"), 1).effects).toContainEqual({
@@ -64,11 +65,11 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.3)],
       },
     ]
-    const off = new BuffEngine({ myToggle: false }, modules)
+    const off = buffEngineWith({ myToggle: false }, modules)
     off.processSkillCast("Cast", 0, {}, false, ["gated"])
     expect(off.calculateDamageEffects(taggedSkill("z"), 1).effects).toHaveLength(0)
 
-    const on = new BuffEngine({ myToggle: true }, modules)
+    const on = buffEngineWith({ myToggle: true }, modules)
     on.processSkillCast("Cast", 0, {}, false, ["gated"])
     expect(on.calculateDamageEffects(taggedSkill("z"), 1).effects).toContainEqual({
       statKey: "allDamageBoost",
@@ -86,7 +87,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.4)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     const listed = makeSkill("test", { name: "Listed", receives: ["receivedBuff"] })
     const unlisted = makeSkill("test", { name: "Unlisted" })
     expect(engine.calculateDamageEffects(listed, 1).effects).toContainEqual({
@@ -107,7 +108,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("cast:probe", 0, {}, false, ["hitOnly"])
     const ordinaryHit = taggedSkill("Ordinary Hit")
     const tick = makeSkill("test", { name: "Tick", isDotTick: true })
@@ -132,7 +133,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("cast:probe", 0, {}, false, ["unstated"])
     const tick = makeSkill("test", { name: "Tick", isDotTick: true })
     expect(engine.calculateDamageEffects(tick, 1).effects).toContainEqual({
@@ -151,7 +152,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.5)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("cast:something", 0, {}, false, ["declaredTrigger"])
     expect(engine.calculateDamageEffects(taggedSkill("Anything"), 1).effects).toContainEqual({
       statKey: "allDamageBoost",
@@ -171,7 +172,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: (ctx) => (ctx.self.reachesEvent ? [stat("allDamageBoost", 0.1)] : []),
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     const [displayed] = engine.activeBuffsForDisplay(1)
     expect(displayed.effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.1 })
     expect(engine.calculateDamageEffects(taggedSkill("Anything"), 1).effects).toContainEqual({
@@ -192,7 +193,7 @@ describe("BuffEngine — targeting & triggers", () => {
         effects: [stat("allDamageBoost", 0.1)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.processSkillCast("cast:both", 0, {}, false, ["bothChannels", "bothChannels"])
     expect(engine.getHistoricalBuffStacks("bothChannels", 0)).toBe(1)
   })
@@ -212,7 +213,7 @@ describe("BuffEngine — target.remainingHealthFraction", () => {
   ]
 
   function fractionProbeEngine(targetMaxHp: number) {
-    return new BuffEngine({ targetMaxHp }, fractionProbeModules)
+    return buffEngineWith({ targetMaxHp }, fractionProbeModules)
   }
 
   function fractionOf(engine: BuffEngine, damageSoFar: number): number {
@@ -233,7 +234,7 @@ describe("BuffEngine — target.remainingHealthFraction", () => {
 
   it("stays at 1 when the tier carries no target health, or a zero one", () => {
     expect(fractionOf(fractionProbeEngine(0), 500)).toBe(1)
-    expect(fractionOf(new BuffEngine({}, fractionProbeModules), 500)).toBe(1)
+    expect(fractionOf(buffEngineWith({}, fractionProbeModules), 500)).toBe(1)
   })
 
   it("defaults to full health for the display and duration-resolution paths", () => {
@@ -254,7 +255,7 @@ describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () =
         effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.triggerDeclaredBuffs(["tickDeclared"], "dot:probe", 0)
     expect(engine.calculateDamageEffects(taggedSkill("Any"), 1).effects).toContainEqual({
       statKey: "allDamageBoost",
@@ -273,7 +274,7 @@ describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () =
         effects: [stat("allDamageBoost", 0.1)],
       },
     ]
-    const engine = new BuffEngine({}, modules)
+    const engine = buffEngineWith({}, modules)
     engine.triggerDeclaredBuffs(["coolingTick"], "dot:probe", 0)
     engine.triggerDeclaredBuffs(["coolingTick"], "dot:probe", 2)
     expect(engine.isBuffActiveAtTime("coolingTick", 6)).toBe(false)
@@ -295,21 +296,21 @@ describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () =
       perCastConsume: { property: "consumesInnerPassion", from: "tickPool" },
       effects: [],
     }
-    const viaCast = new BuffEngine({}, [pool, consumer])
+    const viaCast = buffEngineWith({}, [pool, consumer])
     viaCast.processSkillCast("cast:probe", 0, { consumesInnerPassion: true })
     expect(viaCast.getHistoricalBuffStacks("tickPool", 0)).toBe(0)
 
-    const viaTick = new BuffEngine({}, [pool, consumer])
+    const viaTick = buffEngineWith({}, [pool, consumer])
     viaTick.triggerDeclaredBuffs([], "dot:probe", 0, { consumesInnerPassion: true })
     expect(viaTick.getHistoricalBuffStacks("tickPool", 0)).toBe(1)
   })
 
   it("does not grant the Mistwillow stance — only the declared-buff path runs", () => {
-    const viaCast = new BuffEngine({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
+    const viaCast = buffEngineWith({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
     viaCast.processSkillCast("cast:probe", 0, { attackType: "heavy" })
     expect(viaCast.isBuffActiveAtTime("mistwillowHeavyBuff", 0)).toBe(true)
 
-    const viaTick = new BuffEngine({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
+    const viaTick = buffEngineWith({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
     viaTick.triggerDeclaredBuffs([], "dot:probe", 0, { attackType: "heavy" })
     expect(viaTick.isBuffActiveAtTime("mistwillowHeavyBuff", 0)).toBe(false)
   })
@@ -326,7 +327,7 @@ describe("BuffEngine — per-grant-site delayed buff grant (grantAtSec)", () => 
   }
 
   it("opens the window at the given offset from the cast's start, not at its start", () => {
-    const engine = new BuffEngine({}, [delayedModule])
+    const engine = buffEngineWith({}, [delayedModule])
     engine.processSkillCast(
       "cast:probe",
       10,
@@ -342,7 +343,7 @@ describe("BuffEngine — per-grant-site delayed buff grant (grantAtSec)", () => 
   })
 
   it("leaves an id absent from the map granting at the cast's own start", () => {
-    const engine = new BuffEngine({}, [delayedModule])
+    const engine = buffEngineWith({}, [delayedModule])
     engine.processSkillCast(
       "cast:probe",
       10,
@@ -357,7 +358,7 @@ describe("BuffEngine — per-grant-site delayed buff grant (grantAtSec)", () => 
 
   it("overrides the module's own buffAppliesAfterSec for the overridden id only", () => {
     const afterSecModule: BuffModule = { ...delayedModule, id: "afterSec", buffAppliesAfterSec: 5 }
-    const engine = new BuffEngine({}, [afterSecModule])
+    const engine = buffEngineWith({}, [afterSecModule])
     engine.processSkillCast(
       "cast:probe",
       0,
@@ -374,7 +375,7 @@ describe("BuffEngine — per-grant-site delayed buff grant (grantAtSec)", () => 
 
 describe("class buff data loads", () => {
   it("bellstrikeUmbra's buff defs construct an engine without throwing", () => {
-    const engine = new BuffEngine({}, buffDefsForClass("bellstrikeUmbra"), groupBuffDefs())
+    const engine = buffEngineWith({}, buffDefsForClass("bellstrikeUmbra"), groupBuffDefs())
     expect(engine.definitions.size).toBeGreaterThan(0)
   })
 })

@@ -15,7 +15,6 @@ function runReveldrift(onBreakTarget: boolean, bingePoints: number) {
     {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.reveldrift })],
         openingStacks: { [STATUS.bingePoints]: bingePoints },

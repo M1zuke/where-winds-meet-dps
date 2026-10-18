@@ -26,7 +26,7 @@ const NEUTRAL_CONTEXT: Partial<FormulaContext> = {
 }
 
 const baseContext = (overrides: Partial<FormulaContext> = {}): FormulaContext => ({
-  ...buildContext({ ...defaultInputs, classId: "bellstrikeUmbra", set: null }),
+  ...buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" }),
   ...NEUTRAL_CONTEXT,
   ...overrides,
 })

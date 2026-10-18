@@ -17,7 +17,6 @@ function damageOf(skill: Skill, bingePoints: number): number {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [skill],
     activeCustomRotation: testRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],

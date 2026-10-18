@@ -11,12 +11,13 @@ import {
 import { healSkill as healLaterStartOrder } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
 import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV94File from "./testCustomSkills/v94/store.json"
 
 const healLatestSplendorHops = (skill: unknown): unknown =>
-  healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill))
+  healSwordMorphConversion(healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill)))
 
 const STORE = storeV94File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const EDITED_ID = "bellstrikeSplendor-energysurge"

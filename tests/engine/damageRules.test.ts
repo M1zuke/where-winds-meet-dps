@@ -12,7 +12,7 @@ import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
 import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { DEFAULT_QI_BREAK_WINDOW } from "../helpers/qiBars"
 import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
 import { makeDebuff } from "../../src/engine/debuff"
 import { makeStep } from "../../src/engine/rotation"
@@ -513,7 +513,6 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
     return runEngine(
       {
         ...umbraInputs,
-        set: null,
         customSkills: [probeSkill],
         customDebuffs: [probeDot],
         activeCustomRotation: makeRotation("bellstrikeUmbra", {

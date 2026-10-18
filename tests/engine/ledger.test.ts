@@ -34,6 +34,29 @@ describe("StatusLedger — stacks", () => {
     expect(led.stacksAt("unknown", 100)).toBe(0)
   })
 
+  it("answers by frame for an id written out of frame order", () => {
+    const led = ledger()
+    led.recordStack("bleed", 300, 5)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 3)
+
+    expect(led.stacksAt("bleed", 99)).toBe(0)
+    expect(led.stacksAt("bleed", 100)).toBe(1)
+    expect(led.stacksAt("bleed", 250)).toBe(3)
+    expect(led.stacksAt("bleed", 300)).toBe(5)
+    expect(led.stacksAt("bleed", 10_000)).toBe(5)
+  })
+
+  it("lets the later write win when two writes share a frame", () => {
+    const led = ledger()
+    led.recordStack("bleed", 200, 2)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 4)
+
+    expect(led.stacksAt("bleed", 200)).toBe(4)
+    expect(led.asOf(led.mark()).stacksAt("bleed", 200)).toBe(4)
+  })
+
   it("distinguishes never-recorded from recorded-as-zero", () => {
     const led = ledger()
     expect(led.hasStackHistory("bleed")).toBe(false)

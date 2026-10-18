@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import {
   buffGateSatisfied,
@@ -27,12 +27,12 @@ const gatedModule: BuffModule = {
 
 describe("requires.minBreakthrough — engine gate", () => {
   it("a module below its minimum is not seeded and contributes nothing", () => {
-    const engine = new BuffEngine({ breakthrough: 17 }, [gatedModule])
+    const engine = buffEngineWith({ breakthrough: 17 }, [gatedModule])
     expect(engine.calculateDamageEffects(taggedSkill("Y"), 0).effects).toHaveLength(0)
   })
 
   it("a module at or above its minimum is seeded and contributes", () => {
-    const engine = new BuffEngine({ breakthrough: 18 }, [gatedModule])
+    const engine = buffEngineWith({ breakthrough: 18 }, [gatedModule])
     expect(engine.calculateDamageEffects(taggedSkill("Y"), 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.2,
@@ -94,7 +94,7 @@ describe("a module's effects(ctx) reads ctx.build.breakthrough", () => {
         return []
       },
     }
-    const engine = new BuffEngine({ breakthrough: 21 }, [module])
+    const engine = buffEngineWith({ breakthrough: 21 }, [module])
     engine.calculateDamageEffects(taggedSkill("Y"), 0)
     expect(seenBreakthrough).toBe(21)
   })

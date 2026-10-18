@@ -9,9 +9,13 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV101File from "./testCustomSkills/v101/store.json"
+
+const healLatestSplendorHops = (skill: unknown): unknown =>
+  healSwordMorphConversion(healSplendorRootMotion(skill))
 
 const STORE = storeV101File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const PREPULL_ID = "bellstrikeSplendor-swordheavycharged-prepull"
@@ -36,7 +40,7 @@ describe("custom-skills v101 fixture", () => {
 
 describe("healSkill", () => {
   it("lands the untouched pre-pull copy on the built-in", () => {
-    const healed = healSplendorRootMotion(healSkill(clone(skillIn(STORE, PREPULL_ID)))) as Skill
+    const healed = healLatestSplendorHops(healSkill(clone(skillIn(STORE, PREPULL_ID)))) as Skill
     expect(healed.hits).toEqual(builtinPrepull().hits)
     expect(healed.castFrames).toBe(builtinPrepull().castFrames)
   })
@@ -69,7 +73,7 @@ describe("V102__prepullVagrantSwordBoltTiming — called directly", () => {
   it("heals the pre-pull copy and keeps every other skill", () => {
     const after = V102__prepullVagrantSwordBoltTiming.migrate(clone(STORE))
     expect(after.v).toBe(102)
-    expect((healSplendorRootMotion(skillIn(after, PREPULL_ID)) as Skill).hits).toEqual(
+    expect((healLatestSplendorHops(skillIn(after, PREPULL_ID)) as Skill).hits).toEqual(
       builtinPrepull().hits,
     )
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID])

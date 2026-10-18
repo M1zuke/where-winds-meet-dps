@@ -1,9 +1,8 @@
 // docs/TIMELINE.md § Triggers: "A status the player only gains once the
 // granting cast is over opens at that cast's end, declared on the trigger."
-// The layout pass and pass 1 each keep their own status ledger and must
-// apply this identically, or a step laid out mid-cast can see a grant the
-// live scoring pass has not opened yet (or vice versa). Every skill and buff
-// below is placeholder content authored only for this file.
+// A hit landing between the granting hit's frame and its cast's end does not
+// see the grant. Every skill and buff below is placeholder content authored
+// only for this file.
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -21,7 +20,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inp
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 
@@ -73,9 +71,6 @@ describe("a next cast landing between a granting hit's frame and its cast's end"
   const nextStep = makeSkill(CLASS, {
     name: "Next Step",
     castFrames: 20,
-    // A legality flag reads the layout ledger directly (docs/TIMELINE.md §
-    // "Cast legality") — this only holds if the layout ledger agrees Echo
-    // was never granted, i.e. Granted had not opened yet at Mid Cast's frame.
     castConditions: [{ buffId: echo.id, op: "eq", stacks: 0 }],
     hits: [
       makeHit({
@@ -103,12 +98,12 @@ describe("a next cast landing between a granting hit's frame and its cast's end"
     timelineInputs(rotation, [grants, midCast, nextStep], [granted, echo]),
   )
 
-  it("the layout ledger shows the grant still closed at Mid Cast's frame, so Next Step stays legal", () => {
+  it("Granted is still closed at Mid Cast's frame, so Next Step stays legal", () => {
     expect(result.invalidStepIds ?? []).toEqual([])
     expect(result.warnings.some((warning) => warning.includes("Next Step"))).toBe(false)
   })
 
-  it("a hit variant reading the same grant sees exactly what pass 1 scores, not the boosted row", () => {
+  it("a hit variant reading the same grant is scored without the boosted row", () => {
     const nextStepRow = result.perSkill.find((row) => row.name === "Next Step")
     expect(nextStepRow?.count).toBe(1)
     expect(nextStepRow?.expectedDamage).toBeLessThan(100)

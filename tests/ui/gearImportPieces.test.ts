@@ -16,10 +16,12 @@ import {
   effectiveIdentity,
   importablePieces,
   resolveAgainstBuild,
+  toBowGear,
   toGearPieces,
   type AffixChoices,
 } from "../../src/ui/features/gear/import-gear-dialog/importedGearPieces"
 import fixture from "./fixtures/dashboardRoleInfo.json"
+import fullFixture from "./fixtures/dashboardRoleInfoMartialArts.json"
 
 const fixtureText = JSON.stringify(fixture)
 const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
@@ -529,6 +531,61 @@ describe("level implied by the mapped lines", () => {
 
     expect(piece.impliedLevel).toBeNull()
     expect(effectiveIdentity(piece, result.pieces, {}).level).toBe(FALLBACK_LEVEL)
+  })
+})
+
+describe("imported sets", () => {
+  it("writes the set on weapons only and leaves armor without one", () => {
+    const pieces = toGearPieces(resolved(), {})
+    expect(pieces.find((piece) => piece.slot === "leftWeapon")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "rightWeapon")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "helm")).not.toHaveProperty("set")
+  })
+
+  it("writes the set on the disc and pendant", () => {
+    const pieces = toGearPieces(resolved(JSON.stringify(fullFixture)), {})
+    expect(pieces.find((piece) => piece.slot === "disc")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "pendant")?.set).toBe("hawkwing")
+  })
+
+  it("writes no set for a suffix the table lacks", () => {
+    const unknownSuffix = JSON.stringify({
+      wearEquipsDetailed: { "1": { exVo: { suffix: 999, baseAffixes: [] } } },
+    })
+    expect(toGearPieces(resolved(unknownSuffix), {})[0]).not.toHaveProperty("set")
+  })
+})
+
+describe("toBowGear", () => {
+  it("imports the paired ring and bow as level 96 legendary affinity pieces", () => {
+    const bowGear = toBowGear(resolved(JSON.stringify(fullFixture)))
+    expect(bowGear.bow).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+    expect(bowGear.thumbRing).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+  })
+
+  it("empties the side the capture lacks", () => {
+    const bowGear = toBowGear(resolved())
+    expect(bowGear.bow).toBeNull()
+    expect(bowGear.thumbRing).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+  })
+
+  it("leaves a piece that cannot carry a bow set empty", () => {
+    const threeStarBow = JSON.stringify({
+      wearEquipsDetailed: {
+        "21": { no: "1101608", exVo: { suffix: 46, baseAffixes: [] } },
+        "9": { no: "1101667", exVo: { suffix: 46, baseAffixes: [] } },
+      },
+    })
+    const bowGear = toBowGear(resolved(threeStarBow))
+    expect(bowGear.bow).toBeNull()
+    expect(bowGear.thumbRing).not.toBeNull()
+  })
+
+  it("imports a bow piece without a set", () => {
+    const noSet = JSON.stringify({
+      wearEquipsDetailed: { "21": { no: "1101671", exVo: { suffix: 4, baseAffixes: [] } } },
+    })
+    expect(toBowGear(resolved(noSet)).bow).toEqual({ level: 96, rarity: "legendary", set: null })
   })
 })
 

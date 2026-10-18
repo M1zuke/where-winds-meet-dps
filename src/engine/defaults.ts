@@ -1,11 +1,10 @@
 import type { Inputs } from "./types"
-import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
+import { EMPTY_BOW_GEAR, EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
 import { DEFAULT_ARSENAL_SCORES, defaultEnhancementLevels } from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
 } from "../definitions/baseStats/breakthroughs"
-import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
@@ -72,10 +71,9 @@ export const defaultInputs: Inputs = {
 
   food: true,
   divinecraft: "fire",
-  set: SET_ID.hawkwing,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
-  bowSet: null,
+  bowGear: { ...EMPTY_BOW_GEAR },
   arsenal: "bamboocut",
   arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,

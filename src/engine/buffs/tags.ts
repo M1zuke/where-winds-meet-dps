@@ -12,10 +12,15 @@ export const BUFF_TAG = "buff:"
 // Namespaced tags only — never the display name or a bare `skillType` /
 // `weaponOrAttribute` / `attributeAttack` value, so a modifier cannot reach a
 // skill by what it is called (CLASSES.md § "Id schemes").
-export function skillTagsOf(skill: Skill): Set<string> {
+const skillTagsBySkill = new WeakMap<Skill, ReadonlySet<string>>()
+
+export function skillTagsOf(skill: Skill): ReadonlySet<string> {
+  const cached = skillTagsBySkill.get(skill)
+  if (cached) return cached
   const tags = new Set<string>(skill.tags ?? [])
   if (skill.skillType) tags.add(TYPE_TAG + skill.skillType)
   for (const buffId of skill.receives ?? []) tags.add(BUFF_TAG + buffId)
+  skillTagsBySkill.set(skill, tags)
   return tags
 }
 

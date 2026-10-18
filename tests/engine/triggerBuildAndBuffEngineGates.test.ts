@@ -11,7 +11,7 @@ import {
 import type { HitTrigger, Skill } from "../../src/engine/skill"
 import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
 import { makeBuff, type Buff } from "../../src/engine/buff"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import type { Inputs } from "../../src/engine/types"
 
@@ -29,7 +29,6 @@ function timelineInputs(
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
     ...patch,
   }
 }
@@ -229,14 +228,14 @@ describe("a class-buff module's cooldown may be a function of the build", () => 
   }
 
   it("blocks a regrant before the resolved cooldown has passed, so the original window still lapses on time", () => {
-    const engine = new BuffEngine({ classId: CLASS, longCooldown: true }, [module()])
+    const engine = buffEngineWith({ classId: CLASS, longCooldown: true }, [module()])
     engine.processSkillCast(castTag, 0, {}, false, [moduleId])
     engine.processSkillCast(castTag, 2, {}, false, [moduleId])
     expect(engine.isBuffActiveAtTime(moduleId, 6)).toBe(false)
   })
 
   it("allows a regrant once the resolved cooldown has passed, refreshing the window", () => {
-    const engine = new BuffEngine({ classId: CLASS }, [module()])
+    const engine = buffEngineWith({ classId: CLASS }, [module()])
     engine.processSkillCast(castTag, 0, {}, false, [moduleId])
     engine.processSkillCast(castTag, 2, {}, false, [moduleId])
     expect(engine.isBuffActiveAtTime(moduleId, 6)).toBe(true)

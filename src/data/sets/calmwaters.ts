@@ -5,9 +5,10 @@ import { PARAM } from "../skills/buffs/ids"
 // The 4-piece's own 1/3/5%-by-HP-band heal is not modelled: the app carries no
 // player HP resource a heal could apply to. Its Endurance gain
 // (`src/data/skills/universal/buffs/calmwatersPerfectDodgeGain.ts`) reads this
-// set being equipped through its own `buffParam`.
+// set's 4-piece being active through its own `buffParam`.
 export const calmwaters = defineSet({
   id: SET_ID.calmwaters,
+  group: "armor",
   name: "Calmwaters",
   siteKey: "calmwaters",
   buffParam: PARAM.calmwatersSet,

@@ -11,13 +11,8 @@ import {
 } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
-import {
-  applyArmorSet,
-  applyBowSet,
-  armorSetPhysDefBonus,
-  effectiveRates,
-  getSchool,
-} from "../../../engine/panel"
+import { effectiveRates, getSchool } from "../../../engine/panel"
+import { applySetBonuses, setPhysDefBonus } from "../../../engine/setBonuses"
 import { resolveEnginePath } from "../../../engine/statPaths"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
@@ -82,7 +77,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const school = getSchool(inputs.classId)
 
   const derived = withDerivedStats(inputs)
-  const withSets = applyBowSet(applyArmorSet(derived))
+  const withSets = applySetBonuses(derived)
 
   const eff = effectiveRates(withSets)
   const finalRates = finalHitOutcomeRates({
@@ -125,7 +120,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     inputs.disabledTalentNodes,
     enhancements,
     inputs.unclaimedOddityNodes,
-    armorSetPhysDefBonus(inputs),
+    setPhysDefBonus(inputs),
     enhancedSlots,
   )
   const attributeRows: RowEntry[] = [

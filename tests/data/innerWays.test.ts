@@ -269,16 +269,12 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
       },
       classId: "bellstrikeUmbra",
       fps: 60,
-      rotationDurationSec: 10,
-      windowStartSec: 0,
-      hitTimesSec: [0],
-      weaponHitTimesSec: [0],
-      dotTickTimesSec: [],
       qiPhaseAt: () => "normal",
       paramOn: () => false,
       paramTier: () => 0,
       hasBuffEngine: true,
       effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
+      collectHistory: false,
     }
     const preparedIds = prepareMechanics(setup).map((prepared) => prepared.mechanic.id)
     expect(preparedIds).toContain("concentration")

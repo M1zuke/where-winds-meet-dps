@@ -18,7 +18,6 @@ export function useDpsDeltas(
   inputs: Inputs,
   baselineDps: number,
   pieceIds: readonly string[],
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): DpsDeltasResult {
   const [deltas, setDeltas] = useState<DpsDeltaMap>(
     () => retainedResponse("dpsDeltas")?.deltas ?? EMPTY_DELTAS,
@@ -39,9 +38,8 @@ export function useDpsDeltas(
       inputs,
       baselineDps,
       pieceIds: pieceIdsKey.split(PIECE_ID_SEPARATOR),
-      baselineQiBreaks,
     })
-  }, [inputs, baselineDps, pieceIdsKey, hasCandidates, baselineQiBreaks])
+  }, [inputs, baselineDps, pieceIdsKey, hasCandidates])
 
   if (!hasCandidates) return { deltas: EMPTY_DELTAS, isPending: false }
   return { deltas, isPending }

@@ -24,7 +24,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inp
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 

@@ -227,7 +227,7 @@ export function SimulationRunsPanel({
                   </th>
                   <th className={`${styles.normalCell} ${styles.numeric}`}>{t("common.normal")}</th>
                   <th className={`${styles.criticalCell} ${styles.numeric}`}>
-                    {t("simulation.outcomeMix.category.critical")}
+                    {t("common.critical")}
                   </th>
                   <th className={`${styles.affinityCell} ${styles.numeric}`}>
                     {t("common.affinity")}

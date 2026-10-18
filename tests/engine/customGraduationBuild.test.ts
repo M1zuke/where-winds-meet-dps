@@ -177,7 +177,7 @@ describe("a build the user authored, rated for graduation", { timeout: 30_000 },
     const offered = graduationBuildsForProfile({ classId: CLASS, customGraduationBuild: copy })
 
     expect(shipped.standardized).toBeDefined()
-    expect(offered[offered.length - 1].standardized).toBe(shipped.standardized)
+    expect(offered[offered.length - 1].standardized).toEqual(shipped.standardized)
   })
 
   it("falls back to the class's first standard on a rotation no shipped build runs", () => {

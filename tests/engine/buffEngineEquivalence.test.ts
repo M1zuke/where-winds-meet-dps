@@ -32,7 +32,8 @@ import { describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
-import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import type { DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
@@ -185,7 +186,7 @@ function dynamicDumpFor(classId: string) {
     }
   }
 
-  const engine = new BuffEngine(params, buffs, group)
+  const engine = buffEngineWith(params, buffs, group, exhaustedFrom(25, 10))
   const castTags = allModules.map((module) => `probe:${module.id}`).sort()
   // Short enough to still be inside every probed module's own duration (so a
   // `stacksPerHit` module ramps toward its cap) while shorter than every

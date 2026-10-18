@@ -1,7 +1,7 @@
 // v13 → v14 — Stars Align carries no modelled effect: no panel bonus, no
 // formula bonus, and a param nothing consumes. Its `defineSet` call is gone,
 // so a profile saved while it was selectable holds a `set` the picker can no
-// longer show. Nothing errors on it — `applyArmorSet` and `SET_BY_ID` simply
+// longer show. Nothing errors on it — the set bonus lookup and `SET_BY_ID` simply
 // miss — so the value would survive every save/export round-trip while
 // reading as unset.
 //

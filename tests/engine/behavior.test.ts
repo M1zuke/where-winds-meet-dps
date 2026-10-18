@@ -7,7 +7,6 @@ import type { Skill, SkillHit } from "../../src/engine/skill"
 
 const build = {
   classId: "bellstrikeUmbra",
-  set: null,
   innerWayTier: () => null,
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,

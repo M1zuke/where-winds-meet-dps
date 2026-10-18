@@ -16,7 +16,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inp
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 
@@ -144,7 +143,7 @@ describe("a trigger with transferFrom", () => {
     expect(chipStacks(inputs, 2, payout.id)).toBe(1)
   })
 
-  it("a cast-length gate on the target sees the transferred count in the layout pass", () => {
+  it("a cast-length gate on the target sees the transferred count", () => {
     const source = makeGate({ name: "Source" })
     const target = makeGate({ name: "Target" })
     const grant = granter(source.id, 5)

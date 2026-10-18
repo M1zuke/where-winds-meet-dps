@@ -29,6 +29,7 @@ export const mountainsMightPathQiImbalance = defineBuff({
   requires: { param: PARAM.mountainsMight },
   duration: 15,
   stackOnDamage: true,
+  damageGrantTiming: "preScore",
   stackOnDamageScoped: true,
   effects: [applyBuff(BUFF.qiImbalance, 1, 15)],
 })

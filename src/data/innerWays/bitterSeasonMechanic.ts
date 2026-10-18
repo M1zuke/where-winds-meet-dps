@@ -3,12 +3,9 @@
 // worth their probability of being up.
 import {
   BITTER_SEASON_MAX_STACKS,
+  BitterSeasonEnvelope,
+  BitterSeasonTracker,
   bitterSeasonDebuffId,
-  bitterSeasonEnvelopeWindows,
-  bitterSeasonPoisonSchedule,
-  bitterSeasonStackSchedule,
-  type BitterSeasonPoisonSchedule,
-  type BitterSeasonStackSchedule,
   type BitterSeasonTuning,
 } from "../../engine/buffs/bitterSeason"
 import { bitterSeasonTuningAtTier } from "./bitterSeason"
@@ -17,9 +14,10 @@ import { tierFromStacks, type InnerWayDef } from "../../definitions/innerWays/in
 import { INNER_WAY_ID } from "./ids"
 import { innerWayDefs } from "../../definitions/innerWays/defStore"
 import { poisonExtensionForClass } from "../../definitions/classes/poisonExtensions"
+import { UNOWNED, type StatusWindow } from "../../engine/ledger"
 import type { BuffStatEffect } from "../../engine/buff"
 import type { Inputs } from "../../engine/types"
-import type { TimelineMechanic } from "../../engine/mechanics/types"
+import type { MechanicHost, TimelineMechanic } from "../../engine/mechanics/types"
 
 const REMAINING_DISPLAY_THRESHOLD = 0.5
 
@@ -73,12 +71,17 @@ function henZhiActive(inputs: Inputs): boolean {
 interface State {
   debuffId: string
   tuning: BitterSeasonTuning
-  stacks: BitterSeasonStackSchedule
+  tracker: BitterSeasonTracker
   baseTargetDefense: number
   // A party-applied Bitter Season debuff already caps the reduction, so the
   // inner way adds none — but its poison still ticks.
   suppressed: boolean
-  poison: BitterSeasonPoisonSchedule | null
+  extensionStatusId: string | undefined
+  maxRemainingSec: number
+  poisonDurationSec: number
+  envelope: BitterSeasonEnvelope | null
+  openWindow: StatusWindow | null
+  poisonSeeded: boolean
 }
 
 // A hoisted factory, not a plain object: `bitterSeason.ts` declares this as
@@ -93,69 +96,60 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
       const tier = tierIfSlotted(setup.inputs.mindMethods)
       if (tier === null) return null
       const tuning = bitterSeasonTuningAtTier(tier)
+      const extension = poisonExtensionForClass(setup.classId)
       return {
         debuffId: bitterSeasonDebuffId(setup.classId),
         tuning,
-        stacks: bitterSeasonStackSchedule(
-          setup.hitTimesSec,
-          tuning.procChance,
-          setup.rotationDurationSec,
-          setup.rng,
-        ),
+        tracker: new BitterSeasonTracker(tuning.procChance, setup.rng, setup.collectHistory),
         baseTargetDefense: getBreakthrough(setup.inputs.breakthrough).defense,
         suppressed: henZhiActive(setup.inputs),
-        poison: null,
+        extensionStatusId: extension?.statusId,
+        maxRemainingSec: extension?.maxRemainingSec ?? Infinity,
+        poisonDurationSec: 0,
+        envelope: null,
+        openWindow: null,
+        poisonSeeded: false,
       }
     },
 
-    // The poison's own windows: bounded to the guaranteed-proc envelope rather
-    // than one span covering the rotation, since `activeProbAtTime` is 0
-    // outside it and no expected damage is lost by not ticking there.
-    seedStatuses(state, target, setup) {
-      if (setup.rotationDurationSec <= 0 || setup.hitTimesSec.length === 0) return
-      if (!target.hasStatus(state.debuffId)) return
-      const durationFrames = target.statusDurationFrames(state.debuffId) ?? 0
+    start(state, host, setup) {
+      if (!host.hasStatus(state.debuffId)) return
+      const durationFrames = host.statusDurationFrames(state.debuffId) ?? 0
       if (durationFrames <= 0) return
+      state.poisonDurationSec = durationFrames / setup.fps
+      state.envelope = new BitterSeasonEnvelope(state.poisonDurationSec, state.maxRemainingSec)
+    },
 
-      const extension = poisonExtensionForClass(setup.classId)
-      const extensionTimesSec = extension
-        ? target.ledger
-            .windowsOf(extension.statusId)
-            .map((window) => window.start / setup.fps)
-            .sort((a, b) => a - b)
-        : []
-      const maxRemainingSec = extension?.maxRemainingSec ?? Infinity
-      const poisonDurationSec = durationFrames / setup.fps
+    // In-game values as of 2026-10-17: the poison and the defense-reducing charm
+    // come from one roll on a direct damage event — a detonation burst
+    // included, a DoT tick never — and land before that event's own damage.
+    beforeEvent(state, event) {
+      if (!event.direct) return
+      state.tracker.roll(event.timeSec, event.occurrence, state.poisonDurationSec)
+    },
 
-      state.poison = bitterSeasonPoisonSchedule(
-        setup.hitTimesSec,
-        state.tuning.procChance,
-        poisonDurationSec,
-        setup.rotationDurationSec,
-        extensionTimesSec,
-        maxRemainingSec,
-        setup.rng,
-      )
-      for (const envelope of bitterSeasonEnvelopeWindows(
-        setup.hitTimesSec,
-        poisonDurationSec,
-        extensionTimesSec,
-        maxRemainingSec,
-      )) {
-        target.ledger.pushWindow(
-          state.debuffId,
-          Math.round(envelope.startSec * setup.fps),
-          Math.round(envelope.endSec * setup.fps),
-        )
-      }
-      target.ledger.recordStack(state.debuffId, Math.round(setup.hitTimesSec[0] * setup.fps), 1)
+    // The poison's own windows: bounded to the guaranteed-proc envelope rather
+    // than one span covering the rotation, since the poison's active
+    // probability is 0 outside it and no expected damage is lost by not ticking
+    // there.
+    observeEvent(state, event, setup, host) {
+      if (!event.direct || !state.envelope) return
+      state.envelope.hit(event.timeSec)
+      syncWindow(state, host, setup.fps, Math.round(event.timeSec * setup.fps))
+    },
+
+    onWindowOpened(state, statusId, window, host, setup) {
+      if (statusId !== state.extensionStatusId || !state.envelope) return
+      state.tracker.extendPoison(window.start / setup.fps, state.maxRemainingSec)
+      state.envelope.extension(window.start / setup.fps)
+      syncWindow(state, host, setup.fps, window.start)
     },
 
     contributeAt(state, frame, _skill, setup) {
       if (state.suppressed) return null
       const timeSec = frame / setup.fps
       const effects: BuffStatEffect[] = []
-      const stacks = state.stacks.expectedStacksAtTime(timeSec)
+      const stacks = state.tracker.expectedStacksAt(timeSec)
       if (stacks > 0) {
         effects.push({
           statKey: "target.defense",
@@ -163,7 +157,7 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
         })
       }
       if (state.tuning.physPenetrationAtMaxStacks > 0) {
-        const maxStackProb = state.stacks.maxStackProbAtTime(timeSec)
+        const maxStackProb = state.tracker.maxStackProbAt(timeSec)
         if (maxStackProb > 0) {
           effects.push({
             statKey: "phys.penetration",
@@ -175,17 +169,17 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
     },
 
     tickWeightAt(state, debuffId, frame, setup) {
-      if (debuffId !== state.debuffId || !state.poison) return null
-      return state.poison.activeProbAtTime(frame / setup.fps)
+      if (debuffId !== state.debuffId || !state.envelope) return null
+      return state.tracker.poisonActiveProbAt(frame / setup.fps)
     },
 
     // Below the display threshold there is a real chance no poison has procced
     // yet, so the expected-remaining number alone would read as an oddly short
     // duration — withhold it until more likely than not to be up.
     remainingSecAt(state, id, timeSec) {
-      if (id !== state.debuffId || !state.poison) return null
-      const likely = state.poison.activeProbAtTime(timeSec) >= REMAINING_DISPLAY_THRESHOLD
-      const activeSec = likely ? state.poison.remainingActiveSecAtTime(timeSec) : 0
+      if (id !== state.debuffId || !state.envelope) return null
+      const likely = state.tracker.poisonActiveProbAt(timeSec) >= REMAINING_DISPLAY_THRESHOLD
+      const activeSec = likely ? state.tracker.poisonRemainingSecAt(timeSec) : 0
       return { seconds: activeSec > 0 ? activeSec : undefined }
     },
 
@@ -193,9 +187,11 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
       if (prePull) return []
       const shown = state.suppressed
         ? BITTER_SEASON_MAX_STACKS
-        : Math.round(state.stacks.expectedStacksAtTime(timeSec))
+        : Math.round(state.tracker.expectedStacksAt(timeSec))
       if (shown < 1) return []
-      const uptimePct = Math.round((state.poison?.activeProbAtTime(timeSec) ?? 0) * 100)
+      const uptimePct = Math.round(
+        (state.envelope ? state.tracker.poisonActiveProbAt(timeSec) : 0) * 100,
+      )
       // Stated as the target physical defense reduction the in-game hint words
       // it as, even though the tier-6 node is implemented through
       // `phys.penetration`.
@@ -219,5 +215,24 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
         },
       ]
     },
+  }
+}
+
+function syncWindow(state: State, host: MechanicHost, fps: number, causedAtFrame: number): void {
+  const envelope = state.envelope!
+  const windows = envelope.windowsSoFar()
+  const latest = windows[windows.length - 1]
+  const startFrame = Math.round(latest.startSec * fps)
+  const endFrame = Math.round(latest.endSec * fps)
+  if (!state.openWindow || state.openWindow.start !== startFrame) {
+    host.ledger.pushWindow(state.debuffId, startFrame, endFrame)
+    const pushed = host.ledger.windowsOf(state.debuffId)
+    state.openWindow = pushed[pushed.length - 1]
+    if (!state.poisonSeeded) {
+      state.poisonSeeded = true
+      host.ledger.recordStack(state.debuffId, startFrame, 1)
+    }
+  } else if (endFrame > state.openWindow.end) {
+    host.ledger.extendWindow(state.openWindow, causedAtFrame, endFrame, UNOWNED)
   }
 }

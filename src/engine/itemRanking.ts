@@ -9,7 +9,7 @@
 } from "./types"
 import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
-import { runEngine } from "./dps"
+import { runEngine, TOTALS_RUN } from "./dps"
 import { getSchool } from "./panel"
 import {
   GEAR_WORD_UNIT,
@@ -247,7 +247,7 @@ function rankingCatalogue(inputs: Inputs): CatalogueEntry[] {
 export function rankingRows(
   inputs: Inputs,
   baseDps: number,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
   block?: RankingBlock,
 ): ItemRankingRow[] {
   const catalogue = rankingCatalogue(inputs)
@@ -285,7 +285,7 @@ export function withLeadVsMin(rows: readonly ItemRankingRow[]): ItemRankingRow[]
 export function computeRanking(
   inputs: Inputs,
   baseDps: number,
-  options?: EngineRunOptions,
+  options: EngineRunOptions = TOTALS_RUN,
 ): ItemRankingRow[] {
   return withLeadVsMin(rankingRows(inputs, baseDps, options))
 }

@@ -12,6 +12,8 @@ export const cleftpeakStacks = defineBuff({
   requires: { set: cleftpeak.siteKey },
   affectsAll: true,
   stackOnDamage: true,
+  damageGrantTiming: "preScore",
+  damageGrantListensTo: "anyDamage",
   duration: 5.1,
   maxStacks: MAX_STACKS,
   summary: "allDamageBoost +1%/stack, up to 5 stacks",

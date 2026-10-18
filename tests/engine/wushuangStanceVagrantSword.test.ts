@@ -27,7 +27,6 @@ function run(skillIds: string[], mindMethods = swordMorphTier3) {
     activeCustomRotation: makeRotation(CLASS, {
       steps: skillIds.map((skillId) => makeStep({ skillId })),
     }),
-    set: null,
   })
   return {
     invalidCount: (result.invalidStepIds ?? []).length,

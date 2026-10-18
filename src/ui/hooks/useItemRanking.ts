@@ -10,11 +10,7 @@ export interface ItemRankingResult {
 
 const NO_ROWS: ItemRankingRow[] = []
 
-export function useItemRanking(
-  engineInputs: Inputs,
-  baselineDps: number,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
-): ItemRankingResult {
+export function useItemRanking(engineInputs: Inputs, baselineDps: number): ItemRankingResult {
   const [rows, setRows] = useState<ItemRankingRow[]>(
     () => retainedResponse("ranking")?.rows ?? NO_ROWS,
   )
@@ -25,8 +21,8 @@ export function useItemRanking(
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "ranking", inputs: engineInputs, baselineDps, baselineQiBreaks })
-  }, [engineInputs, baselineDps, baselineQiBreaks])
+    postToDpsWorker({ kind: "ranking", inputs: engineInputs, baselineDps })
+  }, [engineInputs, baselineDps])
 
   return { rows, isPending }
 }

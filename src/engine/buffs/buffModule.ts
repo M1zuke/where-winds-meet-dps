@@ -5,8 +5,16 @@ import type { WindowExtensionSpec } from "./windowExtension"
 
 // A phase, or a genuine target-Qi-fraction threshold — for a gate the game
 // keys to a real percentage rather than to the compatibility phase window
-// (docs/TIMELINE.md § "Qi bar").
-export type QiGate = QiPhase | { qiBelow: number }
+// (docs/TIMELINE.md § "Qi bar"). A broken bar reads fraction 0.
+export type QiGate = QiPhase | { qiBelow: number } | { qiAtMost: number }
+
+export type DamageGrantTiming = "preScore" | "postQi"
+
+export type TriggerPhaseTiming = "beforeHits" | "afterHits"
+
+export type DamageGrantSource = "directHits" | "anyDamage"
+
+export type DamageEventKind = "hit" | "tick"
 
 export interface BuffRequirements {
   param?: string
@@ -91,6 +99,14 @@ export type BuffMeta = BuffGate & {
   // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
   stackOnGrantingHit?: boolean
   stackOnDamage?: boolean
+  // When the grant of `stackOnDamage` or `perHitConsume` is decided against the
+  // hit's own damage and Qi: `preScore` reads the bar before the hit's Qi and
+  // counts for that hit; `postQi` reads it after and counts for later events
+  // only. Absent behaves as `preScore`.
+  damageGrantTiming?: DamageGrantTiming
+  // Which damage events the grant of `stackOnDamage` or `perHitConsume` listens
+  // to. Absent is `directHits`: damage-over-time ticks grant nothing.
+  damageGrantListensTo?: DamageGrantSource
   // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.
@@ -109,7 +125,11 @@ export type BuffMeta = BuffGate & {
   triggersFromGeneratedSkills?: boolean
   // Restricts the trigger to one Qi phase; a cast in any other phase is not a
   // trigger for this def at all, so no stack and no refresh.
-  triggerPhase?: QiPhase | readonly QiPhase[]
+  triggerPhase?: QiGate | readonly QiGate[]
+  // Which bar `triggerPhase` reads for a grant that lands after its cast's last
+  // hit: `beforeHits` the bar before that hit's Qi, `afterHits` the bar once the
+  // hits of the landing frame have spent theirs. Absent behaves as `beforeHits`.
+  triggerPhaseTiming?: TriggerPhaseTiming
   // The listed modules' windows must be down for this grant to land.
   blockedWhileActive?: readonly string[]
   // The listed modules' windows end where this grant lands.

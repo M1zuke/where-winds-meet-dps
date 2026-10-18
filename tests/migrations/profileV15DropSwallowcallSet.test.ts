@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
-import { ARMOR_SET_OPTIONS } from "../../src/engine/panel"
+import { GEAR_SET_OPTIONS } from "../../src/engine/setBonuses"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V15__dropSwallowcallSet } from "../../src/migrations/V15__dropSwallowcallSet"
-import type { StoredProfile } from "../../src/engine/types"
+import { carriedSets, type StoredProfile } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v14/silkbindJade.json"
 
 const SWALLOWCALL_SET_ID = "swallowcall"
@@ -36,7 +36,7 @@ describe("profile-v14 fixture", () => {
 
 describe("V15__dropSwallowcallSet — called directly", () => {
   it("is a version bump only — Swallowcall is a modelled set again", () => {
-    for (const option of ARMOR_SET_OPTIONS) {
+    for (const option of GEAR_SET_OPTIONS) {
       const migrated = V15__dropSwallowcallSet.migrate(
         blobOf(withSet(clone(LEGACY.profile), option.setKey)),
       )
@@ -89,11 +89,11 @@ describe("hydrateInputs — swallowcall on a bare import, never walking the chai
 
   it("keeps a set that is still offered", () => {
     const bare = withSet(clone(LEGACY.profile), "mistwillow")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("mistwillow")
+    expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain("mistwillow")
   })
 
   it("keeps Swallowcall, now a modelled set", () => {
     const bare = withSet(clone(LEGACY.profile), SWALLOWCALL_SET_ID)
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe(SWALLOWCALL_SET_ID)
+    expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain(SWALLOWCALL_SET_ID)
   })
 })

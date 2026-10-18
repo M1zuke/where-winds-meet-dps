@@ -7,7 +7,7 @@ import type { GraduationBuild } from "../../../../definitions/graduationBuilds/g
 import { attunementLabel, attunementLabelKey, attunementsFor } from "../../../../engine/attunements"
 import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
 import { newCustomGraduationBuildId } from "../../../../engine/customGraduationBuild"
-import { ARMOR_SET_OPTIONS } from "../../../../engine/panel"
+import { GEAR_SET_OPTIONS } from "../../../../engine/setBonuses"
 import type { Arsenal, BowSet, GearLevel, GearSlot, GearWordId } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import {
@@ -83,7 +83,7 @@ export function CustomGraduationBuildEditor({
   const setOptions: ComboboxOption[] = useMemo(
     () => [
       { value: "", label: t("common.unselected") },
-      ...ARMOR_SET_OPTIONS.map((option) => ({
+      ...GEAR_SET_OPTIONS.map((option) => ({
         value: option.setKey,
         label: t(setKey(option.setKey), option.name),
       })),

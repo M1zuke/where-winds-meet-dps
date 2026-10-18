@@ -1,0 +1,149 @@
+@use "breakpoints";
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 2px 0 10px;
+  padding: 4px 0 4px 10px;
+  border-left: 3px solid var(--color-border-strong);
+}
+
+.header.rarityLegendary {
+  --piece-rarity-color: var(--color-rarity-legendary);
+  border-left-color: var(--color-rarity-legendary);
+}
+
+.header.rarityEpic {
+  --piece-rarity-color: var(--color-rarity-epic);
+  border-left-color: var(--color-rarity-epic);
+}
+
+.titleInput {
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: -6px;
+  padding: 2px 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--color-text);
+  font-size: 1.1em;
+  font-weight: 600;
+  transition: border-color 0.12s;
+}
+
+.titleInput::placeholder {
+  color: var(--color-text-faint);
+  font-style: italic;
+  font-weight: 500;
+}
+
+@include breakpoints.hoverable {
+  .titleInput:hover {
+    border-color: var(--color-border-strong);
+  }
+}
+
+.titleInput:focus {
+  outline: none;
+  background: var(--color-surface-inset);
+  border-color: var(--color-accent);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.chips button[role="combobox"] {
+  width: auto;
+  padding: 3px 6px 3px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  box-shadow: none;
+  font-size: 0.85em;
+}
+
+@include breakpoints.hoverable {
+  .chips button[role="combobox"]:hover:not(:disabled) {
+    border-color: var(--color-border-hover);
+  }
+}
+
+.chips button[role="combobox"][aria-expanded="true"] {
+  border-color: var(--color-border-hover);
+}
+
+.chips button[role="combobox"]:focus-visible {
+  border-color: var(--color-accent);
+}
+
+.chips button[role="combobox"] > span:last-child {
+  border-left: none;
+  padding-left: 2px;
+}
+
+.chips .rarityChip {
+  color: var(--piece-rarity-color, var(--color-text));
+}
+
+.setButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px 3px 8px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  color: var(--color-accent-bright);
+  font: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+}
+
+@include breakpoints.hoverable {
+  .setButton:hover {
+    border-color: var(--color-border-hover);
+  }
+}
+
+.setButton:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.setButtonChevron::after {
+  content: "";
+  display: block;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid currentColor;
+}
+
+.chips .slotChip {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.staticSlot {
+  padding: 3px 2px;
+  font-size: 0.75em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.equippedBadge {
+  padding: 1px 8px;
+  border: 1px solid var(--color-accent);
+  border-radius: 9px;
+  color: var(--color-accent);
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

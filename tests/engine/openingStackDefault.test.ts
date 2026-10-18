@@ -22,7 +22,6 @@ function fillerRotationResult(openingStacks?: Record<string, number>) {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
@@ -49,7 +48,7 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     expect(chip).toMatchObject({ stacks: 150, maxStacks: 200 })
   })
 
-  it("the same default also resolves a hit variant's cast-length gate — the seeded ledger and the layout pass agree", () => {
+  it("the same default also resolves a hit variant's cast-length gate", () => {
     const skill = makeSkill(CLASS, {
       name: "Gated filler",
       castFrames: 90,
@@ -76,7 +75,6 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: [skill],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: skill.id })],

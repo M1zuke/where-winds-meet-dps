@@ -9,7 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { runEngine } from "../engine/dps"
-import { applyArmorSet, applyBowSet } from "../engine/panel"
+import { applySetBonuses } from "../engine/setBonuses"
 import { withCustomContent } from "../engine/customContent"
 import { withDerivedStats } from "../engine/derivedInputs"
 import type { Inputs, StoredProfile } from "../engine/types"
@@ -147,7 +147,7 @@ function AppInner() {
 
   const engineInputs = useMemo(() => {
     const derived = withDerivedStats(configuredInputs)
-    return applyBowSet(applyArmorSet(derived))
+    return applySetBonuses(derived)
   }, [configuredInputs])
 
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
@@ -443,11 +443,11 @@ function AppInner() {
               element={
                 <GearTab
                   inputs={inputs}
+                  configuredInputs={configuredInputs}
                   engineInputs={engineInputs}
                   customGraduationBuild={customGraduationBuild}
                   onChange={setInputs}
                   currentDps={result.dps}
-                  baselineQiBreaks={result.qiBreaks}
                 />
               }
             />

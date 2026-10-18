@@ -71,7 +71,6 @@ describe("Bamboocut Draught — Hero's Blood ends one render period early", () =
       classId: "bamboocutDraught",
       customSkills: [herosBlood],
       activeCustomRotation: rotation,
-      set: null,
     }).castDuration
   }
 

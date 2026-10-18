@@ -20,6 +20,7 @@ export const etherwrathAttackBoost = defineBuff({
   duration: DURATION_SEC,
   maxStacks: MAX_STACKS,
   stackOnDamage: true,
+  damageGrantTiming: "preScore",
   summary: "physical/attribute attack +1.2%/stack (max 5)",
   effects: (ctx) => {
     const bonus = PER_STACK * ctx.self.stacks

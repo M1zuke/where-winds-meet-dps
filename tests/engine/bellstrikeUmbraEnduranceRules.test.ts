@@ -4,7 +4,7 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { graduationInputs } from "../../src/engine/graduation"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
 import {
@@ -80,7 +80,6 @@ function levelsOf(
                 : { [ZENITH_BAR_BUFF_ID]: openingSwordSpirit }),
             },
     }),
-    set: null,
     unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     mindMethods: [
       { name: "Sword Horizon", stacks: "tier 6" },
@@ -205,7 +204,7 @@ describe("the 38 BB's rotation on the No ST Burst graduation build", () => {
       { ...defaultInputs, classId: CLASS, graduationBuildId: build.id, breakthrough: 17 },
       "maxRolls",
     )!
-    const inputs = applyBowSet(applyArmorSet(withDerivedStats(graduated)))
+    const inputs = applySetBonuses(withDerivedStats(graduated))
     return runEngine({
       ...inputs,
       combatSettings: {

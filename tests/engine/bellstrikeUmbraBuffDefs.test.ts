@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
@@ -16,7 +16,7 @@ function skill(receives: string[]) {
 }
 
 function sumsFor(params: Record<string, unknown>, receives: string[]) {
-  const engine = new BuffEngine(params, [], umbraOwnBuffDefs())
+  const engine = buffEngineWith(params, [], umbraOwnBuffDefs())
   const result = engine.calculateDamageEffects(skill(receives), 0)
   return Object.fromEntries(
     TRACKED.map((statKey) => [
@@ -101,7 +101,7 @@ describe("Bellstrike Umbra bleed buff-defs — scale with Max Physical Attack in
 
 describe("Bellstrike Umbra bleed power coefficient — a multiplier, never a damage-boost term", () => {
   const factorFor = (params: Record<string, unknown>, receives: string[]) =>
-    new BuffEngine(params, [], umbraOwnBuffDefs()).calculateDamageEffects(skill(receives), 0)
+    buffEngineWith(params, [], umbraOwnBuffDefs()).calculateDamageEffects(skill(receives), 0)
       .damageFactor
 
   it("contributes nothing below breakthrough 18", () => {

@@ -270,7 +270,7 @@ export function settleLateMeters(environment: LateMeterEnvironment): LateMeterSe
       const ensemble = trigger.kind === "meterDelta" ? ensembles.get(trigger.targetId) : undefined
       if (!ensemble) return
       const frame = trigger.appliesOnCastEnd
-        ? environment.castEndFrame(landed)
+        ? Math.max(landed.frame, environment.castEndFrame(landed))
         : trigger.delayFrames !== undefined
           ? Math.round(landed.exactFrame + trigger.delayFrames)
           : landed.frame

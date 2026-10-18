@@ -1,7 +1,6 @@
-import { runEngine } from "./dps"
+import { runEngine, TOTALS_RUN } from "./dps"
 import { withPassMemo } from "./passMemo"
-import { FPS } from "./timeline"
-import { engineRunOptionsFrom, engineRunOptionsSharingQiOf } from "./qiBar"
+import { engineRunOptionsSharingQiOf } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs, rankingRows, type RankingBlock } from "./itemRanking"
 import {
@@ -31,13 +30,11 @@ import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty, type FullPotentialDps } from "./fullPotential"
 import { withCustomContent } from "./customContent"
 import { withDerivedStats } from "./derivedInputs"
-import {
-  applyArmorSet,
-  applyBowSet,
-  ARMOR_SET_OPTIONS,
-  defaultArsenalForClass,
-  swapArsenal,
-} from "./panel"
+import { defaultArsenalForClass, swapArsenal } from "./panel"
+import { applySetBonuses } from "./setBonuses"
+import { NO_SET_CHOICE, withSetChoice, type SetChoiceTarget } from "./setChoice"
+import { GEAR_SET_DEFS } from "../definitions/sets/registry"
+import { BOW_SET_DEFS } from "../data/sets/bowSets"
 import { graduationInputs, graduationRatedInputs } from "./graduation"
 import type { Rotation } from "./rotation"
 import type { Skill } from "./skill"
@@ -49,7 +46,6 @@ import type { HitOutcome } from "./formula"
 import { GEAR_SLOTS } from "./types"
 import type {
   Arsenal,
-  BowSet,
   EngineRunOptions,
   GearLevel,
   GearPiece,
@@ -62,13 +58,7 @@ import type {
   SkillTickResult,
 } from "./types"
 
-const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
-
-type BaselineQiBreaks = readonly { startSec: number; endSec: number }[]
-
-function engineOptionsFrom(baselineQiBreaks: BaselineQiBreaks | undefined): EngineRunOptions {
-  return engineRunOptionsFrom(baselineQiBreaks, FPS)
-}
+export const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
 
 export interface DpsDelta {
   current: number
@@ -84,7 +74,6 @@ export interface DpsWorkerRequest {
   inputs: Inputs
   baselineDps: number
   pieceIds: string[]
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface DpsWorkerResponse {
@@ -97,7 +86,6 @@ export interface SelectedPieceDeltaWorkerRequest {
   inputs: Inputs
   baselineDps: number
   pieceId: string
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface EquippedDeltasWorkerRequest {
@@ -105,7 +93,6 @@ export interface EquippedDeltasWorkerRequest {
   inputs: Inputs
   baselineDps: number
   slots?: readonly GearSlot[]
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface EquippedDeltasWorkerResponse {
@@ -113,13 +100,9 @@ export interface EquippedDeltasWorkerResponse {
   deltas: Record<string, DpsDelta>
 }
 
-function dpsForSwap(
-  unequippedBaseline: Inputs,
-  candidate: GearPiece,
-  options: EngineRunOptions | undefined,
-): number {
+function dpsForSwap(unequippedBaseline: Inputs, candidate: GearPiece): number {
   const next = applyPieceContribution(unequippedBaseline, candidate, +1)
-  return runEngine(next, options).dps
+  return runEngine(next, TOTALS_RUN).dps
 }
 
 function equippedPieceIds(inputs: Inputs, slots: readonly GearSlot[]): string[] {
@@ -130,19 +113,18 @@ function equippedPieceIds(inputs: Inputs, slots: readonly GearSlot[]): string[] 
 }
 
 function computeEquippedDeltas(req: EquippedDeltasWorkerRequest): EquippedDeltasWorkerResponse {
-  const { reqId, inputs, baselineDps, slots, baselineQiBreaks } = req
+  const { reqId, inputs, baselineDps, slots } = req
   const pieceIds = equippedPieceIds(inputs, slots ?? GEAR_SLOTS)
-  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds, baselineQiBreaks })
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds })
 }
 
 function computeSelectedPieceDelta(req: SelectedPieceDeltaWorkerRequest): DpsWorkerResponse {
-  const { reqId, inputs, baselineDps, pieceId, baselineQiBreaks } = req
-  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds: [pieceId], baselineQiBreaks })
+  const { reqId, inputs, baselineDps, pieceId } = req
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds: [pieceId] })
 }
 
 function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
   const { inputs, baselineDps, pieceIds } = req
-  const options = engineOptionsFrom(req.baselineQiBreaks)
   const out: Record<string, DpsDelta> = {}
   const byId = new Map<string, GearPiece>()
   for (const piece of inputs.inventory) byId.set(piece.id, piece)
@@ -151,7 +133,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
   function ftFor(piece: GearPiece): FullPotentialDps {
     const known = ftByPieceId.get(piece.id)
     if (known !== undefined) return known
-    const ft = ftDpsWhenEquipped(piece, inputs, options)
+    const ft = ftDpsWhenEquipped(piece, inputs)
     ftByPieceId.set(piece.id, ft)
     return ft
   }
@@ -162,7 +144,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     if (cached !== undefined) return cached
     const equippedId = inputs.equipped[slot]
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
-    const ref = equipped ? ftFor(equipped).dps : ftDpsWithSlotEmpty(slot, inputs, options)
+    const ref = equipped ? ftFor(equipped).dps : ftDpsWithSlotEmpty(slot, inputs)
     ftRefBySlot.set(slot, ref)
     return ref
   }
@@ -175,10 +157,10 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
     const unequippedBaseline = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
 
-    const currentDps = dpsForSwap(unequippedBaseline, candidate, options)
+    const currentDps = dpsForSwap(unequippedBaseline, candidate)
     const upgradedLevel = gearLevelForBreakthrough(inputs.breakthrough)
     const upgraded = maxRelayedClone(candidate, inputs, upgradedLevel)
-    const upgradedDps = dpsForSwap(unequippedBaseline, upgraded, options)
+    const upgradedDps = dpsForSwap(unequippedBaseline, upgraded)
 
     const ft = ftFor(candidate)
 
@@ -199,7 +181,6 @@ export interface RetunementWorkerRequest {
   reqId: number
   inputs: Inputs
   pieceId: string
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface RetunementRow {
@@ -233,25 +214,17 @@ function inputsWithSlotEmpty(inputs: Inputs, slot: GearSlot): Inputs {
   return applyPieceContribution(inputs, equippedPiece, -1)
 }
 
-function retunementDpsHelpers(
-  inputs: Inputs,
-  piece: GearPiece,
-  options: EngineRunOptions | undefined,
-) {
+function retunementDpsHelpers(inputs: Inputs, piece: GearPiece) {
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipRun = runEngine(applyPieceContribution(slotEmpty, piece, +1), options)
-  const sweepOptions = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
+  const equipRun = runEngine(applyPieceContribution(slotEmpty, piece, +1), TOTALS_RUN)
   const relayedPiece = maxRelayedClone(piece, inputs, piece.level)
-  const relayedDps = runEngine(
-    applyPieceContribution(slotEmpty, relayedPiece, +1),
-    sweepOptions,
-  ).dps
+  const relayedDps = runEngine(applyPieceContribution(slotEmpty, relayedPiece, +1), TOTALS_RUN).dps
 
   const dpsWithWord = (from: GearPiece, slotIndex: number, word: GearWordId, value: number) => {
     const words = from.words.map((existing, index) =>
       index === slotIndex ? { word, value, retuned: true } : existing,
     ) as GearPiece["words"]
-    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1), sweepOptions).dps
+    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1), TOTALS_RUN).dps
   }
 
   return { equipDps: equipRun.dps, relayedPiece, relayedDps, dpsWithWord }
@@ -267,11 +240,7 @@ function computeLegacyRetunement(
   const specByWord = new Map(specs.map((s) => [s.word, s] as const))
   const rows: RetunementRow[] = []
   const slots = rerollableSlots(piece)
-  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(
-    inputs,
-    piece,
-    engineOptionsFrom(req.baselineQiBreaks),
-  )
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
 
   for (const slotIndex of slots) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -334,11 +303,7 @@ function computeWeightedRetunement(
   const { inputs, pieceId } = req
   const rows: RetunementRow[] = []
   const slots = rerollableSlots(piece)
-  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(
-    inputs,
-    piece,
-    engineOptionsFrom(req.baselineQiBreaks),
-  )
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
 
   const choices = retunePoolChoices(piece, weightPool).filter(
     (choice) => !choice.deselected && !choice.onRerollableLine,
@@ -397,7 +362,6 @@ export interface ReattunementWorkerRequest {
   reqId: number
   inputs: Inputs
   pieceId: string
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface ReattunementOption {
@@ -435,10 +399,9 @@ function dpsWithAttunement(
   original: GearPiece,
   optionId: string,
   value: number,
-  options: EngineRunOptions | undefined,
 ): number {
   const swapped: GearPiece = { ...original, attunement: optionId, attunementValue: value }
-  return runEngine(applyPieceContribution(slotEmpty, swapped, +1), options).dps
+  return runEngine(applyPieceContribution(slotEmpty, swapped, +1), TOTALS_RUN).dps
 }
 
 function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorkerResponse {
@@ -470,12 +433,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
   }
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipRun = runEngine(
-    applyPieceContribution(slotEmpty, piece, +1),
-    engineOptionsFrom(req.baselineQiBreaks),
-  )
-  const equipDps = equipRun.dps
-  const engineOptions = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
+  const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1), TOTALS_RUN).dps
 
   const weightedPool = reattunementPool(inputs.classId, piece.slot, piece.level)
   const drawables = weightedPool
@@ -489,8 +447,8 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     const inert = opt.enginePath === null
     const min = attunementMin(opt, piece.level)
     const max = attunementMax(opt, piece.level)
-    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max, engineOptions)
-    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min, engineOptions)
+    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max)
+    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min)
     const isCurrent = piece.attunement === opt.id
 
     const line = weightedPool?.lines.find((candidate) => candidate.optionId === opt.id) ?? null
@@ -505,7 +463,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
         ? expectedRedeterminedValue(line, piece.attunementValue)
         : expectedFreshValue(line)
       eDeltaDpsGivenDrawn =
-        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn, engineOptions) - equipDps
+        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn) - equipDps
     } else if (line && isCurrent) {
       // Popped: the currently-held line is already at its maximum.
       pDraw = 0
@@ -552,7 +510,6 @@ export interface WordMaxWorkerRequest {
   reqId: number
   inputs: Inputs
   piece: GearPiece
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface WordMaxRow {
@@ -575,12 +532,7 @@ function computeWordMax(req: WordMaxWorkerRequest): WordMaxWorkerResponse {
   const specByWord = new Map(specs.map((s) => [s.word, s] as const))
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipRun = runEngine(
-    applyPieceContribution(slotEmpty, piece, +1),
-    engineOptionsFrom(req.baselineQiBreaks),
-  )
-  const equipDps = equipRun.dps
-  const options = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
+  const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1), TOTALS_RUN).dps
 
   const rows: WordMaxRow[] = piece.words.map((w, slotIndex) => {
     if (!w.word) {
@@ -595,7 +547,7 @@ function computeWordMax(req: WordMaxWorkerRequest): WordMaxWorkerResponse {
       i === slotIndex ? { ...cur, value: capValue } : cur,
     ) as GearPiece["words"]
     const swapped: GearPiece = { ...piece, words: swappedWords }
-    const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1), options).dps
+    const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1), TOTALS_RUN).dps
     return {
       slotIndex,
       capValue,
@@ -612,9 +564,6 @@ export interface RankingWorkerRequest {
   reqId: number
   inputs: Inputs
   baselineDps: number
-  // The baseline's own converged Qi breaks, in seconds — docs/UI.md § "The
-  // rules", "warm-start".
-  baselineQiBreaks?: BaselineQiBreaks
   block?: RankingBlock
 }
 
@@ -624,12 +573,11 @@ export interface RankingWorkerResponse {
 }
 
 function computeRankingRequest(req: RankingWorkerRequest): RankingWorkerResponse {
-  const options = engineOptionsFrom(req.baselineQiBreaks)
   return {
     reqId: req.reqId,
     rows: req.block
-      ? rankingRows(req.inputs, req.baselineDps, options, req.block)
-      : computeRanking(req.inputs, req.baselineDps, options),
+      ? rankingRows(req.inputs, req.baselineDps, undefined, req.block)
+      : computeRanking(req.inputs, req.baselineDps),
   }
 }
 
@@ -639,7 +587,6 @@ export interface GearAnalysisWorkerRequest {
   baselineDps: number
   slots?: readonly GearSlot[]
   skipAllSlotsLoss?: boolean
-  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface GearAnalysisWorkerResponse {
@@ -649,26 +596,38 @@ export interface GearAnalysisWorkerResponse {
 }
 
 function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysisWorkerResponse {
-  const options = engineOptionsFrom(req.baselineQiBreaks)
   return {
     reqId: req.reqId,
-    rows: computeGearAnalysis(req.inputs, req.baselineDps, options, req.slots),
+    rows: computeGearAnalysis(req.inputs, req.baselineDps, undefined, req.slots),
     allSlotsLoss: req.skipAllSlotsLoss
       ? null
-      : computeAllSlotsUnequipLoss(req.inputs, req.baselineDps, options),
+      : computeAllSlotsUnequipLoss(req.inputs, req.baselineDps),
   }
 }
 
-export interface SetTilesWorkerRequest {
+export interface ArsenalTilesWorkerRequest {
   reqId: number
   inputs: Inputs
 }
 
-export interface SetTilesWorkerResponse {
+export interface ArsenalTilesWorkerResponse {
   reqId: number
-  armorDpsByKey: Record<string, number>
-  bowDpsByChoice: { affinity: number; crit: number; precision: number; none: number }
   arsenalDpsByChoice: Record<string, number>
+}
+
+export interface GearSetChoicesWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  target: SetChoiceTarget
+  applyToGroup: boolean
+}
+
+export interface GearSetChoicesWorkerResponse {
+  reqId: number
+  target: SetChoiceTarget
+  applyToGroup: boolean
+  currentDps: number
+  dpsByChoice: Record<string, number>
 }
 
 export interface RotationDpsWorkerRequest {
@@ -685,11 +644,14 @@ export interface RotationDpsWorkerResponse {
 function computeRotationDps(req: RotationDpsWorkerRequest): RotationDpsWorkerResponse {
   const dpsByOptionId: Record<string, number> = {}
   for (const { optionId, rotation } of req.options) {
-    dpsByOptionId[optionId] = runEngine({
-      ...req.inputs,
-      activeCustomRotation: rotation,
-      selectedBuiltinRotationId: null,
-    }).dps
+    dpsByOptionId[optionId] = runEngine(
+      {
+        ...req.inputs,
+        activeCustomRotation: rotation,
+        selectedBuiltinRotationId: null,
+      },
+      TOTALS_RUN,
+    ).dps
   }
   return { reqId: req.reqId, dpsByOptionId }
 }
@@ -724,6 +686,7 @@ export interface ParseSimulationWorkerRequest {
   rotation: Rotation | null
   runs: number
   seed: number
+  runRange?: { start: number; end: number }
 }
 
 export interface ParseSimulationWorkerResponse {
@@ -736,6 +699,7 @@ export interface ParseSimulationWorkerResponse {
   completedRuns: number
   cancelled: boolean
   warnings: string[]
+  outcomeShares?: OutcomeCounts[]
 }
 
 export interface ParseSimulationProgressResponse {
@@ -762,7 +726,12 @@ async function computeParseSimulation(
     selectedBuiltinRotationId: null,
   }
 
+  const rangeStart = req.runRange ? Math.min(req.runRange.start, total) : 0
+  const rangeEnd = req.runRange ? Math.min(req.runRange.end, total) : total
+  const rangeSize = Math.max(0, rangeEnd - rangeStart)
+
   const runs: ParseRun[] = []
+  const outcomeShares: OutcomeCounts[] = []
   const shareTotals: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
   let warnings: string[] = []
   let rotationDuration = 0
@@ -774,7 +743,8 @@ async function computeParseSimulation(
     })
     const counts = result.outcomeCounts ?? NO_OUTCOMES
     const share = result.expectedOutcomeShare ?? NO_OUTCOMES
-    for (const outcome of OUTCOME_KEYS) shareTotals[outcome] += share[outcome]
+    if (req.runRange) outcomeShares.push({ ...share })
+    else for (const outcome of OUTCOME_KEYS) shareTotals[outcome] += share[outcome]
     if (index === 0) {
       warnings = result.warnings
       rotationDuration = result.rotationDuration
@@ -796,21 +766,21 @@ async function computeParseSimulation(
   }
 
   const startedAt = performance.now()
-  runOnce(0)
+  if (rangeSize > 0) runOnce(rangeStart)
   const msPerRun = Math.max(performance.now() - startedAt, 0.01)
   const chunkRuns = Math.max(
     1,
     Math.min(Math.round(PARSE_TARGET_CHUNK_MS / msPerRun), MAX_CHUNK_RUNS),
   )
 
-  while (runs.length < total) {
+  while (runs.length < rangeSize) {
     if (isCancelled?.()) break
-    const chunkEnd = Math.min(runs.length + chunkRuns, total)
-    for (let index = runs.length; index < chunkEnd; index++) runOnce(index)
-    onProgress?.(runs.length, total)
+    const chunkEnd = Math.min(runs.length + chunkRuns, rangeSize)
+    for (let offset = runs.length; offset < chunkEnd; offset++) runOnce(rangeStart + offset)
+    onProgress?.(runs.length, rangeSize)
     // A synchronous loop never lets `onmessage` fire, so without this yield no
     // cancel is ever read.
-    if (runs.length < total) await new Promise((resolve) => setTimeout(resolve, 0))
+    if (runs.length < rangeSize) await new Promise((resolve) => setTimeout(resolve, 0))
   }
 
   const expectedRates: ExpectedOutcomeRates = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
@@ -820,12 +790,13 @@ async function computeParseSimulation(
     reqId: req.reqId,
     seed: req.seed,
     runs,
-    expectedRates: runs.length > 0 ? expectedRates : null,
+    expectedRates: !req.runRange && runs.length > 0 ? expectedRates : null,
     rotationDuration,
     requestedRuns: total,
     completedRuns: runs.length,
-    cancelled: runs.length < total,
+    cancelled: runs.length < rangeSize,
     warnings,
+    ...(req.runRange ? { outcomeShares } : {}),
   }
 }
 
@@ -896,7 +867,7 @@ function computeProfileMetrics(req: ProfileMetricsWorkerRequest): ProfileMetrics
       req.customBuffs,
       req.customDebuffs,
     )
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(configured))))
+    const result = runEngine(applySetBonuses(withDerivedStats(configured)), TOTALS_RUN)
     metricsByProfileId[id] = {
       dps: result.dps,
       totalDamage: result.totalDamage,
@@ -921,28 +892,33 @@ export interface GraduationWorkerResponse {
 
 function resultFor(inputs: Inputs, options?: EngineRunOptions): Result {
   const derived = withDerivedStats(inputs)
-  return runEngine(applyBowSet(applyArmorSet(derived)), options)
+  return runEngine(applySetBonuses(derived), { ...TOTALS_RUN, ...options })
 }
 
 function dpsFor(inputs: Inputs): number {
   return resultFor(inputs).dps
 }
 
-function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
+function computeGearSetChoices(req: GearSetChoicesWorkerRequest): GearSetChoicesWorkerResponse {
+  const { inputs, target, applyToGroup } = req
+  const choiceIds =
+    target.kind === "bow" ? Object.keys(BOW_SET_DEFS) : GEAR_SET_DEFS.map((set) => set.id)
+  const dpsByChoice: Record<string, number> = {}
+  for (const choiceId of [NO_SET_CHOICE, ...choiceIds]) {
+    const setId = choiceId === NO_SET_CHOICE ? null : choiceId
+    dpsByChoice[choiceId] = resultFor(withSetChoice(inputs, target, applyToGroup, setId)).dps
+  }
+  return {
+    reqId: req.reqId,
+    target,
+    applyToGroup,
+    currentDps: resultFor(inputs).dps,
+    dpsByChoice,
+  }
+}
+
+function computeArsenalTiles(req: ArsenalTilesWorkerRequest): ArsenalTilesWorkerResponse {
   const { inputs } = req
-
-  const armorDpsByKey: Record<string, number> = { __none: dpsFor({ ...inputs, set: null }) }
-  for (const opt of ARMOR_SET_OPTIONS) {
-    armorDpsByKey[opt.setKey] = dpsFor({ ...inputs, set: opt.setKey })
-  }
-
-  const bowChoice = (choice: BowSet): number => dpsFor({ ...inputs, bowSet: choice })
-  const bowDpsByChoice = {
-    affinity: bowChoice("affinity"),
-    crit: bowChoice("crit"),
-    precision: bowChoice("precision"),
-    none: bowChoice(null),
-  }
 
   const arsenalChoices = new Set<Arsenal>([
     "general",
@@ -954,7 +930,7 @@ function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
     arsenalDpsByChoice[choice] = dpsFor(swapArsenal(inputs, choice))
   }
 
-  return { reqId: req.reqId, armorDpsByKey, bowDpsByChoice, arsenalDpsByChoice }
+  return { reqId: req.reqId, arsenalDpsByChoice }
 }
 
 function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerResponse {
@@ -972,7 +948,7 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
   }
   const benchmarkRun = resultFor(benchmarkInputs)
   const theoreticalDps = benchmarkRun.dps
-  const sharedQiOptions = engineRunOptionsSharingQiOf(benchmarkRun, FPS)
+  const sharedQiOptions = engineRunOptionsSharingQiOf(benchmarkRun)
   const currentDps = resultFor(currentInputs, sharedQiOptions).dps
   return {
     reqId: req.reqId,
@@ -992,7 +968,8 @@ export type WorkerRequest =
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerRequest)
-  | ({ kind: "setTiles" } & SetTilesWorkerRequest)
+  | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerRequest)
+  | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerRequest)
   | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerRequest)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerRequest)
@@ -1009,7 +986,8 @@ export type WorkerResponse =
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerResponse)
-  | ({ kind: "setTiles" } & SetTilesWorkerResponse)
+  | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerResponse)
+  | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerResponse)
   | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerResponse)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerResponse)
@@ -1045,9 +1023,12 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "gearAnalysis") {
     const res = withPassMemo(() => computeGearAnalysisRequest(req))
     ;(self as unknown as Worker).postMessage({ kind: "gearAnalysis", ...res })
-  } else if (req.kind === "setTiles") {
-    const res = withPassMemo(() => computeSetTiles(req))
-    ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
+  } else if (req.kind === "arsenalTiles") {
+    const res = withPassMemo(() => computeArsenalTiles(req))
+    ;(self as unknown as Worker).postMessage({ kind: "arsenalTiles", ...res })
+  } else if (req.kind === "gearSetChoices") {
+    const res = withPassMemo(() => computeGearSetChoices(req))
+    ;(self as unknown as Worker).postMessage({ kind: "gearSetChoices", ...res })
   } else if (req.kind === "rotationDps") {
     const res = withPassMemo(() => computeRotationDps(req))
     ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
@@ -1089,7 +1070,8 @@ export {
   computeWordMax,
   computeRankingRequest,
   computeGearAnalysisRequest,
-  computeSetTiles,
+  computeArsenalTiles,
+  computeGearSetChoices,
   computeRotationDps,
   computeProfileMetrics,
   computeParseSimulation,

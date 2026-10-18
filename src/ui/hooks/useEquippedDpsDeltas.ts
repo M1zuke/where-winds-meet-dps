@@ -11,11 +11,7 @@ export interface EquippedDpsDeltasResult {
 
 const EMPTY_DELTAS: DpsDeltaMap = {}
 
-export function useEquippedDpsDeltas(
-  inputs: Inputs,
-  baselineDps: number,
-  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
-): EquippedDpsDeltasResult {
+export function useEquippedDpsDeltas(inputs: Inputs, baselineDps: number): EquippedDpsDeltasResult {
   const [deltas, setDeltas] = useState<DpsDeltaMap>(
     () => retainedResponse("equippedDeltas")?.deltas ?? EMPTY_DELTAS,
   )
@@ -26,8 +22,8 @@ export function useEquippedDpsDeltas(
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "equippedDeltas", inputs, baselineDps, baselineQiBreaks })
-  }, [inputs, baselineDps, baselineQiBreaks])
+    postToDpsWorker({ kind: "equippedDeltas", inputs, baselineDps })
+  }, [inputs, baselineDps])
 
   return { deltas, isPending }
 }

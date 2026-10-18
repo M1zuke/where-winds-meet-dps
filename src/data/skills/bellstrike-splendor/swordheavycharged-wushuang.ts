@@ -103,7 +103,7 @@ export const swordHeavyChargedWushuang = defineSkill({
       physFixed: 506.24,
       attributeFixed: 276.08,
       conditions: [SWORD_MORPH_EQUIPPED],
-      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+      triggers: [energySurgeCooldownCut],
     }),
     hit(3, {
       frame: 60.4,
@@ -115,6 +115,7 @@ export const swordHeavyChargedWushuang = defineSkill({
       triggers: [
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
         energySurgeEnduranceGain,
         wushuangStanceConsume,
       ],
