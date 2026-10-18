@@ -1,5 +1,7 @@
 import { SET_BY_ID } from "../definitions/sets/registry"
 import type { SetFormulaBonus } from "../definitions/sets/setDef"
+import type { DivinecraftElement } from "../data/consumables/divinecraftRefinements"
+import { NO_PHYS_ATTACK, type PhysAttackRange } from "../data/consumables/foods"
 
 // A skill whose final crit chance is raised, or forced outright, once the
 // rolled chance clears `threshold` — the one crit rule that reads the computed
@@ -8,11 +10,6 @@ export interface ConditionalFinalCrit {
   threshold: number
   bonusBelowThreshold: number
 }
-
-// 120/240 are the breakthrough-16 / level-96+ tier (level 91-95 was 90/180).
-// This is the ONLY place the food bonus is applied.
-export const FOOD_MIN_PHYS_BONUS = 120
-export const FOOD_MAX_PHYS_BONUS = 240
 
 // In-game crit/affinity-damage multiplier bounds as of 2026-09-10.
 export const CRIT_DAMAGE_MULTIPLIER_MIN = 1.35
@@ -28,10 +25,10 @@ export const AFFINITY_RATE_CAP = 0.4
 export function effectivePhysRange(
   minPhys: number,
   maxPhys: number,
-  food: boolean,
-): { min: number; max: number } {
-  const min = minPhys + (food ? FOOD_MIN_PHYS_BONUS : 0)
-  const maxWithFood = maxPhys + (food ? FOOD_MAX_PHYS_BONUS : 0)
+  food: PhysAttackRange,
+): PhysAttackRange {
+  const min = minPhys + food.min
+  const maxWithFood = maxPhys + food.max
   return { min, max: Math.max(maxWithFood, min) }
 }
 
@@ -69,6 +66,10 @@ type ArtRow = {
   conditionalFinalCrit?: ConditionalFinalCrit
   extraStonesplitPenetration?: number
   mysticCategory?: string
+}
+
+export function isMysticHit(art: Pick<ArtRow, "skillType" | "mysticCategory">): boolean {
+  return art.skillType === "mystic" || !!art.mysticCategory
 }
 
 type Attribute = "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut"
@@ -110,9 +111,10 @@ export interface FormulaContext {
   effectiveDefense: number
   fatigueDamageTaken: number
   hasSixHenZhi: boolean
-  food: boolean
+  foodPhysAttack?: PhysAttackRange
+  flatPhysAttack?: PhysAttackRange
   set: string | null
-  divinecraft: "fire" | "poison" | null
+  divinecraft: DivinecraftElement | null
   classSpecificAttunement: Record<string, number>
   // The scoped view of `classSpecificAttunement`, keyed by the `attune:` tag an
   // entity declares rather than by the stat's display name.
@@ -232,15 +234,22 @@ export function computeSkillDamage(
   const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const setBellstrikeAttackPct =
     ctx.bellstrikeAttackPctBonus ?? setFormulaBonus(ctx.set, "bellstrikeAttackPct")
-  const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
+  const effectivePhys = effectivePhysRange(
+    ctx.smallPhys,
+    ctx.largePhys,
+    ctx.foodPhysAttack ?? NO_PHYS_ATTACK,
+  )
+  const flatPhys = ctx.flatPhysAttack ?? NO_PHYS_ATTACK
   const physMin =
     effectivePhys.min * (1 + numberOrZero(art.minPhysPctBonus) + setPhysBoost) +
-    numberOrZero(art.minPhysFlatBonus) -
+    numberOrZero(art.minPhysFlatBonus) +
+    flatPhys.min -
     ctx.effectiveDefense
 
   const physMaxRaw =
     effectivePhys.max * (1 + numberOrZero(art.maxPhysPctBonus) + setPhysBoost) +
-    numberOrZero(art.maxPhysFlatBonus) -
+    numberOrZero(art.maxPhysFlatBonus) +
+    flatPhys.max -
     ctx.effectiveDefense
   const physMax = Math.max(physMaxRaw, physMin)
 
@@ -510,11 +519,11 @@ export function computeSkillDamage(
   const weaponBoostMap = ctx.weaponBoosts ?? {}
   const weaponBoost = weaponBoostMap[weaponOrAttributeKey]
   const mysticCategory = art.mysticCategory
-  const isMysticHit = art.skillType === "mystic" || !!mysticCategory
+  const mysticHit = isMysticHit(art)
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0) +
-    (isMysticHit ? (ctx.allMysticBoost ?? 0) : 0)
+    (mysticHit ? (ctx.allMysticBoost ?? 0) : 0)
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +

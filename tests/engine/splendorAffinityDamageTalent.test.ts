@@ -65,6 +65,7 @@ describe("the Nameless Spear Affinity DMG talent pays out once", () => {
       remainingFramesAt: () => undefined,
       framesSinceLastEnd: () => undefined,
       framesSinceStacksBelowThreshold: () => undefined,
+      frameStacksLastReachedThreshold: () => undefined,
       windowsOf: () => [],
     }
     engine.attachStatuses({ view, fps: 60 })

@@ -286,7 +286,13 @@ describe("the authored timing of the on-damage grants", () => {
       .map((module) => module.id)
       .sort()
     expect(listening).toEqual(
-      [BUFF.cleftpeakStacks, BUFF.cleftpeakDeflect, BUFF.tiltrimStack].sort(),
+      [
+        BUFF.cleftpeakStacks,
+        BUFF.cleftpeakDeflect,
+        BUFF.tiltrimStack,
+        BUFF.voidskyScript,
+        BUFF.soullinkScript,
+      ].sort(),
     )
   })
 

@@ -17,6 +17,8 @@ export const fireBreath2Hit = defineSkill({
   // animation, 2026-09-24.
   castFrames: 137,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 20,
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",

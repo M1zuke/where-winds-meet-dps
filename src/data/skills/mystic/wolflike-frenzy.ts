@@ -33,6 +33,8 @@ export const wolflikeFrenzy = defineSkill({
   // animation, 2026-10-15.
   castFrames: 218,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 30,
   // In-game values as of 2026-09-24: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",

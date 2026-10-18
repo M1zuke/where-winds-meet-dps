@@ -123,7 +123,10 @@ export function GraduationBuildDialog({
 
       <DialogBody>
         {followed?.standardized && (
-          <GraduationStandardNotice encounter={followed.standardized.encounter} />
+          <GraduationStandardNotice
+            encounter={followed.standardized.encounter}
+            breakthrough={inputs.breakthrough}
+          />
         )}
 
         <div className={styles.pickerSection}>

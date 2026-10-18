@@ -1,12 +1,16 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
+import { SCRIPT_MIN_BREAKTHROUGH } from "./scriptOptions"
 import { stat } from "../../../engine/effects/effect"
 
 // In-game values as of 2026-09-11.
 export const voidrotScript = defineBuff({
   id: BUFF.voidrotScript,
   name: "Voidrot Script",
-  requires: { param: PARAM.voidrotScript },
+  requires: {
+    param: PARAM.voidrotScript,
+    minBreakthrough: SCRIPT_MIN_BREAKTHROUGH.voidrotScript,
+  },
   affectsAll: true,
   alwaysActive: true,
   duration: 9999,

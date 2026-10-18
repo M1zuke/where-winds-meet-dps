@@ -6,11 +6,18 @@ export interface StandardizedInnerWay {
   tier: number
 }
 
+export const BEST_AVAILABLE_FOOD = "bestAvailable"
+
 export type StandardizedEncounter = Pick<
   Inputs,
-  "dummyMode" | "food" | "divinecraft" | "shareDebuff5HenZhi" | "shareEasyHurt"
+  | "dummyMode"
+  | "hpFood"
+  | "divinecraft"
+  | "divinecraftRefinement"
+  | "shareDebuff5HenZhi"
+  | "shareEasyHurt"
 > &
-  CombatSettings
+  CombatSettings & { food: Inputs["food"] | typeof BEST_AVAILABLE_FOOD }
 
 export interface StandardizedGraduation {
   encounter?: Partial<StandardizedEncounter>
@@ -19,8 +26,10 @@ export interface StandardizedGraduation {
 
 export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   dummyMode: false,
-  food: false,
+  food: null,
+  hpFood: null,
   divinecraft: null,
+  divinecraftRefinement: null,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
   script: null,

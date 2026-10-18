@@ -1,4 +1,4 @@
-import { useState } from "react"
+import type { ReactNode } from "react"
 import type { Result } from "../../../engine/types"
 import { useI18n } from "../../../i18n/i18nContext"
 import { groupByBreakdownName } from "../../utils/skillBreakdown"
@@ -16,7 +16,7 @@ interface MetricsCardProps {
   graduationBuildName?: string | null
   rotationName?: string | null
   onRotationClick?: () => void
-  onQiBreakNoticeClick?: () => void
+  encounterTrigger?: ReactNode
 }
 
 function OpenIcon() {
@@ -51,13 +51,9 @@ export function MetricsCard({
   graduationBuildName = null,
   rotationName = null,
   onRotationClick,
-  onQiBreakNoticeClick,
+  encounterTrigger,
 }: MetricsCardProps) {
   const { t } = useI18n()
-  const [qiBreakNoticeDismissed, setQiBreakNoticeDismissed] = useState(false)
-  const [checkRotationBefore = "", checkRotationAfter = ""] = t(
-    "layout.outputPanel.qiBreakNoticeCheck",
-  ).split("{link}")
   const graduationBuildText = graduationBuildName ?? t("layout.outputPanel.chooseABuild")
   const graduationText =
     result.graduationRate === null
@@ -80,40 +76,7 @@ export function MetricsCard({
           {rotationName ? ` · ${rotationName}` : ""}
         </span>
       </div>
-      {!qiBreakNoticeDismissed && (
-        <div className={styles.qiBreakNotice} role="note">
-          <span className={styles.qiBreakNoticeIcon} aria-hidden="true">
-            !
-          </span>
-          <span className={styles.qiBreakNoticeText}>
-            <strong className={styles.qiBreakNoticeTitle}>
-              {t("layout.outputPanel.qiBreakNoticeTitle")}
-            </strong>
-            <span className={styles.qiBreakNoticeBody}>
-              {t("layout.outputPanel.qiBreakNoticeBody")} {checkRotationBefore}
-              <span className={styles.qiBreakNoticeLinkGroup}>
-                <button
-                  type="button"
-                  className={styles.qiBreakNoticeLink}
-                  onClick={onQiBreakNoticeClick}
-                >
-                  {t("layout.outputPanel.qiBreakNoticeCheckLink")}
-                </button>
-                {checkRotationAfter}
-              </span>
-            </span>
-          </span>
-          <button
-            type="button"
-            className={styles.qiBreakNoticeDismiss}
-            aria-label={t("layout.outputPanel.qiBreakNoticeDismiss")}
-            title={t("layout.outputPanel.qiBreakNoticeDismiss")}
-            onClick={() => setQiBreakNoticeDismissed(true)}
-          >
-            ×
-          </button>
-        </div>
-      )}
+      {encounterTrigger && <div className={styles.encounterSlot}>{encounterTrigger}</div>}
       <div className={styles.stat}>
         <span className={styles.label}>{t("common.totalDamage")}</span>
         <span className={styles.value}>{formatNumber(result.totalDamage, 0)}</span>
@@ -182,16 +145,14 @@ const QI_EDGE_WARNING_KEYS = {
   },
 }
 
-export function WarningsList({ result }: { result: Result }) {
+export function WarningLines({ result }: { result: Result }) {
   const { t } = useI18n()
-  const qiEdgeWarnings = result.qiEdgeWarnings ?? []
-  if (!result.warnings.length && !qiEdgeWarnings.length) return null
   return (
-    <div className="warnings">
+    <>
       {result.warnings.map((warning, index) => (
         <div key={index}>⚠ {warning}</div>
       ))}
-      {qiEdgeWarnings.map((warning) => (
+      {(result.qiEdgeWarnings ?? []).map((warning) => (
         <div key={`${warning.skillName}-${warning.edge}-${warning.edgeSec}`}>
           ⚠{" "}
           {t(QI_EDGE_WARNING_KEYS[warning.edge][warning.side])
@@ -201,7 +162,7 @@ export function WarningsList({ result }: { result: Result }) {
             .replace("{share}", (warning.shareOfTotal * 100).toFixed(1))}
         </div>
       ))}
-    </div>
+    </>
   )
 }
 

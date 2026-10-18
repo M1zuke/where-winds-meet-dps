@@ -21,6 +21,8 @@ export const dragonHead = defineSkill({
   guaranteedNormal: true,
   castFrames: 246,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 100,
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",

@@ -4,6 +4,10 @@ import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
+import {
+  foodPhysAttackAfterMultiplier,
+  foodPhysAttackBeforeMultiplier,
+} from "../data/consumables/foods"
 import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
 import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
@@ -340,7 +344,8 @@ export function buildContext(
     effectiveDefense,
     fatigueDamageTaken: targetFatigueDamageTaken,
     hasSixHenZhi: henZhiActive,
-    food: inputs.food,
+    foodPhysAttack: foodPhysAttackBeforeMultiplier(inputs),
+    flatPhysAttack: foodPhysAttackAfterMultiplier(inputs),
     set: fourPieceSet,
     divinecraft: inputs.divinecraft,
     classSpecificAttunement,

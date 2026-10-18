@@ -9,18 +9,19 @@ import { ClassSelect } from "../class-select/ClassSelect"
 import { BreakthroughSelect } from "../breakthrough-select/BreakthroughSelect"
 import { MindMethodsPanel } from "../mind-methods-panel/MindMethodsPanel"
 import { EquippedStatLinesPanel } from "../equipped-stat-lines-panel/EquippedStatLinesPanel"
-import { EncounterSettingsPanel } from "../encounter-settings-panel/EncounterSettingsPanel"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { ItemRankingTable } from "../item-ranking-table/ItemRankingTable"
 import styles from "./OverviewTab.module.scss"
 
 export function OverviewTab({
   inputs,
+  configuredInputs,
   engineInputs,
   onChange,
   result,
 }: {
   inputs: Inputs
+  configuredInputs: Inputs
   engineInputs: Inputs
   onChange: (next: Inputs) => void
   result: Result
@@ -54,11 +55,7 @@ export function OverviewTab({
           </div>
           <MindMethodsPanel inputs={inputs} onChange={onChange} />
         </div>
-        <EquippedStatLinesPanel inputs={inputs} />
-        <div className="panel">
-          <h2>{t("overview.encounterSettings")}</h2>
-          <EncounterSettingsPanel inputs={inputs} onChange={onChange} />
-        </div>
+        <EquippedStatLinesPanel inputs={configuredInputs} />
       </div>
 
       <div className={styles.stats}>

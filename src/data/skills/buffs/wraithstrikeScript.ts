@@ -1,12 +1,16 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
+import { SCRIPT_MIN_BREAKTHROUGH } from "./scriptOptions"
 import { stat } from "../../../engine/effects/effect"
 
 // In-game values as of 2026-09-11.
 export const wraithstrikeScript = defineBuff({
   id: BUFF.wraithstrikeScript,
   name: "Wraithstrike Script",
-  requires: { param: PARAM.wraithstrikeScript },
+  requires: {
+    param: PARAM.wraithstrikeScript,
+    minBreakthrough: SCRIPT_MIN_BREAKTHROUGH.wraithstrikeScript,
+  },
   affectsAll: true,
   alwaysActive: true,
   duration: 9999,

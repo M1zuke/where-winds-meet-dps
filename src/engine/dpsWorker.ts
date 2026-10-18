@@ -36,6 +36,7 @@ import { NO_SET_CHOICE, withSetChoice, type SetChoiceTarget } from "./setChoice"
 import { GEAR_SET_DEFS } from "../definitions/sets/registry"
 import { BOW_SET_DEFS } from "../data/sets/bowSets"
 import { graduationInputs, graduationRatedInputs } from "./graduation"
+import { encounterOptionVariants, type EncounterCategory } from "./encounterOptions"
 import type { Rotation } from "./rotation"
 import type { Skill } from "./skill"
 import type { Buff } from "./buff"
@@ -630,6 +631,20 @@ export interface GearSetChoicesWorkerResponse {
   dpsByChoice: Record<string, number>
 }
 
+export interface EncounterOptionsWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  category: EncounterCategory
+}
+
+export interface EncounterOptionsWorkerResponse {
+  reqId: number
+  inputs: Inputs
+  category: EncounterCategory
+  baselineDps: number
+  dpsByOption: Record<string, number>
+}
+
 export interface RotationDpsWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -917,6 +932,23 @@ function computeGearSetChoices(req: GearSetChoicesWorkerRequest): GearSetChoices
   }
 }
 
+function computeEncounterOptions(
+  req: EncounterOptionsWorkerRequest,
+): EncounterOptionsWorkerResponse {
+  const { inputs, category } = req
+  const dpsByOption: Record<string, number> = {}
+  for (const variant of encounterOptionVariants(inputs, category)) {
+    dpsByOption[variant.id] = runEngine(variant.inputs, TOTALS_RUN).dps
+  }
+  return {
+    reqId: req.reqId,
+    inputs,
+    category,
+    baselineDps: runEngine(inputs, TOTALS_RUN).dps,
+    dpsByOption,
+  }
+}
+
 function computeArsenalTiles(req: ArsenalTilesWorkerRequest): ArsenalTilesWorkerResponse {
   const { inputs } = req
 
@@ -970,6 +1002,7 @@ export type WorkerRequest =
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerRequest)
   | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerRequest)
   | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerRequest)
+  | ({ kind: "encounterOptions" } & EncounterOptionsWorkerRequest)
   | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerRequest)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerRequest)
@@ -988,6 +1021,7 @@ export type WorkerResponse =
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerResponse)
   | ({ kind: "arsenalTiles" } & ArsenalTilesWorkerResponse)
   | ({ kind: "gearSetChoices" } & GearSetChoicesWorkerResponse)
+  | ({ kind: "encounterOptions" } & EncounterOptionsWorkerResponse)
   | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerResponse)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerResponse)
@@ -1029,6 +1063,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "gearSetChoices") {
     const res = withPassMemo(() => computeGearSetChoices(req))
     ;(self as unknown as Worker).postMessage({ kind: "gearSetChoices", ...res })
+  } else if (req.kind === "encounterOptions") {
+    const res = withPassMemo(() => computeEncounterOptions(req))
+    ;(self as unknown as Worker).postMessage({ kind: "encounterOptions", ...res })
   } else if (req.kind === "rotationDps") {
     const res = withPassMemo(() => computeRotationDps(req))
     ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
@@ -1072,6 +1109,7 @@ export {
   computeGearAnalysisRequest,
   computeArsenalTiles,
   computeGearSetChoices,
+  computeEncounterOptions,
   computeRotationDps,
   computeProfileMetrics,
   computeParseSimulation,

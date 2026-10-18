@@ -71,7 +71,7 @@ export default defineGraduationBuild({
   },
   standardized: {
     encounter: {
-      food: true,
+      food: "bestAvailable",
       divinecraft: "fire",
     },
     innerWays: [
