@@ -454,6 +454,7 @@ function AppInner() {
               element={
                 <OverviewTab
                   inputs={inputs}
+                  configuredInputs={configuredInputs}
                   engineInputs={engineInputs}
                   onChange={setInputs}
                   result={result}

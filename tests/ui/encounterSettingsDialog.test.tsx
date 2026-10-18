@@ -112,7 +112,13 @@ function Harness({ initial }: { initial: Inputs }) {
           onClose={() => setIsOpen(false)}
         />
       )}
-      <OverviewTab inputs={inputs} engineInputs={inputs} onChange={change} result={result} />
+      <OverviewTab
+        inputs={inputs}
+        configuredInputs={inputs}
+        engineInputs={inputs}
+        onChange={change}
+        result={result}
+      />
     </I18nProvider>
   )
 }

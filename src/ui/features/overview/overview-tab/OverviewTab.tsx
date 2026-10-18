@@ -15,11 +15,13 @@ import styles from "./OverviewTab.module.scss"
 
 export function OverviewTab({
   inputs,
+  configuredInputs,
   engineInputs,
   onChange,
   result,
 }: {
   inputs: Inputs
+  configuredInputs: Inputs
   engineInputs: Inputs
   onChange: (next: Inputs) => void
   result: Result
@@ -53,7 +55,7 @@ export function OverviewTab({
           </div>
           <MindMethodsPanel inputs={inputs} onChange={onChange} />
         </div>
-        <EquippedStatLinesPanel inputs={inputs} />
+        <EquippedStatLinesPanel inputs={configuredInputs} />
       </div>
 
       <div className={styles.stats}>
