@@ -1,7 +1,15 @@
 import type { StandardizedEncounter } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { STANDARDIZED_ENCOUNTER_OFF } from "../../../../definitions/graduationBuilds/graduationBuildDef"
-import type { Inputs } from "../../../../engine/types"
+import { appliedRefinement } from "../../../../data/consumables/divinecraftRefinements"
+import {
+  attackFoodOptionId,
+  divinecraftOptionId,
+  hpFoodOptionId,
+  refinementOptionId,
+} from "../../../../engine/encounterOptions"
+import { resolveStandardizedFood } from "../../../../engine/graduation"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { OPTION_LABEL_KEYS } from "../../overview/encounter-settings-dialog/encounterOptionText"
 import { SCRIPT_LABEL_KEYS } from "../../../../data/skills/buffs/scriptOptions"
 import styles from "./GraduationStandardNotice.module.scss"
 
@@ -11,7 +19,6 @@ type SwitchedSetting = {
 
 const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   dummyMode: "overview.encounterSettings.enableDummy",
-  food: "overview.encounterSettings.simmeringFishSlicesFood",
   dragonHeadLowHpMaxBonus: "overview.encounterSettings.maxLowHpBonusDragon",
   shareDebuff5HenZhi: "overview.encounterSettings.bitterSeasonFromATeammate",
   shareEasyHurt: "overview.encounterSettings.tankSpearDebuffVulnerability",
@@ -23,27 +30,30 @@ const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   fragrantOrchidBathBean: "overview.encounterSettings.fragrantOrchidBathBean",
 }
 
-const DIVINECRAFT_LABEL_KEYS: Record<Exclude<Inputs["divinecraft"], null>, string> = {
-  fire: "overview.encounterSettings.fireOil",
-  poison: "overview.encounterSettings.poison",
-}
-
 export function GraduationStandardNotice({
   encounter: fixed,
+  breakthrough,
 }: {
   encounter: Partial<StandardizedEncounter> | undefined
+  breakthrough: number
 }) {
   const { t } = useI18n()
   const encounter: StandardizedEncounter = { ...STANDARDIZED_ENCOUNTER_OFF, ...fixed }
+  const food = resolveStandardizedFood(encounter.food, breakthrough)
 
   const enabled = (Object.keys(SWITCHED_LABEL_KEYS) as SwitchedSetting[])
     .filter((setting) => encounter[setting])
     .map((setting) => t(SWITCHED_LABEL_KEYS[setting]))
+  if (food) enabled.push(t(OPTION_LABEL_KEYS[attackFoodOptionId(food)]))
+  if (encounter.hpFood) enabled.push(t(OPTION_LABEL_KEYS[hpFoodOptionId(encounter.hpFood)]))
   if (encounter.script) enabled.push(t(SCRIPT_LABEL_KEYS[encounter.script]))
-  if (encounter.divinecraft)
+  if (encounter.divinecraft) {
+    const refinement = appliedRefinement(encounter)
     enabled.push(
-      `${t("overview.encounterSettings.divinecraft")}: ${t(DIVINECRAFT_LABEL_KEYS[encounter.divinecraft])}`,
+      `${t("overview.encounterSettings.divinecraft")}: ${t(OPTION_LABEL_KEYS[divinecraftOptionId(encounter.divinecraft)])}`,
     )
+    if (refinement) enabled.push(t(OPTION_LABEL_KEYS[refinementOptionId(refinement.id)]))
+  }
 
   return (
     <section className={styles.standardNotice}>

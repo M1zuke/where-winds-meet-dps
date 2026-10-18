@@ -36,6 +36,7 @@ export interface StatusView {
   // For a permanent-activation counter with no window to close — see
   // docs/TIMELINE.md § "The class-buff system — buff modules".
   secondsSinceStacksBelowThreshold(id: string, threshold: number): number | null
+  secondsSinceStacksReachedThreshold(id: string, threshold: number): number | null
 }
 
 type PropKey<Tag> = Tag extends `prop:${infer Suffix}` ? Suffix : never

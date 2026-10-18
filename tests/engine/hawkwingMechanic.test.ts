@@ -150,7 +150,6 @@ describe("Hawkwing's per-stack bonus", () => {
     effectiveDefense: 0,
     fatigueDamageTaken: 0,
     hasSixHenZhi: false,
-    food: false,
     set: null,
     divinecraft: null,
     classSpecificAttunement: {},

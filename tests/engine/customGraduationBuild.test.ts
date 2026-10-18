@@ -146,7 +146,7 @@ describe("a build the user authored, rated for graduation", { timeout: 30_000 },
     const tinkered: Inputs = {
       ...plain,
       dummyMode: true,
-      food: false,
+      food: null,
       divinecraft: "poison",
       shareDebuff5HenZhi: true,
       shareEasyHurt: true,

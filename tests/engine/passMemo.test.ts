@@ -41,6 +41,8 @@ function workerJobs(inputs: Inputs): Record<string, () => unknown> {
     gearAnalysis: () =>
       workerCompute.computeGearAnalysisRequest({ reqId: 1, inputs: engineInputs, baselineDps }),
     arsenalTiles: () => workerCompute.computeArsenalTiles({ reqId: 1, inputs }),
+    encounterOptions: () =>
+      workerCompute.computeEncounterOptions({ reqId: 1, inputs: engineInputs, category: "extras" }),
     rotationDps: () =>
       workerCompute.computeRotationDps({ reqId: 1, inputs: engineInputs, options }),
     graduation: () => workerCompute.computeGraduation({ reqId: 1, inputs }),

@@ -18,6 +18,7 @@ function statusView(active: boolean): StatusView {
     remainingFramesAt: () => undefined,
     framesSinceLastEnd: () => undefined,
     framesSinceStacksBelowThreshold: () => undefined,
+    frameStacksLastReachedThreshold: () => undefined,
     windowsOf: () => [],
   }
 }

@@ -5,8 +5,6 @@ import {
   computeSkillDamage,
   CRIT_DAMAGE_MULTIPLIER_MAX,
   CRIT_DAMAGE_MULTIPLIER_MIN,
-  FOOD_MAX_PHYS_BONUS,
-  FOOD_MIN_PHYS_BONUS,
 } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
@@ -109,7 +107,6 @@ const baseCtx: FormulaContext = {
   effectiveDefense: 307,
   fatigueDamageTaken: 0,
   hasSixHenZhi: false,
-  food: false,
   set: null,
   divinecraft: null,
   classSpecificAttunement: {
@@ -148,16 +145,20 @@ describe("physical attack range normalization", () => {
   it("applies food before choosing the effective max phys", () => {
     const withFood = computeSkillDamage(
       MODAO_CHARGE,
-      { ...baseCtx, smallPhys: 1000, largePhys: 900, food: true },
+      {
+        ...baseCtx,
+        smallPhys: 1000,
+        largePhys: 900,
+        foodPhysAttack: { min: 120, max: 240 },
+      },
       1,
     )
     const foodFoldedIntoPanel = computeSkillDamage(
       MODAO_CHARGE,
       {
         ...baseCtx,
-        smallPhys: 1000 + FOOD_MIN_PHYS_BONUS,
-        largePhys: 900 + FOOD_MAX_PHYS_BONUS,
-        food: false,
+        smallPhys: 1000 + 120,
+        largePhys: 900 + 240,
       },
       1,
     )

@@ -40,6 +40,7 @@ export interface StatusView {
   // The counter counterpart of `framesSinceLastEnd`, for an id with no
   // window to close — see `docs/TIMELINE.md` § "The class-buff system".
   framesSinceStacksBelowThreshold(id: string, frame: number, threshold: number): number | undefined
+  frameStacksLastReachedThreshold(id: string, frame: number, threshold: number): number | undefined
   windowsOf(id: string): readonly StatusWindow[]
 }
 
@@ -284,6 +285,21 @@ export class StatusLedger implements StatusView {
     return latestDrop === undefined ? undefined : frame - latestDrop
   }
 
+  frameStacksLastReachedThreshold(
+    id: string,
+    frame: number,
+    threshold: number,
+  ): number | undefined {
+    let latestRise: number | undefined
+    let previousValue = 0
+    for (const entry of this.stacks.get(id) ?? []) {
+      if (entry.frame > frame) break
+      if (previousValue < threshold && entry.value >= threshold) latestRise = entry.frame
+      previousValue = entry.value
+    }
+    return latestRise
+  }
+
   windowsOf(id: string): readonly StatusWindow[] {
     return this.windows.get(id) ?? []
   }
@@ -343,6 +359,16 @@ export class StatusLedger implements StatusView {
           previousValue = entry.value
         }
         return latestDrop === undefined ? undefined : frame - latestDrop
+      },
+      frameStacksLastReachedThreshold: (id, frame, threshold) => {
+        let latestRise: number | undefined
+        let previousValue = 0
+        for (const entry of this.stacks.get(id) ?? []) {
+          if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
+          if (previousValue < threshold && entry.value >= threshold) latestRise = entry.frame
+          previousValue = entry.value
+        }
+        return latestRise
       },
       windowsOf: windowsFor,
     }

@@ -1,5 +1,6 @@
 import type { Inputs } from "./types"
 import { EMPTY_BOW_GEAR, EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
+import { bestRecipeAttackFoodAt } from "../data/consumables/foods"
 import { DEFAULT_ARSENAL_SCORES, defaultEnhancementLevels } from "../definitions/baseStats"
 import {
   defaultBreakthrough,
@@ -69,8 +70,10 @@ export const defaultInputs: Inputs = {
     { ...emptyMindMethod },
   ],
 
-  food: true,
+  food: bestRecipeAttackFoodAt(FIXTURE_BREAKTHROUGH),
+  hpFood: null,
   divinecraft: "fire",
+  divinecraftRefinement: null,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
   bowGear: { ...EMPTY_BOW_GEAR },
@@ -100,6 +103,7 @@ export const blankInputs: Inputs = {
   ...defaultInputs,
   classId: "bellstrikeUmbra",
   breakthrough: defaultBreakthrough(),
+  food: bestRecipeAttackFoodAt(defaultBreakthrough()),
   enhancements: defaultEnhancementLevels(defaultBreakthrough()),
   phys: { min: 0, max: 0, penetration: 0 },
   bellstrike: { min: 0, max: 0, penetration: 0 },

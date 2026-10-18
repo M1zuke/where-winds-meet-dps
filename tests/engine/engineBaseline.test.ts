@@ -231,7 +231,7 @@ const PLACES = 2
 
 function digestOf(result: Result): string {
   const canonical = JSON.stringify(result, (key, value) => {
-    if (key === "qiDamageLog") return undefined
+    if (key === "qiDamageLog" || key === "isMysticHit") return undefined
     return typeof value === "number" ? round(value, PLACES) : value
   })
   return createHash("sha256").update(canonical).digest("hex")

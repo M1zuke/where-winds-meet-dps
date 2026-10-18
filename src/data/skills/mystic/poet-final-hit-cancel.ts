@@ -17,6 +17,8 @@ export const poetFinalHitCancel = defineSkill({
   cancelledBy: "deflectCancel",
   castFrames: 47,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 6,
   // In-game values as of 2026-09-28: every other mystic art is a stationary
   // cast, and this one carries no engagement-range field to read — reach is
   // an assumption (the class's own default melee reach).

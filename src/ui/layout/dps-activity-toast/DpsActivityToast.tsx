@@ -14,6 +14,7 @@ const SWEEP_KEYS: Partial<Record<WorkerRequest["kind"], string>> = {
   ranking: "layout.dpsActivityToast.sweep.ranking",
   arsenalTiles: "common.arsenal",
   gearSetChoices: "common.gearSets",
+  encounterOptions: "overview.encounterSettings",
   rotationDps: "common.rotations",
   graduation: "layout.dpsActivityToast.sweep.graduation",
 }

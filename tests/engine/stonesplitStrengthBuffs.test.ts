@@ -297,6 +297,7 @@ describe("the class's skill critical damage — steps by white Critical Rate", (
         remainingFramesAt: () => undefined,
         framesSinceLastEnd: () => undefined,
         framesSinceStacksBelowThreshold: () => undefined,
+        frameStacksLastReachedThreshold: () => undefined,
         windowsOf: () => [],
       },
       fps: 60,

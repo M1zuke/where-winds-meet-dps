@@ -17,6 +17,8 @@ export const toadFury = defineSkill({
   cancelledBy: "deflectCancel",
   castFrames: 96,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 25,
   reachMeters: 8,
   approach: "stationary",
   hits: [

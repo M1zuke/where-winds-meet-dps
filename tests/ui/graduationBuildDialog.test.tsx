@@ -61,7 +61,7 @@ vi.mock("../../src/definitions/graduationBuilds/registry", async (importOriginal
     arsenal: "bellstrike",
     rotationId: rotation.id,
     standardized: {
-      encounter: { food: true },
+      encounter: { food: "simmeringFishSlices" },
       innerWays: [
         { id: "swordHorizon", tier: 6 },
         { id: "moraleChant", tier: 5 },

@@ -17,6 +17,8 @@ export const ghostlyStepsUmbra = defineSkill({
   triggersBuffs: [BUFF.mirage],
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 40,
   reachMeters: 100,
   approach: "stationary",
   hits: [

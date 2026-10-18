@@ -25,6 +25,7 @@ import {
   conditionIds,
   conditionSatisfiedByStacks,
   hasBuffEngineSource,
+  hitToArtRow,
   isAnyOfCondition,
   isParamCondition,
   isPrePullSkill,
@@ -92,7 +93,7 @@ import {
   type MeterMaxContext,
 } from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
-import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
+import { computeSkillDamage, isMysticHit, type HitOutcome, type RolledHit } from "./formula"
 import { EXTENSION_STREAM_OFFSET, mechanicSubstream, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
@@ -1781,6 +1782,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       startFrame,
       prePull ? new Map<string, number>() : applyMeterCosts(resolvedStep.skill, startFrame),
     )
+    if (resolvedStep.skill.vitalityCost && ledger.stacksAt(IN_COMBAT_STATUS, startFrame) > 0)
+      buffEngine?.spendVitality(startFrame / FPS, resolvedStep.skill.vitalityCost)
     const cast: PendingCast = {
       stepIndex,
       resolvedStep,
@@ -2791,6 +2794,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const windowBoundTimeline = new Set<TimelineEvent>()
   const tailTallies: { frame: number; apply: () => void }[] = []
   let combatStarted = false
+  const enterCombat = (frame: number): void => {
+    if (combatStarted) return
+    combatStarted = true
+    ledger.recordStack(IN_COMBAT_STATUS, frame, 1)
+  }
   let hitsProcessed = 0
 
   const settleTally = (frame: number, apply: () => void): void => {
@@ -2860,10 +2868,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         openFight(frame)
         lastDamagingHitFrame = frame
         flushTailTallies()
-        if (!combatStarted) {
-          combatStarted = true
-          ledger.recordStack(IN_COMBAT_STATUS, frame, 1)
-        }
+        enterCombat(frame)
       }
       const scoreInput = prepareHit(event)
       const launchResource = resourceByLaunch.get(skill.id)
@@ -2942,6 +2947,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           kind: "hit",
           damage,
           inWindow: false,
+          isMysticHit: isMysticHit(hitToArtRow(hit, skill)),
         })
       }
       fireHitTriggers(event, scoreInput.engineOffsetSec, ledgerMarkBeforeHit)
@@ -3003,7 +3009,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const landing = event.landing ?? resolveDotTickLanding(event.episode.query, event.pending)
       if (!landing) continue
       const entry: DotTickEntry = { ...event.pending, ...landing }
-      if (entry.debuffForTick.dot && hitDealsDamage(entry.debuffForTick.dot)) openFight(entry.frame)
+      if (entry.debuffForTick.dot && hitDealsDamage(entry.debuffForTick.dot)) {
+        openFight(entry.frame)
+        enterCombat(entry.frame)
+      }
       const resource = resourceByDebuff.get(entry.debuff.id)
       const tickShare = launched.share
       resource?.creditHit(entry.frame, launched.particles)
@@ -3077,6 +3086,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         kind: "dot",
         damage,
         inWindow: false,
+        isMysticHit: isMysticHit({
+          skillType: entry.dotType,
+          mysticCategory: entry.debuffForTick.dot?.mysticCategory || undefined,
+        }),
       })
     } else if (event.kind === "extra") {
       const mechEvent = event.event

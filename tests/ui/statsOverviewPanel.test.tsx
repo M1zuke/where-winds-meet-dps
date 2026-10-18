@@ -293,4 +293,20 @@ describe("StatsOverviewPanel", () => {
     expect(geared.max - bare.max).toBeCloseTo(40, 9)
     expect(geared.min).toBeCloseTo(bare.min, 9)
   })
+
+  it("leaves the attack bun's flat amount out of the pre-multiplier attack rows", () => {
+    const minAttackRowText = (food: Inputs["food"]) => {
+      const { unmount } = render(
+        <I18nProvider>
+          <StatsOverviewPanel inputs={{ ...defaultInputs, breakthrough: 20, food }} />
+        </I18nProvider>,
+      )
+      const text = screen.getByText("Min Physical Attack").parentElement!.textContent
+      unmount()
+      return text
+    }
+
+    expect(minAttackRowText("caiNengjiaAttackBun")).toBe(minAttackRowText(null))
+    expect(minAttackRowText("twinImmortalsStew")).not.toBe(minAttackRowText(null))
+  })
 })

@@ -129,6 +129,7 @@ export class BuffEngine {
   private idsWrittenOutOfOrder = new Set<string>()
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
+  private vitalitySpent = new Map<string, number>()
   private statuses: TimelineStatuses | null = null
   private readonly extensions = new Map<string, WindowExtensionEnsemble>()
   private extensionGenerator: (() => number) | undefined
@@ -269,6 +270,19 @@ export class BuffEngine {
     return framesSince === undefined ? null : framesSince / fps
   }
 
+  private secondsSinceStacksReachedThreshold(
+    id: string,
+    time: number,
+    threshold: number,
+    statusesView?: StatusView,
+  ): number | null {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const riseFrame = view.frameStacksLastReachedThreshold(id, Math.round(time * fps), threshold)
+    return riseFrame === undefined ? null : time - riseFrame / fps
+  }
+
   private remainingHealthFraction(damageSoFar: number): number {
     const targetMaxHp = this.paramNum("targetMaxHp")
     if (targetMaxHp <= 0) return 1
@@ -326,6 +340,8 @@ export class BuffEngine {
         secondsSinceLastEnd: (id) => this.secondsSinceLastEnd(id, time, statusesView),
         secondsSinceStacksBelowThreshold: (id, threshold) =>
           this.secondsSinceStacksBelowThreshold(id, time, threshold, statusesView),
+        secondsSinceStacksReachedThreshold: (id, threshold) =>
+          this.secondsSinceStacksReachedThreshold(id, time, threshold, statusesView),
       },
       self: {
         stacks: selfStacks,
@@ -524,6 +540,19 @@ export class BuffEngine {
     })
     for (const dispelledId of module?.dispelsOnGrant ?? []) this.endWindow(dispelledId, time)
     if (module) this.runCastEffects(module, time, stacks ?? 1)
+  }
+
+  spendVitality(time: number, amount: number): void {
+    for (const [id, module] of this.definitions) {
+      if (module.vitalityPerStack === undefined || !this.gateOk(module)) continue
+      const spent = (this.vitalitySpent.get(id) ?? 0) + amount
+      if (spent < module.vitalityPerStack) {
+        this.vitalitySpent.set(id, spent)
+        continue
+      }
+      this.vitalitySpent.set(id, 0)
+      this.applyBuff(id, time)
+    }
   }
 
   private endWindow(id: string, time: number): void {

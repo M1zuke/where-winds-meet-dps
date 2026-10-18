@@ -86,7 +86,6 @@ describe("additional-attack talent — reaches the formula's flat terms", () => 
     effectiveDefense: 307,
     fatigueDamageTaken: 0,
     hasSixHenZhi: false,
-    food: false,
     set: null,
     divinecraft: null,
     classSpecificAttunement: {

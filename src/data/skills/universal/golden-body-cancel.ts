@@ -18,6 +18,8 @@ export const goldenBodyCancel = defineSkill({
   // animation, 2026-09-24.
   castFrames: 45,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 50,
   // In-game values as of 2026-09-28: no target, no approach — a large reach
   // keeps this stationary cast from capping the live distance.
   reachMeters: 100,

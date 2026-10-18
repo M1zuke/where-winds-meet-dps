@@ -109,7 +109,6 @@ const ctx: FormulaContext = {
   effectiveDefense: 307,
   fatigueDamageTaken: 0,
   hasSixHenZhi: false,
-  food: false,
   set: null,
   divinecraft: null,
   classSpecificAttunement: {

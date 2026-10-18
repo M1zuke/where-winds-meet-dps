@@ -2,10 +2,15 @@ import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definiti
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
+  StandardizedEncounter,
   StandardizedGraduation,
   StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
-import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
+import {
+  BEST_AVAILABLE_FOOD,
+  STANDARDIZED_ENCOUNTER_OFF,
+} from "../definitions/graduationBuilds/graduationBuildDef"
+import { bestRecipeAttackFoodAt } from "../data/consumables/foods"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
@@ -62,18 +67,36 @@ export function standardizedInnerWaysForClass(
   return null
 }
 
+export function resolveStandardizedFood(
+  food: StandardizedEncounter["food"],
+  breakthrough: number,
+): Inputs["food"] {
+  return food === BEST_AVAILABLE_FOOD ? bestRecipeAttackFoodAt(breakthrough) : food
+}
+
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
   const standardized = build.standardized
   if (!standardized) return inputs
-  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
+  const {
+    dummyMode,
+    food,
+    hpFood,
+    divinecraft,
+    divinecraftRefinement,
+    shareDebuff5HenZhi,
+    shareEasyHurt,
+    ...combat
+  } = {
     ...STANDARDIZED_ENCOUNTER_OFF,
     ...standardized.encounter,
   }
   return {
     ...inputs,
     dummyMode,
-    food,
+    food: resolveStandardizedFood(food, inputs.breakthrough),
+    hpFood,
     divinecraft,
+    divinecraftRefinement,
     shareDebuff5HenZhi,
     shareEasyHurt,
     combatSettings: { ...combat },

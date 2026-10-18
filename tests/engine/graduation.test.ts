@@ -20,6 +20,7 @@ import {
   graduationInputs,
   graduationRatedInputs,
   repairGraduationBuildId,
+  resolveStandardizedFood,
   standardizedGraduationInputs,
 } from "../../src/engine/graduation"
 import { applySetBonuses } from "../../src/engine/setBonuses"
@@ -230,7 +231,8 @@ describe("a standardized graduation build", () => {
 
       for (const side of [rated, benchmark]) {
         expect(side.dummyMode).toBe(encounter.dummyMode)
-        expect(side.food).toBe(encounter.food)
+        expect(side.food).toBe(resolveStandardizedFood(encounter.food, inputs.breakthrough))
+        expect(side.hpFood).toBe(encounter.hpFood)
         expect(side.divinecraft).toBe(encounter.divinecraft)
         expect(side.shareDebuff5HenZhi).toBe(encounter.shareDebuff5HenZhi)
         expect(side.shareEasyHurt).toBe(encounter.shareEasyHurt)
@@ -270,7 +272,8 @@ describe("a standardized graduation build", () => {
     const tinkered: Inputs = {
       ...FOLLOWING,
       dummyMode: true,
-      food: false,
+      food: null,
+      hpFood: "lotusSoup",
       divinecraft: "poison",
       shareDebuff5HenZhi: true,
       shareEasyHurt: true,
@@ -296,10 +299,29 @@ describe("a standardized graduation build", () => {
 
   it("keeps the profile's own encounter and inner ways for a build that fixes none", () => {
     const plain: GraduationBuild = { ...fictionalBuild("plain"), classId: FOLLOWING.classId }
-    const tinkered: Inputs = { ...FOLLOWING, dummyMode: true, food: false }
+    const tinkered: Inputs = { ...FOLLOWING, dummyMode: true, food: null }
 
     expect(standardizedGraduationInputs(tinkered, plain)).toBe(tinkered)
   })
+
+  it.each([
+    [14, "wildGinsengMeatballs"],
+    [16, "simmeringFishSlices"],
+    [20, "twinImmortalsStew"],
+  ] as const)(
+    "eats the best recipe food available at breakthrough %i when the standard says best available",
+    (breakthrough, expectedFood) => {
+      const eating: GraduationBuild = {
+        ...fictionalBuild("eating"),
+        classId: FOLLOWING.classId,
+        standardized: { encounter: { food: "bestAvailable" }, innerWays: [] },
+      }
+
+      expect(standardizedGraduationInputs({ ...FOLLOWING, breakthrough }, eating).food).toBe(
+        expectedFood,
+      )
+    },
+  )
 })
 
 describe("following a graduation build", () => {

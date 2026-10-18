@@ -7,6 +7,7 @@ import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
 import { resolveActiveSets } from "../setBonuses"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
+import { appliedRefinement } from "../../data/consumables/divinecraftRefinements"
 import { specForClass } from "./data"
 import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
 import {
@@ -50,6 +51,10 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.divinecraft === "fire") params.divinecraftFire = true
+  if (inputs.divinecraft === "water") params.divinecraftWater = true
+  const refinementBuff = appliedRefinement(inputs)?.buff
+  if (refinementBuff === "heartPoison") params.divinecraftHeartPoison = true
+  if (refinementBuff === "temperedFire") params.divinecraftTemperedFire = true
 
   const oddityMaxEndurance = oddityEnduranceTotal(inputs.unclaimedOddityNodes)
   if (oddityMaxEndurance) params[ODDITY_MAX_ENDURANCE_PARAM] = oddityMaxEndurance

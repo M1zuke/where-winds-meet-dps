@@ -3,6 +3,11 @@ import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
 import type { QiDamageLog } from "./qiBar"
 import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
+import type {
+  DivinecraftElement,
+  DivinecraftRefinementId,
+} from "../data/consumables/divinecraftRefinements"
+import type { AttackFoodId, HpFoodId } from "../data/consumables/foods"
 
 export type { GearWordId } from "../data/stats/statLines"
 import type { HitOutcome } from "./formula"
@@ -35,7 +40,20 @@ export function isWeaponName(value: string): value is WeaponName {
 
 export type BowSet = "affinity" | "crit" | "precision" | null
 
-export type ScriptId = "wraithstrikeScript" | "voidrotScript"
+export type ScriptId =
+  | "opportunityScript"
+  | "detachmentScript"
+  | "insightScript"
+  | "wraithstrikeScript"
+  | "voidrotScript"
+  | "convergenceScript"
+  | "voidskyScript"
+  | "soullinkScript"
+  | "purewrathScript"
+  | "karmaScript"
+  | "chaosScript"
+  | "wavebornScript"
+  | "clearfallScript"
 
 export type Arsenal = "general" | "bellstrike" | "stonesplit" | "silkbind" | "bamboocut"
 
@@ -144,8 +162,10 @@ export interface Inputs {
 
   mindMethods: [MindMethodSlot, MindMethodSlot, MindMethodSlot, MindMethodSlot]
 
-  food: boolean
-  divinecraft: "fire" | "poison" | null
+  food: AttackFoodId | null
+  hpFood: HpFoodId | null
+  divinecraft: DivinecraftElement | null
+  divinecraftRefinement: DivinecraftRefinementId | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean
 
@@ -490,6 +510,7 @@ export interface TimelineEvent {
   kind: "hit" | "dot"
   damage: number
   inWindow: boolean
+  isMysticHit?: boolean
 }
 
 export interface BuffWindow {

@@ -271,6 +271,7 @@ export interface Skill {
   // Its keyframe timers are armed one render frame early — docs/TIMELINE.md
   // § "Coefficients". Absent means false.
   keyframesLeadByRenderFrame?: boolean
+  vitalityCost?: number
   createdAt: string
   updatedAt: string
 }
@@ -847,6 +848,11 @@ export function isSkill(x: unknown): x is Skill {
   )
     return false
   if (
+    s.vitalityCost !== undefined &&
+    (typeof s.vitalityCost !== "number" || !Number.isFinite(s.vitalityCost) || s.vitalityCost < 0)
+  )
+    return false
+  if (
     s.cancelledBy !== undefined &&
     s.cancelledBy !== "deflectCancel" &&
     s.cancelledBy !== "nextSkill"
@@ -918,6 +924,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     startLatency: src.startLatency,
     serverWaitsInCast: src.serverWaitsInCast,
     keyframesLeadByRenderFrame: src.keyframesLeadByRenderFrame,
+    vitalityCost: src.vitalityCost,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,

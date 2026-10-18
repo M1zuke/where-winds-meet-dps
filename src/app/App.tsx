@@ -14,7 +14,11 @@ import { withCustomContent } from "../engine/customContent"
 import { withDerivedStats } from "../engine/derivedInputs"
 import type { Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
-import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel"
+import { MetricsCard } from "../ui/layout/output-panel/OutputPanel"
+import { CornerToasts } from "../ui/layout/corner-toasts/CornerToasts"
+import { EncounterSettingsTrigger } from "../ui/features/overview/encounter-settings-trigger/EncounterSettingsTrigger"
+import { EncounterSettingsDialog } from "../ui/features/overview/encounter-settings-dialog/EncounterSettingsDialog"
+import type { EncounterCategory } from "../engine/encounterOptions"
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
 import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { LanguageSelect } from "../ui/layout/language-select/LanguageSelect"
@@ -101,6 +105,8 @@ function AppInner() {
   const [lastSavedJson, setLastSavedJson] = useState(() => JSON.stringify(initialActive.inputs))
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [graduationDialogOpen, setGraduationDialogOpen] = useState(false)
+  const [encounterDialogOpen, setEncounterDialogOpen] = useState(false)
+  const [encounterCategory, setEncounterCategory] = useState<EncounterCategory>("food")
 
   const [wizard, setWizard] = useState<{ mode: SetupMode; defaultName: string } | null>(() =>
     initial.firstRun ? { mode: "first-run", defaultName: "" } : null,
@@ -315,6 +321,7 @@ function AppInner() {
   return (
     <div className={styles.app}>
       <DpsActivityToast hidden={isSimulationRunning} />
+      <CornerToasts result={result} onCheckRotation={goToRotationEditorTab} />
       <SimulationToast
         status={simulation.status}
         done={simulation.progress.done}
@@ -338,6 +345,16 @@ function AppInner() {
           onClose={() =>
             setBreakthroughAskedClassIds((asked) => [...asked, breakthroughAsk.classId])
           }
+        />
+      )}
+      {encounterDialogOpen && (
+        <EncounterSettingsDialog
+          inputs={inputs}
+          engineInputs={engineInputs}
+          category={encounterCategory}
+          onCategoryChange={setEncounterCategory}
+          onChange={setInputs}
+          onClose={() => setEncounterDialogOpen(false)}
         />
       )}
       {(graduationDialogOpen || mustChooseGraduationBuild) && (
@@ -398,7 +415,13 @@ function AppInner() {
           }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
-          onQiBreakNoticeClick={goToRotationEditorTab}
+          encounterTrigger={
+            <EncounterSettingsTrigger
+              inputs={inputs}
+              onOpen={() => setEncounterDialogOpen(true)}
+              disabled={isSimulationRunning}
+            />
+          }
         />
 
         <nav className={styles.tabs} role="tablist">
@@ -423,7 +446,6 @@ function AppInner() {
         </nav>
       </div>
       <div className={styles.tabPanel}>
-        <WarningsList result={result} />
         <fieldset className={styles.routeFields} disabled={areInputsLocked}>
           <Routes>
             <Route path="/" element={<Navigate to="/overview" replace />} />

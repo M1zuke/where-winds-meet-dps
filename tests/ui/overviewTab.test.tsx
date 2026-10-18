@@ -27,4 +27,20 @@ describe("the Overview tab", () => {
     expect(screen.queryByRole("heading", { name: "Set Bonuses" })).toBeNull()
     expect(screen.queryByRole("radio", { name: /Arsenal/ })).toBeNull()
   })
+
+  it("leaves the Encounter Settings trigger to the header", () => {
+    const inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+    render(
+      <I18nProvider>
+        <OverviewTab
+          inputs={inputs}
+          engineInputs={inputs}
+          onChange={() => {}}
+          result={runEngine(inputs)}
+        />
+      </I18nProvider>,
+    )
+
+    expect(screen.queryByRole("button", { name: /Encounter Settings/ })).toBeNull()
+  })
 })

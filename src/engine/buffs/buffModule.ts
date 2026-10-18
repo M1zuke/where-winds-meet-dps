@@ -98,6 +98,7 @@ export type BuffMeta = BuffGate & {
   // `triggersBuffs`, landing just after that hit's own damage. The cast
   // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
   stackOnGrantingHit?: boolean
+  vitalityPerStack?: number
   stackOnDamage?: boolean
   // When the grant of `stackOnDamage` or `perHitConsume` is decided against the
   // hit's own damage and Qi: `preScore` reads the bar before the hit's Qi and

@@ -133,6 +133,8 @@ import {
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
   migrateDivinecraftField,
+  migrateFoodField,
+  resolveStoredBreakthrough,
   movePreferredDistanceOntoRotation,
   moveCustomBuildWeaponsToMartialArtSlots,
   moveWeaponsToMartialArtSlots,
@@ -227,15 +229,6 @@ function isStoredProfile(x: unknown): x is StoredProfile {
   if (typeof p.name !== "string") return false
   if (!p.inputs || typeof p.inputs !== "object") return false
   return true
-}
-
-const VALID_BREAKTHROUGHS = new Set([12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
-
-const LEGACY_TARGET_TO_BREAKTHROUGH: Record<string, number> = {
-  "81": 12,
-  "86": 13,
-  "91": 14,
-  "96": 16,
 }
 
 // For the standalone `wwm.customRotations` store; rotations inside a profile
@@ -391,7 +384,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
   const next: Inputs = movePreferredDistanceOntoRotation(
-    migrateDivinecraftField(rest as unknown as Record<string, unknown>),
+    migrateFoodField(migrateDivinecraftField(rest as unknown as Record<string, unknown>)),
   ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
@@ -420,12 +413,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     }
     delete (next as unknown as Record<string, unknown>).siteBuffParams
   }
-  const legacyTargetId = (inputs as Inputs & { targetId?: string }).targetId
-  if (typeof next.breakthrough !== "number" || !VALID_BREAKTHROUGHS.has(next.breakthrough)) {
-    const trial =
-      typeof legacyTargetId === "string" ? (legacyTargetId.match(/^(\d+)/)?.[1] ?? "") : ""
-    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? defaultBreakthrough()
-  }
+  next.breakthrough = resolveStoredBreakthrough(inputs as unknown as Record<string, unknown>)
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
@@ -626,6 +614,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
     if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
+    if (typeof next.divinecraftRefinement !== "string") next.divinecraftRefinement = null
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
     // reads; `lowEndurance`, `missingEnduranceAtHit` and `enduranceAtRelease`
@@ -1098,6 +1087,19 @@ function builtinKeyframesLeadFor(id: string): boolean | undefined {
   return builtinKeyframesLeadById.get(id)
 }
 
+// `vitalityCost` is authored on the built-in module, never edited in the Skill
+// Editor, the same reasoning as `startLatency` above.
+let builtinVitalityCostById: Map<string, number> | null = null
+function builtinVitalityCostFor(id: string): number | undefined {
+  if (!builtinVitalityCostById) {
+    builtinVitalityCostById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.vitalityCost) builtinVitalityCostById.set(skill.id, skill.vitalityCost)
+  }
+  return builtinVitalityCostById.get(id)
+}
+
 // `cancelledBy` is authored on the built-in module, never edited in the
 // Skill Editor, the same reasoning as `startLatency` above — a renamed copy
 // of a cancel-form skill keeps its Deflect Cancel.
@@ -1372,6 +1374,7 @@ function hydrateSkill(s: Skill): Skill {
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
     keyframesLeadByRenderFrame: builtinKeyframesLeadFor(id) ?? s.keyframesLeadByRenderFrame,
+    vitalityCost: builtinVitalityCostFor(id) ?? s.vitalityCost,
     cancelledBy:
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),

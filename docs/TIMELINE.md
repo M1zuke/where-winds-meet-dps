@@ -215,8 +215,8 @@ id.
   negative frames whether or not any of its own hits land, and a DoT tick
   keeps ticking and keeps writing status the same way whether or not it
   lands before the window opens.
-- **The player is out of combat until the run's first damaging hit lands**,
-  pre-pull included, and in combat from that frame on. A condition reads it as
+- **The player is out of combat until the run's first damaging hit or DoT tick
+  lands**, pre-pull included, and in combat from that frame on. A condition reads it as
   the engine-owned `inCombat` counter status (0 before, 1 from then on),
   evaluated like any other status at a cast's start.
 - **A rotation step performs every hit its skill has.** A step names a skill and
@@ -574,6 +574,18 @@ for applying, `receives` for boosting — never by the module itself.
   crossed. A permanent-activation counter (a running point total, never
   windowed) has no "last window closed" for `secondsSinceLastEnd` to read, so
   this reads the same question off its stack history instead.
+- **A module's `effects` may read how long it has been since a permanent
+  counter status last rose to a threshold**
+  (`ctx.status.secondsSinceStacksReachedThreshold`), `null` before it has ever
+  reached it. The value is exact to the reading event's own time, never
+  rounded to a frame: it is read at the reading event's own engine time, so
+  events on the same frame are ordered exactly as the engine's same-frame order
+  orders them.
+- **A module may gain a stack for every amount of Vitality spent**
+  (`vitalityPerStack`): each time the Vitality spent since its last stack
+  reaches that amount it gains one stack, opening or refreshing its window,
+  and the running sum restarts from zero — an overshoot is lost, and a single
+  spend gains at most one stack. It counts only while its `requires` holds.
 - **A module may open its window a fixed offset after the triggering cast's
   start** instead of at the trigger hit's own frame, when the source it models
   opens on an in-progress hit rather than the first or the last one. Author
@@ -856,6 +868,19 @@ unchanged, and reads the level as of its own event.
 - **A charged hold's own release time is quantised the same way every other
   cast length is** — through the render-frame layer, not a second formula —
   so nothing about ping or average FPS is authored per charged skill.
+
+## Vitality
+
+Vitality is a spend, not a meter: it has no capacity, no regeneration, and
+never blocks a cast.
+
+- **A skill's own `vitalityCost` is spent at the cast's own start**, ahead of
+  every hit that cast lands, so a stack the spend grants reaches that cast's
+  own hits. Only a rotation step pays it; a cast another skill generates never
+  does.
+- **A spend counts only once the player is in combat** (§ "Identity and
+  tags"). A spend made before that is not counted, a pre-pull cast's included
+  unless a damaging hit has already landed.
 
 ## Target distance
 

@@ -9,7 +9,7 @@ import {
   totalPhysDef,
   totalPlayerAttributes,
 } from "../../../definitions/baseStats"
-import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
+import { foodPhysAttackBeforeMultiplier } from "../../../data/consumables/foods"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
 import { effectiveRates, getSchool } from "../../../engine/panel"
 import { applySetBonuses, setPhysDefBonus } from "../../../engine/setBonuses"
@@ -158,18 +158,19 @@ export function StatsOverviewPanel({ inputs }: Props) {
 
   const physMin = readPath(withSets, "phys.min")
   const physMax = readPath(withSets, "phys.max")
+  const foodPhysAttack = foodPhysAttackBeforeMultiplier(withSets)
   const attackRows: RowEntry[] = [
     row(
       statPathLabel("phys.min", t),
       physMin,
       false,
-      withSets.food ? physMin + FOOD_MIN_PHYS_BONUS : undefined,
+      foodPhysAttack.min ? physMin + foodPhysAttack.min : undefined,
     ),
     row(
       statPathLabel("phys.max", t),
       physMax,
       false,
-      withSets.food ? physMax + FOOD_MAX_PHYS_BONUS : undefined,
+      foodPhysAttack.max ? physMax + foodPhysAttack.max : undefined,
     ),
   ]
   const penetrationRows: RowEntry[] = [
