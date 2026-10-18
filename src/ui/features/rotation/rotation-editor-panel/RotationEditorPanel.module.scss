@@ -293,41 +293,6 @@
   color: var(--color-text-dim);
   font-size: 0.85em;
 }
-.buffSelect {
-  position: relative;
-  display: inline-block;
-}
-.buffDropdown {
-  position: absolute;
-  z-index: 20;
-  top: 100%;
-  left: 0;
-  margin-top: 2px;
-  background: #1e1e1e;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  padding: 4px;
-  min-width: 160px;
-  max-height: 220px;
-  overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-.buffOption {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 4px;
-  font-size: 0.85em;
-  cursor: pointer;
-}
-.buffOption:hover {
-  background: var(--color-surface-raised);
-}
-.buffEmpty {
-  color: var(--color-text-faint);
-  padding: 4px;
-  font-size: 0.85em;
-}
 .openingRow {
   background: var(--color-surface-selected);
   border-color: rgba(192, 160, 96, 0.28);
