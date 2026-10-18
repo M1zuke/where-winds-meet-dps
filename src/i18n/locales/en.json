@@ -1807,6 +1807,7 @@
   "gear.analysis.retune": "Retune",
   "gear.analysis.retuneGainHint": "DPS this slot gains from its best legal tunement reroll. Rank 1 is the slot worth retuning first.",
   "gear.analysis.slot": "Slot",
+  "gear.analysis.totalLossHint": "The slot rows overlap, so they are not meant to add up to this total. It is the DPS lost with all gear removed at once.",
   "gear.analysis.totalTunedStatDpsContribution": "Total tuned-stat DPS contribution",
   "gear.analysis.tunedStats": "Tuned Stats",
   "gear.analysis.unequipLossHint": "DPS the build loses if this slot is emptied, and that loss as a share of total DPS.",

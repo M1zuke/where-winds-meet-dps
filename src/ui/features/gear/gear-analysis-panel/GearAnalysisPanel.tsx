@@ -71,7 +71,11 @@ function RankCell({ gain, rank }: { gain: number | null; rank: number | undefine
 
 export function GearAnalysisPanel({ engineInputs, currentDps, baselineQiBreaks }: Props) {
   const { t } = useI18n()
-  const { rows, isPending } = useGearAnalysis(engineInputs, currentDps, baselineQiBreaks)
+  const { rows, allSlotsLoss, isPending } = useGearAnalysis(
+    engineInputs,
+    currentDps,
+    baselineQiBreaks,
+  )
 
   if (rows.length === 0) {
     return (
@@ -90,7 +94,7 @@ export function GearAnalysisPanel({ engineInputs, currentDps, baselineQiBreaks }
   const reattuneRanks = ranksBySlot(equippedRows, "reattuneGain")
   const relayRanks = ranksBySlot(equippedRows, "relayGain")
   const sorted = [...equippedRows].sort((rowA, rowB) => rowB.unequipLoss - rowA.unequipLoss)
-  const totalLoss = equippedRows.reduce((sum, row) => sum + row.unequipLoss, 0)
+  const totalLoss = allSlotsLoss ?? 0
 
   return (
     <div className={styles.analysis} style={{ opacity: isPending ? 0.6 : 1 }}>
@@ -132,7 +136,10 @@ export function GearAnalysisPanel({ engineInputs, currentDps, baselineQiBreaks }
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}>{t("gear.analysis.totalTunedStatDpsContribution")}</td>
+            <td colSpan={4}>
+              {t("gear.analysis.totalTunedStatDpsContribution")}
+              <HelpHint text={t("gear.analysis.totalLossHint")} />
+            </td>
             <td className={`${styles.loss} ${lossSignClass(totalLoss)}`}>
               {fmtLoss(totalLoss)}
               <span className={styles.share}>({fmtShare(totalLoss, currentDps)})</span>

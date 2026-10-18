@@ -1807,6 +1807,7 @@
   "gear.analysis.retune": "전율",
   "gear.analysis.retuneGainHint": "이 부위에서 가능한 최적의 전율을 적용했을 때 증가하는 DPS입니다. 1위는 가장 먼저 전율할 가치가 높은 부위입니다.",
   "gear.analysis.slot": "슬롯",
+  "gear.analysis.totalLossHint": "",
   "gear.analysis.totalTunedStatDpsContribution": "조율 옵션의 총 DPS 기여도",
   "gear.analysis.tunedStats": "조율 옵션",
   "gear.analysis.unequipLossHint": "이 부위의 장비를 해제했을 때 감소하는 DPS와 전체 DPS 대비 감소 비율입니다.",

@@ -66,7 +66,7 @@ export function shardRequest(request: WorkerRequest, shardCount: number): Worker
     if (groups.length < 2) return null
     const emptySlots = GEAR_SLOTS.filter((slot) => request.inputs.equipped[slot] === null)
     groups[0].push(...emptySlots)
-    return groups.map((slots) => ({ ...request, slots }))
+    return groups.map((slots, index) => ({ ...request, slots, skipAllSlotsLoss: index > 0 }))
   }
   if (request.kind === "ranking") {
     return Array.from({ length: shardCount }, (_, index) => ({
@@ -87,7 +87,11 @@ export function mergeShardResponses(parts: readonly WorkerResponse[]): WorkerRes
     for (const part of parts)
       for (const row of (part as GearAnalysisResponse).rows) rowBySlot.set(row.slot, row)
     const rows = GEAR_SLOTS.map((slot) => rowBySlot.get(slot) as GearSlotAnalysisRow)
-    return { ...(parts[0] as GearAnalysisResponse), rows }
+    const allSlotsLoss =
+      parts
+        .map((part) => (part as GearAnalysisResponse).allSlotsLoss)
+        .find((loss) => loss !== null) ?? null
+    return { ...(parts[0] as GearAnalysisResponse), rows, allSlotsLoss }
   }
   if (parts[0].kind === "profileMetrics") {
     const metricsByProfileId: Record<string, ProfileMetrics> = {}
