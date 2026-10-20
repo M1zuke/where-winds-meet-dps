@@ -389,6 +389,38 @@ describe("changing options", () => {
     expect(within(panel).queryByText("Target")).toBeNull()
   })
 
+  it("offers the graduation Qi break beside Enable Dummy and applies a toggle on Done", () => {
+    renderOverview()
+    const dialog = openDialog()
+    const dummySwitch = within(dialog).getByRole("switch", { name: "Enable Dummy" })
+    const qiBreakSwitch = within(dialog).getByRole("switch", { name: "Use Graduation Qi break" })
+    expect(dummySwitch.parentElement).toBe(qiBreakSwitch.parentElement)
+    expect(qiBreakSwitch).toHaveAttribute("aria-checked", "true")
+    expect(
+      within(dialog).getByText("Better for comparing equipment against each other."),
+    ).toBeInTheDocument()
+
+    fireEvent.click(qiBreakSwitch)
+    expect(qiBreakSwitch).toHaveAttribute("aria-checked", "false")
+    expect(latest.inputs.useGraduationQiBreak).toBe(true)
+    clickDone(dialog)
+    expect(latest.inputs.useGraduationQiBreak).toBe(false)
+  })
+
+  it("discards a graduation Qi break toggle on Cancel", () => {
+    renderOverview()
+    let dialog = openDialog()
+    fireEvent.click(within(dialog).getByRole("switch", { name: "Use Graduation Qi break" }))
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }))
+    expect(onChangeSpy).not.toHaveBeenCalled()
+
+    dialog = openDialog()
+    expect(within(dialog).getByRole("switch", { name: "Use Graduation Qi break" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    )
+  })
+
   it("flips dummy mode from the dialog", () => {
     renderOverview()
     const dialog = openDialog()

@@ -6,8 +6,10 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
 ## The rules
 
 1. **At most ONE synchronous engine pass per input change** — the baseline pass
-   that feeds the DPS header. Anything that runs the engine more than once per
-   change (ranking sweeps, per-piece deltas, tile variants, retunement and
+   that feeds the DPS header. The baseline pass never computes another pass's
+   Qi log itself: a log it spends arrives from the worker, and until one has
+   arrived it runs on its own bar. Anything that runs the engine more than once
+   per change (ranking sweeps, per-piece deltas, tile variants, retunement and
    word-max analyses) goes through the shared worker client: add a request kind
    and a compute function there, and drive it from a hook shaped like the
    existing ones — subscribe on mount and unsubscribe on unmount, and an empty

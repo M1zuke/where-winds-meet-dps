@@ -12,6 +12,7 @@ import profileFile from "../migrations/testProfiles/v10/stonesplitStrength.json"
 function withoutBoardsAddedLater(inputs: Inputs): Inputs {
   return {
     ...inputs,
+    useGraduationQiBreak: false,
     unclaimedOddityNodes: { ...inputs.unclaimedOddityNodes, Qingzhou: [600], Jiangnan: [700] },
   }
 }

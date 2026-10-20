@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
+// Must load before anything else, or the registry mock below is bypassed.
+import { graduationInputs } from "../../src/engine/graduation"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
-import { graduationInputs } from "../../src/engine/graduation"
 import { statLineLabel } from "../../src/data/stats/statLines"
 import { getAttunement } from "../../src/engine/attunements"
 import { effectiveRates } from "../../src/engine/panel"

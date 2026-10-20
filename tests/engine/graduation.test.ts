@@ -420,7 +420,7 @@ describe("the rated side shares the benchmark's Qi", () => {
 
   it("rates YOUR BUILD on the benchmark's Qi breaks, not its own", () => {
     const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
-    const ratedOnOwnQi = runEngine(prep(graduationRatedInputs(FOLLOWING)!))
+    const ratedOnOwnQi = runEngine(prep(graduationRatedInputs(FOLLOWING)!), { qiBar: "own" })
     const ratedOnBenchmarkQiRun = ratedOnBenchmarkQi(FOLLOWING)
 
     expect(ratedOnBenchmarkQiRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)

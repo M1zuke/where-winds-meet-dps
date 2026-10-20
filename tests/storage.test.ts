@@ -275,6 +275,36 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
   })
 
+  it("loadProfiles turns the graduation Qi break on for a profile saved before the setting existed", () => {
+    const { useGraduationQiBreak: _dropped, ...withoutSetting } = defaultInputs
+    void _dropped
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Setting", inputs: withoutSetting }],
+        activeId: "p1",
+      }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.useGraduationQiBreak).toBe(true)
+  })
+
+  it("loadProfiles keeps a stored graduation Qi break setting that is off", () => {
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          { id: "p1", name: "Off", inputs: { ...defaultInputs, useGraduationQiBreak: false } },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.useGraduationQiBreak).toBe(false)
+  })
+
   it("loadProfiles never invents pingMs/averageFps on a profile that never had them", () => {
     localStorage.setItem(
       PROFILES_KEY,

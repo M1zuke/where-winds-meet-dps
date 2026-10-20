@@ -111,6 +111,14 @@ export function EncounterSettingsDialog({
           selected={draft.dummyMode}
           onSelect={() => setDraft({ ...draft, dummyMode: !draft.dummyMode })}
         />
+        <EncounterOptionCard
+          kind="toggle"
+          label={t("overview.encounterSettings.useGraduationQiBreak")}
+          hint={t("overview.encounterSettings.useGraduationQiBreakHint")}
+          icon="qiBreak"
+          selected={draft.useGraduationQiBreak}
+          onSelect={() => setDraft({ ...draft, useGraduationQiBreak: !draft.useGraduationQiBreak })}
+        />
       </div>
 
       <div className={styles.layout}>
