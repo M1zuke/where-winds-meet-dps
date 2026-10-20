@@ -15,6 +15,8 @@ import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduat
 import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
+import { withEncounterFieldsOf } from "./encounterOptions"
+import { withZeroedDerivedStats } from "./derivedInputs"
 import type {
   BowGearLevel,
   BowPiece,
@@ -193,7 +195,7 @@ export function graduationInputs(
       ? { level: bowLevel, rarity: "legendary", set: build.bowSet }
       : null
   const equipped = equippedSlots(build)
-  return standardizedGraduationInputs(
+  const benchmark = standardizedGraduationInputs(
     {
       ...onBuiltinRotation(inputs, build.rotationId),
       allDamageBoost: 0,
@@ -216,4 +218,24 @@ export function graduationInputs(
     },
     build,
   )
+  return { ...benchmark, useGraduationQiBreak: false }
+}
+
+export function graduationQiSourceInputs(inputs: Inputs): Inputs | null {
+  if (!inputs.useGraduationQiBreak) return null
+  const benchmark = graduationInputs(inputs, "maxRolls")
+  if (!benchmark) return null
+  return withZeroedDerivedStats({
+    ...withEncounterFieldsOf(
+      {
+        ...benchmark,
+        rotation: inputs.rotation,
+        selectedBuiltinRotationId: inputs.selectedBuiltinRotationId,
+        activeCustomRotation: inputs.activeCustomRotation,
+        mindMethods: inputs.mindMethods,
+      },
+      inputs,
+    ),
+    useGraduationQiBreak: false,
+  })
 }

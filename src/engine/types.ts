@@ -173,6 +173,7 @@ export interface Inputs {
   arsenal: Arsenal
   arsenalScores: ArsenalScores
   dummyMode: boolean
+  useGraduationQiBreak: boolean
 
   rotation: string | null
 
@@ -390,6 +391,7 @@ export interface EngineRunOptions {
   // simulated bar. Never read from `Inputs`, storage or the UI.
   fixedQiBreaks?: readonly QiBreakWindow[]
   qiDamageLog?: QiDamageLog
+  qiBar?: "own"
 }
 
 export interface QiTracePoint {

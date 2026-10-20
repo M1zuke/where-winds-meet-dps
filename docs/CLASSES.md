@@ -92,7 +92,8 @@ The break window is the one setting a build cannot fix: it stays the rotation's
 own. The max-roll benchmark simulates its own Qi bar, and every other
 graduation run — the user's side and the relayed benchmark — spends that
 benchmark's Qi damage hit for hit, so all of them break where it breaks; every
-number outside the graduation comparison keeps the profile's own simulated bar.
+number outside the graduation comparison follows the profile's graduation-Qi
+setting (TIMELINE.md § "Qi bar").
 A build that fixes nothing rates the profile exactly as it is set.
 
 **The same slotted inner ways also seed a profile that has none of its own** —

@@ -17,6 +17,7 @@ const SWEEP_KEYS: Partial<Record<WorkerRequest["kind"], string>> = {
   encounterOptions: "overview.encounterSettings",
   rotationDps: "common.rotations",
   graduation: "layout.dpsActivityToast.sweep.graduation",
+  graduationQiLog: "layout.dpsActivityToast.sweep.graduationQiLog",
 }
 
 export function DpsActivityToast({ hidden }: { hidden: boolean }) {

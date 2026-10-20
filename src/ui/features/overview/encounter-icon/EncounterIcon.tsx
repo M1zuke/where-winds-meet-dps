@@ -8,6 +8,7 @@ export type EncounterIconName =
   | "lock"
   | "spinner"
   | "target"
+  | "qiBreak"
 
 const ICON_PATHS: Record<EncounterIconName, string[]> = {
   sliders: ["M4 6h10", "M18 6h2", "M4 12h2", "M10 12h10", "M4 18h12", "M20 18h0"],
@@ -31,6 +32,7 @@ const ICON_PATHS: Record<EncounterIconName, string[]> = {
     "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
     "M12 12h0",
   ],
+  qiBreak: ["M13 3L5 13h6l-1 8 8-10h-6z"],
   spinner: ["M12 3a9 9 0 1 0 9 9"],
 }
 

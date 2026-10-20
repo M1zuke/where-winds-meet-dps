@@ -162,6 +162,16 @@ describe("SimulationTab", () => {
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
   })
 
+  it("says the simulation always uses the own Qi break", () => {
+    renderTab()
+
+    expect(
+      screen.getByText(
+        "The simulation always uses your own Qi break, even when “Use Graduation Qi break” is on in the encounter settings.",
+      ),
+    ).toBeInTheDocument()
+  })
+
   it("starts a simulation with the run count in the field", () => {
     renderTab()
 

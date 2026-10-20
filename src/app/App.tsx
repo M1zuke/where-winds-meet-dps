@@ -12,7 +12,7 @@ import { runEngine } from "../engine/dps"
 import { applySetBonuses } from "../engine/setBonuses"
 import { withCustomContent } from "../engine/customContent"
 import { withDerivedStats } from "../engine/derivedInputs"
-import type { Inputs, StoredProfile } from "../engine/types"
+import type { EngineRunOptions, Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
 import { MetricsCard } from "../ui/layout/output-panel/OutputPanel"
 import { CornerToasts } from "../ui/layout/corner-toasts/CornerToasts"
@@ -30,6 +30,7 @@ import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
 import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/TalentsOdditiesTab"
 import { SkillsTab } from "../ui/features/skills/skills-tab/SkillsTab"
 import { useGraduationRate } from "../ui/hooks/useGraduationRate"
+import { useGraduationQiLog } from "../ui/hooks/useGraduationQiLog"
 import { useParseSimulation, type ParseSimulationRequest } from "../ui/hooks/useParseSimulation"
 import { SimulationToast, SIMULATION_PATH } from "../ui/layout/simulation-toast/SimulationToast"
 import { DpsActivityToast } from "../ui/layout/dps-activity-toast/DpsActivityToast"
@@ -65,6 +66,8 @@ import styles from "./App.module.scss"
 
 migrateSeededSkillIds()
 migrateDotStandinOverrides()
+
+const OWN_QI_BAR: EngineRunOptions = { qiBar: "own" }
 
 function AppInner() {
   const simulation = useParseSimulation()
@@ -156,7 +159,11 @@ function AppInner() {
     return applySetBonuses(derived)
   }, [configuredInputs])
 
-  const result = useMemo(() => runEngine(engineInputs), [engineInputs])
+  const graduationQiLog = useGraduationQiLog(configuredInputs)
+  const result = useMemo(
+    () => runEngine(engineInputs, graduationQiLog ? { qiDamageLog: graduationQiLog } : OWN_QI_BAR),
+    [engineInputs, graduationQiLog],
+  )
   const graduation = useGraduationRate(configuredInputs)
   const followedBuild = followedGraduationBuild(configuredInputs)
   const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
