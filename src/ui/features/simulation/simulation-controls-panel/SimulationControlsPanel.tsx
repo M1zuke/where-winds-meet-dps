@@ -82,6 +82,7 @@ export function SimulationControlsPanel({
         </button>
       </div>
       <SimulationProgressBar done={progress.done} total={progress.total} status={status} />
+      <p className="hint">{t("simulation.ownQiBreakNote")}</p>
       {isStale && !isRunning && (
         <p className="hint">{t("simulation.controls.yourBuildChangedSinceThis")}</p>
       )}

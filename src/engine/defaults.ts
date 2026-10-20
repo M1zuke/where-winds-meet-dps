@@ -80,6 +80,7 @@ export const defaultInputs: Inputs = {
   arsenal: "bamboocut",
   arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,
+  useGraduationQiBreak: true,
 
   rotation: null,
 

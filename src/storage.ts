@@ -417,6 +417,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
+  if (typeof next.useGraduationQiBreak !== "boolean") next.useGraduationQiBreak = true
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
   if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0

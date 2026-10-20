@@ -6,6 +6,7 @@ import { getWordSpecs } from "./itemRanking"
 import { getAttunement } from "./attunements"
 import { weaponTypeForSlot } from "../definitions/classes/registry"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
+import { NUMERIC_PATHS } from "./numericStatPaths"
 
 export const RELAYED_FACTOR = 0.94
 
@@ -24,48 +25,6 @@ export interface GearContribEntry {
 }
 
 export type GearContribution = GearContribEntry[]
-
-const NUMERIC_PATHS = [
-  "phys.min",
-  "phys.max",
-  "phys.penetration",
-  "bellstrike.min",
-  "bellstrike.max",
-  "bellstrike.penetration",
-  "stonesplit.min",
-  "stonesplit.max",
-  "stonesplit.penetration",
-  "silkbind.min",
-  "silkbind.max",
-  "silkbind.penetration",
-  "bamboocut.min",
-  "bamboocut.max",
-  "bamboocut.penetration",
-  "precision",
-  "critRate",
-  "affinityRate",
-  "directCritRate",
-  "directAffinityRate",
-  "physBoost",
-  "critDamageBoost",
-  "affinityDamageBoost",
-  "attributeDamageBoost",
-  "sustainDamageBoost",
-  "allMartialBoost",
-  "swordBoost",
-  "spearBoost",
-  "fanBoost",
-  "umbrellaBoost",
-  "modaoBoost",
-  "dualKnivesBoost",
-  "ropeDartBoost",
-  "hengDaoBoost",
-  "gauntletsBoost",
-  "bossBoost",
-  "singleMysticBoost",
-  "areaMysticBoost",
-  "allMysticBoost",
-] as const
 
 export type PanelStatPath =
   (typeof NUMERIC_PATHS)[number] | `primaryAttr.${"min" | "max" | "penetration"}`

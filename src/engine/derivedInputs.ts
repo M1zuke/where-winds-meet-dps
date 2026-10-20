@@ -1,6 +1,7 @@
 import type { GearPiece, Inputs } from "./types"
 import { GEAR_SLOTS } from "./types"
 import { listKnownPaths, sumContributions } from "./gearStats"
+import { NUMERIC_PATHS } from "./numericStatPaths"
 import {
   getConfiguredBase,
   getMindMethodContributions,
@@ -8,7 +9,7 @@ import {
 } from "../definitions/baseStats"
 
 export const DERIVED_STAT_FIELDS: readonly string[] = [
-  ...new Set(listKnownPaths().map((path) => path.split(".")[0])),
+  ...new Set(NUMERIC_PATHS.map((path) => path.split(".")[0])),
   "classSpecificAttunement",
   "formlessAttack",
   // The previous shape held the same tag map under this key.

@@ -1,6 +1,6 @@
-import { runEngine, TOTALS_RUN } from "./dps"
+import { qiDamageLogOfSource, runEngine, TOTALS_RUN } from "./dps"
 import { withPassMemo } from "./passMemo"
-import { engineRunOptionsSharingQiOf } from "./qiBar"
+import { engineRunOptionsSharingQiOf, type QiDamageLog } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs, rankingRows, type RankingBlock } from "./itemRanking"
 import {
@@ -755,6 +755,7 @@ async function computeParseSimulation(
     const result = runEngine(runInputs, {
       seed: parseRunSeed(req.seed, index),
       collect: "totals",
+      qiBar: "own",
     })
     const counts = result.outcomeCounts ?? NO_OUTCOMES
     const share = result.expectedOutcomeShare ?? NO_OUTCOMES
@@ -840,7 +841,7 @@ function computeParseRunDetail(req: ParseRunDetailWorkerRequest): ParseRunDetail
       activeCustomRotation: req.rotation,
       selectedBuiltinRotationId: null,
     },
-    { seed: req.seed },
+    { seed: req.seed, qiBar: "own" },
   )
   return {
     reqId: req.reqId,
@@ -903,6 +904,20 @@ export interface GraduationWorkerResponse {
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
   graduationRate: number | null
+}
+
+export interface GraduationQiLogWorkerRequest {
+  reqId: number
+  source: Inputs
+}
+
+export interface GraduationQiLogWorkerResponse {
+  reqId: number
+  qiDamageLog: QiDamageLog | null
+}
+
+function computeGraduationQiLog(req: GraduationQiLogWorkerRequest): GraduationQiLogWorkerResponse {
+  return { reqId: req.reqId, qiDamageLog: qiDamageLogOfSource(req.source) }
 }
 
 function resultFor(inputs: Inputs, options?: EngineRunOptions): Result {
@@ -1009,6 +1024,7 @@ export type WorkerRequest =
   | ({ kind: "parseSimulationCancel" } & ParseSimulationCancelRequest)
   | ({ kind: "parseRunDetail" } & ParseRunDetailWorkerRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
+  | ({ kind: "graduationQiLog" } & GraduationQiLogWorkerRequest)
 
 export type WorkerResponse =
   | ({ kind: "dpsDeltas" } & DpsWorkerResponse)
@@ -1028,6 +1044,7 @@ export type WorkerResponse =
   | ({ kind: "parseSimulationProgress" } & ParseSimulationProgressResponse)
   | ({ kind: "parseRunDetail" } & ParseRunDetailWorkerResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
+  | ({ kind: "graduationQiLog" } & GraduationQiLogWorkerResponse)
 
 const cancelledReqIds = new Set<number>()
 
@@ -1092,6 +1109,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
       cancelledReqIds.delete(req.reqId)
       ;(self as unknown as Worker).postMessage({ kind: "parseSimulation", ...res })
     })
+  } else if (req.kind === "graduationQiLog") {
+    const res = withPassMemo(() => computeGraduationQiLog(req))
+    ;(self as unknown as Worker).postMessage({ kind: "graduationQiLog", ...res })
   } else {
     const res = withPassMemo(() => computeGraduation(req))
     ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
@@ -1115,4 +1135,5 @@ export {
   computeParseSimulation,
   computeParseRunDetail,
   computeGraduation,
+  computeGraduationQiLog,
 }

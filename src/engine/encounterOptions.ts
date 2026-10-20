@@ -229,6 +229,7 @@ const ENCOUNTER_FIELDS = [
   "qiTarget",
   "combatSettings",
   "dummyMode",
+  "useGraduationQiBreak",
 ] as const satisfies readonly (keyof Inputs)[]
 
 type EncounterFields = Pick<Inputs, (typeof ENCOUNTER_FIELDS)[number]>
