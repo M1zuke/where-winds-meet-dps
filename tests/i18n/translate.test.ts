@@ -31,8 +31,7 @@ describe("translate", () => {
   it("accepts only the locales the app ships a catalogue for", () => {
     expect(isLocale("en")).toBe(true)
     expect(isLocale("ko")).toBe(true)
-    expect(isLocale("zh")).toBe(true)
-    expect(isLocale("fr")).toBe(false)
+    expect(isLocale("zh")).toBe(false)
     expect(isLocale(null)).toBe(false)
   })
 })

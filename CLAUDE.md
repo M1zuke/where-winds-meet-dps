@@ -178,38 +178,33 @@ identifier instead.
 
 The app is **English-only**. There is **no Chinese in `src/` or `tests/`** — not
 in identifiers, object keys, comparison literals, enum values, data JSON,
-fixtures, or comments — with the single exception of the `zh` locale catalogue
-itself (`src/i18n/locales/zh.json`) and the `zh` entry of `LOCALE_LABELS` in
-`src/i18n/translations.ts`, where Chinese is the deliverable, not a leak. Every
-domain term elsewhere uses its official English form (attributes
-`Bellstrike`/`Stonesplit`/`Silkbind`/`Bamboocut`, weapons `Sword`/`Modao`/…,
-skill types `weapon`/`mindMethod`/`mystic`/`sustain`/`settlement`/`weaponMystic`,
-tiers `tier 6`, and every attunement label — see § "Class-specific attunement
-map").
+fixtures, or comments. Every domain term uses its official English form
+(attributes `Bellstrike`/`Stonesplit`/`Silkbind`/`Bamboocut`, weapons
+`Sword`/`Modao`/…, skill types
+`weapon`/`mindMethod`/`mystic`/`sustain`/`settlement`/`weaponMystic`, tiers
+`tier 6`, and every attunement label — see § "Class-specific attunement map").
 
 Grep guard — must return nothing:
 
 ```
-grep -rlIP '[\x{4e00}-\x{9fff}]' --exclude=zh.json --exclude=translations.ts src tests
+grep -rlIP '[\x{4e00}-\x{9fff}]' src tests
 ```
 
 Use `-P`, not `-E`: `grep -E` doesn't understand `\x{…}` and silently reports
 false positives. Keep `-I`: the guard is about source text, and a binary asset
 under `src/` will otherwise trip it on bytes that happen to fall in the range.
-The two `--exclude`s are exact filenames, not a blanket carve-out — nothing else
-in either file may carry Chinese; a fresh violation in `translations.ts` outside
-`LOCALE_LABELS.zh` is still a defect the guard can no longer catch by itself.
 
-**Outside `src/`, the only sanctioned Chinese** is dev-only reference material:
+**The only sanctioned Chinese** is dev-only reference material outside `src/`:
 the workbook in `excels/`, its extractions in `reference/workbook/`, the
 official ZH↔EN pairs in `reference/locale/zhToEnOfficial.json`, and the four CN
-source citations in `docs/CALCULATION.md` § "Sources of truth". None of that is
+source citations in `docs/CALCULATION.md` § "Sources of truth". None is
 imported by the app or the tests.
 
 The UI renders **keys**, not English: a locale is a catalogue under
 `src/i18n/locales/` keyed by path and a member of the `Locale` union in
 `src/i18n/translations.ts` — nothing else branches on it. `en.json` is the
-English catalogue and the fallback every locale falls through to.
+English catalogue and the fallback every locale falls through to. There is still
+**no `zh` locale**.
 
 → Naming a new domain term: **docs/CLASSES.md** § "Naming a new domain term".
 → Translatable text, and what makes a string reachable: **docs/I18N.md**.

@@ -8,7 +8,6 @@ import { writeFixture } from "../writeFixture"
 const LOCALES_DIR = join(import.meta.dirname, "..", "..", "src", "i18n", "locales")
 const ENGLISH_PATH = join(LOCALES_DIR, "en.json")
 const KOREAN_PATH = join(LOCALES_DIR, "ko.json")
-const CHINESE_PATH = join(LOCALES_DIR, "zh.json")
 const REGENERATE = process.env.UPDATE_I18N_CATALOGUE === "1"
 
 function read(path: string): Record<string, string> {
@@ -51,24 +50,18 @@ function rebuiltEnglish(): Record<string, string> {
   return sorted(rebuilt)
 }
 
-const TRANSLATED_LOCALE_PATHS = [KOREAN_PATH, CHINESE_PATH]
-
 if (REGENERATE) {
   const english = rebuiltEnglish()
+  const committedKorean = read(KOREAN_PATH)
+  const korean: Record<string, string> = {}
+  for (const key of Object.keys(english)) korean[key] = committedKorean[key] ?? ""
   await writeFixture(ENGLISH_PATH, english)
-  for (const path of TRANSLATED_LOCALE_PATHS) {
-    const committed = read(path)
-    const translated: Record<string, string> = {}
-    for (const key of Object.keys(english)) translated[key] = committed[key] ?? ""
-    await writeFixture(path, sorted(translated))
-  }
+  await writeFixture(KOREAN_PATH, sorted(korean))
 }
 
 describe("translation catalogue", () => {
   const english = read(ENGLISH_PATH)
   const korean = read(KOREAN_PATH)
-  const chinese = read(CHINESE_PATH)
-  const translatedLocales = [korean, chinese]
   const keys = usedKeys()
 
   it("carries English for every key the app renders", () => {
@@ -89,12 +82,11 @@ describe("translation catalogue", () => {
   })
 
   it("gives every locale the same key set", () => {
-    for (const locale of translatedLocales)
-      expect(Object.keys(locale)).toEqual(Object.keys(english))
+    expect(Object.keys(korean)).toEqual(Object.keys(english))
   })
 
   it("keeps its keys sorted so a translated diff stays readable", () => {
-    for (const catalogue of [english, ...translatedLocales])
+    for (const catalogue of [english, korean])
       expect(Object.keys(catalogue)).toEqual([...Object.keys(catalogue)].sort())
   })
 
