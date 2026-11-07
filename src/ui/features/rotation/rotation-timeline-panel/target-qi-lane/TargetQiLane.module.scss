@@ -1,0 +1,112 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stepLabels {
+  position: relative;
+  height: 14px;
+}
+
+.stepLabel {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.62em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.alignStart {
+  transform: none;
+}
+
+.alignEnd {
+  transform: translateX(-100%);
+}
+
+.labelHigh {
+  color: #9fe0d6;
+}
+
+.labelBreak {
+  color: #f0c8a8;
+}
+
+.lane {
+  position: relative;
+  height: 64px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-surface-raised);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.breakBand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(216, 122, 74, 0.22);
+  border-left: 1px solid rgba(216, 122, 74, 0.55);
+  border-right: 1px solid rgba(216, 122, 74, 0.55);
+}
+
+.immunityBand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(106, 155, 216, 0.4) 0,
+    rgba(106, 155, 216, 0.4) 3px,
+    transparent 3px,
+    transparent 7px
+  );
+}
+
+.curve {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.area {
+  fill: rgba(95, 184, 173, 0.14);
+}
+
+.line {
+  fill: none;
+  stroke: #5fb8ad;
+  stroke-width: 1.5;
+}
+
+.marker {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--color-bg);
+  transform: translate(-50%, -50%);
+}
+
+.markerHigh {
+  background: #5fb8ad;
+}
+
+.markerMid {
+  background: #e8c88a;
+}
+
+.markerLow {
+  background: #d8847a;
+}
+
+.markerBroken {
+  background: #f0c8a8;
+}
+
+.markerImmune {
+  background: #6a9bd8;
+}

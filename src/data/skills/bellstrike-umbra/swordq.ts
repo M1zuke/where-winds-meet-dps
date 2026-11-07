@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDQ_DISPLACEMENT } from "./rootMotion"
 
 export const swordq = defineSkill({
   id: SKILL.swordq,
@@ -16,13 +17,17 @@ export const swordq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQ,
   triggersBuffs: [BUFF.jadeware],
-  receives: STRATEGIC_SWORD_RECEIVES,
-  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
-  castFrames: 18,
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
+  // Cast length to the earliest next input and hit frame, the dash animation
+  // running first: in-game animation, 2026-09-24.
+  castFrames: 27,
   triggerable: true,
+  displacement: SWORDQ_DISPLACEMENT,
+  // In-game values as of 2026-09-28: 4 m approach reach.
+  reachMeters: 4,
   hits: [
     hit(0, {
-      frame: 10,
+      frame: 20,
       physMultiplier: 0.544068,
       attributeMultiplier: 0.816102,
       physFixed: 150.6,
@@ -31,5 +36,5 @@ export const swordq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

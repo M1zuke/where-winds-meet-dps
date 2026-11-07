@@ -34,11 +34,13 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
     return <div className="empty-tab">{t("common.none")}</div>
   }
 
-  const duration = result.rotationDuration
+  const windowStartSec = 0
+  const windowEndSec = result.rotationDuration
+  const windowLengthSec = windowEndSec - windowStartSec
   const peakDps = Math.max(...perSecond.map((sample) => sample.dps))
   const axisTop = niceCeiling(peakDps)
 
-  const xOf = (timeSec: number) => (timeSec / duration) * 100
+  const xOf = (timeSec: number) => ((timeSec - windowStartSec) / windowLengthSec) * 100
   const yOf = (dps: number) => 100 - (dps / axisTop) * 100
   const pathOf = (series: DpsSample[]) =>
     series
@@ -58,7 +60,7 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
   function trackPointer(clientX: number) {
     const rect = plotRef.current?.getBoundingClientRect()
     if (!rect || rect.width === 0) return
-    const timeSec = ((clientX - rect.left) / rect.width) * duration
+    const timeSec = windowStartSec + ((clientX - rect.left) / rect.width) * windowLengthSec
     let nearest = 0
     for (let index = 1; index < perSecond.length; index++) {
       const closer =
@@ -154,7 +156,7 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
                 className={styles.xAxisTick + alignment}
                 style={{ left: fraction * 100 + "%" }}
               >
-                {(duration * fraction).toFixed(1)}s
+                {(windowStartSec + windowLengthSec * fraction).toFixed(1)}s
               </span>
             )
           })}

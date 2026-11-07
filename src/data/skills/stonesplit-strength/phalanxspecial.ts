@@ -3,6 +3,10 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const phalanxspecial = defineSkill({
   id: SKILL.phalanxspecial,
@@ -15,8 +19,15 @@ export const phalanxspecial = defineSkill({
   castTag: CAST.phalanxSpecial,
   receives: PHALANXBANE_BLADE_RECEIVES,
   triggersBuffs: [BUFF.ironGuards],
+  // In-game values as of 2026-09-28: granted 60 f into the cast, not at its start.
+  triggersBuffsAtFrame: { [BUFF.ironGuards]: 60 },
+  castConditions: [bladeMomentumRequires("gte", 50)],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
   castFrames: 71,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

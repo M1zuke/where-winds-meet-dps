@@ -9,7 +9,7 @@ export const mountainsMight = defineInnerWay({
   id: INNER_WAY_ID.mountainsMight,
   name: "Mountain's Might",
   selectableTiers: [6, 5, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.mountainsMight,
   tiers: {
     1: { nodes: [INNER_WAY_NODE.qiImbalanceOnMartialArt] },

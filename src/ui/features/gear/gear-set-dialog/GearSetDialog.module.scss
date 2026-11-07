@@ -1,0 +1,244 @@
+@use "mixins";
+@use "breakpoints";
+
+.surface {
+  width: min(95vw, 1000px);
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter {
+  @include mixins.field-input;
+  @include mixins.field-states;
+  flex: 1 1 220px;
+  width: auto;
+}
+
+.onlyThisPiece {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85em;
+  color: var(--color-text-dim);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 12px;
+  align-items: start;
+}
+
+.cards {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.card.spacer {
+  visibility: hidden;
+}
+
+.noMatch {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+@include breakpoints.hoverable {
+  .card:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-inset-hover);
+  }
+}
+
+.card.current {
+  border-color: var(--color-accent);
+  background: var(--color-surface-selected);
+}
+
+.card.previewed {
+  outline: 2px solid var(--color-accent-bright);
+  outline-offset: 1px;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardName {
+  font-weight: 600;
+}
+
+.cardCount {
+  font-size: 0.75em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.cardCount.hit {
+  color: var(--color-positive);
+}
+
+.tier {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 0.8em;
+  color: var(--color-text-dim);
+}
+
+.tierBadge {
+  flex: none;
+  padding: 0 4px;
+  border: 1px solid var(--color-positive);
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--color-positive);
+}
+
+.tierValue {
+  color: var(--color-positive);
+}
+
+.delta {
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+}
+
+.positive {
+  color: var(--color-positive);
+}
+
+.negative {
+  color: var(--color-negative);
+}
+
+.neutral {
+  color: var(--color-text-muted);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.side h3 {
+  margin: 0;
+  font-size: 0.72em;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.pick {
+  font-weight: 600;
+}
+
+.pick small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8em;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.dpsRows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dpsRow span {
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+}
+
+.dpsRow b {
+  font-weight: 500;
+}
+
+.dpsDiff b {
+  font-size: 1.2em;
+}
+
+.hint {
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.footHint {
+  margin-right: auto;
+}
+
+@include breakpoints.below(breakpoints.$bp-980) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    order: -1;
+  }
+}

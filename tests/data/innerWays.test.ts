@@ -2,6 +2,7 @@
 // `tests/migrations/testProfiles/profile-v4.json` through `-v7.json` all
 // store a slot by name alone, so both columns are pinned literally here.
 import { describe, expect, it } from "vitest"
+import { wineGuBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "../../src/data/innerWays/ids"
 import { innerWayHasNode, innerWayNodeTier } from "../../src/definitions/innerWays/innerWayDef"
 import {
@@ -15,8 +16,9 @@ import { CLASS_DEFS } from "../../src/definitions/classes/registry"
 import { PARAM } from "../../src/data/skills/buffs/ids"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
+import { bleedDetonation } from "../../src/data/skills/bellstrike-umbra/bleed-detonation"
 import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
+import { CAST } from "../../src/data/skills/ids"
 import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { hiddenTimelineBuffIds } from "../../src/engine/buffs/catalog"
@@ -134,7 +136,7 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
     [INNER_WAY_ID.insightfulStrike, INNER_WAY_NODE.concentrationSustainPair, 6],
     [INNER_WAY_ID.moraleChant, INNER_WAY_NODE.yiRiver, 6],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction, 1],
-    [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 4],
+    [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 6],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonMaxStackPenetration, 6],
     [INNER_WAY_ID.breakingPoint, INNER_WAY_NODE.breakingPointPerfectDodgeStacks, 6],
   ])("%s.%s unlocks at tier %d", (id, node, tier) => {
@@ -153,12 +155,16 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
 })
 
 describe("a tier-6 node resolves to 6, never undefined, feeding buffEngineEquivalence.fixture.json", () => {
-  it("Bleeding's detonation.retainMinTier is the number 6", () => {
-    expect(bleedTick.detonation?.retainMinTier).toBe(6)
+  it("Blood Burst's Bleeding re-add requires the number 6", () => {
+    const requiredTiers = bleedDetonation.hits[0]!.triggers.filter(
+      (trigger) => trigger.kind === "applyDot",
+    ).map((trigger) => trigger.requiresMinTier)
+    expect(requiredTiers).toEqual([6, 6])
   })
 
-  it("Soul Shaken's requires.minTier is the number 6", () => {
-    expect(soulShaken.requires?.minTier).toBe(6)
+  it("Soul Shaken's Sober Sorrow grantRequires.minTier is the number 6", () => {
+    expect(soulShaken.grantRequires?.[CAST.spearQ]?.minTier).toBe(6)
+    expect(soulShaken.grantRequires?.[CAST.spearQ5HitCancel]?.minTier).toBe(6)
   })
 })
 
@@ -187,15 +193,17 @@ describe("resolveInnerWayId", () => {
 })
 
 describe("inner-way ownership — gate buffs, display gates, and the merged Zenith Bar", () => {
-  it("Sword Horizon declares exactly Zenith Bar and Zenith Detonation, by their frozen ids", () => {
+  it("Sword Horizon declares exactly Zenith Bar, Zenith Detonation and Sword Spirit Banked, by their frozen ids", () => {
     const swordHorizon = innerWayDefinition(INNER_WAY_ID.swordHorizon)!
     expect(swordHorizon.gateBuffs?.map((gate) => gate.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "buff-bellstrikeUmbra-zenith-detonation",
+      "buff-bellstrikeUmbra-zenith-spirit",
     ])
     expect(swordHorizon.gateBuffs?.map((gate) => gate.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Sword Spirit Banked",
     ])
   })
 
@@ -213,13 +221,20 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
     }
   })
 
-  it("builtinBuffsForClass('bellstrikeUmbra') returns the four gates in pinned order, each carrying its class id", () => {
+  it("builtinBuffsForClass('bellstrikeUmbra') returns the eleven gates in pinned order, each carrying its class id", () => {
     const buffs = builtinBuffsForClass("bellstrikeUmbra")
     expect(buffs.map((buff) => buff.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Sword Spirit Banked",
+      "Water Drop",
+      "Spring Surge",
       "River Flow",
+      "Empowered River Flow",
       "Spear Special Cooldown",
+      "Evasive Charge — Dodge Cost Reduction",
+      "Mirage — Endurance Cost Reduction",
+      "Ghostly Steps - Umbra",
     ])
     for (const buff of buffs) expect(buff.classId).toBe("bellstrikeUmbra")
   })
@@ -254,14 +269,12 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
       },
       classId: "bellstrikeUmbra",
       fps: 60,
-      rotationDurationSec: 10,
-      hitTimesSec: [0],
-      weaponHitTimesSec: [0],
       qiPhaseAt: () => "normal",
       paramOn: () => false,
       paramTier: () => 0,
       hasBuffEngine: true,
       effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
+      collectHistory: false,
     }
     const preparedIds = prepareMechanics(setup).map((prepared) => prepared.mechanic.id)
     expect(preparedIds).toContain("concentration")
@@ -303,5 +316,11 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
         }
       }
     }
+  })
+})
+
+describe("Wine Gu", () => {
+  it("raises damage-over-time ticks as well as attacks", () => {
+    expect(wineGuBuffDef().reachesDotTicks).toBe(true)
   })
 })

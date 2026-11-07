@@ -1,0 +1,41 @@
+import type { MeterDrain, MeterFreeze } from "../../../../engine/skill"
+import { meterDelta } from "../../../../definitions/skills/triggers"
+import { enduranceMeter } from "../../../resources/enduranceMeter"
+
+// In-game values as of 2026-09-25: a 20 / s charge drain from 0.21 s,
+// stopped after 1.2 s by Sword Morph (assumed slotted, the validated build's
+// own inner way), with no regeneration from 0.2 s to the cast's own end.
+export const VAGRANT_SWORD_DRAIN: MeterDrain[] = [
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 1.2 },
+]
+// In-game values as of 2026-10-15: under Wushuang Stance the charge plays at
+// ×1.5 and starts 12.4 f in, so the same drain point is reached after 0.8 s of
+// real hold.
+export const VAGRANT_SWORD_WUSHUANG_DRAIN: MeterDrain[] = [
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.4, stopAfterSec: 1.2 / 1.5 },
+]
+// In-game values as of 2026-10-15: 20 / s in real time from the charge start
+// to the release at the first-tier threshold, 22 f of hold.
+export const VAGRANT_SWORD_WUSHUANG_TIER_1_DRAIN: MeterDrain[] = [
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.4, stopAfterSec: 0.55 / 1.5 },
+]
+// In-game values as of 2026-10-15: the 45.6 f hold of the first charge tier
+// drains 0.55 s of the same 20 / s, 11 in all.
+export const VAGRANT_SWORD_TIER_1_DRAIN: MeterDrain[] = [
+  { meterId: enduranceMeter.id, perSecond: 20, fromFrame: 12.6, stopAfterSec: 0.55 },
+]
+export const VAGRANT_SWORD_FREEZE: MeterFreeze[] = [{ meterId: enduranceMeter.id, fromFrame: 12 }]
+
+// A permanent counter recording what a Sword Morph conversion actually spent —
+// `swordMorphEnduranceBoost` reads this instead of the live meter, which a
+// same-frame read would race against this very trigger's own deduction.
+export const SWORD_MORPH_CONVERTED_AMOUNT_STATUS = "swordMorphConvertedAmount"
+
+// The Sword Morph conversion at a multi-wave release: spends up to 20 of the
+// current Endurance.
+export const SWORD_MORPH_ENDURANCE_SPEND = meterDelta({
+  target: enduranceMeter.id,
+  stacks: -20,
+  meterSpendCapToCurrent: 20,
+  recordSpendAsStatus: SWORD_MORPH_CONVERTED_AMOUNT_STATUS,
+})

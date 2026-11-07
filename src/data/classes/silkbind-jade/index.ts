@@ -13,6 +13,16 @@ import {
 } from "../../skills/silkbind-jade/buffs/additionalAttack"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
+import { enduranceMeter } from "../../resources/enduranceMeter"
+import { SILKBIND_JADE_GATES } from "./gates"
+import { SILKBIND_JADE_CHARGE_METERS } from "./chargeMeters"
+import { windrider } from "../../skills/silkbind-jade/buffs/windrider"
+import { moonShatterSpringLockout } from "../../skills/silkbind-jade/buffs/moonShatterSpringLockout"
+
+const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
+const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Silkbind", SKILLS).filter(
+  (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
+)
 
 export const silkbindJade = defineClass({
   id: CLASS_ID,
@@ -30,9 +40,12 @@ export const silkbindJade = defineClass({
     INNER_WAY_ID.starReacher,
     INNER_WAY_ID.thunderousBloom,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.evasiveCharge,
+    INNER_WAY_ID.gourdToss,
   ],
   classSpecificAttunements: [
     "umbQ",
+    "umbCharged",
     "umbFrequentProjectile",
     "umbLightHeavyVariedCombo",
     "fanQ",
@@ -40,8 +53,13 @@ export const silkbindJade = defineClass({
     "fanSpecial",
   ],
   weapons: [MARTIAL_ART_ID.vernalUmbrella, MARTIAL_ART_ID.inkwellFan],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Peak's Springless Silence / Moon Shatter Spring) — an assumption
+  // for every skill with no reach of its own.
+  defaultMeleeReachMeters: 9,
+  meters: [enduranceMeter, ...SILKBIND_JADE_CHARGE_METERS],
   critBoostWeaponTypes: ["Umbrella", "Fan"],
-  skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
+  skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
@@ -50,8 +68,10 @@ export const silkbindJade = defineClass({
     trajectorySkill,
     inkwellFanAdditionalAttack,
     vernalUmbrellaAdditionalAttack,
+    windrider,
+    moonShatterSpringLockout,
   ],
-  gateBuffs: [],
+  gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

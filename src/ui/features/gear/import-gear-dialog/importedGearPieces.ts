@@ -8,22 +8,34 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
-import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, GEAR_LEVELS, emptyGearWord, isWeaponSlot } from "../../../../engine/types"
 import type {
+  BowGear,
   EquippedSlots,
   GearLevel,
   GearPiece,
   GearRarity,
   GearSlot,
   GearWordEntry,
+  GearWordId,
   Inputs,
+  WeaponName,
 } from "../../../../engine/types"
+import {
+  classDefinition,
+  weaponSlotForWeaponType,
+  weaponTypeForSlot,
+} from "../../../../definitions/classes/registry"
+import { martialArtDefinition } from "../../../../definitions/martialArts/registry"
 import { newGearPieceId } from "../../../../storage"
 import { AFFIX_ID_TO_STAT_LINE } from "./affixStatLineTable"
-import { targetKey } from "./dashboardGearPayload"
+import { bowPieces, targetKey } from "./dashboardGearPayload"
+import { gearSetForSuffix } from "./gearSetSuffixes"
 import { resolveInnerWays } from "./importedInnerWays"
 import type {
   AffixTarget,
+  EquippedMartialArt,
+  EquippedMartialArts,
   GearImportResult,
   ImportedAffix,
   ImportedPiece,
@@ -77,11 +89,12 @@ function legalTargets(
       max: attunementMax(option, level),
     }))
   }
+  const weapon = slot ? weaponTypeForSlot(inputs.classId, slot) : null
   const pool = !slot
     ? null
     : lineIndex === null
-      ? gearWordPool(level, slot)
-      : gearWordPoolForLine(level, slot, lineIndex)
+      ? gearWordPool(level, slot, weapon)
+      : gearWordPoolForLine(level, slot, lineIndex, weapon)
   return getWordSpecs(inputs, level)
     .filter((spec) => !pool || pool.includes(spec.word))
     .map((spec) => ({
@@ -178,11 +191,108 @@ function levelAgreedByWeapons(pieces: readonly ImportedPiece[]): GearLevel | nul
   return levels.size === 1 ? [...levels][0]! : null
 }
 
+function levelHoldingMappedLines(
+  piece: ImportedPiece,
+  slot: GearSlot,
+  classId: string,
+  choices: AffixChoices,
+  floor: GearLevel,
+): GearLevel | null {
+  const mappedWords = piece.affixes.map((affix) => {
+    const key = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
+    return key?.startsWith("word:") ? key.slice("word:".length) : null
+  })
+  const weaponType = weaponTypeForSlot(classId, slot)
+  const legalLineCount = (level: GearLevel): number =>
+    mappedWords.filter(
+      (word, lineIndex) =>
+        word !== null &&
+        gearWordPoolForLine(level, slot, lineIndex, weaponType).includes(word as GearWordId),
+    ).length
+  let bestLevel = floor
+  let bestCount = legalLineCount(floor)
+  for (const level of GEAR_LEVELS.filter((candidate) => candidate > floor)) {
+    const count = legalLineCount(level)
+    if (count > bestCount) {
+      bestLevel = level
+      bestCount = count
+    }
+  }
+  return bestLevel > floor ? bestLevel : null
+}
+
+const MAIN_ART_GAME_SLOT = "1"
+const SUB_ART_GAME_SLOT = "2"
+const WEAPON_GAME_SLOTS: readonly string[] = [MAIN_ART_GAME_SLOT, SUB_ART_GAME_SLOT]
+
+function equippedArtWeaponType(
+  gameSlotId: string,
+  equippedMartialArts: EquippedMartialArts | null,
+): WeaponName | null {
+  const equipped =
+    gameSlotId === MAIN_ART_GAME_SLOT ? equippedMartialArts?.main : equippedMartialArts?.sub
+  return equipped?.martialArtId
+    ? (martialArtDefinition(equipped.martialArtId)?.weaponType ?? null)
+    : null
+}
+
+function weaponSlotByMartialArt(
+  piece: ImportedPiece,
+  equippedMartialArts: EquippedMartialArts | null,
+  classId: string,
+): GearSlot | null {
+  const weaponType =
+    piece.weaponType ?? equippedArtWeaponType(piece.gameSlotId, equippedMartialArts)
+  return weaponType ? weaponSlotForWeaponType(classId, weaponType) : null
+}
+
+function placeWeaponsByMartialArt(result: GearImportResult, classId: string): ImportedPiece[] {
+  const weaponPieces = result.pieces.filter(
+    (piece) => WEAPON_GAME_SLOTS.includes(piece.gameSlotId) && piece.slot.kind === "mapped",
+  )
+  const placements = weaponPieces.map((piece) => ({
+    piece,
+    byMartialArt: weaponSlotByMartialArt(piece, result.equippedMartialArts, classId),
+  }))
+  const proposedSlots = placements.map(
+    ({ piece, byMartialArt }) => byMartialArt ?? (piece.slot as { slot: GearSlot }).slot,
+  )
+  const collides = new Set(proposedSlots).size !== proposedSlots.length
+
+  return result.pieces.map((piece) => {
+    const placement = placements.find((candidate) => candidate.piece === piece)
+    if (!placement) return piece
+    if (placement.byMartialArt === null || collides)
+      return { ...piece, weaponPlacedByGameSlot: true }
+    return { ...piece, slot: { kind: "mapped", slot: placement.byMartialArt } }
+  })
+}
+
+function flagForeignMartialArts(
+  equippedMartialArts: EquippedMartialArts | null,
+  classId: string,
+): EquippedMartialArts | null {
+  if (!equippedMartialArts) return null
+  const classArts: readonly string[] = classDefinition(classId)?.weapons ?? []
+  const flag = (equipped: EquippedMartialArt | null): EquippedMartialArt | null =>
+    equipped && {
+      ...equipped,
+      foreignToClass: !!equipped.martialArtId && !classArts.includes(equipped.martialArtId),
+    }
+  return { main: flag(equippedMartialArts.main), sub: flag(equippedMartialArts.sub) }
+}
+
 export function resolveAgainstBuild(
-  result: GearImportResult,
+  importResult: GearImportResult,
   inputs: Inputs,
   choices: AffixChoices = {},
+  overrides: IdentityOverrides = {},
 ): GearImportResult {
+  const result: GearImportResult = {
+    ...importResult,
+    equippedMartialArts: flagForeignMartialArts(importResult.equippedMartialArts, inputs.classId),
+    pieces: placeWeaponsByMartialArt(importResult, inputs.classId),
+  }
   const withIdentity = result.pieces.map((piece) => {
     const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
     return {
@@ -191,9 +301,26 @@ export function resolveAgainstBuild(
         slot && piece.observedBaseStats ? inferGearIdentity(slot, piece.observedBaseStats) : null,
     }
   })
-  const pieces = withIdentity.map((piece) => {
+  const weaponLevel = levelAgreedByWeapons(withIdentity)
+  const withImpliedLevel = withIdentity.map((piece) => {
+    if (piece.identity?.level) return piece
     const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
-    const level = piece.identity?.level ?? levelAgreedByWeapons(withIdentity) ?? FALLBACK_LEVEL
+    return {
+      ...piece,
+      impliedLevel: slot
+        ? levelHoldingMappedLines(
+            piece,
+            slot,
+            inputs.classId,
+            choices,
+            weaponLevel ?? FALLBACK_LEVEL,
+          )
+        : null,
+    }
+  })
+  const pieces = withImpliedLevel.map((piece) => {
+    const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
+    const { level } = effectiveIdentity(piece, withImpliedLevel, overrides)
     return {
       ...piece,
       affixes: piece.affixes.map((affix, lineIndex) =>
@@ -218,7 +345,11 @@ export function effectiveIdentity(
   const override = overrides[piece.gameSlotId]
   return {
     level:
-      override?.level ?? piece.identity?.level ?? levelAgreedByWeapons(pieces) ?? FALLBACK_LEVEL,
+      override?.level ??
+      piece.identity?.level ??
+      piece.impliedLevel ??
+      levelAgreedByWeapons(pieces) ??
+      FALLBACK_LEVEL,
     rarity: override?.rarity ?? piece.identity?.rarity ?? FALLBACK_RARITY,
   }
 }
@@ -231,6 +362,17 @@ export function equippedFromImported(pieces: readonly GearPiece[]): EquippedSlot
   const equipped: EquippedSlots = { ...EMPTY_EQUIPPED }
   for (const piece of pieces) equipped[piece.slot] = piece.id
   return equipped
+}
+
+export function toBowGear(result: GearImportResult): BowGear {
+  const bowGear: BowGear = { bow: null, thumbRing: null }
+  for (const piece of bowPieces(result)) {
+    if (piece.slot.kind !== "bow" || !piece.bow) continue
+    const { reading, set } = piece.bow
+    if (reading.kind !== "importable") continue
+    bowGear[piece.slot.slot] = { level: reading.level, rarity: reading.rarity, set }
+  }
+  return bowGear
 }
 
 export function toGearPieces(result: GearImportResult, overrides: IdentityOverrides): GearPiece[] {
@@ -253,11 +395,14 @@ export function toGearPieces(result: GearImportResult, overrides: IdentityOverri
         ? { id: attunement.target.attunementId, value: attunement.value }
         : null
 
+    const setId = isWeaponSlot(slot) ? gearSetForSuffix(piece.suffix) : null
+
     return {
       id: newGearPieceId(),
       slot,
       level,
       rarity,
+      ...(setId ? { set: setId } : {}),
       minPhys: base.minPhys,
       maxPhys: base.maxPhys,
       hp: base.hp,

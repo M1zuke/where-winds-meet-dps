@@ -33,6 +33,16 @@ export const SILKBIND_JADE_ATTUNEMENTS = [
     affectsTag: "attune:umbFrequentProjectile",
   },
   {
+    id: "umbCharged",
+    label: "Vernal Umbrella Charged Skill DMG Boost",
+    min: SKILL_BOOST_MIN,
+    max: SKILL_BOOST_MAX,
+    slots: ARMOR_SLOTS,
+    classIds: ["silkbindJade"],
+    enginePath: "classSpecificAttunement.umbCharged",
+    affectsTag: "attune:umbCharged",
+  },
+  {
     id: "umbLightHeavyVariedCombo",
     label: "Vernal Umbrella Light/Heavy Attack & Varied Combo DMG Boost",
     min: VERNAL_UMBRELLA_MIN,

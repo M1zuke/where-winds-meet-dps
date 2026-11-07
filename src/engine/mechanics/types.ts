@@ -9,18 +9,13 @@ import type { Inputs } from "../types"
 import type { Skill } from "../skill"
 import type { BuffStatEffect } from "../buff"
 import type { CastBuffTag } from "../types"
-import type { StatusLedger } from "../ledger"
+import type { StatusLedger, StatusWindow } from "../ledger"
 import type { QiPhase } from "../behavior"
 
 export interface MechanicSetup {
   inputs: Inputs
   classId: string
   fps: number
-  rotationDurationSec: number
-  // Every damaging hit, and the subset from weapon-typed skills, in seconds and
-  // ascending — what a proc schedule is built from.
-  hitTimesSec: readonly number[]
-  weaponHitTimesSec: readonly number[]
   qiPhaseAt(timeSec: number): QiPhase
   // The resolved buff-engine params, so a mechanic gates on exactly what the
   // engine gated on rather than re-deriving it from `mindMethods`.
@@ -31,17 +26,21 @@ export interface MechanicSetup {
   // once in `timeline.ts` — see CLAUDE.md § "White vs Yellow rates". A
   // mechanic reads this rather than re-deriving it from `inputs`.
   effectiveRates: { precision: number; critRate: number; affinityRate: number }
-  // A stochastic schedule that receives this must honour it — docs/CALCULATION.md
+  // Whether the run reports per-cast detail, which is what a mechanic's
+  // historical readout (`display`, `remainingSecAt`) is for.
+  collectHistory: boolean
+  // This mechanic's own substream of the run's seed, present only on a seeded
+  // run. A tracker that receives it runs one trajectory off it — docs/CALCULATION.md
   // § "Mechanic rules".
   rng?: () => number
 }
 
-// Two of the formula's inputs are not `{statKey, amount}` deltas and so cannot
-// travel as effects — they reach `buildContext` directly. Named for what the
-// formula calls them rather than for the mechanic that supplies them.
+// `hawkwingPhysBonus` is not a `{statKey, amount}` delta and so cannot travel
+// as an effect — it reaches `buildContext` directly. Named for what the
+// formula calls it rather than for the mechanic that supplies it.
 export interface ContextPatch {
   hawkwingPhysBonus?: number
-  dotDamageMultiplier?: number
+  bellstrikeAttackPctBonus?: number
 }
 
 export interface MechanicContribution {
@@ -49,11 +48,12 @@ export interface MechanicContribution {
   context?: ContextPatch
 }
 
-export interface MechanicSeedTarget {
+export interface MechanicHost {
   ledger: StatusLedger
   hasStatus(id: string): boolean
   // A DoT the mechanic seeds windows for needs that debuff's own duration.
   statusDurationFrames(id: string): number | null
+  scheduleExtra(event: MechanicEvent): void
 }
 
 // The Skill Editor's Receives row for a mechanic. A mechanic is still a
@@ -73,6 +73,13 @@ export interface MechanicCatalogRow {
 
 export interface TimelineMechanic<State = unknown> {
   id: string
+  // Whether this mechanic's `contributeAt` reads the encounter's target
+  // distance — the same visibility declaration a `BuffModule` makes with its
+  // own `readsTargetDistance`.
+  readsTargetDistance?: boolean
+  // Whether `observeEvent` reads `MechanicObservedEvent.affinityChance`, which
+  // costs one extra damage query per event.
+  needsAffinityChance?: boolean
   catalogRow?: MechanicCatalogRow
   // Returning null means "not in this build" — how a mechanic gates itself
   // without the timeline knowing why.
@@ -85,13 +92,36 @@ export interface TimelineMechanic<State = unknown> {
     skill: Skill | undefined,
     setup: MechanicSetup,
   ): MechanicContribution | null
-  // Windows a mechanic opens itself, rather than through a hit's triggers.
-  seedStatuses?(state: State, target: MechanicSeedTarget, setup: MechanicSetup): void
+  // Once, before the run's first event, for a mechanic that acts on the clock
+  // rather than on an event.
+  start?(state: State, host: MechanicHost, setup: MechanicSetup): void
+  // Before a damage event is scored, for an effect the game applies ahead of
+  // that event's own damage so it reaches the event.
+  beforeEvent?(state: State, event: MechanicEventInfo, setup: MechanicSetup): void
+  // After a damage event is scored, in processing order — docs/CALCULATION.md
+  // § "Mechanic rules".
+  observeEvent?(
+    state: State,
+    event: MechanicObservedEvent,
+    setup: MechanicSetup,
+    host: MechanicHost,
+  ): void
+  afterExtraEvent?(
+    state: State,
+    event: MechanicEvent,
+    host: MechanicHost,
+    setup: MechanicSetup,
+  ): void
+  onWindowOpened?(
+    state: State,
+    statusId: string,
+    window: StatusWindow,
+    host: MechanicHost,
+    setup: MechanicSetup,
+  ): void
   // What a DoT tick from this debuff is worth at this frame — the probability
   // it is actually up. `null` means "not mine".
   tickWeightAt?(state: State, debuffId: string, frame: number, setup: MechanicSetup): number | null
-  // Damage this mechanic deals on its own schedule, independent of any cast.
-  extraEvents?(state: State, setup: MechanicSetup): MechanicEvent[]
   // Replaces the window-derived duration on a status chip with one only the
   // mechanic can compute. `null` means "not mine".
   remainingSecAt?(
@@ -102,10 +132,38 @@ export interface TimelineMechanic<State = unknown> {
   display?(state: State, timeSec: number, prePull: boolean, setup: MechanicSetup): CastBuffTag[]
 }
 
+export type MechanicEventSource = "hit" | "tick" | "extra"
+
+export interface MechanicEventInfo {
+  timeSec: number
+  // Below 1 for a tick or a launch that only part of the run's trajectories reach.
+  occurrence: number
+  source: MechanicEventSource
+  // A direct hit, as opposed to a damage-over-time tick: every hit, and a
+  // tick whose DoT declares `directHit`.
+  direct: boolean
+  canRollAffinity: boolean
+}
+
+export interface MechanicObservedEvent extends MechanicEventInfo {
+  // Read without the observing mechanic's own contribution.
+  affinityChance: number
+  // Present only on a run that rolls hits.
+  rolledAffinity?: boolean
+}
+
 export interface MechanicEvent {
   frame: number
   skill: Skill
   art: Record<string, unknown>
   name: string
   type: string
+  direct: boolean
+  // The event's own Qi rate/flat channel, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means rate 1, flat 0.
+  qiRate?: number
+  qiFlat?: number
+  // Absent means "direct" — the post-break immunity window only ever exempts
+  // a tick.
+  qiHitKind?: "direct" | "dot"
 }

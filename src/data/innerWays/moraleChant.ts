@@ -8,7 +8,7 @@ export const moraleChant = defineInnerWay({
   id: INNER_WAY_ID.moraleChant,
   name: "Morale Chant",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.moraleChant,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackFiveStar },

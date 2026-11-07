@@ -8,13 +8,13 @@ import { SKYSPEAK_GATES } from "./skyspeakGates"
 // Inebriate and refunds 60 Binge Points when Deepdaze ends, tier 3 lengthens
 // Deepdaze from its 5 s base to 10 s, tier 6 feeds Drunkslay's echo and
 // counts it as repeated damage for the Wildstride + Strayhunt bonus, which
-// has no built producer of Wildstride. Panel lines read in game at
-// breakthrough 17 (2026-09-03).
+// has no built producer of Wildstride. Panel lines: in-game values as of
+// 2026-10-15, breakthrough 12 to 21.
 export const skyspeak = defineInnerWay({
   id: INNER_WAY_ID.skyspeak,
   name: "Skyspeak",
   selectableTiers: [6, 5, 4, 3, 2, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.skyspeak,
   tiers: {
     1: { nodes: [INNER_WAY_NODE.heroSBloodInebriateUnlock, INNER_WAY_NODE.deepdazeRefund] },

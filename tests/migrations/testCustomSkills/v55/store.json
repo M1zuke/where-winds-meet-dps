@@ -1,0 +1,228 @@
+{
+  "v": 55,
+  "skills": [
+    {
+      "id": "mystic-poet1",
+      "classId": "mystic",
+      "name": "Poet1",
+      "tags": ["mystic:burst"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:poet1",
+      "castFrames": 29,
+      "triggerable": true,
+      "approach": "stationary",
+      "triggersBuffs": ["poetFinalStrikeStack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 0,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "mystic-poet2",
+      "classId": "mystic",
+      "name": "Poet2",
+      "tags": ["mystic:burst"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:poet2",
+      "castFrames": 33,
+      "triggerable": true,
+      "approach": "stationary",
+      "triggersBuffs": ["poetFinalStrikeStack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 0,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.70166,
+          "attributeMultiplier": 1.05249,
+          "physFixed": 105.48,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            { "buffId": "debuff-mystic-combustion", "op": "gte", "stacks": 1 },
+            { "buffId": "debuff-mystic-smolder", "op": "eq", "stacks": 0 }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 1.60796,
+          "attributeMultiplier": 2.41194,
+          "physFixed": 241.72,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "debuff-mystic-smolder", "op": "gte", "stacks": 1 }]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "mystic-poet3",
+      "classId": "mystic",
+      "name": "Poet3",
+      "tags": ["mystic:burst"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:poet3",
+      "castFrames": 36,
+      "triggerable": true,
+      "approach": "stationary",
+      "triggersBuffs": ["poetFinalStrikeStack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 0,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.70166,
+          "attributeMultiplier": 1.05249,
+          "physFixed": 105.48,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            { "buffId": "debuff-mystic-combustion", "op": "gte", "stacks": 1 },
+            { "buffId": "debuff-mystic-smolder", "op": "eq", "stacks": 0 }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 1.60796,
+          "attributeMultiplier": 2.41194,
+          "physFixed": 241.72,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "debuff-mystic-smolder", "op": "gte", "stacks": 1 }]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "mystic-poet4",
+      "classId": "mystic",
+      "name": "Poet4",
+      "tags": ["mystic:burst"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:poet4",
+      "castFrames": 39,
+      "triggerable": true,
+      "approach": "stationary",
+      "triggersBuffs": ["poetFinalStrikeStack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 0,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.70166,
+          "attributeMultiplier": 1.05249,
+          "physFixed": 105.48,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            { "buffId": "debuff-mystic-combustion", "op": "gte", "stacks": 1 },
+            { "buffId": "debuff-mystic-smolder", "op": "eq", "stacks": 0 }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 1.60796,
+          "attributeMultiplier": 2.41194,
+          "physFixed": 241.72,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "debuff-mystic-smolder", "op": "gte", "stacks": 1 }]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    }
+  ]
+}

@@ -34,6 +34,29 @@ describe("StatusLedger — stacks", () => {
     expect(led.stacksAt("unknown", 100)).toBe(0)
   })
 
+  it("answers by frame for an id written out of frame order", () => {
+    const led = ledger()
+    led.recordStack("bleed", 300, 5)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 3)
+
+    expect(led.stacksAt("bleed", 99)).toBe(0)
+    expect(led.stacksAt("bleed", 100)).toBe(1)
+    expect(led.stacksAt("bleed", 250)).toBe(3)
+    expect(led.stacksAt("bleed", 300)).toBe(5)
+    expect(led.stacksAt("bleed", 10_000)).toBe(5)
+  })
+
+  it("lets the later write win when two writes share a frame", () => {
+    const led = ledger()
+    led.recordStack("bleed", 200, 2)
+    led.recordStack("bleed", 100, 1)
+    led.recordStack("bleed", 200, 4)
+
+    expect(led.stacksAt("bleed", 200)).toBe(4)
+    expect(led.asOf(led.mark()).stacksAt("bleed", 200)).toBe(4)
+  })
+
   it("distinguishes never-recorded from recorded-as-zero", () => {
     const led = ledger()
     expect(led.hasStackHistory("bleed")).toBe(false)
@@ -83,6 +106,117 @@ describe("StatusLedger — windows", () => {
   })
 })
 
+describe("StatusLedger — framesSinceLastEnd", () => {
+  it("is undefined before any window has ever closed", () => {
+    const led = ledger()
+    expect(led.framesSinceLastEnd("buff", 100)).toBeUndefined()
+    led.pushWindow("buff", 100, 200)
+    expect(led.framesSinceLastEnd("buff", 150)).toBeUndefined()
+  })
+
+  it("counts from the frame a window closed, not from when it opened", () => {
+    const led = ledger()
+    led.pushWindow("buff", 100, 200)
+    expect(led.framesSinceLastEnd("buff", 200)).toBe(0)
+    expect(led.framesSinceLastEnd("buff", 250)).toBe(50)
+  })
+
+  it("picks the latest of several closed windows, ignoring one still open", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 100)
+    led.pushWindow("buff", 150, 300)
+    led.pushWindow("buff", 500, 900)
+    expect(led.framesSinceLastEnd("buff", 400)).toBe(100)
+  })
+
+  it("hides a window pushed at or after the mark, through asOf", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 100)
+    const mark = led.mark()
+    led.pushWindow("buff", 110, 150)
+    expect(led.asOf(mark).framesSinceLastEnd("buff", 200)).toBe(100)
+    expect(led.framesSinceLastEnd("buff", 200)).toBe(50)
+  })
+})
+
+describe("StatusLedger — framesSinceStacksBelowThreshold", () => {
+  it("is undefined for a status with no recorded stack history", () => {
+    const led = ledger()
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBeUndefined()
+  })
+
+  it("is undefined while the stacks have never crossed the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 80)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBeUndefined()
+  })
+
+  it("counts from the frame the stacks fell below the threshold, not from when they rose to it", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBe(0)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBe(50)
+  })
+
+  it("picks the latest of several drops, even while currently back above the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    led.recordStack("points", 400, 60)
+    expect(led.framesSinceStacksBelowThreshold("points", 500, 60)).toBe(200)
+  })
+
+  it("hides a drop recorded at or after the mark, through asOf", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    const mark = led.mark()
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    expect(led.asOf(mark).framesSinceStacksBelowThreshold("points", 400, 60)).toBe(300)
+    expect(led.framesSinceStacksBelowThreshold("points", 400, 60)).toBe(100)
+  })
+})
+
+describe("StatusLedger — frameStacksLastReachedThreshold", () => {
+  it("is undefined while the stacks have never reached the threshold", () => {
+    const led = ledger()
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+    led.recordStack("points", 50, 0)
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+  })
+
+  it("is the frame the stacks rose to the threshold, from that frame on", () => {
+    const led = ledger()
+    led.recordStack("points", 120, 1)
+    expect(led.frameStacksLastReachedThreshold("points", 119, 1)).toBeUndefined()
+    expect(led.frameStacksLastReachedThreshold("points", 120, 1)).toBe(120)
+    expect(led.frameStacksLastReachedThreshold("points", 900, 1)).toBe(120)
+  })
+
+  it("picks the latest rise after a drop and ignores a climb that stays above the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 10, 1)
+    led.recordStack("points", 20, 2)
+    led.recordStack("points", 30, 0)
+    led.recordStack("points", 40, 1)
+    expect(led.frameStacksLastReachedThreshold("points", 25, 1)).toBe(10)
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBe(40)
+  })
+
+  it("hides a rise recorded at or after the mark, through asOf", () => {
+    const led = ledger()
+    const mark = led.mark()
+    led.recordStack("points", 10, 1)
+    expect(led.asOf(mark).frameStacksLastReachedThreshold("points", 100, 1)).toBeUndefined()
+    expect(led.frameStacksLastReachedThreshold("points", 100, 1)).toBe(10)
+  })
+})
+
 describe("StatusLedger — asOf hides writes at or after a mark", () => {
   it("hides a window pushed at or after the mark, keeps one pushed before it", () => {
     const led = ledger()
@@ -115,7 +249,7 @@ describe("StatusLedger — asOf hides writes at or after a mark", () => {
 
 describe("StatusLedger — extensions are invisible before they happen", () => {
   it("subtracts an extension applied after the queried frame", () => {
-    const window = { start: 0, end: 400, extensions: [{ frame: 300, amount: 100 }] }
+    const window = { start: 0, end: 400, extensions: [{ frame: 300, amount: 100, owner: UNOWNED }] }
     expect(windowEndAt(window, 200)).toBe(300)
     expect(windowEndAt(window, 300)).toBe(400)
     expect(windowEndAt(window, 350)).toBe(400)
@@ -124,10 +258,49 @@ describe("StatusLedger — extensions are invisible before they happen", () => {
   it("feeds that back through remainingFramesAt", () => {
     const led = ledger()
     led.pushWindow("dot", 0, 400)
-    const window = led.longestActiveWindow("dot", 0)!
-    window.end = 500
-    window.extensions = [{ frame: 300, amount: 100 }]
+    led.extendWindow(led.longestActiveWindow("dot", 0)!, 300, 500, UNOWNED)
     expect(led.remainingFramesAt("dot", 200)).toBe(200)
     expect(led.remainingFramesAt("dot", 400)).toBe(100)
+  })
+})
+
+describe("StatusLedger — a view through an owner", () => {
+  it("hides the windows and stacks a later owner wrote", () => {
+    const led = ledger()
+    led.pushWindow("buff", 100, 400, 100)
+    led.recordStack("buff", 100, 2, 100)
+    led.recordStack("buff", 250, 3, 200)
+    const view = led.throughOwner(100)
+    expect(view.isActiveAt("buff", 300)).toBe(true)
+    expect(view.stacksAt("buff", 300)).toBe(2)
+    expect(led.throughOwner(50).isActiveAt("buff", 300)).toBe(false)
+  })
+
+  it("hides an unowned write past the cut-off frame, but keeps one before it", () => {
+    const led = ledger()
+    led.openPermanent("weapon")
+    led.recordStack("weapon", 50, 1)
+    led.recordStack("weapon", 200, 2)
+    const view = led.throughOwner(100, 150)
+    expect(view.isActiveAt("weapon", 250)).toBe(true)
+    expect(view.stacksAt("weapon", 250)).toBe(1)
+    expect(led.throughOwner(100).stacksAt("weapon", 250)).toBe(2)
+  })
+
+  it("rolls back an extension a later owner applied to an earlier window", () => {
+    const led = ledger()
+    led.pushWindow("dot", 0, 400, 0)
+    led.extendWindow(led.longestActiveWindow("dot", 0)!, 300, 600, 300)
+    expect(led.throughOwner(0).remainingFramesAt("dot", 350)).toBe(50)
+    expect(led.throughOwner(300).remainingFramesAt("dot", 350)).toBe(250)
+  })
+
+  it("rolls back a cut a later owner applied to an earlier window", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 400, 0)
+    led.cutWindow(led.longestActiveWindow("buff", 0)!, 200, 200)
+    expect(led.isActiveAt("buff", 250)).toBe(false)
+    expect(led.throughOwner(0).isActiveAt("buff", 250)).toBe(true)
+    expect(led.throughOwner(200).isActiveAt("buff", 250)).toBe(false)
   })
 })

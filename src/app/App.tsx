@@ -9,12 +9,16 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { runEngine } from "../engine/dps"
-import { applyArmorSet, applyBowSet } from "../engine/panel"
+import { applySetBonuses } from "../engine/setBonuses"
 import { withCustomContent } from "../engine/customContent"
 import { withDerivedStats } from "../engine/derivedInputs"
-import type { Inputs, StoredProfile } from "../engine/types"
+import type { EngineRunOptions, Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
-import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel"
+import { MetricsCard } from "../ui/layout/output-panel/OutputPanel"
+import { CornerToasts } from "../ui/layout/corner-toasts/CornerToasts"
+import { EncounterSettingsTrigger } from "../ui/features/overview/encounter-settings-trigger/EncounterSettingsTrigger"
+import { EncounterSettingsDialog } from "../ui/features/overview/encounter-settings-dialog/EncounterSettingsDialog"
+import type { EncounterCategory } from "../engine/encounterOptions"
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
 import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { LanguageSelect } from "../ui/layout/language-select/LanguageSelect"
@@ -26,6 +30,7 @@ import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
 import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/TalentsOdditiesTab"
 import { SkillsTab } from "../ui/features/skills/skills-tab/SkillsTab"
 import { useGraduationRate } from "../ui/hooks/useGraduationRate"
+import { useGraduationQiLog } from "../ui/hooks/useGraduationQiLog"
 import { useParseSimulation, type ParseSimulationRequest } from "../ui/hooks/useParseSimulation"
 import { SimulationToast, SIMULATION_PATH } from "../ui/layout/simulation-toast/SimulationToast"
 import { DpsActivityToast } from "../ui/layout/dps-activity-toast/DpsActivityToast"
@@ -61,6 +66,8 @@ import styles from "./App.module.scss"
 
 migrateSeededSkillIds()
 migrateDotStandinOverrides()
+
+const OWN_QI_BAR: EngineRunOptions = { qiBar: "own" }
 
 function AppInner() {
   const simulation = useParseSimulation()
@@ -101,6 +108,8 @@ function AppInner() {
   const [lastSavedJson, setLastSavedJson] = useState(() => JSON.stringify(initialActive.inputs))
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [graduationDialogOpen, setGraduationDialogOpen] = useState(false)
+  const [encounterDialogOpen, setEncounterDialogOpen] = useState(false)
+  const [encounterCategory, setEncounterCategory] = useState<EncounterCategory>("food")
 
   const [wizard, setWizard] = useState<{ mode: SetupMode; defaultName: string } | null>(() =>
     initial.firstRun ? { mode: "first-run", defaultName: "" } : null,
@@ -147,10 +156,14 @@ function AppInner() {
 
   const engineInputs = useMemo(() => {
     const derived = withDerivedStats(configuredInputs)
-    return applyBowSet(applyArmorSet(derived))
+    return applySetBonuses(derived)
   }, [configuredInputs])
 
-  const result = useMemo(() => runEngine(engineInputs), [engineInputs])
+  const graduationQiLog = useGraduationQiLog(configuredInputs)
+  const result = useMemo(
+    () => runEngine(engineInputs, graduationQiLog ? { qiDamageLog: graduationQiLog } : OWN_QI_BAR),
+    [engineInputs, graduationQiLog],
+  )
   const graduation = useGraduationRate(configuredInputs)
   const followedBuild = followedGraduationBuild(configuredInputs)
   const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
@@ -161,6 +174,7 @@ function AppInner() {
 
   const rotationName = useMemo(() => activeRotationName(inputs), [inputs])
   const goToRotationTab = useCallback(() => navigate("/rotation"), [navigate])
+  const goToRotationEditorTab = useCallback(() => navigate("/rotation-editor"), [navigate])
 
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -314,6 +328,7 @@ function AppInner() {
   return (
     <div className={styles.app}>
       <DpsActivityToast hidden={isSimulationRunning} />
+      <CornerToasts result={result} onCheckRotation={goToRotationEditorTab} />
       <SimulationToast
         status={simulation.status}
         done={simulation.progress.done}
@@ -337,6 +352,16 @@ function AppInner() {
           onClose={() =>
             setBreakthroughAskedClassIds((asked) => [...asked, breakthroughAsk.classId])
           }
+        />
+      )}
+      {encounterDialogOpen && (
+        <EncounterSettingsDialog
+          inputs={inputs}
+          engineInputs={engineInputs}
+          category={encounterCategory}
+          onCategoryChange={setEncounterCategory}
+          onChange={setInputs}
+          onClose={() => setEncounterDialogOpen(false)}
         />
       )}
       {(graduationDialogOpen || mustChooseGraduationBuild) && (
@@ -397,6 +422,13 @@ function AppInner() {
           }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
+          encounterTrigger={
+            <EncounterSettingsTrigger
+              inputs={inputs}
+              onOpen={() => setEncounterDialogOpen(true)}
+              disabled={isSimulationRunning}
+            />
+          }
         />
 
         <nav className={styles.tabs} role="tablist">
@@ -421,7 +453,6 @@ function AppInner() {
         </nav>
       </div>
       <div className={styles.tabPanel}>
-        <WarningsList result={result} />
         <fieldset className={styles.routeFields} disabled={areInputsLocked}>
           <Routes>
             <Route path="/" element={<Navigate to="/overview" replace />} />
@@ -430,6 +461,7 @@ function AppInner() {
               element={
                 <OverviewTab
                   inputs={inputs}
+                  configuredInputs={configuredInputs}
                   engineInputs={engineInputs}
                   onChange={setInputs}
                   result={result}
@@ -441,6 +473,7 @@ function AppInner() {
               element={
                 <GearTab
                   inputs={inputs}
+                  configuredInputs={configuredInputs}
                   engineInputs={engineInputs}
                   customGraduationBuild={customGraduationBuild}
                   onChange={setInputs}

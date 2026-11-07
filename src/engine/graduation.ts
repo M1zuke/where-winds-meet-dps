@@ -1,16 +1,31 @@
-import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
+import { defaultEnhancementLevels, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
+  StandardizedEncounter,
   StandardizedGraduation,
+  StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
-import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
+import {
+  BEST_AVAILABLE_FOOD,
+  STANDARDIZED_ENCOUNTER_OFF,
+} from "../definitions/graduationBuilds/graduationBuildDef"
+import { bestRecipeAttackFoodAt } from "../data/consumables/foods"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
-import type { EquippedSlots, GearLevel, Inputs, MindMethodSlot } from "./types"
-import { EMPTY_EQUIPPED } from "./types"
+import { withEncounterFieldsOf } from "./encounterOptions"
+import { withZeroedDerivedStats } from "./derivedInputs"
+import type {
+  BowGearLevel,
+  BowPiece,
+  EquippedSlots,
+  GearLevel,
+  Inputs,
+  MindMethodSlot,
+} from "./types"
+import { BOW_GEAR_LEVELS, EMPTY_EQUIPPED, WEAPON_SLOTS } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
 
@@ -22,34 +37,72 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
   return equipped
 }
 
+function bowGearLevelFor(gearLevel: GearLevel): BowGearLevel | null {
+  if (gearLevel < BOW_GEAR_LEVELS[0]) return null
+  return BOW_GEAR_LEVELS.find((level) => level >= gearLevel) ?? null
+}
+
 function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
   return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: rotationId }
 }
 
-function standardizedMindMethods(standardized: StandardizedGraduation): Inputs["mindMethods"] {
-  const slots: MindMethodSlot[] = standardized.innerWays
+export function standardizedMindMethods(
+  innerWays: readonly StandardizedInnerWay[],
+): Inputs["mindMethods"] {
+  const slots: MindMethodSlot[] = innerWays
     .slice(0, MIND_METHOD_SLOT_COUNT)
     .map(({ id, tier }) => ({ id, name: innerWayName(id), stacks: `tier ${tier}` }))
   while (slots.length < MIND_METHOD_SLOT_COUNT) slots.push({ name: "", stacks: "" })
   return slots as Inputs["mindMethods"]
 }
 
+// The inner ways a class's own graduation standard runs with, for defaulting
+// a profile that has none of its own yet (`classSetup.ts`) — every build the
+// class registers names the same list, so the first one that carries it is
+// the class's list. `null` for a class with no standardized list at all.
+export function standardizedInnerWaysForClass(
+  classId: string,
+): readonly StandardizedInnerWay[] | null {
+  for (const build of graduationBuildsFor(classId)) {
+    if (build.standardized?.innerWays.length) return build.standardized.innerWays
+  }
+  return null
+}
+
+export function resolveStandardizedFood(
+  food: StandardizedEncounter["food"],
+  breakthrough: number,
+): Inputs["food"] {
+  return food === BEST_AVAILABLE_FOOD ? bestRecipeAttackFoodAt(breakthrough) : food
+}
+
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
   const standardized = build.standardized
   if (!standardized) return inputs
-  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
+  const {
+    dummyMode,
+    food,
+    hpFood,
+    divinecraft,
+    divinecraftRefinement,
+    shareDebuff5HenZhi,
+    shareEasyHurt,
+    ...combat
+  } = {
     ...STANDARDIZED_ENCOUNTER_OFF,
     ...standardized.encounter,
   }
   return {
     ...inputs,
     dummyMode,
-    food,
+    food: resolveStandardizedFood(food, inputs.breakthrough),
+    hpFood,
     divinecraft,
+    divinecraftRefinement,
     shareDebuff5HenZhi,
     shareEasyHurt,
-    combatSettings: { ...combat, qiBreakOverride: null },
-    mindMethods: standardizedMindMethods(standardized),
+    combatSettings: { ...combat },
+    mindMethods: standardizedMindMethods(standardized.innerWays),
   }
 }
 
@@ -60,13 +113,25 @@ export function followedGraduationBuildAmong(
   return builds.find((build) => build.id === buildId) ?? (builds.length === 1 ? builds[0] : null)
 }
 
+function classStandardOnRotation(
+  builtin: readonly GraduationBuild[],
+  rotationId: string,
+): StandardizedGraduation | undefined {
+  const standardizedBuilds = builtin.filter((build) => build.standardized)
+  return (
+    standardizedBuilds.find((build) => build.rotationId === rotationId) ?? standardizedBuilds[0]
+  )?.standardized
+}
+
 export function graduationBuildsForProfile(
   inputs: Pick<Inputs, "classId" | "customGraduationBuild">,
 ): readonly GraduationBuild[] {
   const builtin = graduationBuildsFor(inputs.classId)
   const custom = inputs.customGraduationBuild
   if (!custom || custom.classId !== inputs.classId) return builtin
-  return [...builtin, graduationBuildFromCustom(custom)]
+  const authored = graduationBuildFromCustom(custom)
+  const standardized = classStandardOnRotation(builtin, custom.rotationId)
+  return [...builtin, standardized ? { ...authored, standardized } : authored]
 }
 
 export function followedGraduationBuild(
@@ -117,24 +182,30 @@ export function graduationInputs(
 ): Inputs | null {
   const followed = followedGraduationBuild(inputs)
   if (!followed) return null
-  const build = graduationBuildAtLevel(
-    followed,
-    variant,
-    gearLevelForBreakthrough(inputs.breakthrough),
-  )
+  const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
+  const build = graduationBuildAtLevel(followed, variant, gearLevel)
   const inventory = build.gear.map((piece) => ({
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
+    ...(build.set && WEAPON_SLOTS.includes(piece.slot) ? { set: build.set } : {}),
   }))
-  return standardizedGraduationInputs(
+  const bowLevel = bowGearLevelFor(gearLevel)
+  const bowPiece: BowPiece | null =
+    build.bowSet && bowLevel !== null
+      ? { level: bowLevel, rarity: "legendary", set: build.bowSet }
+      : null
+  const equipped = equippedSlots(build)
+  const benchmark = standardizedGraduationInputs(
     {
       ...onBuiltinRotation(inputs, build.rotationId),
       allDamageBoost: 0,
       independentDamageBoost: 0,
+      qiDamageBoost: 0,
+      qiRateAdd: 0,
+      qiDamageIndexMultiplier: 0,
       inventory,
-      equipped: equippedSlots(build),
-      set: build.set,
-      bowSet: build.bowSet,
+      equipped,
+      bowGear: { bow: bowPiece && { ...bowPiece }, thumbRing: bowPiece && { ...bowPiece } },
       arsenal: build.arsenal,
       martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
         (talent) => ({
@@ -143,8 +214,28 @@ export function graduationInputs(
         }),
       ),
       unclaimedOddityNodes: {},
-      enhancements: { ...DEFAULT_ENHANCEMENTS },
+      enhancements: defaultEnhancementLevels(inputs.breakthrough, { inventory, equipped }),
     },
     build,
   )
+  return { ...benchmark, useGraduationQiBreak: false }
+}
+
+export function graduationQiSourceInputs(inputs: Inputs): Inputs | null {
+  if (!inputs.useGraduationQiBreak) return null
+  const benchmark = graduationInputs(inputs, "maxRolls")
+  if (!benchmark) return null
+  return withZeroedDerivedStats({
+    ...withEncounterFieldsOf(
+      {
+        ...benchmark,
+        rotation: inputs.rotation,
+        selectedBuiltinRotationId: inputs.selectedBuiltinRotationId,
+        activeCustomRotation: inputs.activeCustomRotation,
+        mindMethods: inputs.mindMethods,
+      },
+      inputs,
+    ),
+    useGraduationQiBreak: false,
+  })
 }

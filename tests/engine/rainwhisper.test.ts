@@ -1,17 +1,20 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { makeSkill } from "../../src/engine/skill"
-import { applyArmorSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 import { defaultInputs } from "../../src/engine/defaults"
 import { rainwhisper } from "../../src/data/sets/rainwhisper"
 import { SET_ID } from "../../src/data/sets/ids"
 
-const SHIELD_DURATION = 8
+const SHIELD_APPLIES_AFTER = 0.5
+const SHIELD_DURATION = 10
 
 function engineWithSet(armorSet?: string) {
-  return new BuffEngine(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
+  return buffEngineWith(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
 }
 
 function critDamageAt(engine: BuffEngine, time: number): number | undefined {
@@ -21,15 +24,29 @@ function critDamageAt(engine: BuffEngine, time: number): number | undefined {
 
 describe("rainwhisper — 2-piece precision", () => {
   it("adds 8% precision to the panel at gear level 96", () => {
-    const base = { ...defaultInputs, breakthrough: 16, set: null }
-    const equipped = { ...defaultInputs, breakthrough: 16, set: SET_ID.rainwhisper }
-    expect(applyArmorSet(equipped).precision).toBeCloseTo(applyArmorSet(base).precision + 0.08, 10)
+    const fabricate = { fabricatePieces: true }
+    const base = withGearSet({ ...defaultInputs, breakthrough: 16 }, null, fabricate)
+    const equipped = withGearSet(
+      { ...defaultInputs, breakthrough: 16 },
+      SET_ID.rainwhisper,
+      fabricate,
+    )
+    expect(applySetBonuses(equipped).precision).toBeCloseTo(
+      applySetBonuses(base).precision + 0.08,
+      10,
+    )
   })
 })
 
 describe("rainwhisper — 4-piece crit damage", () => {
   it("gives 10% with no HP shield up", () => {
     expect(critDamageAt(engineWithSet(rainwhisper.siteKey), 0)).toBe(0.1)
+  })
+
+  it("stays at 10% until the shield opens 0.5 s after the granting cast", () => {
+    const engine = engineWithSet(rainwhisper.siteKey)
+    engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
+    expect(critDamageAt(engine, SHIELD_APPLIES_AFTER - 0.1)).toBe(0.1)
   })
 
   it("gives 25% while a self-applied HP shield is up", () => {
@@ -41,7 +58,14 @@ describe("rainwhisper — 4-piece crit damage", () => {
   it("falls back to 10% once the shield window has expired", () => {
     const engine = engineWithSet(rainwhisper.siteKey)
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
-    expect(critDamageAt(engine, SHIELD_DURATION + 1)).toBe(0.1)
+    expect(critDamageAt(engine, SHIELD_APPLIES_AFTER + SHIELD_DURATION + 1)).toBe(0.1)
+  })
+
+  it("gives 25% for 10 s starting 0.5 s after Golden Body's cast", () => {
+    const engine = engineWithSet(rainwhisper.siteKey)
+    engine.processSkillCast("cast:goldenBodyCancel", 0, {}, false, [BUFF.rainwhisperShield])
+    expect(critDamageAt(engine, 10)).toBe(0.25)
+    expect(critDamageAt(engine, 10.5)).toBe(0.1)
   })
 
   it("is inert without the rainwhisper set, shield or not", () => {

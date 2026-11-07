@@ -196,7 +196,7 @@ export function ScanCard({ screenshot, flaggedCount, exampleImageUrl, onPickImag
           {renderPreview()}
           {renderLegend()}
           <div className={styles.actions}>
-            <label className="btn">
+            <label className={`btn ${styles.scanAnotherButton}`}>
               {t("gear.screenshotImport.scanAnother")}
               <input
                 type="file"

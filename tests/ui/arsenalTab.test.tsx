@@ -37,6 +37,20 @@ describe("the Arsenal tab", () => {
     ])
   })
 
+  it("offers the arsenal choice above the store cards and swaps the arsenal on a click", () => {
+    const onChange = vi.fn()
+    renderTab({ ...defaultInputs, breakthrough: 17, arsenal: "bamboocut" }, onChange)
+
+    const general = screen.getByRole("radio", { name: "General Arsenal" })
+    expect(screen.getByRole("radio", { name: "Bamboocut Arsenal" })).toBeChecked()
+    fireEvent.click(general)
+
+    expect(onChange.mock.lastCall![0].arsenal).toBe("general")
+    const choiceRow = general.closest("tr")!
+    const firstStore = screen.getByRole("heading", { level: 2, name: "Tier 91 Arsenal" })
+    expect(choiceRow.compareDocumentPosition(firstStore)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+
   it("chips the current store Current even when its score sits exactly at Total Mastery", () => {
     renderTab({ ...defaultInputs, breakthrough: 17 })
     expect(cardFor("Tier 91 Arsenal")).toHaveTextContent("Current")

@@ -35,7 +35,7 @@ const ANALYSIS_ROWS: GearSlotAnalysisRow[] = [
 ]
 
 vi.mock("../../src/ui/hooks/useGearAnalysis", () => ({
-  useGearAnalysis: () => ({ rows: ANALYSIS_ROWS, isPending: false }),
+  useGearAnalysis: () => ({ rows: ANALYSIS_ROWS, allSlotsLoss: 3500, isPending: false }),
 }))
 
 function piece(id: string, slot: GearPiece["slot"]): GearPiece {
@@ -73,6 +73,7 @@ function renderTab() {
       <ConfirmProvider>
         <GearTab
           inputs={inputs}
+          configuredInputs={inputs}
           engineInputs={inputs}
           customGraduationBuild={null}
           onChange={() => {}}
@@ -110,15 +111,15 @@ describe("GearTab analysis subtab", () => {
     const slots = screen
       .getAllByRole("row")
       .map((row) => row.firstElementChild?.textContent ?? "")
-      .filter((label) => label === "Left Weapon" || label === "Helm" || label === "Bracer")
+      .filter((label) => label === "Strategic Sword" || label === "Helm" || label === "Bracer")
 
-    expect(slots).toEqual(["Left Weapon", "Helm"])
+    expect(slots).toEqual(["Strategic Sword", "Helm"])
   })
 
   it("ranks each action column on its own, and dashes the slots with nothing to gain", () => {
     renderTab()
 
-    const weaponCells = within(analysisRow("Left Weapon")).getAllByRole("cell")
+    const weaponCells = within(analysisRow("Strategic Sword")).getAllByRole("cell")
     const helmCells = within(analysisRow("Helm")).getAllByRole("cell")
 
     expect(weaponCells[1]).toHaveTextContent("#2")
@@ -132,20 +133,22 @@ describe("GearTab analysis subtab", () => {
   it("keeps the DPS gain out of the rank cell, on its hover title", () => {
     renderTab()
 
-    const retune = within(analysisRow("Left Weapon")).getAllByRole("cell")[1]
+    const retune = within(analysisRow("Strategic Sword")).getAllByRole("cell")[1]
 
     expect(retune.textContent).toBe("#2")
     expect(retune).toHaveAttribute("title", "+120")
   })
 
-  it("states each slot's tuned-stat loss as a share of total DPS, and their total", () => {
+  it("states each slot's tuned-stat loss as a share of total DPS, and the all-slots loss as the total rather than the rows' sum", () => {
     renderTab()
 
-    expect(within(analysisRow("Left Weapon")).getAllByRole("cell")[4]).toHaveTextContent(
+    expect(within(analysisRow("Strategic Sword")).getAllByRole("cell")[4]).toHaveTextContent(
       "-3,000(7.5 %)",
     )
     expect(screen.getByRole("cell", { name: /Total tuned-stat DPS contribution/ })).toBeVisible()
-    expect(screen.getByText("-4,000")).toBeInTheDocument()
+    expect(screen.getByText("-3,500")).toBeInTheDocument()
+    expect(screen.queryByText("-4,000")).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/slot rows overlap/)).toBeInTheDocument()
   })
 })
 

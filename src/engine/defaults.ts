@@ -1,17 +1,19 @@
 import type { Inputs } from "./types"
-import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ARSENAL_SCORES, DEFAULT_ENHANCEMENTS } from "../definitions/baseStats"
+import { EMPTY_BOW_GEAR, EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
+import { bestRecipeAttackFoodAt } from "../data/consumables/foods"
+import { DEFAULT_ARSENAL_SCORES, defaultEnhancementLevels } from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
 } from "../definitions/baseStats/breakthroughs"
-import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
+const FIXTURE_BREAKTHROUGH = 13
+
 export const defaultInputs: Inputs = {
   classId: "bellstrikeUmbra",
-  breakthrough: 13,
+  breakthrough: FIXTURE_BREAKTHROUGH,
   followedBreakthroughRelease: newestBreakthroughRelease(),
 
   phys: { min: 1043.0, max: 2006.0, penetration: 0.292 },
@@ -38,6 +40,9 @@ export const defaultInputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
   independentDamageBoost: 0,
+  qiDamageBoost: 0,
+  qiRateAdd: 0,
+  qiDamageIndexMultiplier: 0,
 
   allMartialBoost: 0,
   swordBoost: 0,
@@ -53,6 +58,7 @@ export const defaultInputs: Inputs = {
   bossBoost: 0,
   singleMysticBoost: 0,
   areaMysticBoost: 0,
+  allMysticBoost: 0,
 
   classSpecificAttunement: {},
 
@@ -64,15 +70,17 @@ export const defaultInputs: Inputs = {
     { ...emptyMindMethod },
   ],
 
-  food: true,
+  food: bestRecipeAttackFoodAt(FIXTURE_BREAKTHROUGH),
+  hpFood: null,
   divinecraft: "fire",
-  set: SET_ID.hawkwing,
+  divinecraftRefinement: null,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
-  bowSet: null,
+  bowGear: { ...EMPTY_BOW_GEAR },
   arsenal: "bamboocut",
   arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,
+  useGraduationQiBreak: true,
 
   rotation: null,
 
@@ -87,7 +95,7 @@ export const defaultInputs: Inputs = {
 
   disabledTalentNodes: [],
 
-  enhancements: { ...DEFAULT_ENHANCEMENTS },
+  enhancements: defaultEnhancementLevels(FIXTURE_BREAKTHROUGH),
 
   combatSettings: defaultCombatSettings(),
 }
@@ -96,6 +104,8 @@ export const blankInputs: Inputs = {
   ...defaultInputs,
   classId: "bellstrikeUmbra",
   breakthrough: defaultBreakthrough(),
+  food: bestRecipeAttackFoodAt(defaultBreakthrough()),
+  enhancements: defaultEnhancementLevels(defaultBreakthrough()),
   phys: { min: 0, max: 0, penetration: 0 },
   bellstrike: { min: 0, max: 0, penetration: 0 },
   stonesplit: { min: 0, max: 0, penetration: 0 },
@@ -114,6 +124,9 @@ export const blankInputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
   independentDamageBoost: 0,
+  qiDamageBoost: 0,
+  qiRateAdd: 0,
+  qiDamageIndexMultiplier: 0,
 
   classSpecificAttunement: {},
 

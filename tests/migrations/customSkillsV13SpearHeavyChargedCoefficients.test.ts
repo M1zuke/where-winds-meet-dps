@@ -30,8 +30,19 @@ const rowOf = (
   hit: Pick<SkillHit, "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed">,
 ) => [hit.physMultiplier, hit.attributeMultiplier, hit.physFixed, hit.attributeFixed]
 
-const builtin = (id: string): Skill =>
-  builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
+// The v12 → v13 hop's own target rows, frozen here rather than read from
+// `spearHeavyHitSwapsFor` or the live built-in — both move on for reasons
+// this hop never claimed.
+const FIRST_AND_FOURTH = [1.250878, 1.876317, 346, 188.6]
+const SECOND = [0.750527, 1.12579, 207.6, 113.16]
+const THIRD = [0.375263, 0.562895, 103.8, 56.58]
+const FIFTH = [0.331483, 0.497224, 91.69, 49.98]
+const V13_ROWS: Record<string, readonly number[][]> = {
+  [FIVE_HIT]: [FIRST_AND_FOURTH, SECOND, THIRD, FIRST_AND_FOURTH, FIFTH],
+  [ONE_HIT]: [FIRST_AND_FOURTH],
+  [ONE_HIT_PREPULL]: [FIRST_AND_FOURTH],
+}
+const v13Rows = (id: string) => V13_ROWS[id]!
 
 describe("custom-skills v12 fixture", () => {
   it("is v12 and still spreads the Special Skill's flat row across every SpearHeavy hit", () => {
@@ -43,27 +54,26 @@ describe("custom-skills v12 fixture", () => {
     expect(rowOf(skillIn(STORE, ONE_HIT_PREPULL).hits[0])).toEqual([0.30346, 0.45518, 70.2, 39.2])
   })
 
-  it("holds the corrected, unevenly-weighted rows on the built-ins the copies were seeded from", () => {
-    const fiveHitRows = builtin(FIVE_HIT).hits.map(rowOf)
+  it("holds the corrected, unevenly-weighted rows the copies were seeded from", () => {
+    const fiveHitRows = v13Rows(FIVE_HIT)
     const distinctRows = new Set(fiveHitRows.map((row) => row.join(",")))
     expect(distinctRows.size).toBeGreaterThan(1)
     expect(fiveHitRows[0]).not.toEqual([0.30346, 0.45518000000000003, 70.2, 39.2])
-    expect(rowOf(builtin(ONE_HIT).hits[0])).toEqual(fiveHitRows[0])
-    expect(rowOf(builtin(ONE_HIT_PREPULL).hits[0])).toEqual(fiveHitRows[0])
+    expect(v13Rows(ONE_HIT)[0]).toEqual(fiveHitRows[0])
+    expect(v13Rows(ONE_HIT_PREPULL)[0]).toEqual(fiveHitRows[0])
   })
 })
 
 describe("spearHeavyHitSwapsFor", () => {
-  it("names only the three SpearHeavy modules and lands every row on the built-in's current hit", () => {
+  it("names only the three SpearHeavy modules and lands every row on this hop's own target", () => {
     const covered = builtinSkillsForClass(CLASS).filter((skill) => spearHeavyHitSwapsFor(skill.id))
     expect(covered.map((skill) => skill.id).sort()).toEqual(
       [FIVE_HIT, ONE_HIT, ONE_HIT_PREPULL].sort(),
     )
-    for (const skill of covered) {
-      const swaps = spearHeavyHitSwapsFor(skill.id)!
-      expect(swaps.length, skill.id).toBe(skill.hits.length)
+    for (const id of [FIVE_HIT, ONE_HIT, ONE_HIT_PREPULL]) {
+      const swaps = spearHeavyHitSwapsFor(id)!
       swaps.forEach((swap, index) => {
-        expect(rowOf(skill.hits[index]), `${skill.id} hit ${index}`).toEqual([...swap.to])
+        expect([...swap.to], `${id} hit ${index}`).toEqual(v13Rows(id)[index])
       })
     }
   })
@@ -74,17 +84,15 @@ describe("spearHeavyHitSwapsFor", () => {
 })
 
 describe("healSpearHeavyChargedCoefficients", () => {
-  it("rewrites every untouched hit of a seeded SpearHeavy copy to the built-in's current row", () => {
+  it("rewrites every untouched hit of a seeded SpearHeavy copy to this hop's target row", () => {
     const healed = healSpearHeavyChargedCoefficients(clone(skillIn(STORE, FIVE_HIT))) as Skill
-    healed.hits.forEach((hit, index) =>
-      expect(rowOf(hit)).toEqual(rowOf(builtin(FIVE_HIT).hits[index])),
-    )
+    healed.hits.forEach((hit, index) => expect(rowOf(hit)).toEqual(v13Rows(FIVE_HIT)[index]))
   })
 
   it("rewrites the single hit of each 1-hit copy", () => {
     for (const id of [ONE_HIT, ONE_HIT_PREPULL]) {
       const healed = healSpearHeavyChargedCoefficients(clone(skillIn(STORE, id))) as Skill
-      expect(rowOf(healed.hits[0])).toEqual(rowOf(builtin(FIVE_HIT).hits[0]))
+      expect(rowOf(healed.hits[0])).toEqual(v13Rows(FIVE_HIT)[0])
     }
   })
 
@@ -114,7 +122,7 @@ describe("V13__spearHeavyChargedCoefficients — called directly", () => {
     expect(after.v).toBe(13)
     for (const id of [FIVE_HIT, ONE_HIT, ONE_HIT_PREPULL]) {
       skillIn(after, id).hits.forEach((hit, index) =>
-        expect(rowOf(hit)).toEqual(rowOf(builtin(id).hits[index])),
+        expect(rowOf(hit)).toEqual(v13Rows(id)[index]),
       )
     }
     for (const skill of STORE.skills) {
@@ -140,7 +148,7 @@ describe("V13__spearHeavyChargedCoefficients — through the chain", () => {
     expect(result.blob.v).toBe(13)
     for (const id of [FIVE_HIT, ONE_HIT, ONE_HIT_PREPULL]) {
       skillIn(result.blob, id).hits.forEach((hit, index) =>
-        expect(rowOf(hit)).toEqual(rowOf(builtin(id).hits[index])),
+        expect(rowOf(hit)).toEqual(v13Rows(id)[index]),
       )
     }
   })

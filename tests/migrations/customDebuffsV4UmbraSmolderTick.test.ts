@@ -27,6 +27,11 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const debuffIn = (blob: { debuffs: unknown[] }, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
 
+// This hop's own target — not the live built-in, which a later hop
+// (V9__sharedDotRecalibration) has since moved past (docs/MIGRATIONS.md
+// § "Migration tests" rule 4: a step's test never asserts the latest shape).
+const v4TargetTick = { physMultiplier: 0.24991, physFixed: 37.74, attributeMultiplier: 0.374865 }
+
 const currentTick = () =>
   builtinDebuffsForClass(CLASS).find((debuff) => debuff.id === WALKED_SMOLDER)!.dot!
 
@@ -39,14 +44,14 @@ describe("custom-debuffs v3 fixture", () => {
 })
 
 describe("migrateUmbraSmolderDot", () => {
-  it("rewrites the untouched tick to the built-in's current tick", () => {
+  it("rewrites the untouched tick to this hop's own target", () => {
     const healed = migrateUmbraSmolderDot(
       SMOLDER,
       clone(debuffIn(STORE, SMOLDER).dot),
     ) as Debuff["dot"]
-    expect(healed!.physMultiplier).toBe(currentTick().physMultiplier)
-    expect(healed!.physFixed).toBe(currentTick().physFixed)
-    expect(healed!.attributeMultiplier).toBe(currentTick().attributeMultiplier)
+    expect(healed!.physMultiplier).toBe(v4TargetTick.physMultiplier)
+    expect(healed!.physFixed).toBe(v4TargetTick.physFixed)
+    expect(healed!.attributeMultiplier).toBe(v4TargetTick.attributeMultiplier)
   })
 
   it("leaves an edited tick, another debuff and a missing dot alone", () => {
@@ -66,7 +71,7 @@ describe("V4__umbraSmolderTick — called directly", () => {
     const { dot, ...restAfter } = debuffIn(after, SMOLDER)
     void _dot
     expect(restAfter).toEqual(restBefore)
-    expect(dot!.physMultiplier).toBe(currentTick().physMultiplier)
+    expect(dot!.physMultiplier).toBe(v4TargetTick.physMultiplier)
     expect(debuffIn(after, USER_AUTHORED)).toEqual(debuffIn(STORE, USER_AUTHORED))
   })
 

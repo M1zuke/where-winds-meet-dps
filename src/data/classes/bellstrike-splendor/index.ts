@@ -6,9 +6,14 @@ import { rotationsFor } from "../../../definitions/rotations/registry"
 import defaultRotation from "./rotations/kaezuma42Vs1Db"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { BELLSTRIKE_SPLENDOR_GATES } from "./gates"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
-import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
-import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
+import { endlessGale, endlessGaleAtStart } from "../../skills/bellstrike-splendor/buffs/endlessGale"
+import {
+  qiankunsLockQiImbalance,
+  qiImbalance,
+} from "../../skills/bellstrike-splendor/buffs/qiImbalance"
+import { qiStruggleEnhancement } from "../../skills/bellstrike-splendor/buffs/qiStruggleEnhancement"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
 import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
 import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/swordSlashDamageBoost"
@@ -16,6 +21,7 @@ import {
   namelessSpearAdditionalAttack,
   namelessSwordAdditionalAttack,
 } from "../../skills/bellstrike-splendor/buffs/additionalAttack"
+import { enduranceMeterWithNamelessSpear } from "../../resources/enduranceMeter"
 
 export const bellstrikeSplendor = defineClass({
   id: CLASS_ID,
@@ -32,6 +38,7 @@ export const bellstrikeSplendor = defineClass({
     INNER_WAY_ID.insightfulStrike,
     INNER_WAY_ID.bitterSeason,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.evasiveCharge,
   ],
   classSpecificAttunements: [
     "swordQ",
@@ -41,6 +48,11 @@ export const bellstrikeSplendor = defineClass({
     "spearSpecial",
   ],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Relentless Chase) — an assumption for every skill with no reach
+  // of its own.
+  defaultMeleeReachMeters: 3,
+  meters: [enduranceMeterWithNamelessSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
@@ -48,15 +60,18 @@ export const bellstrikeSplendor = defineClass({
   defaultRotationId: defaultRotation.id,
   classBuffDefs: [
     endlessGale,
+    endlessGaleAtStart,
     swordSlashDamageBoost,
     swordEnergyEnhancement,
     swordEnergyHpDamage,
     qiImbalance,
+    qiankunsLockQiImbalance,
+    qiStruggleEnhancement,
     belowSixtyEndurance,
     namelessSwordAdditionalAttack,
     namelessSpearAdditionalAttack,
   ],
-  gateBuffs: [],
+  gateBuffs: BELLSTRIKE_SPLENDOR_GATES,
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

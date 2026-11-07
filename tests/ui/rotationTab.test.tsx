@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { runEngine } from "../../src/engine/dps"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
@@ -11,7 +11,7 @@ import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmD
 import { RotationTab } from "../../src/ui/features/rotation/rotation-tab/RotationTab"
 
 function renderTab(onChange: (next: Inputs) => void = () => {}) {
-  const inputs = applyBowSet(applyArmorSet(withDerivedStats(defaultInputs)))
+  const inputs = applySetBonuses(withDerivedStats(defaultInputs))
   render(
     <I18nProvider>
       <ConfirmProvider>

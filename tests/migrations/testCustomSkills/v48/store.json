@@ -1,0 +1,3862 @@
+{
+  "v": 48,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-bleed-detonation",
+      "classId": "bellstrikeUmbra",
+      "name": "Blood Burst",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation", "prop:empoweredDotEffect"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:bleedDetonation",
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+        "buff-bellstrikeUmbra-zenith-bar",
+        "soulShaken",
+        "strategicSwordAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 2.4,
+          "attributeMultiplier": 3.6,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-zenith-detonation",
+                "op": "gte",
+                "stacks": 1
+              },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-zenith-detonation",
+                "op": "gte",
+                "stacks": 1
+              },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            }
+          ],
+          "qiRate": 0.2
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-falcons-pursuit",
+      "classId": "bamboocutDraught",
+      "name": "Falcon's Pursuit",
+      "breakdownName": "Whaledraft",
+      "tags": ["weapon:Gauntlets", "role:falconsPursuit"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:falconsPursuit",
+      "receives": [
+        "eonpourInebriateDamage",
+        "skystrikeGauntletsAdditionalAttack",
+        "skystrikeGauntletsAdditionalAttackCoefficient"
+      ],
+      "triggerable": true,
+      "castFrames": 0,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-dragonquench-inebriate",
+      "classId": "bamboocutDraught",
+      "name": "Dragonquench - Inebriate",
+      "tags": ["weapon:Gauntlets", "attune:driftcleaveDeepdaze", "role:dragonquenchInebriate"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:dragonquenchInebriate",
+      "startLatency": "noWaitOnDummy",
+      "neverAbrades": true,
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggerable": false,
+      "castFrames": 143,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.68814,
+          "attributeMultiplier": 1.03221,
+          "physFixed": 191,
+          "attributeFixed": 104,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        },
+        {
+          "id": "hit-1",
+          "frame": 41,
+          "physMultiplier": 0.66144,
+          "attributeMultiplier": 0.99216,
+          "physFixed": 184,
+          "attributeFixed": 100,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        },
+        {
+          "id": "hit-2",
+          "frame": 69,
+          "physMultiplier": 0.80698,
+          "attributeMultiplier": 1.21047,
+          "physFixed": 224,
+          "attributeFixed": 122,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        },
+        {
+          "id": "hit-3",
+          "frame": 91,
+          "physMultiplier": 0.546408,
+          "attributeMultiplier": 0.819612,
+          "physFixed": 151.5,
+          "attributeFixed": 82.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        },
+        {
+          "id": "hit-4",
+          "frame": 98,
+          "physMultiplier": 0.546408,
+          "attributeMultiplier": 0.819612,
+          "physFixed": 151.5,
+          "attributeFixed": 82.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        },
+        {
+          "id": "hit-5",
+          "frame": 105,
+          "physMultiplier": 0.7285440000000001,
+          "attributeMultiplier": 1.092816,
+          "physFixed": 202,
+          "attributeFixed": 110,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "eonpourUnlock",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "qiRate": 0.65
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-06T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldierheng",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierHeng",
+      "tags": [
+        "weapon:Heng Blade",
+        "prop:cleftpeakBoost",
+        "role:anxiSoldier",
+        "attune:snowpartingVariedCombo",
+        "role:snowpartingVC"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierHeng",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 42,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-2",
+          "frame": 28,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-3",
+          "frame": 42,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldierheng-stab",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierHeng (Stab)",
+      "tags": ["weapon:Heng Blade", "prop:cleftpeakBoost", "role:anxiSoldier", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierHeng",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 42,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-2",
+          "frame": 28,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-3",
+          "frame": 42,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermojump",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoJump",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoJump"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoJump",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.9,
+          "attributeMultiplier": 1.35,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermodown",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoDown",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoDown"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoDown",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermosweep",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoSweep",
+      "tags": ["weapon:Mo Blade", "prop:cleftpeakBoost", "attune:phalanxbaneQ", "role:anxiSoldier"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoSweep",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-castlink",
+      "classId": "bamboocutDraught",
+      "name": "Castlink",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:castlink",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 49,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 15,
+          "physMultiplier": 0.616165,
+          "attributeMultiplier": 0.9242475,
+          "physFixed": 171,
+          "attributeFixed": 93,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-drunkslay",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted",
+              "extendFrames": 360,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-points",
+              "stacks": 200,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted",
+              "durationFrames": 600
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-consecutive-punches",
+              "stacks": -1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-castlink-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-castlink-jadeflush",
+              "label": "Jadeflush",
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 100
+                }
+              ],
+              "physMultiplier": 0.635355,
+              "attributeMultiplier": 0.9530325,
+              "physFixed": 176,
+              "attributeFixed": 95.75,
+              "castFrames": 89
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-consecutive-punches",
+              "op": "gte",
+              "stacks": 1
+            },
+            {
+              "buffId": "buff-bamboocutDraught-castlink-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 27,
+          "physMultiplier": 0.616165,
+          "attributeMultiplier": 0.9242475,
+          "physFixed": 171,
+          "attributeFixed": 93,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-castlink-jadeflush",
+              "label": "Jadeflush",
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 100
+                }
+              ],
+              "physMultiplier": 0.635355,
+              "attributeMultiplier": 0.9530325,
+              "physFixed": 176,
+              "attributeFixed": 95.75
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-consecutive-punches",
+              "op": "gte",
+              "stacks": 1
+            },
+            {
+              "buffId": "buff-bamboocutDraught-castlink-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 41,
+          "physMultiplier": 0.635355,
+          "attributeMultiplier": 0.9530325,
+          "physFixed": 176,
+          "attributeFixed": 95.75,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            },
+            {
+              "buffId": "buff-bamboocutDraught-consecutive-punches",
+              "op": "gte",
+              "stacks": 1
+            },
+            {
+              "buffId": "buff-bamboocutDraught-castlink-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 74,
+          "physMultiplier": 0.635355,
+          "attributeMultiplier": 0.9530325,
+          "physFixed": 176,
+          "attributeFixed": 95.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            },
+            {
+              "buffId": "buff-bamboocutDraught-consecutive-punches",
+              "op": "gte",
+              "stacks": 1
+            },
+            {
+              "buffId": "buff-bamboocutDraught-castlink-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-peakfall-prepull",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Q Prepull",
+      "breakdownName": "Peakfall",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:peakfallPrepull",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggersBuffs": ["jadeware"],
+      "prePull": true,
+      "triggerable": false,
+      "castFrames": 0,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.91934,
+          "attributeMultiplier": 1.37901,
+          "physFixed": 255,
+          "attributeFixed": 139,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-consecutive-punches",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-peakfall-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-04T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-peakfall",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Q",
+      "breakdownName": "Peakfall",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:peakfall",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 38,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.91934,
+          "attributeMultiplier": 1.37901,
+          "physFixed": 255,
+          "attributeFixed": 139,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-drunkslay",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted",
+              "extendFrames": 360,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-points",
+              "stacks": 200,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted",
+              "durationFrames": 600
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-consecutive-punches",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-peakfall-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-peakfall-jadeflush",
+              "label": "Gauntlet Q - Jadeflush",
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 100
+                }
+              ],
+              "physMultiplier": 0.78782,
+              "attributeMultiplier": 1.18173,
+              "physFixed": 218.5,
+              "attributeFixed": 119,
+              "castFrames": 52
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.78782,
+          "attributeMultiplier": 1.18173,
+          "physFixed": 218.5,
+          "attributeFixed": 119,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            },
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-reveldrift-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Q [1-hit cancel]",
+      "breakdownName": "Reveldrift",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:reveldriftCancel",
+      "receives": ["eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 21,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 19,
+          "physMultiplier": 0.528025,
+          "attributeMultiplier": 0.7920375,
+          "physFixed": 146.5,
+          "attributeFixed": 80,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-05T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-reveldrift",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Q",
+      "breakdownName": "Reveldrift",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:reveldrift",
+      "receives": ["eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 66,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 19,
+          "physMultiplier": 0.528025,
+          "attributeMultiplier": 0.7920375,
+          "physFixed": 146.5,
+          "attributeFixed": 80,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.528025,
+          "attributeMultiplier": 0.7920375,
+          "physFixed": 146.5,
+          "attributeFixed": 80,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-realmplay",
+      "classId": "bamboocutDraught",
+      "name": "Realmplay",
+      "tags": ["weapon:Twin Blades", "attune:twinbladesMartialArt"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:realmplay",
+      "receives": ["eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggerable": false,
+      "castFrames": 28,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.402,
+          "attributeMultiplier": 0.603,
+          "physFixed": 111.5,
+          "attributeFixed": 61,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 10,
+          "physMultiplier": 0.402,
+          "attributeMultiplier": 0.603,
+          "physFixed": 111.5,
+          "attributeFixed": 61,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-04T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-spearq-0-hit-cancel",
+      "classId": "bellstrikeSplendor",
+      "name": "SpearQ 0-Hit Cancel",
+      "breakdownName": "Qiankun's Lock (0-hit cancel)",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ0HitCancel",
+      "triggersBuffs": ["jadeware", "mountainsMight", "qiImbalance"],
+      "receives": ["namelessSpearAdditionalAttack"],
+      "castFrames": 6,
+      "triggerable": true,
+      "reachMeters": 5,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 1.5,
+            "maxMeters": 4.5,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleAtStart",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 300,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleCostReductionEnd",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-spearq-prepull",
+      "classId": "bellstrikeSplendor",
+      "name": "SpearQ Prepull",
+      "breakdownName": "Qiankun's Lock (prepull)",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQPrepull",
+      "triggersBuffs": ["jadeware", "mountainsMight", "qiImbalance"],
+      "receives": ["namelessSpearAdditionalAttack"],
+      "castFrames": 0,
+      "triggerable": true,
+      "reachMeters": 5,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 1.5,
+            "maxMeters": 4.5,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleAtStart",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 300,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleCostReductionEnd",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-spearq",
+      "classId": "bellstrikeSplendor",
+      "name": "SpearQ",
+      "breakdownName": "Qiankun's Lock",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ",
+      "triggersBuffs": ["jadeware", "mountainsMight", "qiImbalance"],
+      "receives": ["namelessSpearAdditionalAttack"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 5,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 1.5,
+            "maxMeters": 4.5,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.5732,
+          "attributeMultiplier": 0.8598,
+          "physFixed": 160,
+          "attributeFixed": 87,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 30,
+              "condition": null,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleAtStart",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGale",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 300,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "endlessGaleCostReductionEnd",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordq-2nd",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordQ[2nd]",
+      "breakdownName": "Relentless Chase",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordQ2nd",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["jadeware", "mountainsMightQiImbalance"],
+      "receives": ["namelessSwordAdditionalAttack"],
+      "castFrames": 60,
+      "triggerable": true,
+      "reachMeters": 3,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 7,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 48,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordq",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordQ",
+      "breakdownName": "Daunting Strike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordQ",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["jadeware", "mountainsMightQiImbalance"],
+      "receives": ["namelessSwordAdditionalAttack"],
+      "castFrames": 26,
+      "triggerable": true,
+      "reachMeters": 12,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 22,
+          "physMultiplier": 1.0253,
+          "attributeMultiplier": 1.538,
+          "physFixed": 283.6,
+          "attributeFixed": 154.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearq-5-hit-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearQ 5-Hit Cancel",
+      "breakdownName": "Sober Sorrow",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ5HitCancel",
+      "triggersBuffs": ["wineGu", "soulShaken", "jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "heavenquakerSpearAdditionalAttack"],
+      "castFrames": 84,
+      "triggerable": true,
+      "reachMeters": 3,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 45,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 62,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 82,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-water-drop",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-water-drop",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 180,
+              "extendOnly": true,
+              "appliesOnCastEnd": true,
+              "requiresParam": "wolfchasersArt"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spring-surge",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spring-surge",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 180,
+              "extendOnly": true,
+              "appliesOnCastEnd": true,
+              "requiresParam": "wolfchasersArt"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "potentRiverFlow",
+              "stacks": 1,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 1
+              },
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-empowered-river-flow",
+              "stacks": 1,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearq",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearQ",
+      "breakdownName": "Sober Sorrow",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ",
+      "triggersBuffs": ["wineGu", "soulShaken", "jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "heavenquakerSpearAdditionalAttack"],
+      "castFrames": 120,
+      "triggerable": true,
+      "reachMeters": 3,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 45,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 62,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 82,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-water-drop",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-water-drop",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 180,
+              "extendOnly": true,
+              "appliesOnCastEnd": true,
+              "requiresParam": "wolfchasersArt"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spring-surge",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spring-surge",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 180,
+              "extendOnly": true,
+              "appliesOnCastEnd": true,
+              "requiresParam": "wolfchasersArt"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "potentRiverFlow",
+              "stacks": 1,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 1
+              },
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-empowered-river-flow",
+              "stacks": 1,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 1
+              },
+              "appliesOnCastEnd": true
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 98,
+          "physMultiplier": 0.535055,
+          "attributeMultiplier": 0.8025825,
+          "physFixed": 148.25,
+          "attributeFixed": 80.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-25T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-martial-qqq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQQ",
+      "breakdownName": "Crisscross - Inner Track",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQQQ",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ],
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack"],
+      "castFrames": 86,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 32,
+          "physMultiplier": 0.316911,
+          "attributeMultiplier": 0.475366,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-swordMartialQqq"
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 71,
+          "physMultiplier": 0.475366,
+          "attributeMultiplier": 0.713049,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-swordMartialQqq"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordq-follow-up-1-hit-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ 1-Hit [Cancel]",
+      "breakdownName": "Inner Track Slash",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQQ1HitCancel",
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack"],
+      "castFrames": 24,
+      "triggerable": true,
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordq-follow-up-2-hit-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ 2-Hit[Cancel]",
+      "breakdownName": "Inner Track Slash",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQQ2HitCancel",
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 23,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial Q",
+      "breakdownName": "Inner Track Slash",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQ",
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack"],
+      "castFrames": 27,
+      "triggerable": true,
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordqfollowup",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ",
+      "breakdownName": "Inner Track Slash",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQQ",
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack"],
+      "castFrames": 64,
+      "triggerable": true,
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordqfollowup-hit-0-sword-horizon",
+              "label": "Sword Horizon",
+              "conditions": [
+                {
+                  "param": "swordHorizon"
+                }
+              ],
+              "physMultiplier": 0.544068,
+              "attributeMultiplier": 0.816102,
+              "physFixed": 150.6,
+              "attributeFixed": 82,
+              "castFrames": 61
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 23,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 34,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 43,
+          "physMultiplier": 0.816102,
+          "attributeMultiplier": 1.224153,
+          "physFixed": 225.9,
+          "attributeFixed": 123,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanq-prepull",
+      "classId": "silkbindJade",
+      "name": "FanQ Prepull",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQPrepull",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
+      "castFrames": 0,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanq",
+      "classId": "silkbindJade",
+      "name": "FanQ",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQ",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
+      "castFrames": 61,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 9,
+          "physMultiplier": 0.9271,
+          "attributeMultiplier": 1.3907,
+          "physFixed": 257,
+          "attributeFixed": 140,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanqcancel",
+      "classId": "silkbindJade",
+      "name": "FanQCancel",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQCancel",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "springThunder"],
+      "castFrames": 10,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.9271,
+          "attributeMultiplier": 1.3907,
+          "physFixed": 257,
+          "attributeFixed": 140,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbq-prepull",
+      "classId": "silkbindJade",
+      "name": "UmbQ Prepull",
+      "tags": [
+        "prop:isMartialSkillQ",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbQ",
+        "role:umbQ"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbQPrepull",
+      "receives": [
+        "combo",
+        "windWall",
+        "trajectorySkill",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
+      "castFrames": 18,
+      "triggerable": true,
+      "reachMeters": 20,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 2.3397,
+          "attributeMultiplier": 3.5095,
+          "physFixed": 648,
+          "attributeFixed": 353,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "UmbQ",
+      "tags": [
+        "prop:isMartialSkillQ",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbQ",
+        "role:umbQ"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbQ",
+      "receives": [
+        "combo",
+        "windWall",
+        "trajectorySkill",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
+      "castFrames": 67,
+      "triggerable": true,
+      "reachMeters": 20,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 50,
+          "physMultiplier": 2.3397,
+          "attributeMultiplier": 3.5095,
+          "physFixed": 648,
+          "attributeFixed": 353,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-light-attack",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Light Attack",
+      "breakdownName": "Gauntlets Light Attack",
+      "tags": ["weapon:Gauntlets"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:lightAttack",
+      "receives": ["eonpourInebriateDamage", "skystrikeGauntletsAdditionalAttack"],
+      "triggerable": false,
+      "castFrames": 187,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 13,
+          "physMultiplier": 0.35636,
+          "attributeMultiplier": 0.53454,
+          "physFixed": 100,
+          "attributeFixed": 54,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 37,
+          "physMultiplier": 0.156852,
+          "attributeMultiplier": 0.235278,
+          "physFixed": 44,
+          "attributeFixed": 23.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 47,
+          "physMultiplier": 0.235278,
+          "attributeMultiplier": 0.352917,
+          "physFixed": 66,
+          "attributeFixed": 35.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 71,
+          "physMultiplier": 0.25294,
+          "attributeMultiplier": 0.37941,
+          "physFixed": 71,
+          "attributeFixed": 39,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 87,
+          "physMultiplier": 0.31826,
+          "attributeMultiplier": 0.47739,
+          "physFixed": 89,
+          "attributeFixed": 48,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 113,
+          "physMultiplier": 0.186944,
+          "attributeMultiplier": 0.280416,
+          "physFixed": 52,
+          "attributeFixed": 28.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-6",
+          "frame": 126,
+          "physMultiplier": 0.280416,
+          "attributeMultiplier": 0.420624,
+          "physFixed": 78,
+          "attributeFixed": 42.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-7",
+          "frame": 147,
+          "physMultiplier": 0.8202,
+          "attributeMultiplier": 1.2303000000000002,
+          "physFixed": 228,
+          "attributeFixed": 124,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bamboocutDraught-falcons-pursuit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-04T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-bloombreak",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Light Attack - Inebriate",
+      "breakdownName": "Bloombreak",
+      "tags": ["weapon:Gauntlets"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:bloombreak",
+      "receives": ["eonpourInebriateDamage", "skystrikeGauntletsAdditionalAttack"],
+      "triggerable": false,
+      "castFrames": 154,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 12,
+          "physMultiplier": 0.34392,
+          "attributeMultiplier": 0.51588,
+          "physFixed": 96,
+          "attributeFixed": 52,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.22728,
+          "attributeMultiplier": 0.34092,
+          "physFixed": 64,
+          "attributeFixed": 35,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 60,
+          "physMultiplier": 0.36725,
+          "attributeMultiplier": 0.550875,
+          "physFixed": 103,
+          "attributeFixed": 56,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 84,
+          "physMultiplier": 0.32992,
+          "attributeMultiplier": 0.49488,
+          "physFixed": 92,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 108,
+          "physMultiplier": 0.46445,
+          "attributeMultiplier": 0.6966749999999999,
+          "physFixed": 130,
+          "attributeFixed": 70,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 131,
+          "physMultiplier": 0.65496,
+          "attributeMultiplier": 0.98244,
+          "physFixed": 182,
+          "attributeFixed": 99,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 2,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourLightAttackPoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-marks",
+              "stacks": 3,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "eonpourCarousePoints",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-04T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-deflect-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Deflect Cancel",
+      "tags": [],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:deflectCancel",
+      "castFrames": 26,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-06T00:00:00.000Z",
+      "updatedAt": "2026-09-06T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxspecial",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxSpecial",
+      "tags": ["weapon:Mo Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxSpecial",
+      "receives": ["phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["ironGuards"],
+      "castConditions": [
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 50
+        }
+      ],
+      "castFrames": 71,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanlightcharged",
+      "classId": "silkbindJade",
+      "name": "FanLightCharged",
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanLightCharged",
+      "receives": [
+        "windWall",
+        "pursuitChargedBoost",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["lingeringBone"],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 30,
+          "fromFrame": 14.4,
+          "stopAfterSec": 0.55
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 98,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 71,
+          "physMultiplier": 1.9044,
+          "attributeMultiplier": 2.8566,
+          "physFixed": 527,
+          "attributeFixed": 287,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanspecial",
+      "classId": "silkbindJade",
+      "name": "FanSpecial",
+      "tags": ["weapon:Fan", "attune:fanSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanSpecial",
+      "receives": ["inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["lingeringBone"],
+      "castFrames": 67,
+      "triggerable": true,
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 33,
+          "physMultiplier": 0.6399,
+          "attributeMultiplier": 0.95985,
+          "physFixed": 177.5,
+          "attributeFixed": 96.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 33,
+          "physMultiplier": 0.6399,
+          "attributeMultiplier": 0.95985,
+          "physFixed": 177.5,
+          "attributeFixed": 96.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    }
+  ]
+}

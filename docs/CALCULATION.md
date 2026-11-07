@@ -39,6 +39,28 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   the min/max-phys step, and that is its only application site. Applying it in
   the stat layer double-counts it.
 
+## Gear set bonuses
+
+- A gear set sits on the four set-bearing slots only. The other four slots carry
+  an armor set the app does not model: they have no set field, and a set of the
+  armor group stored on any piece counts toward nothing.
+- A set's 2-piece is active with at least two equipped pieces carrying it, its
+  4-piece with four. Two different sets can each have their 2-piece active;
+  at most one 4-piece can be active.
+- A 2-piece's level comes from the equipped carriers' gear levels: sort them high
+  to low, keep the tier size's highest (two), average them, and use the first
+  ladder rung at or above the average — the last rung when the average is past
+  it. A 4-piece has no ladder; it is on or off.
+- A 4-piece gate (a set param, a build-level set check, a formula bonus) reads
+  the one set whose 4-piece is active, never a build-level selection.
+- The bow set sits on the Bow and the Thumb Ring, has only a 2-piece, and is
+  active only when both carry the same bow set. Its level follows the same rule
+  over the two pieces' levels and its own ladder.
+- The Bow and the Thumb Ring carry nothing else: no base stats, tunements,
+  attunement, heirloom, enhancement, analysis, retune or re-attune.
+- A set id the build does not recognise counts toward nothing and is kept as
+  stored.
+
 ## White vs yellow rates
 
 Read **CLAUDE.md § "White vs Yellow rates — DO NOT FLIP THIS"** before touching
@@ -68,6 +90,36 @@ anything rate-shaped. Two rules bind here:
   tail every row passes through, never an addend in the additive boost
   total.**
 
+## Qi damage
+
+Qi is a second, independent number the kernel produces alongside HP damage —
+never the other way around, and never in its own pass. For every scored
+event, after the kernel's own HP damage is finished (the rolled value when
+seeded, the expectation when not):
+
+```
+qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMultiplier) × target.qiTakenIndex )
+     × (qiRate + qiRateAdd)
+     × (1 + qiDamageBoost + targetQiDamageTaken)
+   + qiFlat × (1 + qiDamageBoost + targetQiDamageTaken)
+```
+
+- **Qi reads the event's finished damage** — crit, affinity, abrasion and the
+  broken-target HP bonus all already folded in, because that is the only
+  damage value that ever existed for the event. The event that empties the bar
+  never carries the broken-target bonus: it is scored before its own break
+  opens (docs/TIMELINE.md § "Qi bar"). A zero-coefficient hit deals
+  no Qi; every other hit deals Qi whether or not it falls inside the DPS
+  window, a pre-pull one included — docs/TIMELINE.md § "Qi bar".
+- **The broken-target HP bonus is its own factor in the shared damage tail**,
+  the same way an independent damage boost is (above) — never an addend in
+  the additive boost total, and it reaches a damage-over-time tick exactly as
+  it reaches an ordinary hit.
+- `player.qiIndex` and the broken-target bonus's own size are base-stat data,
+  not engine literals — read next to the other per-level base-stat values.
+- docs/TIMELINE.md § "Qi bar" has the bar itself: where the state lives, the
+  break rules and what every gate reads.
+
 ## Calculation rules
 
 Three corrections apply **unconditionally**, from the external sources below.
@@ -95,6 +147,13 @@ Nothing demotes a row to the non-matching coefficient by default;
 data module that has a genuine reason to set it false — and a row that does
 demotes both terms together, never one without the other.
 
+**A row whose attribute coefficient is exactly zero while its physical
+coefficient is positive deals no attribute damage on any of the five attribute
+tracks** — the martial art's own and the other four alike. The other tracks'
+fallback to the physical coefficient applies only to a row that has an
+attribute coefficient. A row with a zero physical coefficient is a marker and
+is unaffected.
+
 **Penetration resistance is zero for every target below breakthrough 20, and
 non-zero from breakthrough 20 on.** It is read off the target's own
 breakthrough, the same way its defense is.
@@ -103,6 +162,13 @@ breakthrough, the same way its defense is.
 attribute flat term alike, and applies before the martial art's
 attribute-flat multiplier** so the two compose multiplicatively in that
 order. It never reaches either coefficient term.
+
+**Attack rates form one additive pool per attack track, and a flat attack
+bonus sits outside it.** Every rate that raises the physical attack — a buff's,
+a set's — is summed first and multiplies the steady attack once; a flat bonus is
+added after, unscaled. On an attribute track a rate multiplies the steady attack, and the Formless
+attack takes only the rates that are granted to it. A rate that applies to one
+attribute track never reaches another.
 
 ### Sources of truth
 
@@ -166,15 +232,43 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 - **Registry order is load-bearing.** Contributions apply in it and float
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.
-- **A stochastic effect is a seeded whole-rotation schedule**, not a buff def —
-  a def cannot express a per-hit roll. Say so in the module when you add one. It
-  must **accept the run's generator when the engine supplies one** and realise a
-  single trajectory instead of averaging its own fixed-seed sweep; without one it
-  averages as before. A schedule that ignores the generator keeps reporting an
-  expectation on a run that has none, and understates the spread.
-- **Only hits laid by the rotation roll a proc.** DoT ticks and
-  trigger-enqueued hits do not. This is structural; do not work around it per
-  mechanic.
+- **A stochastic effect is an online tracker**, not a buff def — a def cannot
+  express a per-hit roll. It sees every scored event as the run reaches it and
+  answers each query from the events already seen, never from a schedule built
+  ahead of the run. Say so in the module when you add one. It must **accept the
+  run's generator when the engine supplies one** and realise a single
+  trajectory instead of averaging; without one it averages 500 trajectories,
+  each on its own fixed stream, so an unseeded run reproduces exactly. A seeded
+  run hands every mechanic its own substream of the run's seed, never one
+  generator shared between them, so adding a mechanic never moves another's
+  draws. A tracker that ignores the generator keeps reporting an expectation on
+  a run that has none, and understates the spread.
+- **Every scored event is offered to the mechanics once, in processing order**
+  (`observeEvent`), and a mechanic opts into the kinds it listens to: a hit, a
+  DoT tick that actually fired, a detonation's burst, a summoned hit, a
+  mechanic's own extra event. A hit rolls a proc whether it is laid by the
+  rotation or summoned by a trigger; a tick stopped by a resource or buff gate
+  is never offered. Each event carries whether it is a direct hit — every hit,
+  a tick whose DoT declares `directHit`, and a mechanic's own extra event as
+  that event declares — so a mechanic that rolls on direct hits only ignores
+  any other event. It also carries whether it can roll Affinity at all
+  (guaranteed-normal damage cannot). This is structural; do not work around it
+  per mechanic.
+- **A proc the game applies before the event's own damage** (`beforeEvent`)
+  reaches that event; **one it applies after** (`observeEvent`) reaches the
+  events that follow, and the event that rolls a state never reads it.
+  `contributeAt` reads the state left by every event already offered, so an
+  event resolving later on the same frame reads what an earlier one set up.
+- **A mechanic that reads an event's own affinity outcome** declares
+  `needsAffinityChance` and receives the chance the event's outcome was an
+  affinity read **without the mechanic's own contribution**, and on a run that
+  rolls hits the outcome it rolled.
+- **A mechanic acts on the clock or on events, never on a schedule of the
+  whole run.** One timed off the fight's own clock schedules its own events
+  from `start`; one that reacts to hits schedules them from the hits it
+  observes. Neither knows where the fight window ends: the engine drops an
+  event past a fixed window's end and stops at the last damaging hit of a
+  window with no fixed length.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two
   are numerically identical.

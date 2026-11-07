@@ -6,7 +6,7 @@ import {
   V11__setIdsWithoutDisplayName,
   migrateSetId,
 } from "../../src/migrations/V11__setIdsWithoutDisplayName"
-import type { Inputs, StoredProfile } from "../../src/engine/types"
+import type { Inputs, StoredProfile } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v10/stonesplitStrength.json"
 
 type LegacyFile = { v: number; profile: StoredProfile }

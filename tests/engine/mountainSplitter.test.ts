@@ -1,17 +1,21 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import type { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
+import type { QiReader } from "../../src/engine/qiBar"
 import { makeSkill } from "../../src/engine/skill"
 import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { CAST, PROP, ROLE, WEAPON } from "../../src/data/skills/ids"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 
 const CLASS = "stonesplitStrength"
+const EXHAUSTED_THROUGHOUT = exhaustedFrom(0, 30)
 
-function engine(tier: number, overrides: Record<string, unknown> = {}) {
-  return new BuffEngine(
+function engine(tier: number, overrides: Record<string, unknown> = {}, qiReader?: QiReader) {
+  return buffEngineWith(
     { classId: CLASS, steadfastDevotion: true, steadfastDevotionTier: tier, ...overrides },
     buffDefsForClass(CLASS),
     groupBuffDefs(),
+    qiReader,
   )
 }
 
@@ -31,7 +35,7 @@ const phalanxCharged = () =>
     "PhalanxCharged-S3",
     [WEAPON.moBlade, ROLE.phalanxCharged, PROP.consumesInnerPassionBurningHeart],
     CAST.phalanxChargedS3,
-    [BUFF.mountainSplitter],
+    [BUFF.mountainSplitter, BUFF.mountainSplitterExhausted],
   )
 
 const anxiMoJump = () =>
@@ -151,7 +155,7 @@ describe("Burning Heart — what a charge consumes, and what that grants", () =>
   })
 
   it("attaches Mountain Splitter only on the Charge Enhancement route, and propagates it", () => {
-    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    const exhausted = engine(6, {}, EXHAUSTED_THROUGHOUT)
     exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 }, false, [
       BUFF.chargeEnhancement,
     ])
@@ -170,7 +174,7 @@ describe("Burning Heart — what a charge consumes, and what that grants", () =>
   })
 
   it("does not open the tier 3 window when Charge Enhancement is what was spent", () => {
-    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    const exhausted = engine(6, {}, EXHAUSTED_THROUGHOUT)
     exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 }, false, [
       BUFF.chargeEnhancement,
     ])
@@ -183,16 +187,45 @@ describe("Burning Heart — what a charge consumes, and what that grants", () =>
   })
 })
 
+describe("Mountain Splitter (Exhausted target) — the tier 6 fallback rule", () => {
+  it("carries a final-crit rule that fires at 75% and adds 15 points below it, on an Exhausted target without Mountain Splitter", () => {
+    const exhausted = engine(6, {}, EXHAUSTED_THROUGHOUT)
+    const result = exhausted.calculateDamageEffects(phalanxCharged(), 1)
+    expect(result.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
+  })
+
+  it("does not fire outside the Exhausted phase", () => {
+    const normalPhase = engine(6)
+    const result = normalPhase.calculateDamageEffects(phalanxCharged(), 1)
+    expect(result.conditionalFinalCrit).toBeNull()
+  })
+
+  it("yields to the tier 3 Mountain Splitter window while that one is up", () => {
+    const stillExhausted = engine(6, {}, EXHAUSTED_THROUGHOUT)
+    stillExhausted.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 }, false, [
+      BUFF.innerPassion,
+    ])
+    stillExhausted.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true, [BUFF.mountainSplitter])
+    expect(stillExhausted.isBuffActive(BUFF.mountainSplitter, 2)).toBe(true)
+    expect(stillExhausted.calculateDamageEffects(phalanxCharged(), 2).conditionalFinalCrit).toEqual(
+      {
+        threshold: 0.75,
+        bonusBelowThreshold: 0.15,
+      },
+    )
+  })
+})
+
 describe("Charge Enhancement — the tier 6 pool", () => {
   it("grants three stacks for 18 seconds, and only during Qi break", () => {
-    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    const exhausted = engine(6, {}, EXHAUSTED_THROUGHOUT)
     exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 }, false, [
       BUFF.chargeEnhancement,
     ])
     expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 3)).toBe(3)
     expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 21)).toBe(0)
 
-    const normalPhase = engine(6, { qiBreakTime: 100, bossBreakDuration: 10 })
+    const normalPhase = engine(6)
     normalPhase.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 }, false, [
       BUFF.chargeEnhancement,
     ])
@@ -200,7 +233,7 @@ describe("Charge Enhancement — the tier 6 pool", () => {
   })
 
   it("is unavailable below tier 6", () => {
-    const belowTier = engine(5, { qiBreakTime: 0, bossBreakDuration: 30 })
+    const belowTier = engine(5, {}, EXHAUSTED_THROUGHOUT)
     belowTier.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 }, false, [
       BUFF.chargeEnhancement,
     ])

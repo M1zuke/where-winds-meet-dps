@@ -7,6 +7,7 @@ import {
   type RawProfilesBlob,
 } from "../../src/migrations"
 import { loadProfiles } from "../../src/storage"
+import { carriedSets } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v4/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
@@ -148,9 +149,10 @@ describe("runProfileMigrations — never deletes", () => {
 
     const loaded = loadProfiles().profiles[0].inputs
 
-    expect(loaded.set).toBe("setFromALaterBuild")
+    expect(carriedSets(loaded)).toContain("setFromALaterBuild")
     expect(loaded.arsenal).toBe("arsenalFromALaterBuild")
-    expect(loaded.bowSet).toBe("bowSetFromALaterBuild")
+    expect(loaded.bowGear.bow?.set).toBe("bowSetFromALaterBuild")
+    expect(loaded.bowGear.thumbRing?.set).toBe("bowSetFromALaterBuild")
     expect(loaded.mindMethods[0].id).toBe("innerWayFromALaterBuild")
     expect(loaded.mindMethods[0].stacks).toBe("tier 6")
   })

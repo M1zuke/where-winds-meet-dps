@@ -9,6 +9,8 @@
     "roleName",
     "level",
     "school",
+    "kongfuMain",
+    "kongfuSub",
     "wearEquips",
     "wearEquipsDetailed",
     "passiveSlots",

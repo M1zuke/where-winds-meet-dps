@@ -1,23 +1,69 @@
 import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
-import type { Skill } from "./skill"
+import { projectileTravelFrames, type Skill } from "./skill"
 import type { StatusWindow } from "./ledger"
 import type { computeSkillDamage, FormulaContext, RolledHit } from "./formula"
 import type { ArtBonusField } from "./effects/effect"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+import { FPS } from "./timeline"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 const DEBUFF_ID_PREFIX = "debuff-"
 
-// A DoT tick does not run on a grid: each tick schedules the next one when it
-// fires, so every tick pays the timer's own overhead once and the interval runs
-// long. The same fraction for every interval length, compounding over the
-// window. Calibrated against in-game tick counts, 2026-09-10.
-const TICK_TIMER_INTERVAL_FACTOR = 1.0625
+// In-game timer values as of 2026-10-11: the timer runs in 33 ms slots and
+// rounds a requested delay down to a whole slot, and a tick that wakes before
+// it is due asks again no sooner than 34 ms later. Each tick arms the next one
+// from the moment it fired, so the lateness carries into every later tick.
+const TICK_TIMER_SLOT_MS = 33
+const TICK_TIMER_MIN_RETRY_MS = 34
+
+function tickTimerDelayFrames(requestedFrames: number): number {
+  if (requestedFrames <= 0) return requestedFrames
+  const requestedMs = (requestedFrames * 1000) / FPS
+  const wholeSlots = (delayMs: number) =>
+    Math.floor(delayMs / TICK_TIMER_SLOT_MS) * TICK_TIMER_SLOT_MS
+  let firedMs = wholeSlots(requestedMs)
+  while (firedMs < requestedMs)
+    firedMs += wholeSlots(Math.max(TICK_TIMER_MIN_RETRY_MS, requestedMs - firedMs))
+  return (firedMs * FPS) / 1000
+}
+
+const absoluteDeadlineLatenessCache = new Map<string, number[]>()
+
+// How late, in frames, the run `runIndex` of a timer that re-arms toward the
+// absolute deadline `first + runIndex × interval` fires. Each run requests the
+// delay left to its deadline from the moment the previous run actually fired,
+// and the tick timer rounds that request the way `tickTimerDelayFrames` does.
+export function absoluteDeadlineLatenessFrames(
+  runIndex: number,
+  firstDelayFrames: number,
+  intervalFrames: number,
+): number {
+  const key = `${firstDelayFrames}|${intervalFrames}`
+  let latenesses = absoluteDeadlineLatenessCache.get(key)
+  if (!latenesses) {
+    latenesses = [tickTimerDelayFrames(firstDelayFrames) - firstDelayFrames]
+    absoluteDeadlineLatenessCache.set(key, latenesses)
+  }
+  while (latenesses.length <= runIndex) {
+    const previousFire =
+      firstDelayFrames +
+      (latenesses.length - 1) * intervalFrames +
+      latenesses[latenesses.length - 1]
+    const deadline = firstDelayFrames + latenesses.length * intervalFrames
+    latenesses.push(previousFire + tickTimerDelayFrames(deadline - previousFire) - deadline)
+  }
+  return latenesses[runIndex]
+}
 
 export function effectiveTickIntervalFrames(dot: DebuffDotSpec): number {
   const base = dot.tickIntervalFrames
-  return dot.reschedulesPerTick === true ? base * TICK_TIMER_INTERVAL_FACTOR : base
+  return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
+}
+
+export function effectiveFirstTickOffsetFrames(dot: DebuffDotSpec): number {
+  const base = Math.max(0, dot.firstTickOffsetFrames ?? dot.tickIntervalFrames)
+  return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
 }
 
 // A debuff names the skill its per-tick coefficients come from. `sourceSkillId`
@@ -62,7 +108,7 @@ export function dotTicksPerWindow(debuff: Pick<Debuff, "dot" | "durationFrames">
   const interval = effectiveTickIntervalFrames(dot)
   let ticks = 0
   for (
-    let frame = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames;
+    let frame = effectiveFirstTickOffsetFrames(dot);
     frame < debuff.durationFrames;
     frame += interval
   )
@@ -89,7 +135,7 @@ export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
     hits: [],
     castFrames: 0,
     triggerable: false,
-    isDotTick: true,
+    isDotTick: debuff.dot?.directHit !== true,
     createdAt: debuff.createdAt,
     updatedAt: debuff.updatedAt,
   }
@@ -111,7 +157,7 @@ function tickArt(
     extraCritDamage: dot.extraCritDamage,
     elevatedAttributeMultiplier: dot.elevatedAttributeMultiplier,
     skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
+    specialTag: dot.directHit ? undefined : "sustain",
     guaranteedCrit: forceCrit ? 1 : undefined,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
@@ -130,9 +176,9 @@ export function dotTickDamage(
   // the way `timeline.ts` adds them to a regular hit's — a def reaching a tick
   // must land the same bonus a def reaching a cast does.
   artBonuses: Partial<Record<ArtBonusField, number>> = {},
-): { damage: number; rolled?: RolledHit } {
+): { damage: number; rolled?: RolledHit; affinityOutcomeChance: number } {
   const dot = debuff.dot
-  if (!dot) return { damage: 0 }
+  if (!dot) return { damage: 0, affinityOutcomeChance: 0 }
   const resolved = shape ?? {
     physMultiplier: dot.physMultiplier,
     physFixed: dot.physFixed,
@@ -144,8 +190,13 @@ export function dotTickDamage(
     const key = field as ArtBonusField
     art[key] = ((art[key] as number | undefined) ?? 0) + amount
   }
-  const { expectedDamage, rolled } = compute(art, ctx, Math.max(1, dot.count), rng)
-  return { damage: rolled?.damage ?? expectedDamage, rolled }
+  const { expectedDamage, rolled, affinityOutcomeChance } = compute(
+    art,
+    ctx,
+    Math.max(1, dot.count),
+    rng,
+  )
+  return { damage: rolled?.damage ?? expectedDamage, rolled, affinityOutcomeChance }
 }
 
 // Overlapping windows are one continuous episode: a DoT refreshed mid-window
@@ -160,72 +211,155 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
   return episodes
 }
 
-export interface DotTickPlan {
+export interface DotTickLaunch {
   frame: number
-  weight: number
+  // Where the pulse fires; `frame` is where its bullet lands. Equal for a
+  // pulse with no projectile.
+  launchFrame: number
+  runFrame: number
+  stampLatenessFrames?: number
   requiresBuff?: string
+  requiresBuffAtFrame?: number
+  enhancedBy?: string
+}
+
+export interface DotTickLanding {
+  weight: number
   shape?: DotStackShape
   scale?: number
 }
+
+export type DotTickPlan = DotTickLaunch & DotTickLanding
 
 export interface DotPlanQuery {
   debuff: Debuff
   dot: DebuffDotSpec
   windows: readonly StatusWindow[]
   stacksAt(frame: number): number
+  distanceAt?(frame: number): number
   inWindow(frame: number): boolean
   // Expected uptime for a stochastic DoT: a tick is worth the probability the
   // debuff is actually up at that moment. 1 for a deterministic one.
   weightAt(frame: number): number
 }
 
-export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
-  const { debuff, dot } = query
-  if (dot.tickIntervalFrames <= 0) return []
-  const interval = effectiveTickIntervalFrames(dot)
-  const firstOffset = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames
+export interface DotPulseQuery {
+  debuff: Debuff
+  dot: DebuffDotSpec
+  stacksAt(frame: number): number
+  distanceAt?(frame: number): number
+  inWindow(frame: number): boolean
+  weightAt(frame: number): number
+}
 
-  const perStack = (debuff.stackScaling ?? "flat") === "perStack"
+export interface DotPulseSchedule {
+  interval: number
+  firstOffset: number
+  offsets: readonly number[]
+}
+
+export function dotPulseSchedule(dot: DebuffDotSpec): DotPulseSchedule {
+  const interval = effectiveTickIntervalFrames(dot)
+  return {
+    interval,
+    firstOffset: effectiveFirstTickOffsetFrames(dot),
+    offsets: [0, ...(dot.additionalTicks?.offsetsFrames ?? [])].filter(
+      (offset) => offset >= 0 && offset < interval,
+    ),
+  }
+}
+
+export function planDotTickLaunch(
+  query: DotPulseQuery,
+  schedule: DotPulseSchedule,
+  pulse: number,
+  runIndex: number,
+  offset: number,
+): DotTickLaunch | null {
+  const { dot } = query
+  const { interval, firstOffset } = schedule
+  const at = pulse + offset
+  const launchFrame = Math.round(at)
+  const travelFrames =
+    dot.projectile && query.distanceAt
+      ? projectileTravelFrames(dot.projectile, query.distanceAt(launchFrame))
+      : 0
+  const frame = Math.round(at + travelFrames)
+  const runFrame = Math.round(pulse)
+  const stampLateness =
+    dot.rearmsToAbsoluteDeadline === true
+      ? { stampLatenessFrames: absoluteDeadlineLatenessFrames(runIndex, firstOffset, interval) }
+      : {}
+  const enhancingBuff = dot.additionalTicks?.requiresBuff
+  const requirement =
+    offset > 0
+      ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: runFrame }
+      : enhancingBuff
+        ? { enhancedBy: enhancingBuff }
+        : {}
+  if (frame < 0 || !query.inWindow(frame)) return null
+  return { frame, launchFrame, runFrame, ...stampLateness, ...requirement }
+}
+
+export function resolveDotTickLanding(
+  query: DotPulseQuery,
+  launch: Pick<DotTickLaunch, "frame">,
+): DotTickLanding | null {
+  const { debuff, dot } = query
+  const { frame } = launch
+  const weight = query.weightAt(frame)
+  if (weight <= 0) return null
+
   const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null
   const ladder = !shapes && dot.perStackMultipliers?.length ? dot.perStackMultipliers : null
+  if (shapes) {
+    const live = Math.max(1, query.stacksAt(frame))
+    return { weight, shape: shapes[Math.min(live, shapes.length) - 1] }
+  }
+  if (ladder) {
+    const live = Math.max(0, query.stacksAt(frame))
+    if (live === 0) return null
+    return { weight, scale: ladder[Math.min(live, ladder.length) - 1] }
+  }
+  const perStack = (debuff.stackScaling ?? "flat") === "perStack"
+  const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
+  if (perStack && count === 0) return null
+  return { weight, scale: count }
+}
+
+function planDotTick(
+  query: DotPulseQuery,
+  schedule: DotPulseSchedule,
+  pulse: number,
+  runIndex: number,
+  offset: number,
+): DotTickPlan | null {
+  const launch = planDotTickLaunch(query, schedule, pulse, runIndex, offset)
+  if (!launch) return null
+  const landing = resolveDotTickLanding(query, launch)
+  return landing ? { ...launch, ...landing } : null
+}
+
+export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
+  const { dot } = query
+  if (dot.tickIntervalFrames <= 0) return []
+  const schedule = dotPulseSchedule(dot)
 
   const plans: DotTickPlan[] = []
   for (const episode of mergeEpisodes(query.windows)) {
     // The accumulator stays exact while the frame it lands on is rounded, so a
     // fractional interval cannot compound its own rounding error.
-    for (let pulse = episode.start + firstOffset; pulse < episode.end; pulse += interval) {
-      for (const offset of [0, ...(dot.additionalTicks?.offsetsFrames ?? [])]) {
-        if (offset < 0 || offset >= interval) continue
-        const at = pulse + offset
-        if (at >= episode.end) continue
-        const frame = Math.round(at)
-        const requirement = offset > 0 ? { requiresBuff: dot.additionalTicks?.requiresBuff } : {}
-        if (frame < 0 || !query.inWindow(frame)) continue
-        const weight = query.weightAt(frame)
-        if (weight <= 0) continue
-
-        if (shapes) {
-          const live = Math.max(1, query.stacksAt(frame))
-          plans.push({
-            frame,
-            weight,
-            ...requirement,
-            shape: shapes[Math.min(live, shapes.length) - 1],
-          })
-        } else if (ladder) {
-          const live = Math.max(0, query.stacksAt(frame))
-          if (live === 0) continue
-          plans.push({
-            frame,
-            weight,
-            ...requirement,
-            scale: ladder[Math.min(live, ladder.length) - 1],
-          })
-        } else {
-          const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
-          if (perStack && count === 0) continue
-          plans.push({ frame, weight, ...requirement, scale: count })
-        }
+    let runIndex = -1
+    for (
+      let pulse = episode.start + schedule.firstOffset;
+      pulse < episode.end;
+      pulse += schedule.interval
+    ) {
+      runIndex++
+      for (const offset of schedule.offsets) {
+        if (pulse + offset >= episode.end) continue
+        const plan = planDotTick(query, schedule, pulse, runIndex, offset)
+        if (plan) plans.push(plan)
       }
     }
   }

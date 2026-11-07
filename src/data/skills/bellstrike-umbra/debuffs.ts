@@ -1,11 +1,8 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
-import { BUFF, PARAM } from "../buffs/ids"
+import { BUFF } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
-import { requireInnerWayNodeTier } from "../../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_NODE } from "../../innerWays/ids"
-import { swordHorizon } from "../../innerWays/swordHorizon"
 
 const CLASS_ID = "bellstrikeUmbra"
 
@@ -29,6 +26,8 @@ export const bleedTick = defineDebuff({
     attributeAttack: "Bellstrike",
     skillType: "sustain",
     weaponOrAttribute: "Sword",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.2,
     count: 1,
     perStackShapes: null,
     perStackMultipliers: [2, 2.5, 3, 4, 5],
@@ -38,12 +37,9 @@ export const bleedTick = defineDebuff({
   detonation: {
     skillId: SKILL.bleedDetonation,
     retainStacks: 0,
-    retainParam: PARAM.swordHorizon,
-    retainMinTier: requireInnerWayNodeTier(swordHorizon, INNER_WAY_NODE.dotDetonationRetention),
-    retainParamStacks: 2,
   },
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
   tags: [ROLE.bleedTick],
   receives: [
     BUFF.bellstrikeUmbraBleedPen,
@@ -62,9 +58,12 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
-    physMultiplier: 0.15,
+    // In-game cadence as of 2026-10-11.
+    reschedulesPerTick: true,
+    // In-game values as of 2026-09-24.
+    physMultiplier: 0.02,
     physFixed: 0,
-    attributeMultiplier: 0.225,
+    attributeMultiplier: 0,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",

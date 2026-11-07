@@ -1,6 +1,7 @@
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../src/engine/builtinLibrary"
 import { retargetId } from "../src/definitions/skills/universalSkills"
 import { dotRowName } from "../src/engine/dot"
+import { makeRotation, type Rotation } from "../src/engine/rotation"
 import type { Skill } from "../src/engine/skill"
 import type { Debuff } from "../src/engine/debuff"
 
@@ -24,4 +25,10 @@ export function skillRow(classId: string, skillId: string): string {
 
 export function dotRow(classId: string, debuffId: string): string {
   return dotRowName(builtinDebuff(classId, debuffId))
+}
+
+// A synthetic test rotation runs at zero latency by default — these probe
+// engine mechanics in frame-exact isolation, never a real connection.
+export function testRotation(classId: string, patch: Partial<Rotation> = {}): Rotation {
+  return makeRotation(classId, { pingMs: 0, averageFps: 60, ...patch })
 }

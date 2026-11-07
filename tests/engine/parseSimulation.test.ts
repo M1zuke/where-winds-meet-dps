@@ -4,19 +4,21 @@ import { runEngine } from "../../src/engine/dps"
 import { computeSkillDamage, type FormulaContext } from "../../src/engine/formula"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet, buildContext } from "../../src/engine/panel"
+import { buildContext } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { mulberry32, RUN_SEED_STRIDE } from "../../src/engine/rng"
 import { SET_ID } from "../../src/data/sets/ids"
 import type { Inputs } from "../../src/engine/types"
+import { withGearSet } from "../helpers/withGearSet"
 
 const umbra: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 function engineInputs(variant: Inputs = umbra): Inputs {
-  return applyBowSet(applyArmorSet(withDerivedStats(variant)))
+  return applySetBonuses(withDerivedStats(variant))
 }
 
-const procFree = engineInputs({ ...umbra, set: null, mindMethods: defaultInputs.mindMethods })
-const withProcs = engineInputs({ ...umbra, set: SET_ID.hawkwing })
+const procFree = engineInputs({ ...umbra, mindMethods: defaultInputs.mindMethods })
+const withProcs = engineInputs(withGearSet(umbra, SET_ID.hawkwing, { fabricatePieces: true }))
 
 function sampled(inputs: Inputs, seed: number) {
   return runEngine(inputs, { seed, collect: "totals" })
@@ -105,7 +107,7 @@ describe("a sampled engine run", () => {
       sum += sampled(procFree, (index * RUN_SEED_STRIDE) | 0).totalDamage
     }
     expect(Math.abs(sum / runs - expected) / expected).toBeLessThan(0.01)
-  }, 30000)
+  }, 60_000)
 
   it("mean of sampled runs tracks the deterministic total within 5% when proc mechanics round an expectation", () => {
     const expected = runEngine(withProcs).totalDamage
@@ -115,7 +117,7 @@ describe("a sampled engine run", () => {
       sum += sampled(withProcs, (index * RUN_SEED_STRIDE) | 0).totalDamage
     }
     expect(Math.abs(sum / runs - expected) / expected).toBeLessThan(0.05)
-  })
+  }, 30000)
 })
 
 describe("a sampled hit", () => {

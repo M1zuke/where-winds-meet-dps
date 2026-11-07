@@ -2,6 +2,36 @@ import type { ChangelogEntry } from "./types"
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   {
+    version: "0.9.3",
+    date: "2026-10-21",
+    headline: "Graduation Qi break for fair gear comparisons",
+    loadDetails: () => import("./entries/v0-9-3").then((module) => module.details),
+  },
+  {
+    version: "0.9.2",
+    date: "2026-10-19",
+    headline: "Encounter Settings dialog, more scripts, food and gear sets",
+    loadDetails: () => import("./entries/v0-9-2").then((module) => module.details),
+  },
+  {
+    version: "0.9.1",
+    date: "2026-10-16",
+    headline: "Faster recalculation and gear import fixes",
+    loadDetails: () => import("./entries/v0-9-1").then((module) => module.details),
+  },
+  {
+    version: "0.9.0",
+    date: "2026-10-16",
+    headline: "Season 5 progression and the latest class updates",
+    loadDetails: () => import("./entries/v0-9-0").then((module) => module.details),
+  },
+  {
+    version: "0.8.0",
+    date: "2026-10-09",
+    headline: "In-game accuracy: latency, meters, Qi and distance",
+    loadDetails: () => import("./entries/v0-8-0").then((module) => module.details),
+  },
+  {
     version: "0.7.3",
     date: "2026-09-21",
     headline: "Talent and oddity boards, and a standardized rate",

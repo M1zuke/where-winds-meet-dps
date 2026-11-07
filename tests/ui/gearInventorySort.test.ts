@@ -35,7 +35,14 @@ function row(id: string): InventoryRow {
 }
 
 function delta(current: number, upgraded: number, fullPotential: number): DpsDelta {
-  return { current, upgraded, fullPotential, fullPotentialE: fullPotential }
+  return {
+    current,
+    upgraded,
+    upgradedLevel: 96,
+    fullPotential,
+    fullPotentialE: fullPotential,
+    fullPotentialLevel: 96,
+  }
 }
 
 describe("sortInventoryRowsByDps", () => {

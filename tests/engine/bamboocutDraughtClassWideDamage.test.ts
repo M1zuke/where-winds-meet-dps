@@ -16,7 +16,6 @@ function runFlute(openingStacks: Record<string, number>) {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: MYSTIC_SKILL.fluteOfTheTidesFull })],
       openingStacks,

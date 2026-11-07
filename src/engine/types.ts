@@ -1,6 +1,13 @@
 import type { GearWordId } from "../data/stats/statLines"
 import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
+import type { QiDamageLog } from "./qiBar"
+import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
+import type {
+  DivinecraftElement,
+  DivinecraftRefinementId,
+} from "../data/consumables/divinecraftRefinements"
+import type { AttackFoodId, HpFoodId } from "../data/consumables/foods"
 
 export type { GearWordId } from "../data/stats/statLines"
 import type { HitOutcome } from "./formula"
@@ -33,7 +40,20 @@ export function isWeaponName(value: string): value is WeaponName {
 
 export type BowSet = "affinity" | "crit" | "precision" | null
 
-export type ScriptId = "wraithstrikeScript" | "voidrotScript"
+export type ScriptId =
+  | "opportunityScript"
+  | "detachmentScript"
+  | "insightScript"
+  | "wraithstrikeScript"
+  | "voidrotScript"
+  | "convergenceScript"
+  | "voidskyScript"
+  | "soullinkScript"
+  | "purewrathScript"
+  | "karmaScript"
+  | "chaosScript"
+  | "wavebornScript"
+  | "clearfallScript"
 
 export type Arsenal = "general" | "bellstrike" | "stonesplit" | "silkbind" | "bamboocut"
 
@@ -58,27 +78,26 @@ export interface QiBreakWindow {
 // (`Inputs.divinecraft`), Vulnerability is the tank spear debuff
 // (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
-  /** `null` leaves each rotation running the break window it carries itself. */
-  qiBreakOverride: QiBreakWindow | null
   dragonsBreath: boolean
   healerBuff: boolean
+  healerPanaceaFan: boolean
   breakExtension: boolean
   script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
-  lowEndurance: boolean
+  fragrantOrchidBathBean: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
   return {
-    qiBreakOverride: null,
     dragonsBreath: false,
     healerBuff: false,
+    healerPanaceaFan: false,
     breakExtension: false,
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    lowEndurance: false,
+    fragrantOrchidBathBean: false,
   }
 }
 
@@ -89,6 +108,13 @@ export interface Inputs {
   classId: string
   breakthrough: number
   followedBreakthroughRelease?: number
+  // The Qi bar's own stake choice — absent means the default Sword Trial
+  // stake (docs/TIMELINE.md § "Qi bar").
+  qiTarget?: QiTargetId
+
+  // The Formless share inside the primary attribute block. Derived with the
+  // stat paths below and never persisted.
+  formlessAttack?: { min: number; max: number }
 
   phys: AttackBlock
   bellstrike: AttackBlock
@@ -109,6 +135,12 @@ export interface Inputs {
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
   independentDamageBoost?: number
+  // Qi-only stat keys — read by the Qi formula, not by the HP-damage kernel
+  // (docs/CALCULATION.md § "Qi damage"). Injected at the engine boundary, not
+  // persisted.
+  qiDamageBoost?: number
+  qiRateAdd?: number
+  qiDamageIndexMultiplier?: number
 
   allMartialBoost: number
   swordBoost: number
@@ -124,22 +156,24 @@ export interface Inputs {
   bossBoost: number
   singleMysticBoost: number
   areaMysticBoost: number
+  allMysticBoost: number
 
   classSpecificAttunement: Record<string, number>
 
   mindMethods: [MindMethodSlot, MindMethodSlot, MindMethodSlot, MindMethodSlot]
 
-  food: boolean
-  divinecraft: "fire" | "poison" | null
-  // A `SET_ID` value, never the display name.
-  set: string | null
+  food: AttackFoodId | null
+  hpFood: HpFoodId | null
+  divinecraft: DivinecraftElement | null
+  divinecraftRefinement: DivinecraftRefinementId | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean
 
-  bowSet: BowSet
+  bowGear: BowGear
   arsenal: Arsenal
   arsenalScores: ArsenalScores
   dummyMode: boolean
+  useGraduationQiBreak: boolean
 
   rotation: string | null
 
@@ -268,11 +302,35 @@ export interface GearWordEntry {
   retuned: boolean
 }
 
+export const BOW_GEAR_LEVELS = [91, 96, 100, 105] as const
+export type BowGearLevel = (typeof BOW_GEAR_LEVELS)[number]
+
+export type BowSlot = "bow" | "thumbRing"
+
+export const BOW_SLOTS: readonly BowSlot[] = ["bow", "thumbRing"]
+
+export interface BowPiece {
+  level: BowGearLevel
+  rarity: GearRarity
+  set: BowSet
+  label?: string
+  note?: string
+}
+
+export interface BowGear {
+  bow: BowPiece | null
+  thumbRing: BowPiece | null
+}
+
+export const EMPTY_BOW_GEAR: BowGear = { bow: null, thumbRing: null }
+
 export interface GearPiece {
   id: string
   slot: GearSlot
   level: GearLevel
   rarity: GearRarity
+  // A `SET_ID` value, never the display name. Read on `WEAPON_SLOTS` only.
+  set?: string
   minPhys: number
   maxPhys: number
   hp: number
@@ -329,6 +387,35 @@ export type OutcomeCounts = Record<HitOutcome, number>
 export interface EngineRunOptions {
   seed?: number
   collect?: "full" | "totals"
+  // Test-harness only: every Qi gate reads exactly these windows instead of the
+  // simulated bar. Never read from `Inputs`, storage or the UI.
+  fixedQiBreaks?: readonly QiBreakWindow[]
+  qiDamageLog?: QiDamageLog
+  qiBar?: "own"
+}
+
+export interface QiTracePoint {
+  timeSec: number
+  value: number
+  refill?: true
+}
+
+// Before the first point the bar stands at `max`.
+export interface QiTrace {
+  max: number
+  points: readonly QiTracePoint[]
+  directImmunities: readonly { startSec: number; endSec: number }[]
+}
+
+export interface QiEdgeWarning {
+  skillName: string
+  edge: "start" | "end"
+  side: "before" | "after"
+  offsetSec: number
+  // Fight clock, like every timed warning.
+  edgeSec: number
+  // Fraction of the run's total damage, not a percent.
+  shareOfTotal: number
 }
 
 export interface Result {
@@ -336,15 +423,29 @@ export interface Result {
   dps: number
   totalDamage: number
   rotationDuration: number
+  // The frame of the first damaging hit, in seconds — docs/TIMELINE.md §
+  // "Fight window". May be negative when a pre-pull hit itself starts the
+  // fight. Every other second below stays on this same absolute clock; a
+  // display converts to fight-clock seconds (0 here) through
+  // `fightClockSec` — docs/UI.md § "Fight clock".
+  fightStartSec: number
   castDuration: number
   graduationRate: number | null
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]
   warnings: string[]
+  qiEdgeWarnings?: QiEdgeWarning[]
+  invalidStepIds?: string[]
+  invalidStepReasons?: Record<string, import("./skill").ConditionFailureReason[]>
   timeline?: TimelineEvent[]
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null
   lowQiWindow?: { startSec: number; endSec: number } | null
+  // Every break the Qi bar's own trace recorded this run — docs/TIMELINE.md
+  // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
+  qiBreaks?: readonly { startSec: number; endSec: number }[]
+  qiTrace?: QiTrace
+  qiDamageLog?: QiDamageLog
   casts?: RotationCast[]
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.
@@ -366,6 +467,14 @@ export interface CastBuffTag {
   remainingSec?: number
 }
 
+export interface CastMeterLevel {
+  id: string
+  name: string
+  amount: number
+  capacity: number
+  unitSize?: number
+}
+
 export interface RotationCast {
   index: number
   stepId: string
@@ -375,6 +484,13 @@ export interface RotationCast {
   inWindow: boolean
   prePull: boolean
   buffs: CastBuffTag[]
+  meterLevels?: CastMeterLevel[]
+  // The simulated ground distance to the target as of this cast's own start
+  // — docs/TIMELINE.md § "Target distance".
+  distanceMeters: number
+  // Set on an automatic Deflect Cancel: the `stepId` of the cancel-form cast
+  // it is attached to — docs/TIMELINE.md § "Identity and tags".
+  attachedToStepId?: string
 }
 
 export interface SkillTickResult {
@@ -396,6 +512,7 @@ export interface TimelineEvent {
   kind: "hit" | "dot"
   damage: number
   inWindow: boolean
+  isMysticHit?: boolean
 }
 
 export interface BuffWindow {

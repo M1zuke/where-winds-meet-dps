@@ -1,0 +1,245 @@
+{
+  "v": 58,
+  "skills": [
+    {
+      "id": "silkbindJade-umbdrone-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[12hit] Tick",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z",
+      "breakdownName": "Umbrella Drone"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[12hit]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": ["weapon:Umbrella", "attack:heavy"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-12hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 66,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z",
+      "breakdownName": "Umbrella Launch"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-16hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[16hit]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": ["weapon:Umbrella", "attack:heavy"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.6,
+          "attributeMultiplier": 0.81,
+          "physFixed": 149.4,
+          "attributeFixed": 81.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 66,
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-09-30T00:00:00.000Z",
+      "breakdownName": "Umbrella Launch"
+    },
+    {
+      "id": "sk-user-authored-drone",
+      "classId": "silkbindJade",
+      "name": "My drone tick",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 100,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "elevatedAttributeMultiplier": false,
+      "createdAt": "2026-09-30T00:00:00.000Z",
+      "updatedAt": "2026-09-30T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-nightwick-primepick",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Special - Primepick",
+      "breakdownName": "Nightwick - Primepick",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:nightwickPrimepick",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggerable": false,
+      "castFrames": 51,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.9444,
+          "attributeMultiplier": 1.4166,
+          "physFixed": 262,
+          "attributeFixed": 143,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-skill-binge-point-accumulation",
+              "stacks": 25,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-carouse",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-04T00:00:00.000Z",
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      }
+    },
+    {
+      "id": "bamboocutDraught-nightwick-tipsylay",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Special - Tipsylay",
+      "breakdownName": "Nightwick - Tipsylay",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:nightwickTipsylay",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggerable": false,
+      "castFrames": 39,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.9444,
+          "attributeMultiplier": 1.4166,
+          "physFixed": 262,
+          "attributeFixed": 143,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-tipsylay-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-tipsylay-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z",
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      }
+    }
+  ]
+}

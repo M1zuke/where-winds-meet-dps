@@ -1,0 +1,10 @@
+.countTable th:last-child,
+.countTable td:last-child {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.current {
+  color: var(--color-accent-bright);
+}

@@ -30,9 +30,10 @@ import { stat } from "../../engine/effects/effect"
 // must not be "corrected" now that the inner way owns them.
 export const ZENITH_BAR_BUFF_ID = "buff-bellstrikeUmbra-zenith-bar"
 export const ZENITH_DETONATION_BUFF_ID = "buff-bellstrikeUmbra-zenith-detonation"
+export const ZENITH_SPIRIT_BUFF_ID = "buff-bellstrikeUmbra-zenith-spirit"
 
 export const ZENITH_DETONATION_FRAMES = 1
-export const ZENITH_SMOLDER_EXTEND_FRAMES = 600
+export const ZENITH_DOT_EXTEND_FRAMES = 600
 
 // User-verified 2026-08-07: a Zenith detonation always adds its full extend
 // amount, but the resulting REMAINING duration (from that detonation's own
@@ -70,6 +71,18 @@ export const SWORD_HORIZON_GATES: readonly InnerWayGateBuff[] = [
     stackScaling: "flat",
     createdAt: "2026-07-30T00:00:00.000Z",
     updatedAt: "2026-07-30T00:00:00.000Z",
+  }),
+  defineInnerWayGateBuff({
+    id: ZENITH_SPIRIT_BUFF_ID,
+    name: "Sword Spirit Banked",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: ZENITH_DETONATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-16T00:00:00.000Z",
+    updatedAt: "2026-10-16T00:00:00.000Z",
   }),
 ]
 

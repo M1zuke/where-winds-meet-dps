@@ -17,9 +17,14 @@ export const quickDrinkCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.quickDrinkCancel,
+  cancelledBy: "deflectCancel",
   receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 24,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [perfectQuickDrinkHit],
   createdAt: "2026-09-05T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

@@ -19,16 +19,22 @@ export const dragonFireSmolder1Hit = defineSkill({
   // margin the other cut forms carry.
   castFrames: 40,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 20,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.36064,
-      attributeMultiplier: 2.04096,
-      physFixed: 205.5,
+      // In-game values as of 2026-10-15.
+      physMultiplier: 1.283899,
+      attributeMultiplier: 1.925849,
+      physFixed: 204.9587,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

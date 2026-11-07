@@ -13,7 +13,7 @@ export const swordMorph = defineInnerWay({
   id: INNER_WAY_ID.swordMorph,
   name: "Sword Morph",
   selectableTiers: [6, 5, 3],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.swordMorph,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackMaxFiveStar },
@@ -26,6 +26,8 @@ export const swordMorph = defineInnerWay({
     SKILL.swordHeavyCharged,
     SKILL.swordHeavyChargedPrepull,
     SKILL.swordHeavyCharged2Hit,
+    SKILL.swordHeavyCharged2HitWushuang,
+    SKILL.swordHeavyChargedWushuang,
     SKILL.energySurge,
   ].map((skillId) => ({ skillId, factory: swordMorphExhaustedBehavior })),
 })

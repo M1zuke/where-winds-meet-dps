@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
@@ -9,13 +9,17 @@ import type { Inputs } from "../../src/engine/types"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const LIGHT_RECEIVES = [BUFF.mistwillowHeavyBuff, BUFF.mistwillowBuff]
 const HEAVY_RECEIVES = [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff]
 const MIXED_RECEIVES = [BUFF.mistwillowHeavyBuff, BUFF.mistwillowLightBuff, BUFF.mistwillowBuff]
 
-function engine(armorSet?: string) {
-  return new BuffEngine(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
+// Mistwillow's Silkbind-damage half is gated to Silkbind Jade (in-game rule
+// as of 2026-09-24), so every stance test wears the set as that class unless
+// it deliberately probes a different one.
+function engine(armorSet?: string, classId = "silkbindJade") {
+  return buffEngineWith(armorSet ? { armorSet, classId } : {}, GLOBAL_BUFF_DEFS, [])
 }
 function lightProbe(name: string) {
   return makeSkill("test", { name, tags: ["attack:light"], receives: LIGHT_RECEIVES })
@@ -35,6 +39,14 @@ describe("mistwillow — BuffEngine", () => {
     expect(r.effects).toContainEqual({ statKey: "physBoost", amount: 0.1 })
     expect(r.effects).toContainEqual({ statKey: "attributeDamageBoost", amount: 0.1 })
     expect(r.breakdown[BUFF.mistwillowHeavyBuff]).toBeCloseTo(0.2, 10)
+  })
+
+  it("gives only the physical bonus to a class other than Silkbind Jade", () => {
+    const e = engine(SET_ID.mistwillow, "bellstrikeUmbra")
+    e.processSkillCast("SomeHeavyHit", 0, { attackType: "heavy" })
+    const r = e.calculateDamageEffects(lightProbe("SomeLightHit"), 0.1)
+    expect(r.effects).toContainEqual({ statKey: "physBoost", amount: 0.1 })
+    expect(r.effects).not.toContainEqual({ statKey: "attributeDamageBoost", amount: 0.1 })
   })
 
   it("a light cast grants the light stance; a subsequent HEAVY hit gets the bonus (cross-synergy, not same-stance)", () => {
@@ -172,18 +184,19 @@ describe("mistwillow — Skill Editor catalog", () => {
 })
 
 describe("mistwillow — end to end through simulateTimeline", () => {
-  it("selecting Mistwillow changes DPS relative to no set, without crashing", () => {
+  it("equipping Mistwillow changes DPS relative to Hawkwing, without crashing", () => {
     const rotation = defaultRotationForClass("bellstrikeUmbra")!
     const without: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
+      ...gearSetFields(SET_ID.hawkwing, { fabricatePieces: true }),
     }
     const withMistwillow: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
-      set: SET_ID.mistwillow,
+      ...gearSetFields(SET_ID.mistwillow, { fabricatePieces: true }),
     }
     const before = simulateTimeline(without)
     const after = simulateTimeline(withMistwillow)

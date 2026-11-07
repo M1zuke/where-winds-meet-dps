@@ -35,5 +35,17 @@ export const eonpourExhaustedTriggers: HitTrigger[] = [
   }),
   applyBuff({ target: STATUS.bingePoints, stacks: 200, ...EONPOUR_EXHAUSTED }),
   ...deepdazeEntryTriggers(EONPOUR_EXHAUSTED),
+  // Extending a running Deepdaze re-grants Enhance Special Skill too — a
+  // fresh entry above already grants it through `deepdazeEntryTriggers`.
+  // In-game values as of 2026-09-16.
+  applyBuff({
+    target: STATUS.enhanceSpecialSkill,
+    stacks: 1,
+    conditions: [
+      ...EONPOUR_EXHAUSTED.conditions,
+      { buffId: STATUS.inebriateDeepdaze, op: "gte" as const, stacks: 1 },
+    ],
+    phase: EONPOUR_EXHAUSTED.phase,
+  }),
   applyBuff({ target: STATUS.eonpourExhaustedCooldown, stacks: 1, ...EONPOUR_EXHAUSTED }),
 ]

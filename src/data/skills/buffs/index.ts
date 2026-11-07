@@ -6,6 +6,17 @@ import { lingeringBone } from "./lingeringBone"
 import { healerBuff } from "./healerBuff"
 import { wraithstrikeScript } from "./wraithstrikeScript"
 import { voidrotScript } from "./voidrotScript"
+import { opportunityScript } from "./opportunityScript"
+import { detachmentScript } from "./detachmentScript"
+import { convergenceScript } from "./convergenceScript"
+import { insightScript } from "./insightScript"
+import { voidskyScript } from "./voidskyScript"
+import { soullinkScript } from "./soullinkScript"
+import { karmaScript } from "./karmaScript"
+import { chaosScript } from "./chaosScript"
+import { purewrathScript } from "./purewrathScript"
+import { wavebornScript } from "./wavebornScript"
+import { clearfallScript } from "./clearfallScript"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
 import { cleftpeakStacks } from "./cleftpeakStacks"
 import { jadeware } from "./jadeware"
@@ -23,8 +34,32 @@ import { tiltrimStack } from "./tiltrimStack"
 import { tiltrimInebriateBonus } from "./tiltrimInebriateBonus"
 import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
+import { bingePointGainNoAbrasion } from "./bingePointGainNoAbrasion"
 import { clashToastDamage } from "./clashToastDamage"
-import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
+import {
+  nonPlayerBaseDamage10,
+  nonPlayerBaseDamage40,
+  nonPlayerBaseDamage50,
+  nonPlayerBaseDamage115,
+  nonPlayerBaseDamage125,
+  nonPlayerBaseDamage145,
+} from "./nonPlayerBaseDamage"
+import { poetFinalStrikeStack } from "./poetFinalStrikeStack"
+import { divinecraftFire } from "./divinecraftFire"
+import { divinecraftHeartPoison } from "./divinecraftHeartPoison"
+import { divinecraftTemperedFire } from "./divinecraftTemperedFire"
+import { divinecraftWater } from "./divinecraftWater"
+import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
+import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
+import { toadVenomQiBonus } from "./toadVenomQiBonus"
+import { ivorybloomFullHpBonus } from "./ivorybloomFullHpBonus"
+import { starweaveMartialBoost } from "./starweaveMartialBoost"
+import { swayingHeightsHighHpBonus } from "./swayingHeightsHighHpBonus"
+import { etherwrathAttackBoost } from "./etherwrathAttackBoost"
+import { etherwrathPenetrationBoost } from "./etherwrathPenetrationBoost"
+import { swallowcallLightAttackBoost } from "./swallowcallLightAttackBoost"
+import { swiftGaleAirborneHeavyBoost } from "./swiftGaleAirborneHeavyBoost"
+import { totalAnnihilationSupremeShield } from "./totalAnnihilationSupremeShield"
 
 // Order is load-bearing (float addition is not associative): the globals that
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
@@ -32,6 +67,17 @@ import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDam
 export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   wraithstrikeScript,
   voidrotScript,
+  opportunityScript,
+  detachmentScript,
+  insightScript,
+  convergenceScript,
+  voidskyScript,
+  soullinkScript,
+  purewrathScript,
+  karmaScript,
+  chaosScript,
+  wavebornScript,
+  clearfallScript,
   vulnerabilityTeammate,
   jadeware,
   mirage,
@@ -53,9 +99,31 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   tiltrimInebriateBonus,
   inebriateCritDamage,
   cloudvault,
+  bingePointGainNoAbrasion,
   clashToastDamage,
+  nonPlayerBaseDamage10,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
+  nonPlayerBaseDamage115,
+  nonPlayerBaseDamage125,
+  nonPlayerBaseDamage145,
+  poetFinalStrikeStack,
+  divinecraftFire,
+  fluteArrival,
+  fluteDistanceBonus,
+  cleftpeakDeflectGrant,
+  toadVenomQiBonus,
+  ivorybloomFullHpBonus,
+  starweaveMartialBoost,
+  swayingHeightsHighHpBonus,
+  etherwrathAttackBoost,
+  etherwrathPenetrationBoost,
+  swallowcallLightAttackBoost,
+  swiftGaleAirborneHeavyBoost,
+  totalAnnihilationSupremeShield,
+  divinecraftWater,
+  divinecraftHeartPoison,
+  divinecraftTemperedFire,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

@@ -21,67 +21,18 @@ $track-min-width: 720px;
   position: relative;
 }
 
-.timelineBuffGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.qiLaneRow {
+  display: grid;
+  grid-template-columns: $lane-label-width 1fr;
+  align-items: end;
+  gap: $lane-gap;
   margin-bottom: 6px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--color-surface-raised);
 }
 
-.timelineBuffGroupLabel {
-  font-size: 0.7em;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.timelineBuffLane {
-  position: relative;
-  height: 20px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-surface-raised);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.timelineBuffSpan {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  display: flex;
-  align-items: center;
-  background: rgba(192, 160, 96, 0.28);
-  border: 1px solid rgba(192, 160, 96, 0.6);
-  border-radius: 2px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.timelineBuffLabel {
-  padding: 0 4px;
-  font-size: 0.68em;
-  color: #e8d8b8;
-  line-height: 1;
-}
-
-.timelineQiBreak {
-  background: rgba(216, 122, 74, 0.28);
-  border-color: rgba(216, 122, 74, 0.6);
-}
-
-.timelineQiBreak .timelineBuffLabel {
-  color: #f0c8a8;
-}
-
-.timelineLowQi {
-  background: rgba(216, 175, 74, 0.2);
-  border-color: rgba(216, 175, 74, 0.45);
-}
-
-.timelineLowQi .timelineBuffLabel {
-  color: #e8d4a0;
+.qiLaneRow .timelineLaneLabel {
+  align-self: center;
 }
 
 .timelineLane {

@@ -4,26 +4,22 @@ import { attuneTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { reaches } from "../scope"
 import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
-import {
-  MYSTIC_TYPE_BOOST_STAT_KEY,
-  STAT_DEF_BY_KEY,
-  WEAPON_BOOST_STAT_KEY,
-  type StatKey,
-} from "../statRegistry"
-import type { BuffModule } from "./buffModule"
+import { MYSTIC_TYPE_BOOST_STAT_KEY, STAT_DEF_BY_KEY, type StatKey } from "../statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../../data/stats/weaponBoosts"
+import { GRANT_REQUIRES_DEFAULT, type BuffModule } from "./buffModule"
 import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
-import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
 import { paramOnOf, paramsFromInputs, paramTierOf } from "./params"
 import type { BuffParams } from "./buffEngine"
 import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../builtinLibrary"
-import { tickSourceSkillId } from "../dot"
 import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/classes/registry"
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
+import { resolveRotation } from "../rotation"
+import { activeRotationForInputs } from "../activeRotation"
 
 function skillsInScope(classId: string | undefined, inputs: Inputs | undefined): Skill[] {
   return [...builtinSkillsForClass(classId ?? ""), ...(inputs?.customSkills ?? [])]
@@ -59,7 +55,7 @@ function summaryFromStaticEffects(effects: Effect[]): string {
 
 function moduleContribution(
   module: BuffModule,
-  tagSet: Set<string>,
+  tagSet: ReadonlySet<string>,
 ): { applies: boolean; text: string } {
   const applies = reaches(tagSet, module)
   const text =
@@ -68,7 +64,7 @@ function moduleContribution(
   return { applies, text }
 }
 
-function humanize(param: string): string {
+export function humanizeParamId(param: string): string {
   const spaced = param.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
   return spaced
     .split(" ")
@@ -77,7 +73,7 @@ function humanize(param: string): string {
 }
 
 export function requiresLabel(module: BuffModule): string | null {
-  const requires = module.requires
+  const requires = module.requires ?? module.grantRequires?.[GRANT_REQUIRES_DEFAULT]
   if (requires?.set) return setDisplayNameForSiteKey(requires.set) ?? requires.set
   const breakthroughLabel = requires?.minBreakthrough
     ? `breakthrough ${requires.minBreakthrough}+`
@@ -86,7 +82,7 @@ export function requiresLabel(module: BuffModule): string | null {
   const innerWayName = innerWayForBuffParam(requires.param)?.name
   const paramLabel = innerWayName
     ? innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
-    : humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
+    : humanizeParamId(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
   return breakthroughLabel ? `${paramLabel}, ${breakthroughLabel}` : paramLabel
 }
 
@@ -128,7 +124,7 @@ export function hiddenTimelineBuffIds(classId?: string): Set<string> {
 }
 
 export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
-  const requires = module.requires
+  const requires = module.requires ?? module.grantRequires?.[GRANT_REQUIRES_DEFAULT]
   if (requires?.classId && requires.classId !== params.classId) return false
   if (requires?.set && requires.set !== params.armorSet) return false
   if (
@@ -239,8 +235,9 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   }
   const mysticCategory = mysticCategoryOf(skill)
   const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
-  if (mysticBoostKey) {
-    rows.push(gearStatRow(mysticBoostKey, inputs))
+  if (mysticBoostKey) rows.push(gearStatRow(mysticBoostKey, inputs))
+  if (mysticBoostKey || skill.skillType === "mystic") {
+    rows.push(gearStatRow("allMysticBoost", inputs))
   }
   const attuneTag = attuneTagOf(skill)
   const attunement = attuneTag
@@ -257,30 +254,6 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       isSpecMechanic: false,
       active: forThisClass && rolled > 0,
     })
-  }
-
-  if (classId) {
-    const debuffsById = new Map<string, Debuff>()
-    for (const d of builtinDebuffsForClass(classId)) debuffsById.set(d.id, d)
-    for (const d of inputs?.customDebuffs ?? []) debuffsById.set(d.id, d)
-    for (const d of debuffsById.values()) {
-      const det = d.detonation
-      if (!det?.retainParam || tickSourceSkillId(d) !== skill.id) continue
-      const innerWayLabel = innerWayForBuffParam(det.retainParam)?.name ?? humanize(det.retainParam)
-      const minTier = det.retainMinTier ?? 6
-      const retained = det.retainParamStacks ?? det.retainStacks ?? 0
-      const baseline = det.retainStacks ?? 0
-      rows.push({
-        id: `dotRetention:${d.id}`,
-        name: innerWayLabel,
-        effect: `retains ${retained} ${d.name} stacks after detonation (${baseline} without it)`,
-        requires: `${innerWayLabel} tier ${minTier}+`,
-        isSpecMechanic: false,
-        active: params
-          ? paramOnOf(params, det.retainParam) && paramTierOf(params, det.retainParam) >= minTier
-          : true,
-      })
-    }
   }
 
   return rows.sort((a, b) => a.name.localeCompare(b.name))
@@ -371,4 +344,51 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
     })
   }
   return rows
+}
+
+// Whether some skill's own cast, or one of its hits, can grant the named
+// status — directly, or one level through an `activeAfterBuffEnds` chain
+// (a module whose own activation rides another buff's window closing, the
+// way the Flute of the Tides distance bonus rides its own arrival timer).
+function grantsStatus(skill: Skill, id: string): boolean {
+  if (skill.triggersBuffs?.includes(id)) return true
+  return skill.hits.some((skillHit) =>
+    skillHit.triggers.some(
+      (trigger) =>
+        (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") && trigger.targetId === id,
+    ),
+  )
+}
+
+// Whether the current rotation could ever grant a module or reach a mechanic
+// that declares `readsTargetDistance` — the Encounter Settings panel's gate
+// on showing the distance input (docs/TIMELINE.md § "Target distance").
+export function buildReadsTargetDistance(inputs: Inputs): boolean {
+  const classDef = classDefinition(inputs.classId)
+  const rotation = activeRotationForInputs(inputs)
+  if (!classDef || !rotation || rotation.classId !== inputs.classId) return false
+  const skills = skillsInScope(inputs.classId, inputs)
+  const statuses = [
+    ...builtinBuffsForClass(inputs.classId),
+    ...(inputs.customBuffs ?? []),
+    ...builtinDebuffsForClass(inputs.classId),
+    ...(inputs.customDebuffs ?? []),
+  ]
+  const { steps } = resolveRotation(rotation, skills, statuses)
+  const params = paramsFromInputs(inputs)
+  for (const module of catalogBuffDefs(inputs.classId)) {
+    if (!module.readsTargetDistance) continue
+    if (!buffGateSatisfied(module, params)) continue
+    if (module.alwaysActive) return true
+    const grantingIds = module.activeAfterBuffEnds
+      ? [module.id, module.activeAfterBuffEnds.buffId]
+      : [module.id]
+    if (steps.some(({ skill }) => grantingIds.some((id) => grantsStatus(skill, id)))) return true
+  }
+  for (const registration of classDef.mechanics) {
+    if (!registration.mechanic.readsTargetDistance) continue
+    if (!registration.mechanic.catalogRow || registration.mechanic.catalogRow.available(inputs))
+      return true
+  }
+  return false
 }

@@ -93,11 +93,17 @@ describe("heirloom — the build the profile follows", () => {
   })
 
   it("keeps the match but not the follow while the profile follows another build", () => {
+    const sameHelm = (build: (typeof builds)[number]) =>
+      [...wordsOf(build.gear.find((piece) => piece.slot === "helm")!)].sort().join() ===
+      [...perfect].sort().join()
+    const other = builds.find((build) => !sameHelm(build))!
     const match = heirloomMatch(pieceFrom(target, perfect), {
       classId: MULTI_BUILD_CLASS,
-      graduationBuildId: builds[1].id,
+      graduationBuildId: other.id,
     })
-    expect(match.builds.map((build) => build.id)).toEqual([builds[0].id])
+    expect(match.builds.map((build) => build.id)).toEqual(
+      builds.filter(sameHelm).map((build) => build.id),
+    )
     expect(match.followed).toBe(false)
   })
 
@@ -209,5 +215,105 @@ describe("heirloom — one retune away", () => {
 
   it("offers no swap for a piece that is already an heirloom", () => {
     expect(heirloomSwapFor(pieceFrom(target, perfect), { classId: SINGLE_BUILD_CLASS })).toBeNull()
+  })
+})
+
+const SINGLE_TARGET_BUILD = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.find((build) =>
+  build.gear.some(
+    (piece) =>
+      piece.slot === "helm" && piece.words.some((word) => word.word === "singleTargetMysticBoost"),
+  ),
+)!
+const OTHER_UMBRA_BUILD = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.find(
+  (build) => build.id !== SINGLE_TARGET_BUILD.id,
+)!
+
+function singleTargetPiece(slot: GearPiece["slot"]): GearPiece {
+  return SINGLE_TARGET_BUILD.gear.find((piece) => piece.slot === slot)!
+}
+
+function withWordSwapped(piece: GearPiece, from: string, to: string): GearWordId[] {
+  return wordsOf(piece).map((word) => (word === from ? (to as GearWordId) : word))
+}
+
+describe("heirloom — the build at the piece's gear level", () => {
+  const helm = singleTargetPiece("helm")
+
+  it("counts a level-100 helm carrying All Mystic Skill DMG Boost where the build carries the single-target line", () => {
+    const words = withWordSwapped(helm, "singleTargetMysticBoost", "allMysticBoost")
+    expect(isHeirloom(pieceFrom(helm, words, { level: 100 }), { classId: MULTI_BUILD_CLASS })).toBe(
+      true,
+    )
+  })
+
+  it("keeps comparing a level-96 piece against the build's own words", () => {
+    expect(isHeirloom(pieceFrom(helm, wordsOf(helm)), { classId: MULTI_BUILD_CLASS })).toBe(true)
+    const allMystic = withWordSwapped(helm, "singleTargetMysticBoost", "allMysticBoost")
+    expect(isHeirloom(pieceFrom(helm, allMystic), { classId: MULTI_BUILD_CLASS })).toBe(false)
+  })
+
+  it("names the All Mystic line as the one retune for a level-100 piece still carrying the single-target line", () => {
+    const swap = heirloomSwapFor(pieceFrom(helm, wordsOf(helm), { level: 100 }), {
+      classId: MULTI_BUILD_CLASS,
+      graduationBuildId: SINGLE_TARGET_BUILD.id,
+    })
+    expect(swap).toMatchObject({
+      currentWord: "singleTargetMysticBoost",
+      word: "allMysticBoost",
+    })
+  })
+})
+
+describe("heirloom — one retune away from any build", () => {
+  const armor = singleTargetPiece("armor")
+
+  it("finds the swap toward a later build when an earlier one is two lines off", () => {
+    const words = ["affinity", "allMysticBoost", "momentum", "crit", "maxPhys"]
+    const piece = pieceFrom(armor, words, { level: 100 })
+    piece.words[3] = { ...piece.words[3], retuned: true }
+    const match = heirloomMatch(piece, { classId: MULTI_BUILD_CLASS })
+    expect(match.swaps).toHaveLength(1)
+    expect(match.swap).toMatchObject({ slotIndex: 3, currentWord: "crit", word: "affinity" })
+    const armorWords = [...wordsOf(armor)].sort().join()
+    const sameArmor = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds.filter(
+      (build) =>
+        [...wordsOf(build.gear.find((candidate) => candidate.slot === "armor")!)].sort().join() ===
+        armorWords,
+    )
+    expect(match.swap!.builds.map((build) => build.id)).toEqual(sameArmor.map((build) => build.id))
+  })
+
+  it("puts the swap toward the followed build first", () => {
+    const helm = singleTargetPiece("helm")
+    const piece = pieceFrom(helm, ["affinity", "affinity", "momentum", "maxPhys", "crit"], {
+      level: 100,
+    })
+    const followingSingleTarget = heirloomMatch(piece, {
+      classId: MULTI_BUILD_CLASS,
+      graduationBuildId: SINGLE_TARGET_BUILD.id,
+    })
+    const followingOther = heirloomMatch(piece, {
+      classId: MULTI_BUILD_CLASS,
+      graduationBuildId: OTHER_UMBRA_BUILD.id,
+    })
+    expect(followingSingleTarget.swaps.map((swap) => swap.word)).toEqual([
+      "allMysticBoost",
+      "power",
+    ])
+    expect(followingOther.swaps.map((swap) => swap.word)).toEqual(["power", "allMysticBoost"])
+    expect(followingOther.swap).toBe(followingOther.swaps[0])
+  })
+
+  it("names every build one swap completes", () => {
+    const weapon = singleTargetPiece("leftWeapon")
+    const [foreign] = wordsOutside(wordsOf(weapon), 1)
+    const piece = pieceFrom(weapon, withWordSwapped(weapon, "power", foreign))
+    const swap = heirloomSwapFor(piece, { classId: MULTI_BUILD_CLASS })
+    expect(swap).toMatchObject({ currentWord: foreign, word: "power" })
+    expect(swap!.builds.map((build) => build.id).sort()).toEqual(
+      classDefinition(MULTI_BUILD_CLASS)!
+        .graduationBuilds.map((build) => build.id)
+        .sort(),
+    )
   })
 })

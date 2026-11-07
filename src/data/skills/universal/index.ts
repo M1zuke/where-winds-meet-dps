@@ -4,6 +4,7 @@ import { deflectCancelPrepull } from "./deflect-cancel-prepull"
 import { deflectCancel } from "./deflect-cancel"
 import { delay } from "./delay"
 import { ghostlySteps } from "./ghostly-steps"
+import { ghostlyStepsUmbra } from "./ghostly-steps-umbra"
 import { goldenBodyCancel } from "./golden-body-cancel"
 import { goldenBodyDeflectCancel } from "./golden-body-deflect-cancel"
 import { perfectDodgeFull } from "./perfect-dodge-full"
@@ -15,8 +16,11 @@ export const UNIVERSAL_SKILLS: Skill[] = [
   deflectCancel,
   delay,
   ghostlySteps,
+  ghostlyStepsUmbra,
   goldenBodyCancel,
   goldenBodyDeflectCancel,
   perfectDodgeFull,
   perfectDodge,
 ]
+
+export { UNIVERSAL_GATES } from "./gates"

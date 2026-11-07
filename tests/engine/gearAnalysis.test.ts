@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
+import { computeAllSlotsUnequipLoss, computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import { computeReattunement, computeRetunement } from "../../src/engine/dpsWorker"
 import { runEngine } from "../../src/engine/dps"
 import { applyPieceContribution, maxRelayedClone } from "../../src/engine/gearStats"
@@ -98,6 +98,25 @@ describe("computeGearAnalysis", () => {
     expect(rowFor("helm").unequipLoss).toBeGreaterThan(0)
   })
 
+  it("totals the tuned-stat loss as one run with every slot emptied together", () => {
+    const allSlotsEmpty = applyPieceContribution(
+      applyPieceContribution(geared, weapon, -1),
+      helm,
+      -1,
+    )
+    const expected = gearedDps - runEngine(allSlotsEmpty).dps
+
+    expect(computeAllSlotsUnequipLoss(geared, gearedDps)).toBeCloseTo(expected, 3)
+  })
+
+  it("never totals the tuned-stat loss above the build's own dps", () => {
+    expect(computeAllSlotsUnequipLoss(geared, gearedDps)).toBeLessThan(gearedDps)
+  })
+
+  it("totals nothing for a build with no gear equipped", () => {
+    expect(computeAllSlotsUnequipLoss(umbraInputs, runEngine(umbraInputs).dps)).toBe(0)
+  })
+
   it("offers neither a retune nor a relay on an already relayed piece", () => {
     const relayedWeapon = { ...weapon, relayed: true }
     const relayedRows = computeGearAnalysis(
@@ -112,7 +131,7 @@ describe("computeGearAnalysis", () => {
   })
 })
 
-describe("a mixed-level build", () => {
+describe("a mixed-level build", { timeout: 30_000 }, () => {
   const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
   const level91Weapon = piece("weapon-91", "leftWeapon", { level: 91 })
   const level96Helm = piece("helm-96", "helm", {

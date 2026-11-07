@@ -48,7 +48,6 @@ export default defineRotation({
     { skillId: "bellstrikeSplendor-swordheavycharged" },
   ],
   permanentBuffIds: [],
-  qiBreak: { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-08-15T00:00:00.000Z",
   updatedAt: "2026-08-15T00:00:00.000Z",
   description: "Bellstrike Splendor 60-second rotation: 78 waves, 2 Flute of the Tides, 1 toad.",

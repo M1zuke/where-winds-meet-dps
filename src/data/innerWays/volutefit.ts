@@ -12,7 +12,7 @@ export const volutefit = defineInnerWay({
   id: INNER_WAY_ID.volutefit,
   name: "Volutefit",
   selectableTiers: [6, 5, 4, 3, 2, 1],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.volutefit,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.attributeAttackFiveStar },

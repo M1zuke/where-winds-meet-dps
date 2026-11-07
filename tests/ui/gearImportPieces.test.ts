@@ -16,10 +16,12 @@ import {
   effectiveIdentity,
   importablePieces,
   resolveAgainstBuild,
+  toBowGear,
   toGearPieces,
   type AffixChoices,
 } from "../../src/ui/features/gear/import-gear-dialog/importedGearPieces"
 import fixture from "./fixtures/dashboardRoleInfo.json"
+import fullFixture from "./fixtures/dashboardRoleInfoMartialArts.json"
 
 const fixtureText = JSON.stringify(fixture)
 const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
@@ -161,6 +163,71 @@ describe("the shipped affix table is the authority", () => {
     for (const [affixId, key] of Object.entries(AFFIX_ID_TO_STAT_LINE)) {
       const isAttunementId = Number(affixId) < 1_000_000
       expect(key.startsWith("attunement:")).toBe(isAttunementId)
+    }
+  })
+
+  it("maps every gear-level Max HP affix to the Max HP word", () => {
+    for (const affixId of ["8741001", "9293006", "9741001", "9793106", "10694106"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:maxHp")
+    }
+  })
+
+  it("maps the four All Mystic Skill DMG Boost ids and keeps the legacy mystic ids on their own words", () => {
+    for (const affixId of ["100931001", "100941001", "105931001", "105941001"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:allMysticBoost")
+    }
+    for (const affixId of ["10193122", "10194122", "10693122", "10694122"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:areaMysticBoost")
+    }
+    for (const affixId of ["10193123", "10194123", "10693123", "10694123"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:singleTargetMysticBoost")
+    }
+  })
+
+  it("leaves a legacy mystic affix on a level-100 helm as the legacy word", () => {
+    const { hp, physDef } = gearBaseStatsFor({ slot: "helm", rarity: "legendary", level: 100 })
+    const text = JSON.stringify({
+      wearEquipsDetailed: {
+        "3": {
+          exVo: {
+            baseAttrs: { W_DEF: physDef, HP_MAX: hp },
+            baseAffixes: [
+              { equipmentDetails: [10193103, 20, 0.5, 3, true] },
+              { equipmentDetails: [10193123, 0.1, 0.9, 3, true] },
+            ],
+          },
+        },
+      },
+    })
+    const helm = resolved(text).pieces[0]!
+    expect(helm.identity).toMatchObject({ level: 100 })
+    expect(helm.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "singleTargetMysticBoost" },
+    })
+  })
+
+  it("maps gear-level Physical Defense, Constitution, Defense and Boost Vs. Player Units affixes to their words", () => {
+    const expected: Record<string, string> = {
+      "8743002": "word:physDef",
+      "9293009": "word:physDef",
+      "9793109": "word:physDef",
+      "10694109": "word:physDef",
+      "8753006": "word:body",
+      "9293001": "word:body",
+      "9793101": "word:body",
+      "10694101": "word:body",
+      "8793003": "word:defense",
+      "9293003": "word:defense",
+      "9793103": "word:defense",
+      "10694103": "word:defense",
+      "8793036": "word:damageVsPlayer",
+      "9293034": "word:damageVsPlayer",
+      "9793125": "word:damageVsPlayer",
+      "10693125": "word:damageVsPlayer",
+    }
+    for (const [affixId, statLine] of Object.entries(expected)) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe(statLine)
     }
   })
 
@@ -396,6 +463,129 @@ describe("level and rarity inference", () => {
     expect(
       effectiveIdentity(weapon, result.pieces, { "1": { level: 91, rarity: "epic" } }),
     ).toEqual({ level: 91, rarity: "epic" })
+  })
+})
+
+describe("level implied by the mapped lines", () => {
+  function armorWithoutBaseStats(affixes: readonly (readonly [number, number])[]) {
+    return JSON.stringify({
+      wearEquipsDetailed: {
+        "4": {
+          exVo: {
+            baseAffixes: affixes.map(([affixId, value]) => ({
+              equipmentDetails: [affixId, value, 1, 3, true],
+            })),
+          },
+        },
+      },
+    })
+  }
+
+  const allMysticArmor = armorWithoutBaseStats([
+    [10141005, 0.051],
+    [100931001, 0.108],
+    [10193105, 51.8],
+    [10193119, 0.104],
+    [10193108, 83.2],
+  ])
+  const levelNinetySixArmor = armorWithoutBaseStats([
+    [10141005, 0.041],
+    [10193105, 45.9],
+    [10193119, 0.082],
+    [10193108, 73.1],
+    [10141005, 0.04],
+  ])
+
+  function importedArmor(text: string, overrides: Parameters<typeof resolveAgainstBuild>[3] = {}) {
+    const result = resolveAgainstBuild(parseDashboardGearPayload(text), inputs, {}, overrides)
+    return { result, piece: result.pieces[0]! }
+  }
+
+  it("raises an unidentified piece to the lowest level that holds every mapped line", () => {
+    const { result, piece } = importedArmor(allMysticArmor)
+
+    expect(piece.impliedLevel).toBe(100)
+    expect(effectiveIdentity(piece, result.pieces, {}).level).toBe(100)
+    expect(piece.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "allMysticBoost" },
+    })
+  })
+
+  it("resolves a piece's lines at the level the preview overrides it to", () => {
+    const { piece } = importedArmor(allMysticArmor, { "4": { level: 100 } })
+
+    expect(piece.affixes[1]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "allMysticBoost" },
+    })
+    expect(piece.affixes[0]!.resolution).toMatchObject({
+      kind: "resolved",
+      value: 0.051,
+      clampedFrom: null,
+    })
+  })
+
+  it("keeps an unidentified piece at the assumed level when its lines fit it", () => {
+    const { result, piece } = importedArmor(levelNinetySixArmor)
+
+    expect(piece.impliedLevel).toBeNull()
+    expect(effectiveIdentity(piece, result.pieces, {}).level).toBe(FALLBACK_LEVEL)
+  })
+})
+
+describe("imported sets", () => {
+  it("writes the set on weapons only and leaves armor without one", () => {
+    const pieces = toGearPieces(resolved(), {})
+    expect(pieces.find((piece) => piece.slot === "leftWeapon")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "rightWeapon")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "helm")).not.toHaveProperty("set")
+  })
+
+  it("writes the set on the disc and pendant", () => {
+    const pieces = toGearPieces(resolved(JSON.stringify(fullFixture)), {})
+    expect(pieces.find((piece) => piece.slot === "disc")?.set).toBe("hawkwing")
+    expect(pieces.find((piece) => piece.slot === "pendant")?.set).toBe("hawkwing")
+  })
+
+  it("writes no set for a suffix the table lacks", () => {
+    const unknownSuffix = JSON.stringify({
+      wearEquipsDetailed: { "1": { exVo: { suffix: 999, baseAffixes: [] } } },
+    })
+    expect(toGearPieces(resolved(unknownSuffix), {})[0]).not.toHaveProperty("set")
+  })
+})
+
+describe("toBowGear", () => {
+  it("imports the paired ring and bow as level 96 legendary affinity pieces", () => {
+    const bowGear = toBowGear(resolved(JSON.stringify(fullFixture)))
+    expect(bowGear.bow).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+    expect(bowGear.thumbRing).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+  })
+
+  it("empties the side the capture lacks", () => {
+    const bowGear = toBowGear(resolved())
+    expect(bowGear.bow).toBeNull()
+    expect(bowGear.thumbRing).toEqual({ level: 96, rarity: "legendary", set: "affinity" })
+  })
+
+  it("leaves a piece that cannot carry a bow set empty", () => {
+    const threeStarBow = JSON.stringify({
+      wearEquipsDetailed: {
+        "21": { no: "1101608", exVo: { suffix: 46, baseAffixes: [] } },
+        "9": { no: "1101667", exVo: { suffix: 46, baseAffixes: [] } },
+      },
+    })
+    const bowGear = toBowGear(resolved(threeStarBow))
+    expect(bowGear.bow).toBeNull()
+    expect(bowGear.thumbRing).not.toBeNull()
+  })
+
+  it("imports a bow piece without a set", () => {
+    const noSet = JSON.stringify({
+      wearEquipsDetailed: { "21": { no: "1101671", exVo: { suffix: 4, baseAffixes: [] } } },
+    })
+    expect(toBowGear(resolved(noSet)).bow).toEqual({ level: 96, rarity: "legendary", set: null })
   })
 })
 

@@ -1,5 +1,6 @@
 ﻿import type {
   AttributeKey,
+  EngineRunOptions,
   GearLevel,
   GearWordId,
   Inputs,
@@ -8,7 +9,7 @@
 } from "./types"
 import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
-import { runEngine } from "./dps"
+import { runEngine, TOTALS_RUN } from "./dps"
 import { getSchool } from "./panel"
 import {
   GEAR_WORD_UNIT,
@@ -22,7 +23,7 @@ import {
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
-import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
 import { attunementLabelKey, attunementMax, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
@@ -117,6 +118,11 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     wordSpec("allMartialBoost", (x, roll) => {
       x.allMartialBoost += roll
     }),
+    wordSpec("maxHp", () => {}),
+    wordSpec("body", () => {}),
+    wordSpec("defense", () => {}),
+    wordSpec("physDef", () => {}),
+    wordSpec("damageVsPlayer", () => {}),
   ]
   for (const weapon of [primaryWeapon, secondaryWeapon]) {
     if (!weapon) continue
@@ -138,6 +144,9 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     }),
     wordSpec("areaMysticBoost", (x, roll) => {
       x.areaMysticBoost += roll
+    }),
+    wordSpec("allMysticBoost", (x, roll) => {
+      x.allMysticBoost += roll
     }),
     ...ATTRIBUTE_KEYS.flatMap((attribute) => [
       wordSpec(`min${attribute}`, (x, roll) => {
@@ -217,38 +226,68 @@ function applyAttrAttack(i: Inputs, attr: AttributeKey, field: "min" | "max", am
   block[field] += amt
 }
 
-export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[] {
+export interface RankingBlock {
+  index: number
+  count: number
+}
+
+interface CatalogueEntry {
+  source: ItemRankingRow["source"]
+  spec: WordSpec
+}
+
+function rankingCatalogue(inputs: Inputs): CatalogueEntry[] {
   const level = gearLevelForBreakthrough(inputs.breakthrough)
-  const catalogues: { source: ItemRankingRow["source"]; specs: WordSpec[] }[] = [
-    { source: "tunement", specs: buildWordSpecs(inputs, level) },
-    { source: "attunement", specs: buildAttunementSpecs(inputs, level) },
+  return [
+    ...buildWordSpecs(inputs, level).map((spec) => ({ source: "tunement" as const, spec })),
+    ...buildAttunementSpecs(inputs, level).map((spec) => ({ source: "attunement" as const, spec })),
   ]
-  const rows: ItemRankingRow[] = []
-  for (const { source, specs } of catalogues) {
-    for (const spec of specs) {
-      const withSpec = runEngine(spec.apply(inputs))
-      const lift = baseDps > 0 ? withSpec.dps / baseDps - 1 : 0
-      rows.push({
-        statLineId: spec.word,
-        label: spec.label,
-        labelKey: spec.labelKey,
-        source,
-        amount: spec.amount,
-        unit: spec.unit,
-        expectedDps: withSpec.dps,
-        dpsDelta: withSpec.dps - baseDps,
-        liftPercent: lift,
-        leadVsMin: 0,
-      })
+}
+
+export function rankingRows(
+  inputs: Inputs,
+  baseDps: number,
+  options: EngineRunOptions = TOTALS_RUN,
+  block?: RankingBlock,
+): ItemRankingRow[] {
+  const catalogue = rankingCatalogue(inputs)
+  const blockStart = block ? Math.floor((catalogue.length * block.index) / block.count) : 0
+  const blockEnd = block
+    ? Math.floor((catalogue.length * (block.index + 1)) / block.count)
+    : catalogue.length
+  return catalogue.slice(blockStart, blockEnd).map(({ source, spec }) => {
+    const withSpec = runEngine(spec.apply(inputs), options)
+    return {
+      statLineId: spec.word,
+      label: spec.label,
+      labelKey: spec.labelKey,
+      source,
+      amount: spec.amount,
+      unit: spec.unit,
+      expectedDps: withSpec.dps,
+      dpsDelta: withSpec.dps - baseDps,
+      liftPercent: baseDps > 0 ? withSpec.dps / baseDps - 1 : 0,
+      leadVsMin: 0,
     }
-  }
-  const positive = rows.filter((r) => r.liftPercent > 0.001).map((r) => r.liftPercent)
+  })
+}
+
+export function withLeadVsMin(rows: readonly ItemRankingRow[]): ItemRankingRow[] {
+  const positive = rows.filter((row) => row.liftPercent > 0.001).map((row) => row.liftPercent)
   const minPositive = positive.length ? Math.min(...positive) : 0
-  for (const r of rows) {
-    r.leadVsMin =
-      r.liftPercent > 0.001 && minPositive > 0 ? r.liftPercent / minPositive - 1 : "(none)"
-  }
-  return rows
+  return rows.map((row) => ({
+    ...row,
+    leadVsMin:
+      row.liftPercent > 0.001 && minPositive > 0 ? row.liftPercent / minPositive - 1 : "(none)",
+  }))
+}
+
+export function computeRanking(
+  inputs: Inputs,
+  baseDps: number,
+  options: EngineRunOptions = TOTALS_RUN,
+): ItemRankingRow[] {
+  return withLeadVsMin(rankingRows(inputs, baseDps, options))
 }
 
 function clone(i: Inputs, mut: (x: Inputs) => void): Inputs {

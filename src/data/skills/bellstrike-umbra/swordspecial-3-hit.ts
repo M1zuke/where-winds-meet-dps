@@ -1,8 +1,11 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { SWORDSPECIAL_3_HIT_MOTION } from "./rootMotion"
+import { INNER_BALANCE_STRIKE_III_COST, INNER_BALANCE_STRIKE_III_REQUIRES } from "./buffs/enduranceGates"
 
 export const swordspecial3Hit = defineSkill({
   id: SKILL.swordspecial3Hit,
@@ -15,10 +18,15 @@ export const swordspecial3Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial3Hit,
   receives: STRATEGIC_SWORD_RECEIVES,
-  // A player-ended form: castFrames sits 11 frames past the frame at which the animation would accept the next input (in-game animation, 2026-09-09).
-  castFrames: 57,
+  // In-game values as of 2026-10-16: without Sword Horizon every follow-up waits
+  // for the 84 f MOVEPOST and the 4th hit lands, so the 3-hit form exists only
+  // with it, where MOVEPOST comes at 63.78 f.
+  castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES, { param: PARAM.swordHorizon }],
+  meterCosts: [INNER_BALANCE_STRIKE_III_COST],
+  castFrames: 63.78,
   triggerable: true,
+  displacement: SWORDSPECIAL_3_HIT_MOTION,
   hits: SWORDSPECIAL_HITS.slice(0, 3),
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-16T00:00:00.000Z",
 })

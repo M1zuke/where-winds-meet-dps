@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import type { Result } from "../../../engine/types"
 import { useI18n } from "../../../i18n/i18nContext"
 import { groupByBreakdownName } from "../../utils/skillBreakdown"
@@ -15,6 +16,7 @@ interface MetricsCardProps {
   graduationBuildName?: string | null
   rotationName?: string | null
   onRotationClick?: () => void
+  encounterTrigger?: ReactNode
 }
 
 function OpenIcon() {
@@ -49,6 +51,7 @@ export function MetricsCard({
   graduationBuildName = null,
   rotationName = null,
   onRotationClick,
+  encounterTrigger,
 }: MetricsCardProps) {
   const { t } = useI18n()
   const graduationBuildText = graduationBuildName ?? t("layout.outputPanel.chooseABuild")
@@ -73,6 +76,7 @@ export function MetricsCard({
           {rotationName ? ` · ${rotationName}` : ""}
         </span>
       </div>
+      {encounterTrigger && <div className={styles.encounterSlot}>{encounterTrigger}</div>}
       <div className={styles.stat}>
         <span className={styles.label}>{t("common.totalDamage")}</span>
         <span className={styles.value}>{formatNumber(result.totalDamage, 0)}</span>
@@ -130,14 +134,35 @@ export function MetricsCard({
   )
 }
 
-export function WarningsList({ result }: { result: Result }) {
-  if (!result.warnings.length) return null
+const QI_EDGE_WARNING_KEYS = {
+  start: {
+    before: "layout.outputPanel.qiEdgeBeforeStart",
+    after: "layout.outputPanel.qiEdgeAfterStart",
+  },
+  end: {
+    before: "layout.outputPanel.qiEdgeBeforeEnd",
+    after: "layout.outputPanel.qiEdgeAfterEnd",
+  },
+}
+
+export function WarningLines({ result }: { result: Result }) {
+  const { t } = useI18n()
   return (
-    <div className="warnings">
+    <>
       {result.warnings.map((warning, index) => (
         <div key={index}>⚠ {warning}</div>
       ))}
-    </div>
+      {(result.qiEdgeWarnings ?? []).map((warning) => (
+        <div key={`${warning.skillName}-${warning.edge}-${warning.edgeSec}`}>
+          ⚠{" "}
+          {t(QI_EDGE_WARNING_KEYS[warning.edge][warning.side])
+            .replace("{skill}", warning.skillName)
+            .replace("{seconds}", warning.offsetSec.toFixed(2))
+            .replace("{edge}", warning.edgeSec.toFixed(2))
+            .replace("{share}", (warning.shareOfTotal * 100).toFixed(1))}
+        </div>
+      ))}
+    </>
   )
 }
 

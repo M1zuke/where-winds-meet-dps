@@ -16,13 +16,14 @@ export type ArtBonusField =
 
 export type Effect =
   | { kind: "stat"; statKey: StatKey; amount: number }
-  | { kind: "forceOutcome"; outcome: "crit" | "affinity" }
+  | { kind: "forceOutcome"; outcome: "crit" | "affinity" | "noAbrasion" }
   | { kind: "applyBuff"; id: string; stacks?: number; durationSec?: number }
   | { kind: "consumeStacks"; id: string; count: number }
   | { kind: "artBonus"; field: ArtBonusField; amount: number }
   | { kind: "damageMultiplier"; factor: number }
   | { kind: "setStatus"; id: string; stacks?: number; permanent?: boolean; durationFrames?: number }
   | { kind: "echo"; debuffId: string }
+  | { kind: "finalCritAtLeast"; threshold: number; bonusBelowThreshold: number }
 
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
@@ -41,10 +42,17 @@ export function stat(statKey: StatKey, amount: number): Extract<Effect, { kind: 
   return { kind: "stat", statKey, amount }
 }
 
-export function forceOutcome<Outcome extends "crit" | "affinity">(
+export function forceOutcome<Outcome extends "crit" | "affinity" | "noAbrasion">(
   outcome: Outcome,
 ): { kind: "forceOutcome"; outcome: Outcome } {
   return { kind: "forceOutcome", outcome }
+}
+
+export function finalCritAtLeast(
+  threshold: number,
+  bonusBelowThreshold: number,
+): Extract<Effect, { kind: "finalCritAtLeast" }> {
+  return { kind: "finalCritAtLeast", threshold, bonusBelowThreshold }
 }
 
 export function applyBuff(

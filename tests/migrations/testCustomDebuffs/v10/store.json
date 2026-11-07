@@ -1,0 +1,103 @@
+{
+  "v": 10,
+  "debuffs": [
+    {
+      "id": "debuff-bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleeding",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "firstTickOffsetFrames": 30,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.066,
+        "physFixed": 0,
+        "attributeMultiplier": 0.099,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 5,
+      "stackScaling": "perStack",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 0,
+        "retainParam": "swordHorizon",
+        "retainMinTier": 6,
+        "retainParamStacks": 2
+      },
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-03T00:00:00.000Z",
+      "tags": ["role:bleedTick"],
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+        "soulShaken"
+      ]
+    },
+    {
+      "id": "debuff-mystic-combustion",
+      "classId": "mystic",
+      "name": "Combustion",
+      "activation": "triggered",
+      "durationFrames": 481,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.29545,
+        "physFixed": 44.62,
+        "attributeMultiplier": 0.443175,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "tags": ["role:combustion"],
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
+    },
+    {
+      "id": "debuff-mystic-smolder",
+      "classId": "mystic",
+      "name": "Smolder",
+      "breakdownName": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.23578,
+        "physFixed": 35.95,
+        "attributeMultiplier": 0.35367,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { swordMorph } from "../../src/data/innerWays/swordMorph"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { BuildView, HitContext, HitInput, QiPhase } from "../../src/engine/behavior"
-import type { Skill } from "../../src/engine/skill"
+import { hitDealsDamage, type Skill } from "../../src/engine/skill"
 
 const vagrantSword = (): Skill =>
   builtinSkillsForClass("bellstrikeSplendor").find((skill) => skill.id === SKILL.swordHeavyCharged)!
@@ -25,7 +25,13 @@ const buildAt = (tier: number | null): BuildView => ({
 })
 
 const hitInput = (skill: Skill, index: number): HitInput =>
-  ({ skill, hit: skill.hits[index]!, frame: 0, build: buildAt(6) }) as unknown as HitInput
+  ({
+    skill,
+    hit: skill.hits[index]!,
+    frame: 0,
+    build: buildAt(6),
+    holds: () => false,
+  }) as unknown as HitInput
 
 const contextAt = (phase: QiPhase): HitContext => ({
   phase,
@@ -74,10 +80,11 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
     expect(behavior.claimStatEffects(hitInput(vagrantSword(), 2), "normal")).toEqual([])
   })
 
-  it("has no third wave to reach on the two-wave cast", () => {
+  it("has no third wave to reach on the two-wave cast, whose third hit deals no damage", () => {
     const behavior = swordMorphExhaustedBehavior(buildAt(6))!
     const skill = twoWaves()
-    expect(skill.hits).toHaveLength(2)
+    expect(skill.hits.filter(hitDealsDamage)).toHaveLength(2)
+    expect(hitDealsDamage(skill.hits[2]!)).toBe(false)
     for (let index = 0; index < skill.hits.length; index++) {
       expect(behavior.claimStatEffects(hitInput(skill, index), "exhausted")).toEqual([])
     }
@@ -88,6 +95,8 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
       SKILL.swordHeavyCharged,
       SKILL.swordHeavyChargedPrepull,
       SKILL.swordHeavyCharged2Hit,
+      SKILL.swordHeavyCharged2HitWushuang,
+      SKILL.swordHeavyChargedWushuang,
       SKILL.energySurge,
     ])
   })

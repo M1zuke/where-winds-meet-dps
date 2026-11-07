@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import {
+  INEBRIATE_ENHANCED_RECEIVES,
+  MISTWILLOW_HEAVY_ATTACK_RECEIVES,
+  SKYSTRIKE_GAUNTLETS_RECEIVES,
+} from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", stacks: 1 }]
 
@@ -20,34 +24,48 @@ const stage = (
     attributeMultiplier: physMultiplier * 1.5,
     physFixed,
     attributeFixed,
+    // In-game values as of 2026-09-25, before the class's own Qi bonuses.
+    qiRate: 0.65,
     conditions: UNLOCKED,
   })
 
-const finisherThird = (index: number, frame: number) =>
-  stage(index, frame, 1.82136 / 3, 505 / 3, 275 / 3)
-
-// The finisher lands three strikes that share its stage total; their split is
-// not published, equal thirds are assumed.
+// The finisher's three strikes split its total 0.3 / 0.3 / 0.4, not evenly.
+// In-game values as of 2026-09-16.
 export const dragonquenchStagesAt = (frames: readonly number[]) => [
   stage(0, frames[0], 0.68814, 191, 104),
   stage(1, frames[1], 0.66144, 184, 100),
   stage(2, frames[2], 0.80698, 224, 122),
-  finisherThird(3, frames[3]),
-  finisherThird(4, frames[4]),
-  finisherThird(5, frames[5]),
+  stage(3, frames[3], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
+  stage(4, frames[4], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
+  stage(5, frames[5], 1.82136 * 0.4, 505 * 0.4, 275 * 0.4),
 ]
 
-export const DRAGONQUENCH_TAGS = [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze]
+// In-game values as of 2026-09-28: 4 m approach reach, plus a further
+// 1.75 m shrink-only pull once in range.
+export const DRAGONQUENCH_REACH_METERS = 4
+export const DRAGONQUENCH_DISPLACEMENT = {
+  kind: "towardTarget" as const,
+  referenceMeters: 1.75,
+}
+
+export const DRAGONQUENCH_TAGS = [
+  WEAPON.gauntlets,
+  ATTUNE.driftcleaveDeepdaze,
+  ROLE.dragonquenchInebriate,
+  ROLE.inebriateEnhanced,
+  ATTACK.heavy,
+]
 export const DRAGONQUENCH_RECEIVES = [
   ...INEBRIATE_ENHANCED_RECEIVES,
   ...SKYSTRIKE_GAUNTLETS_RECEIVES,
   BUFF.nonPlayerBaseDamage40,
+  BUFF.bingePointGainNoAbrasion,
+  ...MISTWILLOW_HEAVY_ATTACK_RECEIVES,
 ]
 
 export const dragonquenchStages = dragonquenchStagesAt([18, 41, 69, 91, 98, 105])
 
-// Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
-// length (the four stages to their earliest next input) and hit frames:
+// Cast length (the four stages to their earliest next input) and hit frames:
 // in-game animation, 2026-09-05.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
@@ -58,10 +76,11 @@ export const dragonquenchInebriate = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriate,
-  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 143,
+  reachMeters: DRAGONQUENCH_REACH_METERS,
+  displacement: DRAGONQUENCH_DISPLACEMENT,
   hits: dragonquenchStages,
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-06T00:00:00.000Z",

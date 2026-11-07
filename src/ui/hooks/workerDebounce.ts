@@ -6,6 +6,7 @@ const DEBOUNCE_MS_BY_KIND: Partial<Record<WorkerRequest["kind"], number>> = {
   parseSimulation: 0,
   parseSimulationCancel: 0,
   parseRunDetail: 0,
+  graduationQiLog: 0,
 }
 
 export function debounceMsFor(kind: WorkerRequest["kind"]): number {

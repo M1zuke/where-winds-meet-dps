@@ -1,9 +1,10 @@
 import { useId, useMemo, useRef, useState } from "react"
-import { claimedOddityNodes, ODDITY_BOARD } from "../../../../definitions/baseStats"
+import { claimedOddityNodes, RELEASED_ODDITY_BOARD } from "../../../../definitions/baseStats"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import type { HeirloomProfile } from "../../../../engine/heirloom"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { resistanceForInputs } from "../../../../engine/panel"
+import { resolveActiveSets, setPieceCount } from "../../../../engine/setBonuses"
 import type { GearPiece, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { classKey, setKey } from "../../../../i18n/contentKeys"
@@ -15,9 +16,9 @@ import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import { BuildPieceCard } from "../build-piece-card/BuildPieceCard"
 import { BuildSummary, type BuildSummaryItem } from "../build-summary/BuildSummary"
-import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
+import { ARSENAL_KEYS, BOW_SET_NAME_KEYS } from "../shared/buildSetKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import previewStyles from "../shared/gearPreview.module.scss"
 
 interface Props {
@@ -45,23 +46,26 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
     return bySlot
   }, [inputs.equipped, inputs.inventory])
 
-  const armorSet = inputs.set ? SET_BY_ID[inputs.set] : null
+  const activeSets = resolveActiveSets(inputs)
+  const gearSetSummary = activeSets.twoPiece
+    .map(({ setId }) => {
+      const definition = SET_BY_ID[setId]
+      return `${t(setKey(setId), definition?.name ?? setId)} ${setPieceCount(inputs, setId)}/4`
+    })
+    .join(", ")
+  const bowSetSummary = activeSets.bow
+    ? `${t(BOW_SET_NAME_KEYS[activeSets.bow.set])} ${t("common.levelShort").replace("{n}", String(activeSets.bow.level))}`
+    : ""
   const enabledCount =
     inputs.martialArtsTalents.filter((talent) => talent.enabled).length +
-    ODDITY_BOARD.reduce(
+    RELEASED_ODDITY_BOARD.reduce(
       (total, region) => total + claimedOddityNodes(inputs.unclaimedOddityNodes, region.key).length,
       0,
     )
 
   const summaryItems: BuildSummaryItem[] = [
-    {
-      label: t("common.armorSet"),
-      value: armorSet ? t(setKey(armorSet.id), armorSet.name) : t("common.unselected"),
-    },
-    {
-      label: t("common.bowSet"),
-      value: inputs.bowSet ? t(BOW_SET_KEYS[inputs.bowSet]) : t("common.unselected"),
-    },
+    { label: t("common.armorSet"), value: gearSetSummary || "—" },
+    { label: t("common.bowSet"), value: bowSetSummary || "—" },
     { label: t("common.arsenal"), value: t(ARSENAL_KEYS[inputs.arsenal]) },
     {
       label: t("common.talentsOddities"),
@@ -107,9 +111,14 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
                 {GEAR_SLOTS.map((slot) => {
                   const piece = piecesBySlot.get(slot)
                   return piece ? (
-                    <BuildPieceCard key={slot} piece={piece} profile={profile} />
+                    <BuildPieceCard
+                      key={slot}
+                      piece={piece}
+                      classId={inputs.classId}
+                      profile={profile}
+                    />
                   ) : (
-                    <EmptySlotCard key={slot} slot={slot} />
+                    <EmptySlotCard key={slot} slot={slot} classId={inputs.classId} />
                   )
                 })}
               </div>
@@ -137,15 +146,15 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
   )
 }
 
-function EmptySlotCard({ slot }: { slot: GearSlot }) {
+function EmptySlotCard({ slot, classId }: { slot: GearSlot; classId: string }) {
   const { t } = useI18n()
   return (
     <article
       className={`${previewStyles.piece} ${previewStyles.skipped}`}
-      aria-label={t(GEAR_SLOT_KEYS[slot])}
+      aria-label={t(gearSlotLabelKey(slot, classId))}
     >
       <div className={previewStyles.pieceHead}>
-        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_KEYS[slot])}</span>
+        <span className={previewStyles.pieceSlot}>{t(gearSlotLabelKey(slot, classId))}</span>
         <span className="hint">{t("gear.equippedBuildDialog.emptySlot")}</span>
       </div>
     </article>

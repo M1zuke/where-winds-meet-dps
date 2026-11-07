@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest"
 import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeSkill, makeHit } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import type { Inputs } from "../../src/engine/types"
@@ -21,7 +22,6 @@ function fillerRotationResult(openingStacks?: Record<string, number>) {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
@@ -48,7 +48,7 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     expect(chip).toMatchObject({ stacks: 150, maxStacks: 200 })
   })
 
-  it("the same default also resolves a hit variant's cast-length gate — the seeded ledger and the layout pass agree", () => {
+  it("the same default also resolves a hit variant's cast-length gate", () => {
     const skill = makeSkill(CLASS, {
       name: "Gated filler",
       castFrames: 90,
@@ -75,12 +75,11 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       customSkills: [skill],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: skill.id })],
       }),
     }
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo(30 / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo(30 / FPS, 10)
   })
 })

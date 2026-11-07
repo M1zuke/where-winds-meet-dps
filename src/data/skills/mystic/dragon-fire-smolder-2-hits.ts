@@ -18,32 +18,38 @@ export const dragonFireSmolder2Hits = defineSkill({
   // dragon-fire-smolder-1-hit.ts.
   castFrames: 137,
   triggerable: true,
+  // In-game values as of 2026-10-18.
+  vitalityCost: 20,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
+  // In-game values as of 2026-10-15.
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.283899,
+      attributeMultiplier: 1.925849,
+      physFixed: 204.9587,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(1, {
       frame: 102,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.283899,
+      attributeMultiplier: 1.925849,
+      physFixed: 204.9587,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(2, {
       frame: 108,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.41491,
+      attributeMultiplier: 2.122364,
+      physFixed: 225.8728,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

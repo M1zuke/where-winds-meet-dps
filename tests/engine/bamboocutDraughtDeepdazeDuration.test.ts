@@ -40,7 +40,6 @@ function runEntry(mindMethods: Inputs["mindMethods"]) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: null,
     mindMethods,
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {
@@ -74,7 +73,6 @@ describe("Inebriate - Deepdaze duration", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: skyspeakAt(3),
       customSkills: [grantDeepdaze, idlePad],
       activeCustomRotation: makeRotation(CLASS, {
@@ -94,7 +92,6 @@ describe("Inebriate - Deepdaze duration", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      set: null,
       mindMethods: skyspeakAt(3),
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.skystrikeGauntletsEx })],
@@ -102,6 +99,26 @@ describe("Inebriate - Deepdaze duration", () => {
     })
     const window = deepdazeWindow(result)
     expect(window.endSec - window.startSec).toBeCloseTo(10, 1)
+  })
+
+  it("the ultimate restarts a Deepdaze already running instead of leaving it alone", () => {
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: [grantDeepdaze, idlePad],
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [
+          makeStep({ skillId: grantDeepdaze.id }),
+          makeStep({ skillId: idlePad.id }),
+          makeStep({ skillId: SKILL.skystrikeGauntletsEx }),
+        ],
+        openingStacks: { [STATUS.bingePoints]: 200 },
+      }),
+    })
+    const windows = result.buffWindows!.filter((window) => window.id === STATUS.inebriateDeepdaze)
+    const idleEndSec = 12 / 60 + 180 / 60
+    const restarted = windows.find((window) => window.startSec >= idleEndSec)!
+    expect(restarted.endSec - restarted.startSec).toBeCloseTo(5, 1)
   })
 
   it("caps what an extension may leave running, so repeated extensions stop growing it", () => {
@@ -130,7 +147,6 @@ describe("Inebriate - Deepdaze duration", () => {
       const result = runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set: null,
         mindMethods: skyspeakAt(3),
         customSkills: [grantDeepdaze, extend, idlePad],
         activeCustomRotation: makeRotation(CLASS, {

@@ -1,0 +1,264 @@
+{
+  "v": 95,
+  "skills": [
+    {
+      "id": "stonesplitStrength-phalanxq",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxQ",
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxQ",
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "jadeware"],
+      "triggersBuffsAtFrame": {
+        "jadeware": 7
+      },
+      "castFrames": 49,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 26,
+          "physMultiplier": 1.8948,
+          "attributeMultiplier": 2.8422,
+          "physFixed": 525,
+          "attributeFixed": 286,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermosweep",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-phalanxq-supreme",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxQ (Supreme)",
+      "breakdownName": "Total Annihilation - Supreme",
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxQSupreme",
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "totalAnnihilationSupremeShield", "jadeware"],
+      "triggersBuffsAtFrame": {
+        "totalAnnihilationSupremeShield": 222,
+        "jadeware": 180
+      },
+      "castFrames": 222,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 200,
+          "physMultiplier": 3.5256,
+          "attributeMultiplier": 5.2884,
+          "physFixed": 975,
+          "attributeFixed": 532,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermosweep-supreme",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-deflect",
+      "classId": "stonesplitStrength",
+      "name": "Deflect",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:deflect",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "castFrames": 15,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringAvailable",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight"
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-deflect-hit-0-mo-blade-drawn",
+              "label": "Mo Blade Drawn",
+              "conditions": [
+                {
+                  "buffId": "drawn:Mo Blade",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 0,
+              "attributeMultiplier": 0,
+              "physFixed": 0,
+              "attributeFixed": 0,
+              "castFrames": 18
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-deflect-cancel",
+      "classId": "stonesplitStrength",
+      "name": "Deflect Cancel",
+      "tags": [],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:deflectCancel",
+      "castFrames": 15,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "variants": [
+            {
+              "id": "hv-deflect-cancel-hit-0-mo-blade-drawn",
+              "label": "Mo Blade Drawn",
+              "conditions": [
+                {
+                  "buffId": "drawn:Mo Blade",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 0,
+              "attributeMultiplier": 0,
+              "physFixed": 0,
+              "attributeFixed": 0,
+              "castFrames": 18
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-heng-dash",
+      "classId": "stonesplitStrength",
+      "name": "Heng Blade - Dash",
+      "tags": ["weapon:Heng Blade"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:hengDash",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "castFrames": 40,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 7,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 6
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 1
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.43723,
+          "attributeMultiplier": 0.655845,
+          "physFixed": 122,
+          "attributeFixed": 66,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-phalanx-strike",
+      "classId": "stonesplitStrength",
+      "name": "User-authored Phalanx strike",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 30,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1.5,
+          "physFixed": 100,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 50,
+      "triggerable": true,
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

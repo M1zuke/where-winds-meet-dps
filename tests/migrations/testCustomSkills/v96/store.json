@@ -1,0 +1,1942 @@
+{
+  "v": 96,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-swordspecial-1-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 1-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial1Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 45,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "bleedMechanismEnhancement",
+              "stacks": 180,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-2-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 2-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial2Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 47,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "bleedMechanismEnhancement",
+              "stacks": 180,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-3-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 3-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial3Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 71,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "bleedMechanismEnhancement",
+              "stacks": 180,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordspecial-3-hit-hit-0-sword-horizon",
+              "label": "Sword Horizon",
+              "conditions": [
+                {
+                  "param": "swordHorizon"
+                }
+              ],
+              "physMultiplier": 0.196354,
+              "attributeMultiplier": 0.294531,
+              "physFixed": 54.4,
+              "attributeFixed": 29.6,
+              "castFrames": 64
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 43,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 4-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial4Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 84,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "bleedMechanismEnhancement",
+              "stacks": 180,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordspecial-4-hit-hit-0-sword-horizon",
+              "label": "Sword Horizon",
+              "conditions": [
+                {
+                  "param": "swordHorizon"
+                }
+              ],
+              "physMultiplier": 0.196354,
+              "attributeMultiplier": 0.294531,
+              "physFixed": 54.4,
+              "attributeFixed": 29.6,
+              "castFrames": 77
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 43,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-swordspecial-4-hit-final",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-25T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-4-hit-final",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 4-Hit (Hit 4)",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial4HitFinal",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 33,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-25T00:00:00.000Z",
+      "updatedAt": "2026-09-25T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-1-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 1-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage11Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 49,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-2-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 2-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage12Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 73,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 61,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 71,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 81,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ],
+          "castFramesWhenGated": 87
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-3-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 3-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage13Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 83,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 61,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 71,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 81,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ],
+          "castFramesWhenGated": 87
+        }
+      ],
+      "createdAt": "2026-07-31T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage14Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 87,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 61,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 71,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 81,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-5-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 5-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage15Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 152,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 61,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 71,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 81,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 139,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-2-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 2, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage24Hit",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ],
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 1.1833333333333333,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-5-hit"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 142,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 91,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 115,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 125,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 135,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-2-5-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 2, 5-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage25Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6,
+          "atFrame": 30
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 1.1833333333333333,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-5-hit"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 13
+        }
+      ],
+      "castFrames": 207,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 91,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 115,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 125,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 135,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 193,
+          "physMultiplier": 0.805848,
+          "attributeMultiplier": 1.208772,
+          "physFixed": 223.2,
+          "attributeFixed": 121.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spear-light-2",
+      "classId": "bellstrikeUmbra",
+      "name": "Spear - Light Attack (Stage 2)",
+      "breakdownName": "Spear - Light Attack",
+      "tags": ["weapon:Spear", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:umbraSpearLight2",
+      "receives": ["swallowcallLightAttackBoost", "heavenquakerSpearAdditionalAttack"],
+      "castFrames": 24,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.3287865,
+          "attributeMultiplier": 0.49317975,
+          "physFixed": 91.05,
+          "attributeFixed": 49.65,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearheavy",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearHeavy",
+      "breakdownName": "Drifting Thrust",
+      "tags": ["weapon:Spear"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearHeavy",
+      "triggersBuffs": ["soulShaken"],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 18,
+          "stopAfterSec": 1.2,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-spearheavy-stage-1"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 302,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 95,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 104,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 113,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 122,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 131,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-5",
+          "frame": 141,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-6",
+          "frame": 151,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-7",
+          "frame": 161,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-8",
+          "frame": 171,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-9",
+          "frame": 182,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-10",
+          "frame": 191,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-11",
+          "frame": 202,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-12",
+          "frame": 213,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-13",
+          "frame": 222,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-14",
+          "frame": 232,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-15",
+          "frame": 245,
+          "physMultiplier": 1.250878,
+          "attributeMultiplier": 1.876317,
+          "physFixed": 346,
+          "attributeFixed": 188.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearheavy-stage-1",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearHeavy Stage 1",
+      "breakdownName": "Drifting Thrust",
+      "tags": ["weapon:Spear", "attune:spearCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearHeavyStage1",
+      "triggersBuffs": ["soulShaken"],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 18,
+          "stopAfterSec": 0.2,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-spearheavy-1-hit"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 173,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 44,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 53,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 62,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 71,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-5",
+          "frame": 81,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-6",
+          "frame": 91,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-7",
+          "frame": 101,
+          "physMultiplier": 0.3752634,
+          "attributeMultiplier": 0.5628951,
+          "physFixed": 103.8,
+          "attributeFixed": 56.58,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-8",
+          "frame": 117,
+          "physMultiplier": 0.7505268,
+          "attributeMultiplier": 1.1257902,
+          "physFixed": 207.6,
+          "attributeFixed": 113.16,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spear-light-3",
+      "classId": "bellstrikeUmbra",
+      "name": "Spear - Light Attack (Stage 3)",
+      "breakdownName": "Spear - Light Attack",
+      "tags": ["weapon:Spear", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:umbraSpearLight3",
+      "receives": ["swallowcallLightAttackBoost", "heavenquakerSpearAdditionalAttack"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.219191,
+          "attributeMultiplier": 0.3287865,
+          "physFixed": 60.7,
+          "attributeFixed": 33.1,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.3287865,
+          "attributeMultiplier": 0.49317975,
+          "physFixed": 91.05,
+          "attributeFixed": 49.65,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-sword-strike",
+      "classId": "bellstrikeUmbra",
+      "name": "My Sword Strike",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castFrames": 40,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.2,
+          "attributeMultiplier": 0.3,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    }
+  ]
+}

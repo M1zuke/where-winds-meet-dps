@@ -1,0 +1,363 @@
+{
+  "v": 60,
+  "skills": [
+    {
+      "id": "mystic-toad-cancel",
+      "classId": "mystic",
+      "name": "Toad[Cancel]",
+      "tags": ["mystic:area-debuff"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:toadCancel",
+      "cancelledBy": "deflectCancel",
+      "castFrames": 96,
+      "triggerable": true,
+      "reachMeters": 8,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 39,
+          "physMultiplier": 0.54063,
+          "attributeMultiplier": 0.810945,
+          "physFixed": 81.23,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 68,
+          "physMultiplier": 3.24377,
+          "attributeMultiplier": 4.865655,
+          "physFixed": 487.39,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-toad-poison",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-boundvessel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Heavy Attack",
+      "breakdownName": "Boundvessel",
+      "tags": ["weapon:Twin Blades"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:boundvessel",
+      "receives": ["nonPlayerBaseDamage50"],
+      "triggerable": false,
+      "castFrames": 208,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 36,
+          "stopAfterSec": 1.6
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-14",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-1",
+          "frame": 36,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-2",
+          "frame": 44,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-3",
+          "frame": 52,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-4",
+          "frame": 60,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-5",
+          "frame": 68,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-6",
+          "frame": 76,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-7",
+          "frame": 84,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-8",
+          "frame": 92,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-12",
+          "frame": 144,
+          "physMultiplier": 0.11544,
+          "attributeMultiplier": 0.17316,
+          "physFixed": 32.2,
+          "attributeFixed": 17.4,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-13",
+          "frame": 160,
+          "physMultiplier": 0.23088,
+          "attributeMultiplier": 0.34632,
+          "physFixed": 64.4,
+          "attributeFixed": 34.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-cloudvault",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umblightcharge",
+      "classId": "silkbindJade",
+      "name": "UmbLightCharge",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attune:umbFrequentProjectile"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbLightCharge",
+      "receives": ["comboSpringAwayBonus", "nonPlayerBaseDamage125"],
+      "castFrames": 147,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 10,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 20,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "silkbindJade-umblightcharge-lift",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 30,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 40,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-5",
+          "frame": 50,
+          "physMultiplier": 0.2862166666666667,
+          "attributeMultiplier": 0.42933333333333334,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-perfect-dodge",
+      "classId": "bellstrikeUmbra",
+      "name": "Perfect Dodge",
+      "tags": ["weapon:none"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:perfectDodge",
+      "triggersBuffs": ["mirageBonus", "disintegration"],
+      "castFrames": 0,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-vessel",
+      "classId": "bamboocutDraught",
+      "name": "My vessel",
+      "tags": [],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castFrames": 120,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 36,
+          "physMultiplier": 0.158668,
+          "attributeMultiplier": 0.238001,
+          "physFixed": 43.953,
+          "attributeFixed": 23.933,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

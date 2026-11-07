@@ -6,6 +6,12 @@ export const BOW_SET_KEYS: Readonly<Record<Exclude<BowSet, null>, string>> = {
   precision: "common.precision",
 }
 
+export const BOW_SET_NAME_KEYS: Readonly<Record<Exclude<BowSet, null>, string>> = {
+  precision: "common.precision",
+  crit: "common.critical",
+  affinity: "common.affinity",
+}
+
 export const ARSENAL_KEYS: Readonly<Record<Arsenal, string>> = {
   general: "common.generalArsenal",
   bellstrike: "common.bellstrikeArsenal",

@@ -8,10 +8,16 @@ for (const set of SET_DEFS) {
   for (const { mechanic } of set.mechanics ?? []) registerMechanic(mechanic)
 }
 
+export const GEAR_SET_DEFS: readonly SetDef[] = SET_DEFS.filter((set) => set.group === "gear")
+
 export const SET_BY_ID: Readonly<Record<string, SetDef>> = Object.fromEntries(
   SET_DEFS.map((set) => [set.id, set]),
 )
 
 export function setDisplayNameForSiteKey(siteKey: string): string | undefined {
   return SET_DEFS.find((set) => set.siteKey === siteKey)?.name
+}
+
+export function setForBuffParam(param: string): SetDef | undefined {
+  return SET_DEFS.find((set) => set.buffParam === param)
 }

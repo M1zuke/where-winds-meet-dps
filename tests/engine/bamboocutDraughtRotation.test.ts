@@ -14,12 +14,19 @@ import { quickDrink } from "../../src/data/skills/bamboocut-draught/quick-drink"
 import { quickDrinkCancel } from "../../src/data/skills/bamboocut-draught/quick-drink-cancel"
 import { reveldrift } from "../../src/data/skills/bamboocut-draught/reveldrift"
 import { reveldriftCancel } from "../../src/data/skills/bamboocut-draught/reveldrift-cancel"
+import { nightwickPrimepick } from "../../src/data/skills/bamboocut-draught/nightwick-primepick"
 import { nightwickPrimepickFollowUp } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up"
 import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import type { Inputs } from "../../src/engine/types"
+import type { EngineRunOptions, Inputs } from "../../src/engine/types"
+
+// A fixed exhausted window from the fight's very first frame, deterministic
+// regardless of these synthetic rotations' own damage.
+const EXHAUSTED_FROM_START_OPTIONS: EngineRunOptions = {
+  fixedQiBreaks: [{ startSec: 0, durationSec: 10, lowQiLeadSec: 0 }],
+}
 
 const CLASS = "bamboocutDraught"
 
@@ -45,18 +52,22 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
 
   it("pays the Drunkslay echo out on the second, third and fourth Hero's Blood", () => {
     const rotation = classDef.rotations.find((r) => r.id === classDef.defaultRotationId)!
-    const result = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: [
-        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
-        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-      activeCustomRotation: rotation,
-      set: null,
-    })
+    const result = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: [
+          { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+          { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
+          { name: "", stacks: "" },
+          { name: "", stacks: "" },
+        ],
+        activeCustomRotation: rotation,
+      },
+      // Pinned to the break the measured build's simulated Qi bar reaches, so
+      // the frame assertions below stay on a known second.
+      { fixedQiBreaks: [{ startSec: 30.35, durationSec: 10, lowQiLeadSec: 5 }] },
+    )
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
     expect(echoRow.count).toBe(3)
     const herosBloodFirstStrikeFrames = result
@@ -98,16 +109,16 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
 
 describe("a 1-hit cancel form", () => {
   it("Twinblade Q lands only the first Reveldrift hit over a shorter cast", () => {
-    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0]])
+    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0], reveldrift.hits[2]])
     expect(reveldriftCancel.castFrames).toBeLessThan(reveldrift.castFrames)
     expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
   })
 
-  it("Primepick Follow-up lands only the thrust over a shorter cast", () => {
-    expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
-    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(
-      nightwickPrimepickFollowUp.castFrames,
-    )
+  it("Primepick Follow-up lands only the thrust over the same cast, ended by the next skill", () => {
+    expect(nightwickPrimepickFollowUp.hits.filter((hit) => hit.physMultiplier > 0)).toHaveLength(1)
+    expect(nightwickPrimepickFollowUpCancel.hits).toEqual(nightwickPrimepickFollowUp.hits)
+    expect(nightwickPrimepickFollowUpCancel.castFrames).toBe(nightwickPrimepickFollowUp.castFrames)
+    expect(nightwickPrimepickFollowUpCancel.cancelledBy).toBe("nextSkill")
     expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(
       nightwickPrimepickFollowUp.breakdownName,
     )
@@ -159,33 +170,39 @@ describe("the Primepick follow-up", () => {
       classId: CLASS,
       customSkills: [grantDeepdaze],
       activeCustomRotation: makeRotation(CLASS, { steps }),
-      set: null,
     })
   }
 
-  it("applies Wildstride on its thrust and lands both Deepdaze-only strikes only in Deepdaze", () => {
-    const withDeepdaze = runFollowUp(true)
-    const withoutDeepdaze = runFollowUp(false)
+  it("applies Wildstride and lands Nightwick - Primepick's single hit, Deepdaze or not", () => {
+    for (const withDeepdaze of [true, false]) {
+      const result = runFollowUp(withDeepdaze)
 
-    const rowIn = (result: ReturnType<typeof runEngine>) =>
-      result.perSkill.find((row) => row.breakdownName === "Nightwick - Primepick")!
-
-    expect(rowIn(withDeepdaze).count).toBe(3)
-    expect(rowIn(withoutDeepdaze).count).toBe(1)
-
-    for (const result of [withDeepdaze, withoutDeepdaze]) {
+      const skillRow = result.perSkill.find((row) => row.breakdownName === "Nightwick - Primepick")!
+      expect(skillRow.count).toBe(1)
       expect(result.buffWindows!.some((window) => window.id === DEBUFF.wildstride)).toBe(true)
     }
   })
 
-  it("pins the three Deepdaze hits' coefficients and frames", () => {
-    expect(nightwickPrimepickFollowUp.hits.map((hit) => hit.frame)).toEqual([20, 49, 76])
-    for (const hit of nightwickPrimepickFollowUp.hits) {
-      expect(hit.physMultiplier).toBe(0.859716)
-      expect(hit.physFixed).toBe(237.93)
-      expect(hit.attributeMultiplier).toBe(1.289574)
-      expect(hit.attributeFixed).toBe(129.69)
-    }
+  it("pins the hit's coefficients and frame", () => {
+    const [hit] = nightwickPrimepickFollowUp.hits
+    expect(hit.frame).toBe(20)
+    expect(hit.physMultiplier).toBe(0.64565)
+    expect(hit.physFixed).toBe(180)
+    expect(hit.attributeMultiplier).toBe(0.968475)
+    expect(hit.attributeFixed).toBe(98)
+  })
+
+  it("banks the drink's Binge Points on frame 27 and Tipsylay banks none", () => {
+    const bankingHit = nightwickPrimepickFollowUp.hits[1]
+    expect(bankingHit.frame).toBe(27)
+    expect(bankingHit.physMultiplier).toBe(0)
+    expect(bankingHit.triggers.map((trigger) => trigger.targetId)).toEqual([
+      STATUS.skillBingePointAccumulation,
+      STATUS.skillBingePointAccumulation,
+    ])
+    expect(
+      nightwickPrimepick.hits.flatMap((hit) => hit.triggers.map((trigger) => trigger.targetId)),
+    ).not.toContain(STATUS.skillBingePointAccumulation)
   })
 })
 
@@ -214,17 +231,16 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id })] : []),
       ...Array.from({ length: peakfalls }, () => makeStep({ skillId: SKILL.peakfall })),
     ]
-    return runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      customSkills: [grantDeepdaze],
-      mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps,
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
-      }),
-      set: null,
-    })
+    return runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        customSkills: [grantDeepdaze],
+        mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
+        activeCustomRotation: makeRotation(CLASS, { steps }),
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
   }
 
   const deepdazeWindows = (result: ReturnType<typeof runEngine>) =>
@@ -249,22 +265,23 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
   })
 
   it("does not also fire Skyspeak's tier-3 grant on the same Exhausted hit that extends a running Deepdaze", () => {
-    const result = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      customSkills: [grantDeepdaze],
-      mindMethods: [
-        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
-        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "3" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
-      }),
-      set: null,
-    })
+    const result = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        customSkills: [grantDeepdaze],
+        mindMethods: [
+          { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+          { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "3" },
+          { name: "", stacks: "" },
+          { name: "", stacks: "" },
+        ],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
+        }),
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     const windows = deepdazeWindows(result)
     expect(windows).toHaveLength(1)
     expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(11, 1)
@@ -281,31 +298,34 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
   })
 
   it("Castlink on the Exhausted boss fires the same trigger and shares the 60 s cooldown", () => {
-    const castlinkOnly = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: eonpourTier6,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.castlink })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
-      }),
-      set: null,
-    })
+    const castlinkOnly = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: eonpourTier6,
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: SKILL.castlink })],
+          openingStacks: { [STATUS.consecutivePunches]: 1 },
+        }),
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     expect(deepdazeWindows(castlinkOnly)).toHaveLength(1)
     expect(
       castlinkOnly.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),
     ).toHaveLength(1)
 
-    const peakfallThenCastlink = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: eonpourTier6,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
-      }),
-      set: null,
-    })
+    const peakfallThenCastlink = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: eonpourTier6,
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
+        }),
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     expect(deepdazeWindows(peakfallThenCastlink)).toHaveLength(1)
     expect(
       peakfallThenCastlink.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),
@@ -314,10 +334,19 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
 })
 
 describe("the pre-pull Peakfall", () => {
-  it("sits before frame 0 and carries no Exhausted-window triggers", () => {
+  it("sits before frame 0, opens Castlink, starts its cooldown and carries no Exhausted-window triggers", () => {
     expect(peakfallPrepull.prePull).toBe(true)
     expect(peakfallPrepull.castFrames).toBe(0)
     expect(peakfallPrepull.hits).toHaveLength(1)
-    expect(peakfallPrepull.hits[0].triggers).toHaveLength(0)
+    const [hit] = peakfallPrepull.hits
+    expect(hit.triggers).toHaveLength(2)
+    expect(hit.triggers.map((trigger) => trigger.targetId)).toEqual([
+      STATUS.consecutivePunches,
+      STATUS.peakfallCooldown,
+    ])
+    expect(hit.triggers.some((trigger) => trigger.targetId === STATUS.inebriateDeepdaze)).toBe(
+      false,
+    )
+    expect(hit.triggers.some((trigger) => trigger.targetId === DEBUFF.wildstride)).toBe(false)
   })
 })

@@ -10,7 +10,7 @@ export const breakingPoint: InnerWayDef = defineInnerWay({
   id: INNER_WAY_ID.breakingPoint,
   name: "Breaking Point",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.breakingPoint,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.precisionFourStar },

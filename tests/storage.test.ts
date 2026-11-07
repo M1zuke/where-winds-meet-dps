@@ -25,6 +25,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "../src/engine/bui
 import { seedSkillFromBuiltin } from "../src/engine/skill"
 import { makeSkill } from "../src/engine/skill"
 import { makeRotation, makeStep } from "../src/engine/rotation"
+import { DEFAULT_SERVER_PROCESSING_MS } from "../src/engine/pingFps"
 import { computeGearContribution } from "../src/engine/gearStats"
 import {
   DERIVED_STAT_FIELDS,
@@ -33,14 +34,21 @@ import {
 } from "../src/engine/derivedInputs"
 import { LATEST_PROFILES_VERSION } from "../src/migrations"
 import { SET_ID } from "../src/data/sets/ids"
-import { SET_DEFS } from "../src/data/sets"
+import { GEAR_SET_DEFS } from "../src/definitions/sets/registry"
+import { carriedSets } from "./migrations/legacyProfile"
+import { withGearSet } from "./helpers/withGearSet"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
 import { CLASS_IDS } from "../src/definitions/classes/registry"
-import { getDefaultTalentsForClass, getMindMethodContributions } from "../src/definitions/baseStats"
+import {
+  closeUnclaimedOddityNodes,
+  getDefaultTalentsForClass,
+  getMindMethodContributions,
+} from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
-import { allowedInnerWaysForClass, applyArmorSet, applyBowSet } from "../src/engine/panel"
+import { allowedInnerWaysForClass } from "../src/engine/panel"
+import { applySetBonuses } from "../src/engine/setBonuses"
 
 type StoredGearPiece = Omit<GearPiece, "words"> & {
   words: readonly { word: string; value: number; retuned: boolean }[]
@@ -92,9 +100,9 @@ describe("storage", () => {
   })
 
   it("initialInputs returns the saved blob when present", () => {
-    const next: Inputs = { ...defaultInputs, set: SET_ID.jadeware }
+    const next: Inputs = withGearSet(defaultInputs, SET_ID.jadeware, { fabricatePieces: true })
     saveInputs(next)
-    expect(initialInputs().set).toBe(SET_ID.jadeware)
+    expect(carriedSets(initialInputs())).toContain(SET_ID.jadeware)
   })
 
   it("loadInputs is null when the saved blob is malformed", () => {
@@ -107,6 +115,13 @@ describe("storage", () => {
     expect(loadInputs()).toBeNull()
   })
 })
+
+function legacyInputsWithSet(set: string): Inputs {
+  return {
+    ...withGearSet(defaultInputs, null, { fabricatePieces: true }),
+    set,
+  } as unknown as Inputs
+}
 
 describe("profiles carry selections only — derived stats are never persisted", () => {
   const PROFILES_KEY = "wwm.profiles"
@@ -130,8 +145,9 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(persistedInputs.classId).toBe(defaultInputs.classId)
     expect(persistedInputs.breakthrough).toBe(defaultInputs.breakthrough)
     expect(persistedInputs.arsenal).toBe(defaultInputs.arsenal)
-    expect(persistedInputs.set).toBe(defaultInputs.set)
-    expect(persistedInputs.bowSet).toBe(defaultInputs.bowSet)
+    expect("set" in persistedInputs).toBe(false)
+    expect("bowSet" in persistedInputs).toBe(false)
+    expect(persistedInputs.bowGear).toEqual(defaultInputs.bowGear)
     expect(persistedInputs.food).toBe(defaultInputs.food)
     expect(persistedInputs.mindMethods).toEqual(defaultInputs.mindMethods)
     expect(persistedInputs.inventory).toEqual(defaultInputs.inventory)
@@ -139,6 +155,14 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(persistedInputs.martialArtsTalents).toEqual(defaultInputs.martialArtsTalents)
     expect(persistedInputs.unclaimedOddityNodes).toEqual(defaultInputs.unclaimedOddityNodes)
     expect(persistedInputs.combatSettings).toEqual(defaultInputs.combatSettings)
+  })
+
+  it("keeps a stored entry for an unreleased oddity region through a save and load", () => {
+    const stored = { ...defaultInputs, unclaimedOddityNodes: { Jiangnan: [712], Hexi: [305] } }
+    saveProfiles({ profiles: [makeProfile("p1", withDerivedStats(stored))], activeId: "p1" })
+    const reloaded = loadProfiles().profiles[0].inputs.unclaimedOddityNodes
+    expect(reloaded.Jiangnan).toEqual(closeUnclaimedOddityNodes("Jiangnan", [712]))
+    expect(reloaded.Hexi).toEqual(closeUnclaimedOddityNodes("Hexi", [305]))
   })
 
   it("exportProfile output parses to a wrapper whose profile.inputs has none of the derived keys", () => {
@@ -251,10 +275,167 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
   })
 
+  it("loadProfiles turns the graduation Qi break on for a profile saved before the setting existed", () => {
+    const { useGraduationQiBreak: _dropped, ...withoutSetting } = defaultInputs
+    void _dropped
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Setting", inputs: withoutSetting }],
+        activeId: "p1",
+      }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.useGraduationQiBreak).toBe(true)
+  })
+
+  it("loadProfiles keeps a stored graduation Qi break setting that is off", () => {
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          { id: "p1", name: "Off", inputs: { ...defaultInputs, useGraduationQiBreak: false } },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.useGraduationQiBreak).toBe(false)
+  })
+
+  it("loadProfiles never invents pingMs/averageFps on a profile that never had them", () => {
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Ping", inputs: defaultInputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect("pingMs" in profiles[0].inputs).toBe(false)
+    expect("averageFps" in profiles[0].inputs).toBe(false)
+  })
+
+  it("loadProfiles keeps a legacy stored pingMs/averageFps number as-is, unread by the engine", () => {
+    const inputs = { ...defaultInputs, pingMs: 80, averageFps: 144 }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Configured", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect((profiles[0].inputs as unknown as { pingMs: number }).pingMs).toBe(80)
+    expect((profiles[0].inputs as unknown as { averageFps: number }).averageFps).toBe(144)
+  })
+
+  function storeProfileWithRotationWithoutDistance(combatSettings: Record<string, unknown>) {
+    const { preferredDistanceMeters: _droppedDistance, ...rotation } = makeRotation(
+      "bellstrikeUmbra",
+      { name: "Pre-Distance" },
+    )
+    void _droppedDistance
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Pre-Distance",
+            inputs: { ...defaultInputs, combatSettings, activeCustomRotation: rotation },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+  }
+
+  it("loadProfiles moves an imported profile's encounter distance onto its custom rotation", () => {
+    storeProfileWithRotationWithoutDistance({
+      ...defaultInputs.combatSettings,
+      preferredDistanceMeters: 7,
+    })
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(7)
+    expect(profiles[0].inputs.combatSettings).not.toHaveProperty("preferredDistanceMeters")
+  })
+
+  it("loadProfiles heals a custom rotation saved before it carried a distance to the default 3 m", () => {
+    storeProfileWithRotationWithoutDistance({ ...defaultInputs.combatSettings })
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(3)
+  })
+
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),
     )
+  })
+
+  describe("a stored built-in rotation ping/fps override is kept unread, exactly as stored", () => {
+    const storedOverrides = [
+      {
+        "builtin-a": { pingMs: 80, averageFps: 144, serverProcessingMs: 48 },
+        "builtin-b": { pingMs: 20, averageFps: 120, serverProcessingMs: 32 },
+      },
+      { "builtin-a": { pingMs: 80, averageFps: 144 } },
+      { "builtin-b": { pingMs: "not a number", averageFps: 999999 } },
+      "not an object",
+    ]
+    const withStoredOverride = (overrides: unknown) =>
+      ({ ...defaultInputs, builtinRotationPingFpsOverrides: overrides }) as Inputs
+    const storedOverrideOf = (inputs: Inputs) =>
+      (inputs as unknown as Record<string, unknown>).builtinRotationPingFpsOverrides
+
+    it.each(storedOverrides)("across a save and reload (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+      saveProfiles({ profiles: [profile], activeId: profile.id })
+
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
+    })
+
+    it.each(storedOverrides)("across a load of the raw stored blob (%j)", (overrides) => {
+      localStorage.setItem(
+        PROFILES_KEY,
+        JSON.stringify({
+          v: LATEST_PROFILES_VERSION,
+          profiles: [{ id: "p1", name: "Stored Override", inputs: withStoredOverride(overrides) }],
+          activeId: "p1",
+        }),
+      )
+
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
+    })
+
+    it.each(storedOverrides)("across an export and import (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+
+      expect(storedOverrideOf(importProfile(exportProfile(profile)).inputs)).toEqual(overrides)
+    })
+  })
+
+  it("loadCustomRotations heals a stored rotation without a server processing time to the default instead of dropping it", () => {
+    const rotation = makeRotation("bellstrikeUmbra", { name: "Older Rotation", pingMs: 40 })
+    const { serverProcessingMs: _omitted, ...withoutServerProcessing } = rotation
+    localStorage.setItem(
+      "wwm.customRotations",
+      JSON.stringify({ v: 3, rotations: [withoutServerProcessing] }),
+    )
+
+    const loaded = loadCustomRotations()
+    expect(loaded).toHaveLength(1)
+    expect(loaded[0].serverProcessingMs).toBe(DEFAULT_SERVER_PROCESSING_MS)
+    expect(loaded[0].pingMs).toBe(40)
   })
 })
 
@@ -786,6 +967,102 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("Inebriate - Deepdaze's onExpire elseStacks heal", () => {
+  const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
+  const CUSTOM_BUFFS_VERSION = 3
+
+  function seededDeepdazeGate(onExpire: Record<string, unknown>) {
+    return {
+      id: "buff-bamboocutDraught-inebriate-deepdaze",
+      classId: "bamboocutDraught",
+      name: "Inebriate - Deepdaze",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 300,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire,
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+  }
+
+  afterEach(() => {
+    try {
+      kvStore.remove(CUSTOM_BUFFS_KEY)
+    } catch {}
+  })
+
+  it("adds elseStacks: 0 to a copy still identical to what was seeded", () => {
+    const seeded = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [seeded] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs).toHaveLength(1)
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 0,
+    })
+  })
+
+  it("leaves a copy that already declares its own elseStacks alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 40,
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBe(40)
+  })
+
+  it("leaves an edited copy whose stacks no longer match the seed alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 100,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBeUndefined()
+  })
+
+  it("leaves another buff's onExpire alone", () => {
+    const unrelated = {
+      id: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+      classId: "bamboocutDraught",
+      name: "Eonpour - Exhausted Cooldown",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 3600,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire: { targetId: "buff-bamboocutDraught-binge-points", stacks: 60 },
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [unrelated] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+    })
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
 describe("GearPiece.isNew hydration (additive, no version bump)", () => {
   const PROFILES_KEY = "wwm.profiles"
   const PROFILES_VERSION = 4
@@ -1120,6 +1397,29 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
   })
 })
 
+describe("seeded-skill cancelledBy heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSpearq5HitCancel = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === `${CLASS_ID}-spearq-5-hit-cancel`,
+  )!
+
+  it("restores a cancel-form skill's cancelledBy on a copy seeded before the field existed, renamed or not", () => {
+    const stale = { ...seedSkillFromBuiltin(CLASS_ID, builtinSpearq5HitCancel), name: "Renamed" }
+    delete stale.cancelledBy
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.cancelledBy).toBe("deflectCancel")
+  })
+
+  it("leaves a genuinely custom skill without cancelledBy alone", () => {
+    const ownSkill = makeSkill(CLASS_ID, { name: "Something [cancel]" })
+    saveCustomSkill(ownSkill)
+    const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === ownSkill.id)!
+    expect(reloaded.cancelledBy).toBeUndefined()
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". A
 // skill/debuff saved while a buff def still declared `affects`/`triggeredBy`
 // itself carries neither `receives` nor `triggersBuffs` — recovered here from
@@ -1383,6 +1683,129 @@ describe("seeded-skill set-buff trigger heal (no version bump)", () => {
   })
 })
 
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("seeded-skill Wolfchaser's Art sword reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSwordq = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === "bellstrikeUmbra-swordq",
+  )!
+
+  const staleCopy = (receives: string[]) => ({
+    ...seedSkillFromBuiltin(CLASS_ID, builtinSwordq),
+    receives,
+  })
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy seeded before the app reached every Martial Art skill's hit", () => {
+    const stale = staleCopy(["strategicSwordAdditionalAttack"])
+    saveCustomSkill(stale)
+    expect(reload(stale.id).receives).toEqual([
+      "wolfchasersArtMartialDamage",
+      "strategicSwordAdditionalAttack",
+    ])
+  })
+
+  it("leaves a curated list alone rather than guessing which entry is stale", () => {
+    const curated = staleCopy(["strategicSwordAdditionalAttack", "someOtherBuff"])
+    saveCustomSkill(curated)
+    expect(reload(curated.id).receives).toEqual(["strategicSwordAdditionalAttack", "someOtherBuff"])
+  })
+
+  it("round-trips a current copy without listing the buff twice", () => {
+    const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq)
+    saveCustomSkill(current)
+    expect(reload(current.id).receives).toEqual(builtinSwordq.receives)
+  })
+})
+
+describe("seeded-skill Flute Arrival trigger heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each([
+    "mystic-flute-of-the-tides-cancel",
+    "mystic-flute-of-the-tides-full",
+    "mystic-flute-of-the-tides-prepull",
+  ])("adds fluteArrival to a copy of %s seeded before it was modeled", (id) => {
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(id).triggersBuffs).toEqual(["fluteArrival"])
+  })
+})
+
+describe("seeded-skill Poet final-strike stack reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each(["mystic-poet1", "mystic-poet2", "mystic-poet3", "mystic-poet4"])(
+    "adds the trigger to a copy of %s seeded before the stack buff was modeled",
+    (id) => {
+      const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+      const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+      void _triggersBuffs
+      saveCustomSkill(stale)
+      expect(reload(id).triggersBuffs).toEqual(["poetFinalStrikeStack"])
+    },
+  )
+
+  it("adds the receive to a copy of the final strike seeded before the stack buff was modeled", () => {
+    const id = "mystic-poet-final-hit-cancel"
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { receives: _receives, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _receives
+    saveCustomSkill(stale)
+    expect(reload(id).receives).toEqual(["poetFinalStrikeStack"])
+  })
+})
+
+describe("seeded-skill Cleftpeak deflect-grant trigger heal (no version bump)", () => {
+  const reload = (classId: string, id: string) =>
+    loadCustomSkillsForClass(classId).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy of Stonesplit Strength's own deflect seeded before it was modeled", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const stale = { ...seedSkillFromBuiltin(classId, builtin), triggersBuffs: ["forgetfulness"] }
+    saveCustomSkill(stale)
+    expect(reload(classId, stale.id).triggersBuffs).toEqual([
+      "forgetfulness",
+      "cleftpeakDeflectGrant",
+    ])
+  })
+
+  it("leaves a curated deflect list alone rather than guessing which entry is stale", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const curated = {
+      ...seedSkillFromBuiltin(classId, builtin),
+      triggersBuffs: ["forgetfulness", "someOtherBuff"],
+    }
+    saveCustomSkill(curated)
+    expect(reload(classId, curated.id).triggersBuffs).toEqual(["forgetfulness", "someOtherBuff"])
+  })
+
+  it.each([
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel"],
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel-prepull"],
+    ["bamboocutDraught", "bamboocutDraught-deflect-cancel"],
+  ])("adds the buff to a copy of %s's %s seeded before it was modeled", (classId, id) => {
+    const builtin = builtinSkillsForClass(classId).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(classId, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(classId, id).triggersBuffs).toEqual(["cleftpeakDeflectGrant"])
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". The
 // legacy `wwm.inputs` blob has no version chain of its own (V8 in
 // `src/migrations/` covers `wwm.profiles`), so `set` is healed here instead —
@@ -1402,34 +1825,41 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
   })
 
   it("a legacy wwm.inputs blob naming its set by display name rolls into a profile with the current id", () => {
-    saveInputs({ ...defaultInputs, set: "Hawking" })
+    saveInputs(legacyInputsWithSet("Hawking"))
     const { profiles } = loadProfiles()
     expect(profiles).toHaveLength(1)
-    expect(profiles[0].inputs.set).toBe("hawkwing")
+    expect(carriedSets(profiles[0].inputs)).toContain("hawkwing")
   })
 
-  it("keeps an unrecognised set stored and grants nothing for it", () => {
-    saveInputs({ ...defaultInputs, set: "A Set From Another Build" })
+  it("keeps an unrecognised set stored on the pieces and grants nothing for it", () => {
+    saveInputs(legacyInputsWithSet("A Set From Another Build"))
     const { profiles } = loadProfiles()
     const stored = profiles[0].inputs
-    expect(stored.set).toBe("A Set From Another Build")
-    expect(applyArmorSet(stored)).toEqual(stored)
+    expect(carriedSets(stored)).toContain("A Set From Another Build")
+    expect(applySetBonuses(stored)).toEqual(stored)
   })
 
   it("round-trips an already-migrated id unchanged", () => {
-    saveInputs({ ...defaultInputs, set: "jadeware" })
+    saveInputs(legacyInputsWithSet("jadeware"))
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.set).toBe("jadeware")
+    expect(carriedSets(profiles[0].inputs)).toContain("jadeware")
   })
 
-  it.each([...SET_DEFS.map((set) => set.id)])(
+  it.each([...GEAR_SET_DEFS.map((set) => set.id)])(
     "keeps %s, including a set registered after the legacy name table was frozen",
     (setId) => {
-      saveInputs({ ...defaultInputs, set: setId })
+      saveInputs(legacyInputsWithSet(setId))
       const { profiles } = loadProfiles()
-      expect(profiles[0].inputs.set).toBe(setId)
+      expect(carriedSets(profiles[0].inputs)).toContain(setId)
     },
   )
+
+  it("removes an armor-group set from the build without writing it onto a piece", () => {
+    saveInputs(legacyInputsWithSet("calmwaters"))
+    const { profiles } = loadProfiles()
+    expect(carriedSets(profiles[0].inputs).filter(Boolean)).toEqual([])
+    expect("set" in profiles[0].inputs).toBe(false)
+  })
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
@@ -1579,7 +2009,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     expect(profiles[0].inputs.arsenal).toBe(defaultInputs.arsenal)
     expect(profiles[0].inputs.mindMethods).toEqual(defaultInputs.mindMethods)
     expect(profiles[0].inputs.martialArtsTalents).toEqual(
-      getDefaultTalentsForClass(defaultInputs.classId),
+      getDefaultTalentsForClass(defaultInputs.classId, defaultInputs.breakthrough),
     )
   })
 
@@ -1606,7 +2036,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     const inputs = profiles[0].inputs
     expect(inputs.classId).toBe(defaultInputs.classId)
 
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
+    const result = runEngine(applySetBonuses(withDerivedStats(inputs)))
     expect(result.dps).toBeGreaterThan(0)
     expect(result.warnings.some((warning) => /error|exception/i.test(warning))).toBe(false)
   })
@@ -1722,5 +2152,143 @@ describe("disabledTalentPoints hydration (additive, no version bump)", () => {
     expect(loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentNodes).toEqual(
       [999999],
     )
+  })
+})
+
+describe("enhancement level hydration (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => {
+    kvStore.remove(PROFILES_KEY)
+  })
+  afterEach(() => {
+    kvStore.remove(PROFILES_KEY)
+  })
+
+  function gearPieceAtLevel(id: string, level: number): GearPiece {
+    return {
+      id,
+      slot: "disc",
+      level,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: Array.from({ length: 5 }, () => ({ word: "", value: 0, retuned: false })),
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    } as unknown as GearPiece
+  }
+
+  function loadFirstWith(inputs: Record<string, unknown>): Inputs {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  it("heals a missing slot to its equipped piece's cap and an empty slot to the breakthrough cap", () => {
+    const disc = gearPieceAtLevel("disc-96", 96)
+    const stored = {
+      ...defaultInputs,
+      breakthrough: 18,
+      inventory: [disc],
+      equipped: { ...defaultInputs.equipped, disc: disc.id },
+      enhancements: { leftWeapon: 12 },
+    }
+    const healed = loadFirstWith(stored as unknown as Record<string, unknown>).enhancements
+    expect(healed.disc).toBe(65)
+    expect(healed.pendant).toBe(70)
+    expect(healed.leftWeapon).toBe(12)
+  })
+
+  it("leaves a stored level above the slot's cap untouched", () => {
+    const disc = gearPieceAtLevel("disc-96", 96)
+    const stored = {
+      ...defaultInputs,
+      breakthrough: 18,
+      inventory: [disc],
+      equipped: { ...defaultInputs.equipped, disc: disc.id },
+      enhancements: { ...defaultInputs.enhancements, disc: 70 },
+    }
+    expect(loadFirstWith(stored as unknown as Record<string, unknown>).enhancements.disc).toBe(70)
+  })
+})
+
+describe("hydrateInputs — sets on pieces and the bow pair", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => localStorage.clear())
+  afterEach(() => localStorage.clear())
+
+  function loadWith(overrides: Record<string, unknown>): Inputs {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs: { ...defaultInputs, ...overrides } }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  const bowPiece = { level: 100, rarity: "legendary", set: "crit" }
+
+  it("heals a missing or invalid bow gear container to empty", () => {
+    expect(loadWith({ bowGear: undefined }).bowGear).toEqual({ bow: null, thumbRing: null })
+    expect(loadWith({ bowGear: "nonsense" }).bowGear).toEqual({ bow: null, thumbRing: null })
+  })
+
+  it("snaps a bow level to the nearest valid level and repairs an invalid rarity", () => {
+    const healed = loadWith({
+      bowGear: {
+        bow: { ...bowPiece, level: 98, rarity: "mythic" },
+        thumbRing: { ...bowPiece, level: 40 },
+      },
+    }).bowGear
+    expect(healed.bow).toMatchObject({ level: 96, rarity: "legendary" })
+    expect(healed.thumbRing?.level).toBe(91)
+  })
+
+  it("turns an empty bow set into none and keeps an unknown one as stored", () => {
+    const healed = loadWith({
+      bowGear: {
+        bow: { ...bowPiece, set: "" },
+        thumbRing: { ...bowPiece, set: "setFromALaterBuild" },
+      },
+    }).bowGear
+    expect(healed.bow?.set).toBeNull()
+    expect(healed.thumbRing?.set).toBe("setFromALaterBuild")
+  })
+
+  it("keeps a bow piece's label and note through the text sanitizer", () => {
+    const healed = loadWith({
+      bowGear: { bow: { ...bowPiece, label: "  Mine  ", note: "x".repeat(600) }, thumbRing: null },
+    }).bowGear
+    expect(healed.bow?.label).toBe("Mine")
+    expect(healed.bow?.note).toHaveLength(500)
+  })
+
+  it("keeps a piece's set, healing a renamed id and keeping an unknown string", () => {
+    const piece = (id: string, set: unknown) => ({
+      ...withGearSet(defaultInputs, null, { fabricatePieces: true }).inventory[0],
+      id,
+      set,
+    })
+    const inputs = loadWith({
+      inventory: [piece("a", "Hawking"), piece("b", "setFromALaterBuild"), piece("c", "")],
+      equipped: { ...EMPTY_EQUIPPED },
+    })
+    expect(inputs.inventory.map((entry) => entry.set)).toEqual([
+      "hawkwing",
+      "setFromALaterBuild",
+      undefined,
+    ])
   })
 })

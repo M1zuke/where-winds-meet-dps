@@ -1,0 +1,605 @@
+{
+  "v": 99,
+  "skills": [
+    {
+      "id": "stonesplitStrength-phalanxcharged-s2",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S2",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeartLowStage",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "hits": [
+        {
+          "id": "hit-mvavp9sb-k4m00i-1",
+          "frame": 76,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sb-8vftbh-2",
+          "frame": 115,
+          "physMultiplier": 0.88272,
+          "attributeMultiplier": 1.32408,
+          "physFixed": 244.2,
+          "attributeFixed": 133.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mvavp9sb-c7uq48-3",
+          "frame": 124,
+          "physMultiplier": 2.05968,
+          "attributeMultiplier": 3.08952,
+          "physFixed": 569.8,
+          "attributeFixed": 310.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 137,
+      "triggerable": true,
+      "createdAt": "2026-10-16T11:22:51.467Z",
+      "updatedAt": "2026-10-16T11:22:51.467Z",
+      "castTag": "cast:phalanxChargedS2",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "burningHeartLowStageConsume",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 50,
+          "atFrame": 76.32
+        }
+      ],
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 5,
+          "fromFrame": 19.32,
+          "stopAfterSec": 0.95,
+          "chargeRelease": {
+            "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+          }
+        }
+      ],
+      "releaseGates": [
+        {
+          "atFrame": 19.32,
+          "requires": [
+            {
+              "buffId": "meter:bladeMomentum",
+              "op": "gt",
+              "stacks": 50
+            }
+          ],
+          "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+        }
+      ]
+    },
+    {
+      "id": "stonesplitStrength-phalanxcharged-s3",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S3",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeart",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "hits": [
+        {
+          "id": "hit-mvavp9sc-hd0b36-6",
+          "frame": 76,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sc-yt4i29-7",
+          "frame": 112,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermojump",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "steadfastDevotion",
+              "requiresMinTier": 1
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sc-2faaom-8",
+          "frame": 151,
+          "physMultiplier": 1.719879,
+          "attributeMultiplier": 2.579819,
+          "physFixed": 475.8,
+          "attributeFixed": 259.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mvavp9sc-bn9jeh-9",
+          "frame": 160,
+          "physMultiplier": 4.013051,
+          "attributeMultiplier": 6.019577,
+          "physFixed": 1110.2,
+          "attributeFixed": 604.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 173,
+      "triggerable": true,
+      "createdAt": "2026-10-16T11:22:51.468Z",
+      "updatedAt": "2026-10-16T11:22:51.468Z",
+      "castTag": "cast:phalanxChargedS3",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 50,
+          "atFrame": 112.32
+        }
+      ],
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "castConditions": [
+        {
+          "param": "steadfastDevotion",
+          "minTier": 1
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 5,
+          "fromFrame": 19.32,
+          "stopAfterSec": 1.55,
+          "chargeRelease": {
+            "fallbackSkillId": "stonesplitStrength-phalanxcharged-s2"
+          }
+        }
+      ],
+      "releaseGates": [
+        {
+          "atFrame": 19.32,
+          "requires": [
+            {
+              "buffId": "meter:bladeMomentum",
+              "op": "gt",
+              "stacks": 50
+            }
+          ],
+          "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+        }
+      ]
+    },
+    {
+      "id": "stonesplitStrength-phalanxcharged-s2-innerpassion",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S2[InnerPassion]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeartLowStage",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "hits": [
+        {
+          "id": "hit-mvavp9sc-plthhg-c",
+          "frame": 57,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sc-od96mz-d",
+          "frame": 96,
+          "physMultiplier": 0.88272,
+          "attributeMultiplier": 1.32408,
+          "physFixed": 244.2,
+          "attributeFixed": 133.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mvavp9sc-47jywe-e",
+          "frame": 105,
+          "physMultiplier": 2.05968,
+          "attributeMultiplier": 3.08952,
+          "physFixed": 569.8,
+          "attributeFixed": 310.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 118,
+      "triggerable": true,
+      "createdAt": "2026-10-16T11:22:51.468Z",
+      "updatedAt": "2026-10-16T11:22:51.468Z",
+      "castTag": "cast:phalanxChargedS2InnerPassion",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "burningHeartLowStageConsume",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 25,
+          "atFrame": 57.32,
+          "requiresParam": "steadfastDevotion",
+          "requiresMaxTier": 3
+        }
+      ],
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 5,
+          "fromFrame": 19.32,
+          "stopAfterSec": 0.6333333333333333,
+          "chargeRelease": {
+            "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+          }
+        }
+      ],
+      "releaseGates": [
+        {
+          "atFrame": 19.32,
+          "requires": [
+            {
+              "anyOf": [
+                {
+                  "param": "steadfastDevotion",
+                  "minTier": 4
+                },
+                {
+                  "buffId": "meter:bladeMomentum",
+                  "op": "gt",
+                  "stacks": 25
+                }
+              ]
+            }
+          ],
+          "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+        }
+      ]
+    },
+    {
+      "id": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxCharged-S3[InnerPassion]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "tags": [
+        "prop:isCharged",
+        "prop:cleftpeakBoost",
+        "prop:consumesInnerPassionBurningHeart",
+        "weapon:Mo Blade",
+        "attack:charge",
+        "attune:phalanxbaneCharged",
+        "role:phalanxCharged"
+      ],
+      "hits": [
+        {
+          "id": "hit-mvavp9sc-bafeu5-h",
+          "frame": 57,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermodown",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sc-179r1x-i",
+          "frame": 81,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermojump",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              },
+              "requiresParam": "steadfastDevotion",
+              "requiresMinTier": 1
+            }
+          ]
+        },
+        {
+          "id": "hit-mvavp9sc-jw4aff-j",
+          "frame": 120,
+          "physMultiplier": 1.719879,
+          "attributeMultiplier": 2.579819,
+          "physFixed": 475.8,
+          "attributeFixed": 259.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mvavp9sc-l14m4l-k",
+          "frame": 129,
+          "physMultiplier": 4.013051,
+          "attributeMultiplier": 6.019577,
+          "physFixed": 1110.2,
+          "attributeFixed": 604.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 142,
+      "triggerable": true,
+      "createdAt": "2026-10-16T11:22:51.468Z",
+      "updatedAt": "2026-10-16T11:22:51.468Z",
+      "castTag": "cast:phalanxChargedS3InnerPassion",
+      "receives": [
+        "mountainSplitter",
+        "mountainSplitterExhausted",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack"
+      ],
+      "triggersBuffs": ["throatPierced", "chargeEnhancement"],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 25,
+          "atFrame": 81.32,
+          "requiresParam": "steadfastDevotion",
+          "requiresMaxTier": 3
+        }
+      ],
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "castConditions": [
+        {
+          "param": "steadfastDevotion",
+          "minTier": 1
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 5,
+          "fromFrame": 19.32,
+          "stopAfterSec": 1.0333333333333334,
+          "chargeRelease": {
+            "fallbackSkillId": "stonesplitStrength-phalanxcharged-s2-innerpassion"
+          }
+        }
+      ],
+      "releaseGates": [
+        {
+          "atFrame": 19.32,
+          "requires": [
+            {
+              "anyOf": [
+                {
+                  "param": "steadfastDevotion",
+                  "minTier": 4
+                },
+                {
+                  "buffId": "meter:bladeMomentum",
+                  "op": "gt",
+                  "stacks": 25
+                }
+              ]
+            }
+          ],
+          "fallbackSkillId": "stonesplitStrength-phalanxcharged-s1"
+        }
+      ]
+    },
+    {
+      "id": "stonesplitStrength-heng-dash",
+      "classId": "stonesplitStrength",
+      "name": "Heng Blade - Dash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "tags": ["weapon:Heng Blade"],
+      "hits": [
+        {
+          "id": "hit-mvavp9sc-hj043t-n",
+          "frame": 24,
+          "physMultiplier": 0.43723,
+          "attributeMultiplier": 0.655845,
+          "physFixed": 122,
+          "attributeFixed": 66,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 40,
+      "triggerable": true,
+      "createdAt": "2026-10-16T11:22:51.468Z",
+      "updatedAt": "2026-10-16T11:22:51.468Z",
+      "castTag": "cast:hengDash",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": [],
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 7,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 6
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 1
+        }
+      }
+    },
+    {
+      "id": "sk-user-authored-charge",
+      "classId": "stonesplitStrength",
+      "name": "My Charge",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castFrames": 140,
+      "triggerable": true,
+      "castConditions": [
+        {
+          "buffId": "meter:bladeMomentum",
+          "op": "gt",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "bladeMomentum",
+          "amount": 50
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 100,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    }
+  ]
+}

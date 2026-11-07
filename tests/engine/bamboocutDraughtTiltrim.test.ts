@@ -6,11 +6,14 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
+import { applyBuff } from "../../src/definitions/skills/triggers"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { INEBRIATE_DEEPDAZE_DURATION_FRAMES } from "../../src/data/classes/bamboocut-draught/gates"
 import { castlink } from "../../src/data/skills/bamboocut-draught/castlink"
 import { herosBlood } from "../../src/data/skills/bamboocut-draught/heros-blood"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
+import { gearSetFields } from "../helpers/withGearSet"
 
 const CLASS = "bamboocutDraught"
 
@@ -18,7 +21,7 @@ function runHerosBlood(bingePoints: number) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: SET_ID.tiltrim,
+    ...gearSetFields(SET_ID.tiltrim, { fabricatePieces: true }),
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: SKILL.herosBlood })],
       openingStacks: { [STATUS.bingePoints]: bingePoints },
@@ -34,7 +37,7 @@ function primeAndMeasure(primerCasts: number, measuredSkill: Skill) {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    set: SET_ID.tiltrim,
+    ...gearSetFields(SET_ID.tiltrim, { fabricatePieces: true }),
     activeCustomRotation: makeRotation(CLASS, {
       steps,
       openingStacks: { [STATUS.bingePoints]: 100 },
@@ -78,7 +81,7 @@ describe("Tiltrim", () => {
       const result = runEngine({
         ...defaultInputs,
         classId: CLASS,
-        set,
+        ...gearSetFields(set, { fabricatePieces: true }),
         customSkills: [probe],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [makeStep({ skillId: probe.id }), makeStep({ skillId: probe.id })],
@@ -105,5 +108,95 @@ describe("Tiltrim", () => {
     const castlinkGrowth = castlinkCapped / castlinkFresh
     const herosBloodGrowth = herosBloodCapped / herosBloodFresh
     expect(castlinkGrowth).toBeGreaterThan(herosBloodGrowth)
+  })
+
+  it("keeps paying the per-stack bonus for up to 5.1s after Deepdaze's own window closes", () => {
+    const deepdazeOpener = makeSkill(CLASS, {
+      name: "Deepdaze Opener",
+      castFrames: 1,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          triggers: [
+            applyBuff({
+              target: STATUS.inebriateDeepdaze,
+              durationFrames: INEBRIATE_DEEPDAZE_DURATION_FRAMES,
+            }),
+          ],
+        }),
+      ],
+    })
+    const probe = makeSkill(CLASS, {
+      name: "Late Probe",
+      castFrames: 700,
+      hits: [
+        makeHit({ frame: 329, physMultiplier: 1 }), // 5.5s: within the 5.1s grace after Deepdaze's 5s window
+        makeHit({ frame: 629, physMultiplier: 1 }), // 10.5s: the grace has elapsed
+      ],
+    })
+    const run = (set: string | null) =>
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        ...gearSetFields(set, { fabricatePieces: true }),
+        customSkills: [deepdazeOpener, probe],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: deepdazeOpener.id }), makeStep({ skillId: probe.id })],
+        }),
+      })
+    const damageOf = (result: ReturnType<typeof run>) =>
+      result
+        .timeline!.filter((event) => event.skillName === probe.name)
+        .map((event) => event.damage)
+
+    const [withinGrace, afterGrace] = damageOf(run(SET_ID.tiltrim))
+    const [baselineWithinGrace, baselineAfterGrace] = damageOf(run(null))
+
+    expect(withinGrace).toBeGreaterThan(baselineWithinGrace)
+    expect(afterGrace).toBeCloseTo(baselineAfterGrace, 6)
+  })
+
+  it("keeps paying the per-stack bonus for up to 5.1s after Binge Points fall below Tipsy's threshold", () => {
+    const tipsyDrop = makeSkill(CLASS, {
+      name: "Tipsy Drop",
+      castFrames: 1,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          triggers: [applyBuff({ target: STATUS.bingePoints, stacks: -100 })],
+        }),
+      ],
+    })
+    const probe = makeSkill(CLASS, {
+      name: "Late Probe",
+      castFrames: 700,
+      hits: [
+        makeHit({ frame: 30, physMultiplier: 1 }), // 0.5s after the drop: within the 5.1s grace
+        makeHit({ frame: 400, physMultiplier: 1 }), // 6.7s after the drop: the grace has elapsed
+      ],
+    })
+    const run = (set: string | null) =>
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        ...gearSetFields(set, { fabricatePieces: true }),
+        customSkills: [tipsyDrop, probe],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: tipsyDrop.id }), makeStep({ skillId: probe.id })],
+          openingStacks: { [STATUS.bingePoints]: 150 },
+        }),
+      })
+    const damageOf = (result: ReturnType<typeof run>) =>
+      result
+        .timeline!.filter((event) => event.skillName === probe.name)
+        .map((event) => event.damage)
+
+    const [withinGrace, afterGrace] = damageOf(run(SET_ID.tiltrim))
+    const [baselineWithinGrace, baselineAfterGrace] = damageOf(run(null))
+
+    expect(withinGrace).toBeGreaterThan(baselineWithinGrace)
+    expect(afterGrace).toBeCloseTo(baselineAfterGrace, 6)
   })
 })

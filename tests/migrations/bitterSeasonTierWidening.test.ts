@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { loadProfiles } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { defaultInputs } from "../../src/engine/defaults"
 import { LATEST_PROFILES_VERSION } from "../../src/migrations"
@@ -72,7 +72,7 @@ describe("profile-v6 (real fixture, unmodified) survives the widened tier dropdo
     for (const slot of after.inputs.mindMethods) {
       if (slot.name) expect(slot.id, slot.name).toBeTruthy()
     }
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(after.inputs))))
+    const result = runEngine(applySetBonuses(withDerivedStats(after.inputs)))
     expect(result.dps).toBeGreaterThan(0)
   })
 })
@@ -93,7 +93,7 @@ describe("profile-v6 with a slot at a tier only reachable via the widened Bitter
   it("still computes a valid, positive-DPS run with the rest of the real build intact", () => {
     writeProfile(withBitterSeasonAtTier3(clone(LEGACY.profile)))
     const after = loadOne()
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(after.inputs))))
+    const result = runEngine(applySetBonuses(withDerivedStats(after.inputs)))
     expect(result.dps).toBeGreaterThan(0)
   })
 

@@ -11,8 +11,8 @@ function stacksShownFor(buff: Buff, seed?: { frame: number; value: number }): nu
   ledger.openPermanent(buff.id)
   if (seed) ledger.recordStack(buff.id, seed.frame, seed.value)
   const { buffs } = collectCastBuffs({
-    frame: 0,
-    timeSec: 0,
+    ledgerFrame: 0,
+    engineTimeSec: 0,
     fps: 60,
     ledger,
     statusById: new Map([[buff.id, buff]]),

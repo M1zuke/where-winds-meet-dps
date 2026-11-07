@@ -9,6 +9,7 @@ import { SET_ID } from "./ids"
 // the HP-shield window, which only the buff engine can read.
 export const rainwhisper = defineSet({
   id: SET_ID.rainwhisper,
+  group: "gear",
   name: "Rainwhisper",
   siteKey: "rainwhisper",
   panelBonus: {

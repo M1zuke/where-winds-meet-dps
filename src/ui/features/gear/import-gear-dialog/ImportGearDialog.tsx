@@ -1,5 +1,5 @@
 import { useId, useState } from "react"
-import type { GearPiece, Inputs } from "../../../../engine/types"
+import type { BowGear, GearPiece, Inputs } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import dialogChrome from "../shared/gearDialog.module.scss"
@@ -16,6 +16,7 @@ interface Props {
     pieces: GearPiece[],
     mindMethods: Inputs["mindMethods"] | null,
     keepDisplaced: boolean,
+    bowGear: BowGear,
   ): void
 }
 
@@ -91,7 +92,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
           type="button"
           className="btn primary"
           disabled={!draft.pieces.length}
-          onClick={() => onImport(draft.pieces, draft.mindMethods, keepDisplaced)}
+          onClick={() => onImport(draft.pieces, draft.mindMethods, keepDisplaced, draft.bowGear)}
         >
           {t("gear.importGearDialog.importGear")}
         </button>

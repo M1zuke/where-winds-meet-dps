@@ -1,32 +1,35 @@
 {
   "anchor": {
-    "dps": 75752.28,
-    "totalDamage": 4545136.92,
+    "dps": 71558.23,
+    "totalDamage": 4293493.58,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56122.42,
+        "expectedDamage": 56611.3,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 282710.86,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 74480.83,
+        "expectedDamage": 73188.25,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 295813.19,
         "castCount": 0
       },
       {
@@ -34,23 +37,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36158.26,
+        "expectedDamage": 37516.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 485546.33,
+        "count": 111,
+        "expectedDamage": 470887.79,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 104009.32,
+        "expectedDamage": 76602.27,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11036.88,
         "castCount": 0
       },
       {
@@ -58,7 +69,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 103672.78,
+        "expectedDamage": 106047.71,
         "castCount": 4
       },
       {
@@ -66,7 +77,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 98834.42,
+        "expectedDamage": 100648.42,
         "castCount": 10
       },
       {
@@ -74,47 +85,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2111355.75,
+        "expectedDamage": 2077389.54,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 70126.47,
+        "expectedDamage": 71335.38,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 51420.64,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57698.1,
+        "expectedDamage": 59139.23,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 51617.26,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61647.21,
+        "count": 12,
+        "expectedDamage": 41511.28,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20755.64,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28373.53,
+        "expectedDamage": 30139.81,
         "castCount": 4
       },
       {
@@ -122,7 +141,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 113381.32,
+        "expectedDamage": 120559.24,
         "castCount": 4
       },
       {
@@ -130,7 +149,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36735.69,
+        "expectedDamage": 38936.99,
         "castCount": 4
       },
       {
@@ -138,7 +157,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3667.56,
+        "expectedDamage": 3672.23,
         "castCount": 1
       },
       {
@@ -146,45 +165,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 769195.43,
+        "expectedDamage": 550084.3,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "71445d131d3f48fd787513e534a70f5671abdb2becb3e7344f0a1f6157e3cab4"
+    "digest": "472b7169cb3ab1f8d9eb917fe4428118b19aad0bba880e1f2bc1d40d7fdebd02"
   },
   "anchor:noAttunement": {
-    "dps": 68583.83,
-    "totalDamage": 4115029.79,
+    "dps": 64266.81,
+    "totalDamage": 3856008.68,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56122.42,
+        "expectedDamage": 56611.3,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 231920.31,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 74480.83,
+        "expectedDamage": 73188.25,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 242143.02,
         "castCount": 0
       },
       {
@@ -192,23 +214,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36158.26,
+        "expectedDamage": 37516.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 485546.33,
+        "count": 111,
+        "expectedDamage": 470881.87,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 104009.32,
+        "expectedDamage": 76602.27,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11035.36,
         "castCount": 0
       },
       {
@@ -216,7 +246,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 103672.78,
+        "expectedDamage": 107711.41,
         "castCount": 4
       },
       {
@@ -224,7 +254,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 98834.42,
+        "expectedDamage": 101644.11,
         "castCount": 10
       },
       {
@@ -232,47 +262,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1732039.17,
+        "expectedDamage": 1693173.53,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 70126.47,
+        "expectedDamage": 71335.38,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 51420.64,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57698.1,
+        "expectedDamage": 59139.23,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 50362.29,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61647.21,
+        "count": 12,
+        "expectedDamage": 40515.59,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20755.64,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28373.53,
+        "expectedDamage": 30139.81,
         "castCount": 4
       },
       {
@@ -280,7 +318,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 113381.32,
+        "expectedDamage": 120559.24,
         "castCount": 4
       },
       {
@@ -288,7 +326,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36735.69,
+        "expectedDamage": 38936.99,
         "castCount": 4
       },
       {
@@ -296,7 +334,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3667.56,
+        "expectedDamage": 3672.23,
         "castCount": 1
       },
       {
@@ -304,45 +342,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 769195.43,
+        "expectedDamage": 550084.3,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "25e34d0e6d3fc39cbe9fbbdcefdce6fb66a20dc0d4c52df640f3f57b011e2542"
+    "digest": "40cbf2348a18ff51bd74999aa8499ad991048214efb66209ad1ef910ab9c7a5a"
   },
   "anchor:dummyOff": {
-    "dps": 81189.94,
-    "totalDamage": 4871396.17,
+    "dps": 76600.4,
+    "totalDamage": 4596023.89,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 61686.52,
+        "expectedDamage": 62174.54,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 304046.1,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 82070.07,
+        "expectedDamage": 80625.91,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 316487.75,
         "castCount": 0
       },
       {
@@ -350,23 +391,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 40248.3,
+        "expectedDamage": 41615.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 520493.56,
+        "count": 111,
+        "expectedDamage": 502369.11,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 113004.73,
+        "expectedDamage": 84750.36,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 12177.19,
         "castCount": 0
       },
       {
@@ -374,7 +423,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 113671.26,
+        "expectedDamage": 118785.05,
         "castCount": 4
       },
       {
@@ -382,7 +431,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 108154.34,
+        "expectedDamage": 111093.21,
         "castCount": 10
       },
       {
@@ -390,47 +439,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2252267.71,
+        "expectedDamage": 2209623.04,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 76738.71,
+        "expectedDamage": 78027.58,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 56413.48,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 63667.37,
+        "expectedDamage": 65079.75,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 56648.58,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 67407.52,
+        "count": 12,
+        "expectedDamage": 45357.7,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 22678.85,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 31024.81,
+        "expectedDamage": 32804.1,
         "castCount": 4
       },
       {
@@ -438,7 +495,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 123976.16,
+        "expectedDamage": 128822.43,
         "castCount": 4
       },
       {
@@ -446,7 +503,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 40168.41,
+        "expectedDamage": 41354.98,
         "castCount": 4
       },
       {
@@ -454,7 +511,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4013.12,
+        "expectedDamage": 4018.23,
         "castCount": 1
       },
       {
@@ -462,45 +519,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 812344.02,
+        "expectedDamage": 581529.67,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "b6f195bc4c884946a248b0aef2fc112a062fdda236030e147b7200993f14a465"
+    "digest": "f31fb4d0c81a6cda0ae0d943840d454e93a7146014da98861e456e63d347dd73"
   },
   "anchor:breakthrough17": {
-    "dps": 77078.16,
-    "totalDamage": 4624689.78,
+    "dps": 72792.5,
+    "totalDamage": 4367550.09,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57096.35,
+        "expectedDamage": 57589.68,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 288069.99,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 75567.99,
+        "expectedDamage": 74271.44,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 301303.08,
         "castCount": 0
       },
       {
@@ -508,23 +568,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36848.54,
+        "expectedDamage": 38216.92,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 494453.26,
+        "count": 111,
+        "expectedDamage": 479333.82,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 105898.28,
+        "expectedDamage": 77991.87,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11200.4,
         "castCount": 0
       },
       {
@@ -532,7 +600,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105472.09,
+        "expectedDamage": 107870.8,
         "castCount": 4
       },
       {
@@ -540,7 +608,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100542.16,
+        "expectedDamage": 102628.25,
         "castCount": 10
       },
       {
@@ -548,47 +616,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2147887.11,
+        "expectedDamage": 2112358.18,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 71461.74,
+        "expectedDamage": 72684.98,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 52310.72,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58770.78,
+        "expectedDamage": 60237.15,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 52501.99,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 62710.33,
+        "count": 12,
+        "expectedDamage": 42222.83,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 21111.42,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28862.93,
+        "expectedDamage": 30656.47,
         "castCount": 4
       },
       {
@@ -596,7 +672,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115337.13,
+        "expectedDamage": 122625.87,
         "castCount": 4
       },
       {
@@ -604,7 +680,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37434,
+        "expectedDamage": 39672.1,
         "castCount": 4
       },
       {
@@ -612,7 +688,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3737.22,
+        "expectedDamage": 3741.56,
         "castCount": 1
       },
       {
@@ -620,203 +696,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 782229.13,
+        "expectedDamage": 559331.29,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "f090ab7fb7c055152eb5d5393cbe02462250ba5c21255bb09e50083015d4f459"
-  },
-  "anchor:noQiBreak": {
-    "dps": 67643.05,
-    "totalDamage": 4058583.06,
-    "rotationDuration": 60,
-    "warnings": [],
-    "perSkill": [
-      {
-        "name": "Sword Charge Stage 1, 4-Hit",
-        "breakdownName": "Second Track Slash",
-        "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56122.42,
-        "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 277293.62,
-        "castCount": 0
-      },
-      {
-        "name": "Divinecraft - Fire",
-        "breakdownName": "Divinecraft - Fire",
-        "type": "mindMethod",
-        "count": 60,
-        "expectedDamage": 72781.73,
-        "castCount": 0
-      },
-      {
-        "name": "Dragon's Breath: Smolder 2 Hits",
-        "breakdownName": "Dragon's Breath",
-        "type": "mystic",
-        "count": 3,
-        "expectedDamage": 36158.26,
-        "castCount": 1
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 474933.11,
-        "castCount": 0
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 104009.32,
-        "castCount": 0
-      },
-      {
-        "name": "SpearQ",
-        "breakdownName": "Sober Sorrow",
-        "type": "weapon",
-        "count": 24,
-        "expectedDamage": 103672.78,
-        "castCount": 4
-      },
-      {
-        "name": "SwordSpecial 3-Hit",
-        "breakdownName": "Inner Balance Strike III",
-        "type": "weapon",
-        "count": 30,
-        "expectedDamage": 98834.42,
-        "castCount": 10
-      },
-      {
-        "name": "Blood Burst",
-        "breakdownName": "Blood Burst",
-        "type": "weapon",
-        "count": 33,
-        "expectedDamage": 2079404.81,
-        "castCount": 0
-      },
-      {
-        "name": "Crosswind Blade [cancel]",
-        "breakdownName": "Crisscross - Inner Balance III",
-        "type": "weapon",
-        "count": 10,
-        "expectedDamage": 70126.47,
-        "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 49725.08,
-        "castCount": 4
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 56364.17,
-        "castCount": 0
-      },
-      {
-        "name": "SwordSpecial 4-Hit",
-        "breakdownName": "Inner Balance Strike III",
-        "type": "weapon",
-        "count": 16,
-        "expectedDamage": 59639.96,
-        "castCount": 4
-      },
-      {
-        "name": "Sword Martial Q",
-        "breakdownName": "Inner Track Slash",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 27459.61,
-        "castCount": 4
-      },
-      {
-        "name": "Sword Martial QQ",
-        "breakdownName": "Inner Track Slash",
-        "type": "weapon",
-        "count": 16,
-        "expectedDamage": 109738.99,
-        "castCount": 4
-      },
-      {
-        "name": "Sword Martial QQQ",
-        "breakdownName": "Crisscross - Inner Track",
-        "type": "weapon",
-        "count": 8,
-        "expectedDamage": 35554.14,
-        "castCount": 4
-      },
-      {
-        "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
-        "breakdownName": "Crisscross - Second Track",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 3667.56,
-        "castCount": 1
-      },
-      {
-        "name": "Dragon Head - Plus",
-        "breakdownName": "Dragon Head - Plus",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 343096.62,
-        "castCount": 1
-      }
-    ],
-    "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
-    },
-    "digest": "a3db6d75917dd2fe6eb0c71cbcfae383d38186a902514a3940cb565840c09060"
+    "digest": "06070bbbf144052ea99bd756d29be461fca8dd9a94c0c49731d95ecebaf845ce"
   },
   "anchor:healerBuff": {
-    "dps": 83457.19,
-    "totalDamage": 5007431.59,
+    "dps": 74927.36,
+    "totalDamage": 4495641.36,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 63541.22,
+        "expectedDamage": 60320.13,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 312314.02,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 85057.91,
+        "expectedDamage": 78146.03,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 309000.64,
         "castCount": 0
       },
       {
@@ -824,23 +745,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 41611.64,
+        "expectedDamage": 40249.54,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 534337.93,
+        "count": 111,
+        "expectedDamage": 491873.36,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 116003.19,
+        "expectedDamage": 82034.33,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11797.08,
         "castCount": 0
       },
       {
@@ -848,7 +777,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 117004.09,
+        "expectedDamage": 113997.4,
         "castCount": 4
       },
       {
@@ -856,7 +785,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 111260.98,
+        "expectedDamage": 107942.06,
         "castCount": 10
       },
       {
@@ -864,47 +793,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2305532.44,
+        "expectedDamage": 2165536.34,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 78942.78,
+        "expectedDamage": 75796.85,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 58525.25,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 66016.77,
+        "expectedDamage": 63099.57,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 54971.47,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 69843.03,
+        "count": 12,
+        "expectedDamage": 44075.56,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 22037.78,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 32143.23,
+        "expectedDamage": 31916,
         "castCount": 4
       },
       {
@@ -912,7 +849,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 128443.02,
+        "expectedDamage": 127664.01,
         "castCount": 4
       },
       {
@@ -920,7 +857,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 41616.04,
+        "expectedDamage": 40232.42,
         "castCount": 4
       },
       {
@@ -928,7 +865,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4128.31,
+        "expectedDamage": 3902.9,
         "castCount": 1
       },
       {
@@ -936,45 +873,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 841109.74,
+        "expectedDamage": 571047.88,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "5b1808035ab75f4ad23d01999a82bbb8e53bff92d37ce65e10d8395de0c93f0c"
+    "digest": "51306c05fcf49d9611e5419a3e935c815f4dd835e138b47f64d5137f404f8d86"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 76124.44,
-    "totalDamage": 4567466.43,
+    "dps": 71977.35,
+    "totalDamage": 4318641,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56122.42,
+        "expectedDamage": 56852.71,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 283787.22,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 74480.83,
+        "expectedDamage": 73187.26,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 297354.18,
         "castCount": 0
       },
       {
@@ -982,23 +922,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36158.26,
+        "expectedDamage": 37516.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 487543.77,
+        "count": 111,
+        "expectedDamage": 473574.12,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 104009.32,
+        "expectedDamage": 76602.27,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11036.88,
         "castCount": 0
       },
       {
@@ -1006,7 +954,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 104109.96,
+        "expectedDamage": 106485.89,
         "castCount": 4
       },
       {
@@ -1014,7 +962,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99146.86,
+        "expectedDamage": 101252.07,
         "castCount": 10
       },
       {
@@ -1022,47 +970,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2116621.17,
+        "expectedDamage": 2085588.19,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 70342.16,
+        "expectedDamage": 71669.9,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 51643.71,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57867.52,
+        "expectedDamage": 59450.47,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 52032.45,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61913.77,
+        "count": 12,
+        "expectedDamage": 41840.69,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20920.35,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28494.92,
+        "expectedDamage": 30382.31,
         "castCount": 4
       },
       {
@@ -1070,7 +1026,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 113865.17,
+        "expectedDamage": 121529.24,
         "castCount": 4
       },
       {
@@ -1078,7 +1034,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36888.68,
+        "expectedDamage": 39243.35,
         "castCount": 4
       },
       {
@@ -1086,7 +1042,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3667.56,
+        "expectedDamage": 3728.64,
         "castCount": 1
       },
       {
@@ -1094,45 +1050,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 780803.13,
+        "expectedDamage": 558393.17,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "b1f8571b5f71b1f6f07e0e795a714dec5ade5239e5af21ad4b399b013bf54573"
+    "digest": "e8143153d7ca5f34ffa2444a6c75596bd691da2016110abc42859dc63ea6976e"
   },
   "anchor:voidrotScript": {
-    "dps": 76828.14,
-    "totalDamage": 4609688.49,
+    "dps": 72911.4,
+    "totalDamage": 4374684.27,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56122.42,
+        "expectedDamage": 57233.1,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 285426.61,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 74480.83,
+        "expectedDamage": 73187.26,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 299972.6,
         "castCount": 0
       },
       {
@@ -1140,23 +1099,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36158.26,
+        "expectedDamage": 37516.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 490507.76,
+        "count": 111,
+        "expectedDamage": 478024.47,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 104009.32,
+        "expectedDamage": 76602.27,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11036.88,
         "castCount": 0
       },
       {
@@ -1164,7 +1131,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 104800.24,
+        "expectedDamage": 107176.74,
         "castCount": 4
       },
       {
@@ -1172,7 +1139,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99640.33,
+        "expectedDamage": 101813.56,
         "castCount": 10
       },
       {
@@ -1180,47 +1147,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2131151.56,
+        "expectedDamage": 2114113.85,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 70709.74,
+        "expectedDamage": 72239.65,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 51996.48,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58159.07,
+        "expectedDamage": 59986.13,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 52686.63,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 62334.2,
+        "count": 12,
+        "expectedDamage": 42359.73,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 21179.86,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28686.28,
+        "expectedDamage": 30764.42,
         "castCount": 4
       },
       {
@@ -1228,7 +1203,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 114627.69,
+        "expectedDamage": 123057.69,
         "castCount": 4
       },
       {
@@ -1236,7 +1211,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37149.03,
+        "expectedDamage": 39763.95,
         "castCount": 4
       },
       {
@@ -1244,7 +1219,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3667.56,
+        "expectedDamage": 3824.5,
         "castCount": 1
       },
       {
@@ -1252,45 +1227,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 800061.11,
+        "expectedDamage": 572144.13,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "c1b1f12fbc5bd325c8db2acab8428872a64cde09911accb49c6d28448d3cbe10"
+    "digest": "243d18d78efbff9ce901aaa1eb7bdddfa8270534800768486d2ef6f15e92151b"
   },
   "anchor:breakExtension": {
-    "dps": 77544.24,
-    "totalDamage": 4652654.64,
+    "dps": 72935.37,
+    "totalDamage": 4376121.96,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 58181.86,
+        "expectedDamage": 58143.68,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 290718.81,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 76523.89,
+        "expectedDamage": 74648.15,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 301774.97,
         "castCount": 0
       },
       {
@@ -1298,23 +1276,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36158.26,
+        "expectedDamage": 37516.87,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 498410.34,
+        "count": 111,
+        "expectedDamage": 480214.68,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 104009.32,
+        "expectedDamage": 76602.27,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 11223.03,
         "castCount": 0
       },
       {
@@ -1322,7 +1308,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107374.16,
+        "expectedDamage": 108820.54,
         "castCount": 4
       },
       {
@@ -1330,7 +1316,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 102823.97,
+        "expectedDamage": 103631.15,
         "castCount": 10
       },
       {
@@ -1338,47 +1324,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2175295.38,
+        "expectedDamage": 2126303.49,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 72960.46,
+        "expectedDamage": 73444.58,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 53116.21,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58829.83,
+        "expectedDamage": 60108.28,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 52872.22,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 63654.45,
+        "count": 12,
+        "expectedDamage": 42506.97,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 21253.49,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29300.43,
+        "expectedDamage": 30872.81,
         "castCount": 4
       },
       {
@@ -1386,7 +1380,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115698.58,
+        "expectedDamage": 123491.25,
         "castCount": 4
       },
       {
@@ -1394,7 +1388,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36735.69,
+        "expectedDamage": 38936.99,
         "castCount": 4
       },
       {
@@ -1402,7 +1396,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3667.56,
+        "expectedDamage": 3672.23,
         "castCount": 1
       },
       {
@@ -1410,45 +1404,51 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 769195.43,
+        "expectedDamage": 550084.3,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "f48c072ef1f00308e2b13c1de62a7ca6ca1607c6ab5529fcc7bf6421dd822752"
+    "digest": "1c57d4d184a520bdf5d5aa59b2d6b8629be78f4cf3e8ef90f607f426a52c66b1"
   },
   "anchor:swordHorizonT1": {
-    "dps": 54377.87,
-    "totalDamage": 3262672.28,
+    "dps": 41796.56,
+    "totalDamage": 2507793.45,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 4-Hit at 20.98s would be illegal in the game: needs Endurance ≥ 50 (has 24.67).",
+      "SwordSpecial 4-Hit at 33.13s would be illegal in the game: needs Endurance ≥ 50 (has 11.49).",
+      "SwordSpecial 4-Hit at 47.33s would be illegal in the game: needs Endurance ≥ 50 (has 38.17).",
+      "SwordSpecial 3-Hit at 50.08s would be illegal in the game: needs Endurance ≥ 50 (has 4.84)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54397.02,
+        "expectedDamage": 53011.36,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 42,
-        "expectedDamage": 204449.94,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 73154.69,
+        "expectedDamage": 68610.52,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 44,
+        "expectedDamage": 211052.46,
         "castCount": 0
       },
       {
@@ -1456,7 +1456,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34834.47,
+        "expectedDamage": 36141.64,
         "castCount": 1
       },
       {
@@ -1464,15 +1464,23 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 235398.67,
+        "expectedDamage": 225862.66,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 100137.14,
+        "expectedDamage": 74068.34,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10333.41,
         "castCount": 0
       },
       {
@@ -1480,7 +1488,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100382.75,
+        "expectedDamage": 101984.13,
         "castCount": 4
       },
       {
@@ -1488,55 +1496,63 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95738.56,
+        "expectedDamage": 95717.16,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 1221524.33,
+        "count": 17,
+        "expectedDamage": 999589.92,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 67624.39,
+        "expectedDamage": 66968.6,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 49812.74,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 55659.89,
+        "expectedDamage": 54485.22,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 41695.66,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 59727.04,
+        "count": 12,
+        "expectedDamage": 38354.74,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19177.76,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27496.5,
+        "expectedDamage": 27230.56,
         "castCount": 4
       },
       {
@@ -1544,7 +1560,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109562.04,
+        "expectedDamage": 111592.46,
         "castCount": 4
       },
       {
@@ -1552,7 +1568,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35497.35,
+        "expectedDamage": 35942.47,
         "castCount": 4
       },
       {
@@ -1560,7 +1576,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3544.07,
+        "expectedDamage": 3326.27,
         "castCount": 1
       },
       {
@@ -1568,45 +1584,74 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 733730.7,
+        "expectedDamage": 232648.11,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 346,
-      "buffWindows": 132,
-      "casts": 73
+      "timeline": 356,
+      "buffWindows": 142,
+      "casts": 90
     },
-    "digest": "a00ed92c6193921312744285d2fd56d654e34948a021bcb2919632198af7a231"
+    "digest": "9b4f000a4478aa4c5e485970a899dac9ea2555143490113f843c03531a150aef"
   },
   "anchor:noSwordHorizon": {
-    "dps": 46433.36,
-    "totalDamage": 2786001.44,
+    "dps": 36591.58,
+    "totalDamage": 2195494.72,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 5.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 6.50s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 10.60s would be illegal in the game: needs Endurance ≥ 50 (has 48.67) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 11.67s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 13.78s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 15.23s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 16.30s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 18.90s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 19.97s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 21.15s would be illegal in the game: needs Endurance ≥ 50 (has 26.34).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 24.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 26.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 27.55s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 28.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 31.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 32.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 33.45s would be illegal in the game: needs Endurance ≥ 50 (has 12.99).",
+      "Sword Martial QQQ at 40.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 41.92s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 42.98s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 45.58s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 46.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 47.82s would be illegal in the game: needs Endurance ≥ 50 (has 39.83).",
+      "SwordSpecial 3-Hit at 50.70s would be illegal in the game: needs Endurance ≥ 50 (has 6.01) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 51.77s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 53.88s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 55.32s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 56.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54397.02,
+        "expectedDamage": 54398.78,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 42,
-        "expectedDamage": 180600.2,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 73154.69,
+        "expectedDamage": 68563.61,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 42,
+        "expectedDamage": 194075.8,
         "castCount": 0
       },
       {
@@ -1614,7 +1659,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34834.47,
+        "expectedDamage": 36141.64,
         "castCount": 1
       },
       {
@@ -1622,15 +1667,23 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 79785.31,
+        "expectedDamage": 86509.71,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 93710,
+        "expectedDamage": 74068.34,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10332.67,
         "castCount": 0
       },
       {
@@ -1638,7 +1691,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100382.75,
+        "expectedDamage": 100429.69,
         "castCount": 4
       },
       {
@@ -1646,55 +1699,63 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95738.56,
+        "expectedDamage": 95713.55,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 930743.75,
+        "count": 17,
+        "expectedDamage": 843598.41,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 67624.39,
+        "expectedDamage": 66968.86,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 49812.74,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 55659.89,
+        "expectedDamage": 54486.88,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 41696.98,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 59727.04,
+        "count": 12,
+        "expectedDamage": 38351.56,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19175.99,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27496.5,
+        "expectedDamage": 27898.81,
         "castCount": 4
       },
       {
@@ -1702,7 +1763,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109562.04,
+        "expectedDamage": 111595.21,
         "castCount": 4
       },
       {
@@ -1710,7 +1771,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35497.35,
+        "expectedDamage": 35418.74,
         "castCount": 4
       },
       {
@@ -1718,7 +1779,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3544.07,
+        "expectedDamage": 3326.15,
         "castCount": 1
       },
       {
@@ -1726,45 +1787,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 733730.7,
+        "expectedDamage": 232743.33,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 311,
-      "buffWindows": 128,
-      "casts": 73
+      "timeline": 319,
+      "buffWindows": 121,
+      "casts": 90
     },
-    "digest": "0f09def045e6cfa3e30f2fd6680ac2821f45e07ed44bac936f2e06c654eb50c4"
+    "digest": "27fda2610fb61845ebafab470750c8bac717953a0d8e4a24aa5bf596e9c888d3"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 65455.39,
-    "totalDamage": 3927323.31,
+    "dps": 63019.28,
+    "totalDamage": 3781156.59,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51658.07,
+        "expectedDamage": 52110.72,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 243147.27,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 71260.07,
+        "expectedDamage": 69974.58,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 256363.87,
         "castCount": 0
       },
       {
@@ -1772,23 +1836,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35179.17,
+        "expectedDamage": 34937.33,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 416782.95,
+        "count": 111,
+        "expectedDamage": 408812.77,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 91092.96,
+        "expectedDamage": 69755.29,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10553.2,
         "castCount": 0
       },
       {
@@ -1796,7 +1868,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 95023.24,
+        "expectedDamage": 98203.86,
         "castCount": 4
       },
       {
@@ -1804,7 +1876,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 89866.76,
+        "expectedDamage": 92326.85,
         "castCount": 10
       },
       {
@@ -1812,47 +1884,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1748762.68,
+        "expectedDamage": 1792209.07,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63451.64,
+        "expectedDamage": 64523.29,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 46706.24,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 52014.87,
+        "expectedDamage": 53311.7,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 45727.51,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56001.88,
+        "count": 12,
+        "expectedDamage": 36804.89,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18402.45,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 25761.93,
+        "expectedDamage": 27391.02,
         "castCount": 4
       },
       {
@@ -1860,7 +1940,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 102949.25,
+        "expectedDamage": 109564.07,
         "castCount": 4
       },
       {
@@ -1868,7 +1948,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 33217.15,
+        "expectedDamage": 35239.79,
         "castCount": 4
       },
       {
@@ -1876,7 +1956,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3315.73,
+        "expectedDamage": 3321.67,
         "castCount": 1
       },
       {
@@ -1884,45 +1964,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 701131.44,
+        "expectedDamage": 501622.66,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "1bdb8babe2382061eac664e9da8810526c2e66506a25aa0ff387bcc6e5425d65"
+    "digest": "d7a65eb13192fae23c167fdb018acb5cf579a0ae46bc2eb71529fce30cde7464"
   },
   "anchor:noMoraleChant": {
-    "dps": 69162.71,
-    "totalDamage": 4149762.79,
+    "dps": 65556.68,
+    "totalDamage": 3933400.55,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52093.75,
+        "expectedDamage": 52587.46,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 261535.7,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 67925.23,
+        "expectedDamage": 67110.55,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 275414.4,
         "castCount": 0
       },
       {
@@ -1930,23 +2013,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34511.82,
+        "expectedDamage": 35691.5,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 448504.37,
+        "count": 111,
+        "expectedDamage": 438163.56,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 97029.04,
+        "expectedDamage": 71161.84,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10143.54,
         "castCount": 0
       },
       {
@@ -1954,7 +2045,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 95925.65,
+        "expectedDamage": 98981.42,
         "castCount": 4
       },
       {
@@ -1962,7 +2053,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91066.64,
+        "expectedDamage": 93767.72,
         "castCount": 10
       },
       {
@@ -1970,15 +2061,15 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1964728.71,
+        "expectedDamage": 1931022.19,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64493.47,
+        "expectedDamage": 65671.27,
         "castCount": 10
       },
       {
@@ -1986,23 +2077,31 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 46992.74,
+        "expectedDamage": 46332.7,
         "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56261.09,
+        "count": 12,
+        "expectedDamage": 37565.26,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19126.52,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 25898.33,
+        "expectedDamage": 27814.83,
         "castCount": 4
       },
       {
@@ -2010,7 +2109,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 103493.85,
+        "expectedDamage": 111259.32,
         "castCount": 4
       },
       {
@@ -2018,7 +2117,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 33467.93,
+        "expectedDamage": 35865.78,
         "castCount": 4
       },
       {
@@ -2026,7 +2125,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3368.99,
+        "expectedDamage": 3376.11,
         "castCount": 1
       },
       {
@@ -2034,29 +2133,37 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 702465.47,
+        "expectedDamage": 512344.56,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 419,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 431,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "ac198e55fe2b426c0a5208e7098ce6eeedad6f327c9cc8f0d22e70bb62b0e56b"
+    "digest": "3ce9094e52f4f5345706734c2c37ab13955c84380e83e3868a7678a1e657a5df"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 36055.69,
-    "totalDamage": 2163341.13,
+    "dps": 41018.55,
+    "totalDamage": 2461113.03,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 13.72s would be illegal in the game: needs Endurance ≥ 50 (has 27.34).",
+      "SwordSpecial 4-Hit at 25.53s would be illegal in the game: needs Endurance ≥ 50 (has 44.17).",
+      "SwordSpecial 4-Hit at 39.07s would be illegal in the game: needs Endurance ≥ 50 (has 47.32).",
+      "SwordSpecial 4-Hit at 51.45s would be illegal in the game: needs Endurance ≥ 50 (has 34.98).",
+      "SwordSpecial 3-Hit at 59.08s would be illegal in the game: needs Endurance ≥ 50 (has 43.34).",
+      "Spear Special (1 Hit Cancel) at 60.73s would be illegal in the game: needs Endurance ≥ 40 (has 17.84).",
+      "SwordSpecial 4-Hit at 61.32s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
+    ],
     "perSkill": [
       {
         "name": "SpearHeavy",
         "breakdownName": "Drifting Thrust",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 9641.91,
+        "expectedDamage": 2533.07,
         "castCount": 1
       },
       {
@@ -2064,7 +2171,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 60189.75,
+        "expectedDamage": 64051.22,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 10,
+        "expectedDamage": 135544.59,
         "castCount": 0
       },
       {
@@ -2072,103 +2187,111 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 21991.38,
+        "expectedDamage": 24296.76,
         "castCount": 2
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 55,
-        "expectedDamage": 154334.75,
+        "count": 54,
+        "expectedDamage": 177565.57,
         "castCount": 0
       },
       {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 10,
-        "expectedDamage": 145162.14,
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 9948.32,
         "castCount": 0
       },
       {
-        "name": "Dragon's Breath: Smolder 1 Hit",
+        "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 1,
-        "expectedDamage": 11295.88,
+        "count": 3,
+        "expectedDamage": 38788.67,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 64,
-        "expectedDamage": 175995,
+        "count": 104,
+        "expectedDamage": 305760.89,
         "castCount": 0
-      },
-      {
-        "name": "SpearQ 5-Hit Cancel",
-        "breakdownName": "Sober Sorrow",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 46027.47,
-        "castCount": 3
-      },
-      {
-        "name": "SwordSpecial 3-Hit",
-        "breakdownName": "Inner Balance Strike III",
-        "type": "weapon",
-        "count": 30,
-        "expectedDamage": 78278.06,
-        "castCount": 10
-      },
-      {
-        "name": "Blood Burst",
-        "breakdownName": "Blood Burst",
-        "type": "weapon",
-        "count": 27,
-        "expectedDamage": 1079124.44,
-        "castCount": 0
-      },
-      {
-        "name": "Crosswind Blade [cancel]",
-        "breakdownName": "Crisscross - Inner Balance III",
-        "type": "weapon",
-        "count": 10,
-        "expectedDamage": 55549.68,
-        "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 5,
-        "expectedDamage": 33128.85,
-        "castCount": 5
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 45846.32,
+        "expectedDamage": 49992.98,
         "castCount": 0
+      },
+      {
+        "name": "SpearQ 5-Hit Cancel",
+        "breakdownName": "Sober Sorrow",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 15390.97,
+        "castCount": 1
+      },
+      {
+        "name": "SwordSpecial 3-Hit",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 30,
+        "expectedDamage": 88700.25,
+        "castCount": 10
+      },
+      {
+        "name": "Blood Burst",
+        "breakdownName": "Blood Burst",
+        "type": "weapon",
+        "count": 26,
+        "expectedDamage": 1123556.76,
+        "castCount": 0
+      },
+      {
+        "name": "Zenith Sword [cancel]",
+        "breakdownName": "Crisscross - Inner Balance III",
+        "type": "weapon",
+        "count": 9,
+        "expectedDamage": 55154.88,
+        "castCount": 10
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 3,
+        "expectedDamage": 27604.91,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 48204.73,
+        "count": 12,
+        "expectedDamage": 36136.11,
         "castCount": 5
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18068.05,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22275.65,
+        "expectedDamage": 24193.38,
         "castCount": 4
       },
       {
@@ -2176,7 +2299,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 89104.39,
+        "expectedDamage": 96773.53,
         "castCount": 4
       },
       {
@@ -2184,23 +2307,31 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 28801.66,
+        "expectedDamage": 31297.29,
         "castCount": 4
+      },
+      {
+        "name": "Spear Special",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 2,
+        "expectedDamage": 16180.56,
+        "castCount": 1
       },
       {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 6,
-        "expectedDamage": 20206.42,
-        "castCount": 1
+        "count": 18,
+        "expectedDamage": 64025.12,
+        "castCount": 3
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 29203.36,
+        "expectedDamage": 31598.26,
         "castCount": 3
       },
       {
@@ -2208,53 +2339,68 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 8979.28,
+        "expectedDamage": 9653.8,
         "castCount": 3
+      },
+      {
+        "name": "Flute of the Tides Cancel",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 14297.09,
+        "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 378,
-      "buffWindows": 114,
-      "casts": 80
+      "timeline": 434,
+      "buffWindows": 203,
+      "casts": 99
     },
-    "digest": "07f6a5767ab311c4f36c2d874ccb82c3c392d58f08e5650764058077df664223"
+    "digest": "a2fbc3dd902c18170f021175ed3014f1ff71fdafe06158a8d08e7a29e8cb33d4"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 48053.83,
-    "totalDamage": 2883229.97,
+    "dps": 44308.18,
+    "totalDamage": 2658490.53,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
+      "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
+      "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
+      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
+      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
+      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 47077.6,
+        "expectedDamage": 51997.53,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 169602.82,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 61603.11,
+        "expectedDamage": 65932.78,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 190339.5,
         "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 74375.32,
+        "count": 58,
+        "expectedDamage": 9131.84,
         "castCount": 0
       },
       {
@@ -2262,23 +2408,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35855.16,
+        "expectedDamage": 37451.3,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 93,
-        "expectedDamage": 267215.2,
+        "count": 111,
+        "expectedDamage": 329528.42,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 69224.44,
+        "expectedDamage": 70717.17,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 9961.1,
         "castCount": 0
       },
       {
@@ -2286,7 +2440,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 81208.62,
+        "expectedDamage": 85979.63,
         "castCount": 4
       },
       {
@@ -2294,7 +2448,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 79551.59,
+        "expectedDamage": 90773.05,
         "castCount": 10
       },
       {
@@ -2302,47 +2456,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1007628.21,
+        "expectedDamage": 1117037.2,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 56361.86,
+        "expectedDamage": 63637.47,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 27478.43,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 47357.69,
+        "expectedDamage": 50173.55,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 37665.12,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 49646.46,
+        "count": 12,
+        "expectedDamage": 36556.33,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18278.17,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22851.88,
+        "expectedDamage": 24933.66,
         "castCount": 4
       },
       {
@@ -2350,7 +2512,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 91316.5,
+        "expectedDamage": 99734.65,
         "castCount": 4
       },
       {
@@ -2358,7 +2520,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 29567.82,
+        "expectedDamage": 32188.46,
         "castCount": 4
       },
       {
@@ -2366,7 +2528,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2946.58,
+        "expectedDamage": 3307.11,
         "castCount": 1
       },
       {
@@ -2374,53 +2536,60 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 662360.65,
+        "expectedDamage": 233166.5,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 459,
-      "buffWindows": 110,
-      "casts": 73
+      "timeline": 487,
+      "buffWindows": 200,
+      "casts": 90
     },
-    "digest": "8c6ef0080d3d0e09e988a3dcc6e4e9eff1671028c55d6692736bddcd5f92b019"
+    "digest": "0c1dfaa38a23ada74d556b7257eb74ef61fd4748bdd42e7cc42f3bb01ada95bc"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47137.61,
-    "totalDamage": 2828256.8,
+    "dps": 43473.93,
+    "totalDamage": 2608436.07,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
+      "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
+      "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
+      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
+      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
+      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 46218.44,
+        "expectedDamage": 51064.39,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 166409.3,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 60100.6,
+        "expectedDamage": 64322.85,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 186800.55,
         "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 72856.18,
+        "count": 58,
+        "expectedDamage": 8724.91,
         "castCount": 0
       },
       {
@@ -2428,23 +2597,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35183.36,
+        "expectedDamage": 36688.68,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 93,
-        "expectedDamage": 262113.95,
+        "count": 111,
+        "expectedDamage": 323325.99,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 67901.39,
+        "expectedDamage": 69376.76,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 9717.23,
         "castCount": 0
       },
       {
@@ -2452,7 +2629,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 79720.84,
+        "expectedDamage": 84428.17,
         "castCount": 4
       },
       {
@@ -2460,7 +2637,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 78091.06,
+        "expectedDamage": 89139.92,
         "castCount": 10
       },
       {
@@ -2468,47 +2645,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 988555.72,
+        "expectedDamage": 1096329.23,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 55296.53,
+        "expectedDamage": 62461.51,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 26973.8,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 46389.52,
+        "expectedDamage": 49164.54,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 36986.94,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 48734.26,
+        "count": 12,
+        "expectedDamage": 35898.08,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 17949.04,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22432.54,
+        "expectedDamage": 24484.7,
         "castCount": 4
       },
       {
@@ -2516,7 +2701,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 89641.33,
+        "expectedDamage": 97938.81,
         "castCount": 4
       },
       {
@@ -2524,7 +2709,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 29009.29,
+        "expectedDamage": 31593.06,
         "castCount": 4
       },
       {
@@ -2532,7 +2717,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2890.85,
+        "expectedDamage": 3245.94,
         "castCount": 1
       },
       {
@@ -2540,53 +2725,60 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 649737.84,
+        "expectedDamage": 228794.75,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 459,
-      "buffWindows": 110,
-      "casts": 73
+      "timeline": 487,
+      "buffWindows": 200,
+      "casts": 90
     },
-    "digest": "ace521c1ecda4789412a4e1bd575bcc32992aa2eaf1f566c8bff1316c3992719"
+    "digest": "e671b80a9b54a2027ea598b6541657318c10de9d0a6e3aef7711183c63066be3"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 46691.54,
-    "totalDamage": 2801492.23,
+    "dps": 43112.71,
+    "totalDamage": 2586762.45,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
+      "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
+      "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
+      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
+      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
+      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45706.84,
+        "expectedDamage": 50501.64,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 164490.97,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 60100.6,
+        "expectedDamage": 64322.85,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 184782.16,
         "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 68364.88,
+        "count": 58,
+        "expectedDamage": 8627.02,
         "castCount": 0
       },
       {
@@ -2594,23 +2786,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34744.54,
+        "expectedDamage": 36257.03,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 93,
-        "expectedDamage": 259161.19,
+        "count": 111,
+        "expectedDamage": 319914.63,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 67138.63,
+        "expectedDamage": 68591.59,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 9717.23,
         "castCount": 0
       },
       {
@@ -2618,7 +2818,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 78843.42,
+        "expectedDamage": 83513.49,
         "castCount": 4
       },
       {
@@ -2626,7 +2826,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 77242.21,
+        "expectedDamage": 88175.2,
         "castCount": 10
       },
       {
@@ -2634,47 +2834,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 980690.63,
+        "expectedDamage": 1088733.24,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 54653.8,
+        "expectedDamage": 61738.15,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 26680.93,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 45845.14,
+        "expectedDamage": 48589.13,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 36587.04,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 48205.31,
+        "count": 12,
+        "expectedDamage": 35509.94,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 17754.97,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22189.3,
+        "expectedDamage": 24219.96,
         "castCount": 4
       },
       {
@@ -2682,7 +2890,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 88669.37,
+        "expectedDamage": 96879.82,
         "castCount": 4
       },
       {
@@ -2690,7 +2898,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 28672.56,
+        "expectedDamage": 31227.71,
         "castCount": 4
       },
       {
@@ -2698,7 +2906,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2857.3,
+        "expectedDamage": 3208.4,
         "castCount": 1
       },
       {
@@ -2706,45 +2914,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 647234.59,
+        "expectedDamage": 227911.25,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 459,
-      "buffWindows": 110,
-      "casts": 73
+      "timeline": 487,
+      "buffWindows": 200,
+      "casts": 90
     },
-    "digest": "0579059e9fd88300c3cfaabcefde2d8767580a62b6ddb4b6c3c9bf8a75fa96e5"
+    "digest": "19745f2dd5306501108a66364940deb62c6ff94df797f822939deaf9db8d957c"
   },
   "anchor:noSet": {
-    "dps": 68931.5,
-    "totalDamage": 4135890.07,
+    "dps": 64226.66,
+    "totalDamage": 3853599.7,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51943.77,
+        "expectedDamage": 51948.69,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 255995.84,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 67020.51,
+        "expectedDamage": 66310.63,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 263901.85,
         "castCount": 0
       },
       {
@@ -2752,23 +2963,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34257.11,
+        "expectedDamage": 34433.69,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 440774.96,
+        "count": 111,
+        "expectedDamage": 422524.8,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 94946.14,
+        "expectedDamage": 69260.96,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10015.66,
         "castCount": 0
       },
       {
@@ -2776,7 +2995,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 95118.75,
+        "expectedDamage": 97556.5,
         "castCount": 4
       },
       {
@@ -2784,7 +3003,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 90519,
+        "expectedDamage": 92057.22,
         "castCount": 10
       },
       {
@@ -2792,47 +3011,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1919935.95,
+        "expectedDamage": 1857855.85,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63435.04,
+        "expectedDamage": 63837.64,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 47010.43,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 51830.03,
+        "expectedDamage": 52851.68,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 45619.79,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56377.86,
+        "count": 12,
+        "expectedDamage": 36700.13,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18801.03,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26053.63,
+        "expectedDamage": 27301.29,
         "castCount": 4
       },
       {
@@ -2840,7 +3067,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 104212.79,
+        "expectedDamage": 109205.15,
         "castCount": 4
       },
       {
@@ -2848,7 +3075,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 33393.25,
+        "expectedDamage": 34853.73,
         "castCount": 4
       },
       {
@@ -2856,7 +3083,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3319.63,
+        "expectedDamage": 3287.13,
         "castCount": 1
       },
       {
@@ -2864,45 +3091,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 699745.4,
+        "expectedDamage": 495276.31,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "83bc1036f72d45a31d0ed76db9a8c36a5d5392b58137133d5154455f4b914ab7"
+    "digest": "490f9ab0b6f44afdb5d1f988a9823bbbfa620e2075c591a2c8aade7e4acb6c66"
   },
   "anchor:set-Jadeware": {
-    "dps": 72279.36,
-    "totalDamage": 4336761.78,
+    "dps": 70919.15,
+    "totalDamage": 4255149.21,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54322.55,
+        "expectedDamage": 57165.22,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 269679.46,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 68227.79,
+        "expectedDamage": 67521.97,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 290022.68,
         "castCount": 0
       },
       {
@@ -2910,23 +3140,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34756.28,
+        "expectedDamage": 34943.48,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 464496.14,
+        "count": 111,
+        "expectedDamage": 463122.48,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 99361.12,
+        "expectedDamage": 75310.71,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10200.15,
         "castCount": 0
       },
       {
@@ -2934,7 +3172,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 101912.62,
+        "expectedDamage": 97368.9,
         "castCount": 4
       },
       {
@@ -2942,7 +3180,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 94520.55,
+        "expectedDamage": 99965.32,
         "castCount": 10
       },
       {
@@ -2950,47 +3188,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2034865.44,
+        "expectedDamage": 2067110.02,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66428.99,
+        "expectedDamage": 69201.81,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 50401.54,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54839.55,
+        "expectedDamage": 57809.82,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 52405.82,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 60432.91,
+        "count": 12,
+        "expectedDamage": 42145.35,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 21072.67,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27162.11,
+        "expectedDamage": 30600.1,
         "castCount": 4
       },
       {
@@ -2998,7 +3244,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 107640.64,
+        "expectedDamage": 122400.39,
         "castCount": 4
       },
       {
@@ -3006,7 +3252,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 33908.5,
+        "expectedDamage": 38696.23,
         "castCount": 4
       },
       {
@@ -3014,7 +3260,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3506.89,
+        "expectedDamage": 3709.23,
         "castCount": 1
       },
       {
@@ -3022,45 +3268,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 710298.73,
+        "expectedDamage": 554376.86,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "37ec90c1b132946c72bced8c4aca661973511a0ca5b995f372825c36e6163bbe"
+    "digest": "4c0a34399d51b6504cb4e0e448c0becf7fdcd9dfea05f46ab880b6b43ba94838"
   },
   "anchor:set-Mistwillow": {
-    "dps": 69585.29,
-    "totalDamage": 4175117.23,
+    "dps": 64814.07,
+    "totalDamage": 3888843.93,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52604.26,
+        "expectedDamage": 52609.94,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 259417.45,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 67020.51,
+        "expectedDamage": 66310.63,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 267734.04,
         "castCount": 0
       },
       {
@@ -3068,23 +3317,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34751.95,
+        "expectedDamage": 34905.75,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 446520.76,
+        "count": 111,
+        "expectedDamage": 427703.58,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 96178.91,
+        "expectedDamage": 70169.65,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10015.66,
         "castCount": 0
       },
       {
@@ -3092,7 +3349,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96323.49,
+        "expectedDamage": 98015.15,
         "castCount": 4
       },
       {
@@ -3100,7 +3357,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91651.91,
+        "expectedDamage": 93208.22,
         "castCount": 10
       },
       {
@@ -3108,47 +3365,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1937216,
+        "expectedDamage": 1872963.99,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64289.2,
+        "expectedDamage": 64697.82,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 47599.03,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 52534.98,
+        "expectedDamage": 53571.69,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 46189.57,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 57081.62,
+        "count": 12,
+        "expectedDamage": 37386.82,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19035.85,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26378.54,
+        "expectedDamage": 27642.3,
         "castCount": 4
       },
       {
@@ -3156,7 +3421,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 105512.44,
+        "expectedDamage": 110569.2,
         "castCount": 4
       },
       {
@@ -3164,7 +3429,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 33841.47,
+        "expectedDamage": 35322.62,
         "castCount": 4
       },
       {
@@ -3172,7 +3437,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3364.18,
+        "expectedDamage": 3331.35,
         "castCount": 1
       },
       {
@@ -3180,45 +3445,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 702830.54,
+        "expectedDamage": 497460.12,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "35dea22c57ac86ec1501da833a71d9a86671c71c7b3d37e267200631ab6c2a1d"
+    "digest": "697f684a456d065c3232aaa3e3a3870b3e172107ca4f4ed21805d7abb0b16add"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 70524.69,
-    "totalDamage": 4231481.65,
+    "dps": 65641.02,
+    "totalDamage": 3938461.43,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53495.59,
+        "expectedDamage": 53500.86,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 263480.9,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 67020.51,
+        "expectedDamage": 66310.63,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 271806.35,
         "castCount": 0
       },
       {
@@ -3226,23 +3494,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35358.85,
+        "expectedDamage": 35494.96,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 453575.98,
+        "count": 111,
+        "expectedDamage": 434273.37,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 97713.12,
+        "expectedDamage": 71334.03,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10015.66,
         "castCount": 0
       },
       {
@@ -3250,7 +3526,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97948.73,
+        "expectedDamage": 99654.98,
         "castCount": 4
       },
       {
@@ -3258,7 +3534,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 93188.23,
+        "expectedDamage": 94767.68,
         "castCount": 10
       },
       {
@@ -3266,47 +3542,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1958458.33,
+        "expectedDamage": 1891486.3,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 65337.15,
+        "expectedDamage": 65750.71,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 48395.91,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53387.45,
+        "expectedDamage": 54439.77,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 46962.66,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 58037.82,
+        "count": 12,
+        "expectedDamage": 38012.56,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19354.46,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26820.13,
+        "expectedDamage": 28104.94,
         "castCount": 4
       },
       {
@@ -3314,7 +3598,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 107278.8,
+        "expectedDamage": 112419.77,
         "castCount": 4
       },
       {
@@ -3322,7 +3606,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 34392.88,
+        "expectedDamage": 35897.82,
         "castCount": 4
       },
       {
@@ -3330,7 +3614,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3418.99,
+        "expectedDamage": 3385.6,
         "castCount": 1
       },
       {
@@ -3338,45 +3622,48 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 714172.27,
+        "expectedDamage": 505488.34,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "7840462d84315e200419001ff97c2a9e5fb69609f5e0ee8e766b37a180b92559"
+    "digest": "9f169c26ca78fdaee7dcfa7a864d48c9bcaf3e7d9e90d43c92545436e043ee7c"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 72655.45,
-    "totalDamage": 4359326.77,
+    "dps": 66189.84,
+    "totalDamage": 3971390.39,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54585.95,
+        "expectedDamage": 53786.75,
         "castCount": 4
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 270461.72,
-        "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 68227.79,
+        "expectedDamage": 69789.27,
+        "castCount": 0
+      },
+      {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 272172.23,
         "castCount": 0
       },
       {
@@ -3384,23 +3671,31 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36213.67,
+        "expectedDamage": 35918.69,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 110,
-        "expectedDamage": 465654.64,
+        "count": 111,
+        "expectedDamage": 434433.85,
         "castCount": 0
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
+        "type": "mystic",
         "count": 5,
-        "expectedDamage": 100298.11,
+        "expectedDamage": 72157.63,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 10550.14,
         "castCount": 0
       },
       {
@@ -3408,7 +3703,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100444.58,
+        "expectedDamage": 100459.4,
         "castCount": 4
       },
       {
@@ -3416,7 +3711,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95580.09,
+        "expectedDamage": 95448.94,
         "castCount": 10
       },
       {
@@ -3424,47 +3719,55 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2024524.55,
+        "expectedDamage": 1912025.89,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 67032.76,
+        "expectedDamage": 66258.48,
         "castCount": 10
-      },
-      {
-        "name": "Spear Special (1 Hit Cancel)",
-        "breakdownName": "Sweep All",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 49639.22,
-        "castCount": 4
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 52190.8,
+        "expectedDamage": 55005.34,
         "castCount": 0
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 47368.27,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 59528.89,
+        "count": 12,
+        "expectedDamage": 38281.03,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19491.33,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27509.64,
+        "expectedDamage": 28264.7,
         "castCount": 4
       },
       {
@@ -3472,7 +3775,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110036.76,
+        "expectedDamage": 113058.81,
         "castCount": 4
       },
       {
@@ -3480,7 +3783,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35286.2,
+        "expectedDamage": 36114.52,
         "castCount": 4
       },
       {
@@ -3488,7 +3791,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3507.8,
+        "expectedDamage": 3412.18,
         "castCount": 1
       },
       {
@@ -3496,85 +3799,128 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 738603.61,
+        "expectedDamage": 507392.96,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 425,
-      "buffWindows": 135,
-      "casts": 73
+      "timeline": 437,
+      "buffWindows": 241,
+      "casts": 90
     },
-    "digest": "ccefae5dfcd92086b4c1081366b23b3fb2cf47026accfc61acb0868ca253b06a"
+    "digest": "ac7f05227f8e6b029023c66def650a6468f1dcf984822eff2d39ab08a478474e"
   },
   "defaults:umbra": {
-    "dps": 10203.17,
-    "totalDamage": 612190.24,
+    "dps": 12359.43,
+    "totalDamage": 741566.08,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 4.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 5.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 9.77s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 10.82s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 12.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 14.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 15.47s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 16.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 17.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special at 17.93s would be illegal in the game: needs Endurance ≥ 40 (has 35.67).",
+      "SwordSpecial 4-Hit at 21.63s would be illegal in the game: needs Endurance ≥ 50 (has 25).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 24.23s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 26.32s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 29.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 30.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 31.08s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 32.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 35.32s would be illegal in the game: needs Endurance ≥ 50 (has 20.66).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 37.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 40.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 41.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 42.52s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 43.12s would be illegal in the game: needs Endurance ≥ 50 (has 49.82) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 44.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 44.88s would be illegal in the game: needs Endurance ≥ 40 (has 27.49).",
+      "SwordSpecial 4-Hit at 47.87s would be illegal in the game: needs Endurance ≥ 50 (has 17.83).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 50.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 52.57s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 54.00s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 55.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 55.67s would be illegal in the game: needs Endurance ≥ 50 (has 45.01) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 56.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 57.33s would be illegal in the game: needs Endurance ≥ 40 (has 17.67).",
+      "SwordSpecial 4-Hit at 57.92s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 12222.67,
+        "expectedDamage": 13082,
         "castCount": 2
       },
       {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 48,
-        "expectedDamage": 47045.72,
-        "castCount": 0
-      },
-      {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 40814.55,
+        "expectedDamage": 34058.1,
         "castCount": 0
       },
       {
-        "name": "Dragon's Breath: Smolder 1 Hit",
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 49,
+        "expectedDamage": 57462.04,
+        "castCount": 0
+      },
+      {
+        "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 1,
-        "expectedDamage": 5917.49,
+        "count": 3,
+        "expectedDamage": 17354.88,
         "castCount": 1
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 8,
-        "expectedDamage": 8783.44,
+        "count": 23,
+        "expectedDamage": 28006.59,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 10,
+        "expectedDamage": 76594.29,
+        "castCount": 0
+      },
+      {
+        "name": "Divinecraft - Fire Explosion",
+        "breakdownName": "Divinecraft - Fire Explosion",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 5230.51,
         "castCount": 0
       },
       {
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 25130.75,
-        "castCount": 3
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 10,
-        "expectedDamage": 69887.69,
-        "castCount": 0
+        "count": 5,
+        "expectedDamage": 8127.58,
+        "castCount": 1
       },
       {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 41244.2,
+        "expectedDamage": 46102.46,
         "castCount": 10
       },
       {
@@ -3582,39 +3928,47 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 184735.86,
+        "expectedDamage": 221854.46,
         "castCount": 0
       },
       {
-        "name": "Crosswind Blade [cancel]",
+        "name": "Zenith Sword [cancel]",
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 26385.08,
+        "expectedDamage": 29078.8,
         "castCount": 10
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
         "breakdownName": "Sweep All",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 17581.88,
-        "castCount": 5
+        "count": 4,
+        "expectedDamage": 19857.36,
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 30933.15,
+        "count": 15,
+        "expectedDamage": 23324.67,
         "castCount": 5
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 11677.77,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 11513.88,
+        "expectedDamage": 12632.14,
         "castCount": 4
       },
       {
@@ -3622,7 +3976,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 46055.52,
+        "expectedDamage": 50555.77,
         "castCount": 4
       },
       {
@@ -3630,23 +3984,31 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 13613.88,
+        "expectedDamage": 14872.01,
         "castCount": 4
+      },
+      {
+        "name": "Spear Special",
+        "breakdownName": "Sweep All",
+        "type": "weapon",
+        "count": 2,
+        "expectedDamage": 8691.69,
+        "castCount": 1
       },
       {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 6,
-        "expectedDamage": 11049.33,
-        "castCount": 1
+        "count": 18,
+        "expectedDamage": 34459.15,
+        "castCount": 3
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 15044.86,
+        "expectedDamage": 16402.12,
         "castCount": 3
       },
       {
@@ -3654,15 +4016,23 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 4230.27,
+        "expectedDamage": 4565.94,
         "castCount": 3
+      },
+      {
+        "name": "Flute of the Tides Cancel",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 7575.77,
+        "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 303,
-      "buffWindows": 112,
-      "casts": 79
+      "timeline": 342,
+      "buffWindows": 125,
+      "casts": 97
     },
-    "digest": "0a6dd2939dc623a80b7f9b3f5e1163785c821e2f2b258d8cae9395a86397f293"
+    "digest": "5b6827fae6cbf33f656489843a8a4bf076bd803ad55e47cb454ed3c41bb18bb1"
   }
 }

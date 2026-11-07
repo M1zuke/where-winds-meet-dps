@@ -151,6 +151,7 @@ describe("Skill Editor — Effects: Triggers / Receives columns", () => {
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
     expect(savedAnxiSoldierMoDown().receives).toEqual([
       "cleftpeakDeflect",
+      "etherwrathPenetrationBoost",
       "phalanxbaneBladeAdditionalAttack",
     ])
   })

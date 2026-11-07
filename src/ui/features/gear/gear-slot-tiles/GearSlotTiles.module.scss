@@ -1,9 +1,28 @@
 @use "breakpoints";
 
 .gearTiles {
+  --group-gap: 12px;
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr)) var(--group-gap) repeat(2, minmax(0, 1fr))
+    var(--group-gap) minmax(0, 1fr);
   gap: 6px;
+
+  > :nth-child(5n + 1) {
+    grid-column: 1;
+  }
+  > :nth-child(5n + 2) {
+    grid-column: 2;
+  }
+  > :nth-child(5n + 3) {
+    grid-column: 4;
+  }
+  > :nth-child(5n + 4) {
+    grid-column: 5;
+  }
+  > :nth-child(5n) {
+    grid-column: 7;
+  }
 }
 
 .gearTile {
@@ -127,10 +146,47 @@
 }
 
 .gearTileSlot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
   font-size: 0.7em;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+.pips {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+
+.pipOn {
+  background: var(--tile-rarity-color, var(--color-accent));
+}
+
+.noSet {
+  color: var(--color-text-faint);
+}
+
+.gearTileBowInfo {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+}
+
+.gearTileBowInfo b {
+  color: var(--color-positive);
+  font-weight: 600;
 }
 
 .gearTilePiece {
@@ -194,6 +250,10 @@
 
 @include breakpoints.below(breakpoints.$bp-1100) {
   .gearTiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > :nth-child(n) {
+      grid-column: auto;
+    }
   }
 }

@@ -115,25 +115,30 @@ describe("defineClassBuff is not a second buff system", () => {
     const listedIds = new Set(
       CLASS_DEFS().flatMap((classDef) => classDef.classBuffDefs.map((module) => module.id)),
     )
+    const paths = buffFolders().flatMap((dir) =>
+      readdirSync(dir)
+        .filter((entry) => entry.endsWith(".ts"))
+        .map((file) => join(dir, file)),
+    )
+    const modules: Record<string, unknown>[] = await Promise.all(
+      paths.map(
+        (path) => import(/* @vite-ignore */ "../../" + repoRelative(path).replace(/\.ts$/, "")),
+      ),
+    )
     const orphaned: string[] = []
-    for (const dir of buffFolders()) {
-      for (const file of readdirSync(dir).filter((entry) => entry.endsWith(".ts"))) {
-        const path = join(dir, file)
-        const specifier = "../../" + repoRelative(path).replace(/\.ts$/, "")
-        const module: Record<string, unknown> = await import(/* @vite-ignore */ specifier)
-        for (const exported of Object.values(module)) {
-          // A hoisted-factory buff-def (the cyclic-import shape
-          // `wolfchasersArtBuffs.ts` uses) exports the FACTORY, not the built
-          // `BuffModule` — call a zero-arg export to reach the marker the same
-          // way a plain-object export already carries it.
-          const candidate =
-            typeof exported === "function" && exported.length === 0 ? exported() : exported
-          if (!candidate || typeof candidate !== "object" || !("classBuff" in candidate)) continue
-          const { id } = candidate as { id: string; classBuff: true }
-          if (!listedIds.has(id)) orphaned.push(`${repoRelative(path)}: ${id}`)
-        }
+    paths.forEach((path, index) => {
+      for (const exported of Object.values(modules[index])) {
+        // A hoisted-factory buff-def (the cyclic-import shape
+        // `wolfchasersArtBuffs.ts` uses) exports the FACTORY, not the built
+        // `BuffModule` — call a zero-arg export to reach the marker the same
+        // way a plain-object export already carries it.
+        const candidate =
+          typeof exported === "function" && exported.length === 0 ? exported() : exported
+        if (!candidate || typeof candidate !== "object" || !("classBuff" in candidate)) continue
+        const { id } = candidate as { id: string; classBuff: true }
+        if (!listedIds.has(id)) orphaned.push(`${repoRelative(path)}: ${id}`)
       }
-    }
+    })
     expect(orphaned).toEqual([])
   })
 })

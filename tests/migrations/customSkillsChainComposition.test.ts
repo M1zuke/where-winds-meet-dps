@@ -9,6 +9,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
+import { healMysticArtRank } from "../../src/migrations/customSkills/V7__mysticArtRankRepair"
 import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
 import { healBleedCoefficientReach } from "../../src/migrations/customSkills/V9__bleedCoefficientReach"
 import { healWolfchasersArtSwordOverreach } from "../../src/migrations/customSkills/V10__wolfchasersArtSwordOverreach"
@@ -21,12 +22,107 @@ import { healStonesplitStrengthArtBonusAttack } from "../../src/migrations/custo
 import { healBamboocutDraughtArtBonusAttack } from "../../src/migrations/customSkills/V19__bamboocutDraughtArtBonusAttack"
 import { healSilkbindJadeArtBonusAttack } from "../../src/migrations/customSkills/V20__silkbindJadeArtBonusAttack"
 import { healJadeBlossomBarrageReach } from "../../src/migrations/customSkills/V21__jadeBlossomBarrageReach"
+import { recalibrateSharedMysticHits } from "../../src/migrations/customSkills/V22__sharedMysticCoefficients"
+import {
+  addDrunkenHazeExplosionHits,
+  addFinalStrikeExplosionTrigger,
+} from "../../src/migrations/customSkills/V23__drunkenHazeExplosion"
+import { healSkill as healUmbraValueFixes } from "../../src/migrations/customSkills/V24__umbraValueFixes"
+import { healBamboocutDraughtValuesGatesReach } from "../../src/migrations/customSkills/V25__bamboocutDraughtValuesGatesReach"
+import { healStonesplitStrengthValuesGatesReach } from "../../src/migrations/customSkills/V26__stonesplitStrengthValuesGatesReach"
+import { healBellstrikeSplendorValuesGatesReach } from "../../src/migrations/customSkills/V27__bellstrikeSplendorValuesGatesReach"
+import { healSilkbindJadeValuesGatesReach } from "../../src/migrations/customSkills/V28__silkbindJadeValuesGatesReach"
+import { healSkill as healSoberSorrowExtendParam } from "../../src/migrations/customSkills/V29__soberSorrowExtendUsesParam"
+import { healSkill as healSwordSpecial4HitAttunementReach } from "../../src/migrations/customSkills/V30__swordSpecial4HitAttunementReach"
+import { healSkill as healForgetfulnessCooldownMarker } from "../../src/migrations/customSkills/V31__forgetfulnessCooldownMarker"
+import { healSkill as healSnowbreakSpringAvailability } from "../../src/migrations/customSkills/V32__snowbreakSpringAvailability"
+import { healSkill as healSnowbreakSpringGrantTiming } from "../../src/migrations/customSkills/V33__snowbreakSpringGrantTiming"
+import { healSkill as healHerosBloodInebriateConditionalNoAbrasion } from "../../src/migrations/customSkills/V34__herosBloodInebriateConditionalNoAbrasion"
+import { healSkill as healSwordHorizonCrisscrossGates } from "../../src/migrations/customSkills/V35__swordHorizonCrisscrossGates"
+import { healSkill as healSwordMorphMultiWaveWindow } from "../../src/migrations/customSkills/V36__swordMorphMultiWaveWindow"
+import { healSkill as healAnxiSoldierHengSnowbreakTag } from "../../src/migrations/customSkills/V37__anxiSoldierHengSnowbreakTag"
+import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
+import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
+import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
+import { healSkill as healTargetDistanceReachAndDisplacement } from "../../src/migrations/customSkills/V44__targetDistanceReachAndDisplacement"
+import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
+import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
+import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
+import { healSkill as healEtherwrathPenetrationReach } from "../../src/migrations/customSkills/V50__etherwrathPenetrationReach"
+import { healSkill as healRelentlessChaseSecondStrike } from "../../src/migrations/customSkills/V51__relentlessChaseSecondStrike"
+import { healSkill as healGourdTossThunder } from "../../src/migrations/customSkills/V52__gourdTossThunder"
+import { healSkill as healGourdTossFlyingTornado } from "../../src/migrations/customSkills/V53__gourdTossFlyingTornado"
+import { healSkill as healSwallowcallColorfulPhoenixReach } from "../../src/migrations/customSkills/V54__swallowcallColorfulPhoenixReach"
+import { healSkill as healPoetSecondCollider } from "../../src/migrations/customSkills/V56__poetSecondCollider"
+import { healSkill as healNightwickFollowUpCancelledByNextSkill } from "../../src/migrations/customSkills/V57__nightwickFollowUpCancelledByNextSkill"
+import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
+import { healSkill as healSpringlessSilenceLandingHitOnly } from "../../src/migrations/customSkills/V60__springlessSilenceLandingHitOnly"
+import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
+import { healSkill as healShadowStepDashWindow } from "../../src/migrations/customSkills/V62__shadowStepDashWindow"
+import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
+import { healSkill as healInGameTimingCorrections } from "../../src/migrations/customSkills/V64__inGameTimingCorrections"
+import { healSkill as healThreeWaveReleaseAndEnergySurgeInterval } from "../../src/migrations/customSkills/V65__threeWaveReleaseAndEnergySurgeInterval"
+import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
+import { healSkill as healBleedRefundLockoutAndSecondTrackSlashEndurance } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
+import { healSkill as healLightAttackThreeHitFrames } from "../../src/migrations/customSkills/V69__lightAttackThreeHitFrames"
+import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
+import { healComboExtendMarkReach } from "../../src/migrations/customSkills/V71__comboExtendMarkReach"
+import { healSkill as healStonesplitHitFrameRetiming } from "../../src/migrations/customSkills/V72__stonesplitHitFrameRetiming"
+import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
+import { healSkill as healSpringAwayBulletsExtendMarkPerHit } from "../../src/migrations/customSkills/V74__springAwayBulletsExtendMarkPerHit"
+import { healSkill as healSpringAwayHoverCueTiming } from "../../src/migrations/customSkills/V75__springAwayHoverCueTiming"
+import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
+import { healSkill as healSpringAwayReach } from "../../src/migrations/customSkills/V79__springAwayReach"
+import { healSkill as healPrepullVagrantSwordWaveTiming } from "../../src/migrations/customSkills/V80__prepullVagrantSwordWaveTiming"
+import { healSkill as healStartWithoutServerWait } from "../../src/migrations/customSkills/V81__startWithoutServerWait"
+import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
+import { healSkill as healSplendorQiImbalanceOnHitAndEndlessGaleWindow } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
+import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
+import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
+import { healSkill as healStonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming } from "../../src/migrations/customSkills/V86__stonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming"
+import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
+import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/customSkills/V88__draughtMistwillowReach"
+import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
+import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
+import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
+import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { healSkill as healJadeBulletSkillsAsWeaponHits } from "../../src/migrations/customSkills/V93__jadeBulletSkillsAsWeaponHits"
+import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
+import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
+import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
+import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
+import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
+import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/migrations/customSkills/V100__burningHeartLowStageReleaseTiming"
+import { healSkill as healWushuangStanceVagrantSwordStartOrder } from "../../src/migrations/customSkills/V101__wushuangStanceVagrantSwordStartOrder"
+import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
+import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
+import { healSkill as healUmbraRootMotion } from "../../src/migrations/customSkills/V104__umbraRootMotion"
+import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
+import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
+import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
 
+function healSharedMysticCoefficients(skill: unknown): unknown {
+  if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
+  const { id, hits } = skill as Skill
+  return { ...skill, hits: recalibrateSharedMysticHits(id, hits) }
+}
+
+function healDrunkenHazeExplosion(skill: unknown): unknown {
+  if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
+  const { id, hits } = skill as Skill
+  return {
+    ...skill,
+    hits: addFinalStrikeExplosionTrigger(id, addDrunkenHazeExplosionHits(id, hits)),
+  }
+}
+
 const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [6, healBleedRowDefaults],
+  [7, healMysticArtRank],
   [8, healRiverFlowApplication],
   [9, healBleedCoefficientReach],
   [10, healWolfchasersArtSwordOverreach],
@@ -39,6 +135,82 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [19, healBamboocutDraughtArtBonusAttack],
   [20, healSilkbindJadeArtBonusAttack],
   [21, healJadeBlossomBarrageReach],
+  [22, healSharedMysticCoefficients],
+  [23, healDrunkenHazeExplosion],
+  [24, healUmbraValueFixes],
+  [25, healBamboocutDraughtValuesGatesReach],
+  [26, healStonesplitStrengthValuesGatesReach],
+  [27, healBellstrikeSplendorValuesGatesReach],
+  [28, healSilkbindJadeValuesGatesReach],
+  [29, healSoberSorrowExtendParam],
+  [30, healSwordSpecial4HitAttunementReach],
+  [31, healForgetfulnessCooldownMarker],
+  [32, healSnowbreakSpringAvailability],
+  [33, healSnowbreakSpringGrantTiming],
+  [34, healHerosBloodInebriateConditionalNoAbrasion],
+  [35, healSwordHorizonCrisscrossGates],
+  [36, healSwordMorphMultiWaveWindow],
+  [37, healAnxiSoldierHengSnowbreakTag],
+  [38, healMeterFieldsAndGains],
+  [39, healMeterModifierGains],
+  [40, healMountainsMightAndQiImbalanceMarker],
+  [44, healTargetDistanceReachAndDisplacement],
+  [45, healCastLengthAndHitFrameRepairs],
+  [46, healStonesplitSplendorJadeTimingRepairs],
+  [49, healPerGrantSiteDelayAndSetReach],
+  [50, healEtherwrathPenetrationReach],
+  [51, healRelentlessChaseSecondStrike],
+  [52, healGourdTossThunder],
+  [53, healGourdTossFlyingTornado],
+  [54, healSwallowcallColorfulPhoenixReach],
+  [56, healPoetSecondCollider],
+  [57, healNightwickFollowUpCancelledByNextSkill],
+  [58, healInGameCoefficientCorrections],
+  [60, healSpringlessSilenceLandingHitOnly],
+  [61, healBoundvesselSpringAwayToadAfterimageTiming],
+  [62, healShadowStepDashWindow],
+  [63, healBoundvesselDrinkAccumulation],
+  [64, healInGameTimingCorrections],
+  [65, healThreeWaveReleaseAndEnergySurgeInterval],
+  [66, healGhostlyAfterimagePerDodge],
+  [67, healBleedRefundLockoutAndSecondTrackSlashEndurance],
+  [69, healLightAttackThreeHitFrames],
+  [70, healSplendorHitFrameRetiming],
+  [71, healComboExtendMarkReach],
+  [72, healStonesplitHitFrameRetiming],
+  [73, healDraughtGauntletRetimingAndReveldriftNerf],
+  [74, healSpringAwayBulletsExtendMarkPerHit],
+  [75, healSpringAwayHoverCueTiming],
+  [76, healVagrantSwordChargeTiming],
+  [77, healMysticFreeMorphWolflikeFrenzyTiming],
+  [78, healReviewedTimingsGrantsAndNames],
+  [79, healSpringAwayReach],
+  [80, healPrepullVagrantSwordWaveTiming],
+  [81, healStartWithoutServerWait],
+  [82, healUmbraCastLengthsAndSweepAllBurstStacks],
+  [83, healSplendorQiImbalanceOnHitAndEndlessGaleWindow],
+  [84, healJadeHitLandingsGrantsAndClipTimings],
+  [85, healJadeAvailabilityAndRecharge],
+  [86, healStonesplitSnowbreakSpringGraveFrostAndSoulBurningTiming],
+  [87, healDraughtGrantTimingAndAbrasionTalent],
+  [88, healDraughtMistwillowReach],
+  [89, healDraughtReveldriftChargesAndEmpoweredLightAttack],
+  [90, healDraughtTipsylayAndExCooldowns],
+  [91, healDraughtNightwickStanceAndVariedComboOverrides],
+  [92, healJadeStartlingSpringStacksAndFlurryEnduranceTiming],
+  [93, healJadeBulletSkillsAsWeaponHits],
+  [94, healJadeSpringSorrowChargesAndComboRechargeCut],
+  [95, healFractionalFrameTiming],
+  [96, healStonesplitFractionalFrameTiming],
+  [97, healUmbraGameplayTimings],
+  [98, healSwordHorizonBurstStacksAtTheBurst],
+  [99, healBurningHeartChargeStageGates],
+  [100, healBurningHeartLowStageReleaseTiming],
+  [101, healWushuangStanceVagrantSwordStartOrder],
+  [102, healPrepullVagrantSwordBoltTiming],
+  [103, healSplendorRootMotion],
+  [104, healUmbraRootMotion],
+  [105, healSwordMorphConversion],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

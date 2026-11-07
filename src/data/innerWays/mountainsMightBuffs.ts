@@ -5,13 +5,14 @@ import { applyBuff, stat } from "../../engine/effects/effect"
 // 1.5% direct affinity while Endless Gale is up, and 1.5% again against a boss
 // (in-game English text, 2026-08-15). The engine simulates a boss target, so the
 // two are carried as one 3% figure — the same value the reference site's own
-// def and the workbook both hold.
+// def and the workbook both hold. In-game values as of 2026-09-24: ranks 4-6
+// only, 10 s from the Q's cast end.
 export const mountainsMightBuff = defineBuff({
   id: BUFF.mountainsMight,
   name: "Mountain's Might",
-  requires: { param: PARAM.mountainsMight },
+  requires: { param: PARAM.mountainsMight, minTier: 4 },
   affectsAll: true,
-  duration: 8,
+  duration: 10,
   buffAppliesOnCastEnd: true,
   effects: [stat("directAffinityRate", 0.03)],
 })
@@ -21,11 +22,14 @@ export const mountainsMightBuff = defineBuff({
 // gates rather than declared on the skill, which carries no gate of its own.
 // The spear applies it from the Nameless Spear talent and stays ungated.
 // Slotting at all satisfies the rule, tier 1 being the lowest selectable.
+// In-game values as of 2026-10-15: every hit of the Q family applies it.
 export const mountainsMightPathQiImbalance = defineBuff({
   id: BUFF.mountainsMightQiImbalance,
   name: "Qi Imbalance (Splendor path)",
   requires: { param: PARAM.mountainsMight },
   duration: 15,
-  buffAppliesOnCastEnd: true,
+  stackOnDamage: true,
+  damageGrantTiming: "preScore",
+  stackOnDamageScoped: true,
   effects: [applyBuff(BUFF.qiImbalance, 1, 15)],
 })

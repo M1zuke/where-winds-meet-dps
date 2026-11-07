@@ -54,7 +54,6 @@ const baseCtx: FormulaContext = {
   effectiveDefense: 307,
   fatigueDamageTaken: 0,
   hasSixHenZhi: false,
-  food: false,
   set: null,
   divinecraft: null,
   classSpecificAttunement: {},
@@ -97,13 +96,6 @@ describe("target damage reduction", () => {
 
     expect(asFactor).toBeCloseTo(damageOf(WEAPON_ROW, baseCtx) * 1.5 * 0.8, 6)
     expect(asFactor).toBeLessThan(asAddend)
-  })
-
-  it("scales a damage-over-time row alongside its own multiplier", () => {
-    const overTime = { ...baseCtx, dotDamageMultiplier: 1.4 }
-    const reduced = damageOf(WEAPON_ROW, { ...overTime, damageReduction: 0.25 })
-
-    expect(reduced).toBeCloseTo(damageOf(WEAPON_ROW, overTime) * 0.75, 6)
   })
 
   it("scales a rolled hit by the same factor as the expected value", () => {

@@ -32,7 +32,8 @@ import { describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
-import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import type { DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
@@ -63,10 +64,16 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     name: module.name,
     classBuff: "classBuff" in module,
     requires: module.requires ?? null,
+    grantRequires: module.grantRequires ?? null,
     affectsAll: !!module.affectsAll,
     alwaysActive: !!module.alwaysActive,
     buffAppliesOnCastEnd: !!module.buffAppliesOnCastEnd,
-    cooldown: module.cooldown ?? null,
+    cooldown:
+      module.cooldown === undefined
+        ? null
+        : typeof module.cooldown === "number"
+          ? module.cooldown
+          : "[fn]",
     rateLimit: module.rateLimit ?? null,
     stackRateLimit: module.stackRateLimit ?? null,
     stacksPerHit: !!module.stacksPerHit,
@@ -76,7 +83,12 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     activeAfterBuffEnds: module.activeAfterBuffEnds ?? null,
     hasStacksFn: typeof module.stacks === "function",
     duration: typeof module.duration === "number" ? module.duration : "[fn]",
-    maxStacks: module.maxStacks ?? null,
+    maxStacks:
+      module.maxStacks === undefined
+        ? null
+        : typeof module.maxStacks === "number"
+          ? module.maxStacks
+          : "[fn]",
     effects: Array.isArray(module.effects) ? module.effects : "[fn]",
     summary: module.summary ?? null,
   }
@@ -153,6 +165,7 @@ function summarizeDamage(result: DamageEffectsResult) {
 // no reason to carry ~11 tag combinations × every probed time step for it in
 // the committed fixture.
 const SPELLED_OUT_CLASS_ID = "bellstrikeUmbra"
+const SPELLED_OUT_CLASS_MAX_PHYS_ATTACK = 2000
 
 function dynamicDumpFor(classId: string) {
   const buffs = buffDefsForClass(classId)
@@ -162,14 +175,21 @@ function dynamicDumpFor(classId: string) {
   // Forces every gate open so the simulation exercises every branch a build
   // could reach, not just whatever the default build happens to enable.
   const params: Record<string, unknown> = { armorSet: "jadeware" }
+  if (classId === SPELLED_OUT_CLASS_ID) params.maxPhysAttack = SPELLED_OUT_CLASS_MAX_PHYS_ATTACK
+  let highestMinBreakthrough = 0
   for (const module of allModules) {
-    if (module.requires?.param) {
-      params[module.requires.param] = true
-      params[module.requires.param + "Tier"] = 6
+    const requirements = [module.requires, ...Object.values(module.grantRequires ?? {})]
+    for (const requires of requirements) {
+      if (requires?.param) {
+        params[requires.param] = true
+        params[requires.param + "Tier"] = 6
+      }
+      highestMinBreakthrough = Math.max(highestMinBreakthrough, requires?.minBreakthrough ?? 0)
     }
   }
+  params.breakthrough = highestMinBreakthrough
 
-  const engine = new BuffEngine(params, buffs, group)
+  const engine = buffEngineWith(params, buffs, group, exhaustedFrom(25, 10))
   const castTags = allModules.map((module) => `probe:${module.id}`).sort()
   // Short enough to still be inside every probed module's own duration (so a
   // `stacksPerHit` module ramps toward its cap) while shorter than every

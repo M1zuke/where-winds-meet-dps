@@ -26,38 +26,41 @@ function inebriateStatus(minPhysAttack: number) {
 }
 
 describe("Inebriate Critical Enhancement's crit-damage bonus", () => {
-  it("is 0 at 0, half the maximum at 375, the maximum at 750, and still the maximum above 750", () => {
+  it("steps by 2% per full 50 Min Physical Attack, capped at 30% from 750", () => {
     expect(inebriateCritDamageBoostAt(0)).toBe(0)
-    expect(inebriateCritDamageBoostAt(375)).toBeCloseTo(0.15, 10)
+    expect(inebriateCritDamageBoostAt(49)).toBe(0)
+    expect(inebriateCritDamageBoostAt(50)).toBeCloseTo(0.02, 10)
+    expect(inebriateCritDamageBoostAt(350)).toBeCloseTo(0.14, 10)
     expect(inebriateCritDamageBoostAt(750)).toBeCloseTo(0.3, 10)
     expect(inebriateCritDamageBoostAt(1500)).toBeCloseTo(0.3, 10)
   })
 })
 
 describe("Inebriate DMG Boost Enhancement's damage bonus", () => {
-  it("is 0 at 0, half the maximum at 375, the maximum at 750, and still the maximum above 750", () => {
+  it("steps by 1% per full 83.33 Min Physical Attack, capped at 9% from 750", () => {
     expect(inebriateDamageBoostAt(0)).toBe(0)
-    expect(inebriateDamageBoostAt(375)).toBeCloseTo(0.045, 10)
+    expect(inebriateDamageBoostAt(83)).toBe(0)
+    expect(inebriateDamageBoostAt(250)).toBeCloseTo(0.03, 10)
     expect(inebriateDamageBoostAt(750)).toBeCloseTo(0.09, 10)
     expect(inebriateDamageBoostAt(1500)).toBeCloseTo(0.09, 10)
   })
 })
 
 describe("the two Min-Phys-scaled modules read the build's panel stat", () => {
-  it("inebriateSkillCritDamage returns the scaled crit-damage bonus while Inebriate", () => {
+  it("inebriateSkillCritDamage returns the stepped crit-damage bonus while Inebriate", () => {
     const effects = inebriateSkillCritDamage.effects
     if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
-    expect(effects(inebriateStatus(375))).toEqual([
-      { kind: "stat", statKey: "critDamageBoost", amount: 0.15 },
+    expect(effects(inebriateStatus(350))).toEqual([
+      { kind: "stat", statKey: "critDamageBoost", amount: 0.14 },
     ])
   })
 
-  it("inebriateDamageScaling returns the scaled physBoost and attributeDamageBoost while Inebriate", () => {
+  it("inebriateDamageScaling returns the stepped physBoost and attributeDamageBoost while Inebriate", () => {
     const effects = inebriateDamageScaling.effects
     if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
-    expect(effects(inebriateStatus(375))).toEqual([
-      { kind: "stat", statKey: "physBoost", amount: 0.045 },
-      { kind: "stat", statKey: "attributeDamageBoost", amount: 0.045 },
+    expect(effects(inebriateStatus(250))).toEqual([
+      { kind: "stat", statKey: "physBoost", amount: 0.03 },
+      { kind: "stat", statKey: "attributeDamageBoost", amount: 0.03 },
     ])
   })
 })

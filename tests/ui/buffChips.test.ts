@@ -24,6 +24,7 @@ function cast(index: number, timeSec: number, buffs: CastBuffTag[]): RotationCas
     inWindow: true,
     prePull: false,
     buffs,
+    distanceMeters: 0,
   }
 }
 

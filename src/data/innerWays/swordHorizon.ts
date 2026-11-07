@@ -9,7 +9,7 @@ export const swordHorizon = defineInnerWay({
   id: INNER_WAY_ID.swordHorizon,
   name: "Sword Horizon",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.swordHorizon,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackMaxFiveStar },

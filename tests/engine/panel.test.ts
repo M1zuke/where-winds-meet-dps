@@ -15,7 +15,10 @@ import {
   arsenalStoreState,
   defaultArsenalScores,
 } from "../../src/definitions/baseStats"
+import { calmwaters } from "../../src/data/sets/calmwaters"
 import { defaultInputs } from "../../src/engine/defaults"
+import { applySetBonuses, setPhysDefBonus } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 
 describe("panel.deriveStats", () => {
   it("resolves the class & target metadata", () => {
@@ -192,5 +195,23 @@ describe("arsenalStoreAttack — the rung ladder", () => {
   it("freezes attack at the top rung past Total Mastery — no ratio_b overflow", () => {
     const overflowing = arsenalStoreState(8, 7200, false)
     expect(arsenalStoreAttack(overflowing)).toEqual({ min: 17, max: 34 })
+  })
+})
+
+describe("an armor-group set stored on a set-bearing piece", () => {
+  const withCalmwaters = withGearSet({ ...defaultInputs, breakthrough: 17 }, calmwaters.id, {
+    fabricatePieces: true,
+  })
+
+  it("counts toward no bonus, so applying set bonuses leaves Inputs untouched", () => {
+    expect(applySetBonuses(withCalmwaters)).toEqual(withCalmwaters)
+  })
+
+  it("adds no Physical Defense", () => {
+    expect(setPhysDefBonus(withCalmwaters)).toBe(0)
+  })
+
+  it("adds no Physical Defense with no set equipped", () => {
+    expect(setPhysDefBonus(defaultInputs)).toBe(0)
   })
 })

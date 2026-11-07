@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { useAnchoredDropdown } from "../../hooks/useAnchoredDropdown"
+import { useMemo, useRef, useState } from "react"
+import { DropdownEmpty, DropdownList, DropdownOption } from "../dropdown-list/DropdownList"
 import styles from "./Combobox.module.scss"
 
 export interface ComboboxOption {
   value: string
   label: string
+  detail?: string
+  disabled?: boolean
 }
 
 interface Props {
@@ -32,11 +33,10 @@ export function Combobox({
   const [highlight, setHighlight] = useState(0)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const dropdownRef = useRef<HTMLUListElement>(null)
-  const pos = useAnchoredDropdown(open, wrapperRef)
 
   const selected = options.find((opt) => opt.value === value)
   const displayText = open ? query : (selected?.label ?? "")
+  const selectedDetail = open ? undefined : selected?.detail
 
   const filtered = useMemo(() => {
     if (!open) return options
@@ -45,26 +45,20 @@ export function Combobox({
     return options.filter((opt) => opt.label.toLowerCase().includes(queryLower))
   }, [open, query, options])
 
-  useEffect(() => {
-    if (!open) return
-    function onMouseDown(e: MouseEvent) {
-      const target = e.target as Node
-      if (wrapperRef.current?.contains(target)) return
-      if (dropdownRef.current?.contains(target)) return
-      setOpen(false)
-    }
-    document.addEventListener("mousedown", onMouseDown)
-    return () => document.removeEventListener("mousedown", onMouseDown)
-  }, [open])
-
   const maxFilteredIndex = Math.max(0, filtered.length - 1)
   const clampedHighlight = Math.min(highlight, maxFilteredIndex)
 
   function commit(opt: ComboboxOption) {
+    if (opt.disabled) return
     onChange(opt.value)
     setOpen(false)
     setQuery("")
     inputRef.current?.blur()
+  }
+
+  function close() {
+    setOpen(false)
+    setQuery("")
   }
 
   function openWithReset() {
@@ -79,9 +73,9 @@ export function Combobox({
       <input
         ref={inputRef}
         type="text"
-        className={styles.comboboxInput}
+        className={styles.comboboxInput + (selectedDetail ? ` ${styles.hasSelectedDetail}` : "")}
         value={displayText}
-        title={displayText}
+        title={selectedDetail ? `${displayText} — ${selectedDetail}` : displayText}
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
@@ -112,60 +106,35 @@ export function Combobox({
               e.preventDefault()
               commit(filtered[clampedHighlight])
             }
-          } else if (e.key === "Escape") {
-            if (open) {
-              e.preventDefault()
-              setOpen(false)
-              setQuery("")
-            }
           } else if (e.key === "Tab") {
-            setOpen(false)
-            setQuery("")
+            close()
           }
         }}
       />
-      {open &&
-        pos &&
-        createPortal(
-          <ul
-            ref={dropdownRef}
-            className={styles.comboboxDropdown}
-            role="listbox"
-            style={{
-              left: pos.left,
-              width: pos.width,
-              top: pos.top,
-              bottom: pos.bottom,
-              maxHeight: pos.maxHeight,
-            }}
-          >
-            {filtered.length === 0 ? (
-              <li className={styles.comboboxEmpty}>—</li>
-            ) : (
-              filtered.map((opt, index) => (
-                <li
-                  key={opt.value}
-                  role="option"
-                  aria-selected={opt.value === value}
-                  title={opt.label}
-                  className={
-                    styles.comboboxOption +
-                    (index === clampedHighlight ? ` ${styles.isHighlight}` : "") +
-                    (opt.value === value ? ` ${styles.isSelected}` : "")
-                  }
-                  onMouseDown={(e) => {
-                    e.preventDefault()
-                    commit(opt)
-                  }}
-                  onMouseEnter={() => setHighlight(index)}
-                >
-                  {opt.label}
-                </li>
-              ))
-            )}
-          </ul>,
-          document.body,
+      {selectedDetail && (
+        <span className={styles.comboboxSelectedDetail} aria-hidden="true">
+          {selectedDetail}
+        </span>
+      )}
+      <DropdownList open={open} anchorRef={wrapperRef} onClose={close}>
+        {filtered.length === 0 ? (
+          <DropdownEmpty text="—" />
+        ) : (
+          filtered.map((opt, index) => (
+            <DropdownOption
+              key={opt.value}
+              label={opt.label}
+              meta={opt.detail}
+              title={opt.detail ? `${opt.label} — ${opt.detail}` : opt.label}
+              selected={opt.value === value}
+              highlighted={index === clampedHighlight}
+              disabled={opt.disabled}
+              onSelect={() => commit(opt)}
+              onHover={() => setHighlight(index)}
+            />
+          ))
         )}
+      </DropdownList>
     </div>
   )
 }

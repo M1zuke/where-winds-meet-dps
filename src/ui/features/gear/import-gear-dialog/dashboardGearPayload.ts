@@ -2,8 +2,22 @@ import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { statLineKey } from "../../../../i18n/contentKeys"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
-import { GEAR_SLOTS, type GearSlot, type GearWordId } from "../../../../engine/types"
-import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
+import {
+  BOW_SLOTS,
+  GEAR_SLOTS,
+  type BowSet,
+  type BowSlot,
+  type GearLevel,
+  type GearSlot,
+  type GearWordId,
+  type WeaponName,
+} from "../../../../engine/types"
+import type { MartialArtId } from "../../../../data/martialArts/ids"
+import { parseBowItemId, type BowItemReading } from "./bowItemIds"
+import { GAME_SLOT_TO_BOW_SLOT, GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
+import { bowSetForSuffix } from "./gearSetSuffixes"
+import { DASHBOARD_MARTIAL_ART_IDS } from "./dashboardMartialArts"
+import { weaponTypeOfItem } from "./weaponItemTypes"
 
 export const BOOKMARKLET_ENVELOPE_VERSION = 1
 const ENVELOPE_SOURCE = "wwm-dashboard"
@@ -68,14 +82,38 @@ export interface ImportedInnerWay {
 }
 
 export type SlotResolution =
-  { kind: "mapped"; slot: GearSlot } | { kind: "noAppEquivalent" } | { kind: "unknownSlotId" }
+  | { kind: "mapped"; slot: GearSlot }
+  | { kind: "bow"; slot: BowSlot }
+  | { kind: "noAppEquivalent" }
+  | { kind: "unknownSlotId" }
+
+export interface EquippedMartialArt {
+  rawId: number
+  martialArtId: MartialArtId | null
+  foreignToClass: boolean
+}
+
+export interface EquippedMartialArts {
+  main: EquippedMartialArt | null
+  sub: EquippedMartialArt | null
+}
+
+export interface ImportedBow {
+  reading: BowItemReading
+  set: BowSet
+}
 
 export interface ImportedPiece {
   gameSlotId: string
   itemId: number | null
+  suffix: number | null
+  bow: ImportedBow | null
+  weaponType: WeaponName | null
+  weaponPlacedByGameSlot: boolean
   slot: SlotResolution
   observedBaseStats: Partial<GearBaseStats> | null
   identity: InferredGearIdentity | null
+  impliedLevel: GearLevel | null
   affixes: ImportedAffix[]
   overflowAffixes: ImportedAffix[]
   attunement: ImportedAffix | null
@@ -84,6 +122,7 @@ export interface ImportedPiece {
 export interface GearImportResult {
   roleName: string | null
   characterLevel: number | null
+  equippedMartialArts: EquippedMartialArts | null
   pieces: ImportedPiece[]
   innerWays: ImportedInnerWay[]
   unrecognizedPayloadKeys: readonly string[]
@@ -127,6 +166,9 @@ function firstNumber(source: Record<string, unknown>, keys: readonly string[]): 
 }
 
 function resolveSlot(gameSlotId: string): SlotResolution {
+  if (Object.prototype.hasOwnProperty.call(GAME_SLOT_TO_BOW_SLOT, gameSlotId)) {
+    return { kind: "bow", slot: GAME_SLOT_TO_BOW_SLOT[gameSlotId]! }
+  }
   if (!Object.prototype.hasOwnProperty.call(GAME_SLOT_TO_GEAR_SLOT, gameSlotId)) {
     return { kind: "unknownSlotId" }
   }
@@ -225,6 +267,18 @@ function readObservedBaseStats(sources: readonly unknown[]): Partial<GearBaseSta
   return Object.keys(observed).length ? observed : null
 }
 
+function readEquippedMartialArt(source: unknown): EquippedMartialArt | null {
+  const rawId = asNumber(source)
+  if (rawId === null) return null
+  return { rawId, martialArtId: DASHBOARD_MARTIAL_ART_IDS[rawId] ?? null, foreignToClass: false }
+}
+
+function readEquippedMartialArts(envelope: Record<string, unknown>): EquippedMartialArts | null {
+  const main = readEquippedMartialArt(envelope.kongfuMain)
+  const sub = readEquippedMartialArt(envelope.kongfuSub)
+  return main || sub ? { main, sub } : null
+}
+
 function unwrapEnvelope(parsed: unknown): Record<string, unknown> {
   if (!isRecord(parsed)) {
     throw new GearImportError(
@@ -274,12 +328,24 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
     const all = rawList.map(readAffix)
     const tunements = all.filter((affix) => !affix.isAttunementAffix)
 
+    const itemId = asNumber(wearEquips[gameSlotId]) ?? asNumber(detail?.no) ?? null
+    const suffix = exVo ? asNumber(exVo.suffix) : null
+    const slot = resolveSlot(gameSlotId)
+
     return {
       gameSlotId,
-      itemId: asNumber(wearEquips[gameSlotId]) ?? asNumber(detail?.no) ?? null,
-      slot: resolveSlot(gameSlotId),
+      itemId,
+      suffix,
+      bow:
+        slot.kind === "bow"
+          ? { reading: parseBowItemId(itemId), set: bowSetForSuffix(suffix) }
+          : null,
+      weaponType: weaponTypeOfItem(itemId),
+      weaponPlacedByGameSlot: false,
+      slot,
       observedBaseStats: readObservedBaseStats([exVo?.baseAttrs, detail, exVo]),
       identity: null,
+      impliedLevel: null,
       affixes: tunements.slice(0, 5),
       overflowAffixes: tunements.slice(5),
       attunement: all.find((affix) => affix.isAttunementAffix) ?? null,
@@ -290,6 +356,7 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
   return {
     roleName: typeof envelope.roleName === "string" ? envelope.roleName : null,
     characterLevel: asNumber(envelope.level),
+    equippedMartialArts: readEquippedMartialArts(envelope),
     pieces,
     innerWays: readInnerWays(envelope[PASSIVE_SLOTS_KEY]),
     unrecognizedPayloadKeys: Array.isArray(declaredExtras)
@@ -307,8 +374,18 @@ export function previewablePieces(result: GearImportResult): ImportedPiece[] {
   const order = (piece: ImportedPiece): number =>
     piece.slot.kind === "mapped" ? GEAR_SLOTS.indexOf(piece.slot.slot) : GEAR_SLOTS.length
   return result.pieces
-    .filter((piece) => piece.slot.kind !== "noAppEquivalent")
+    .filter((piece) => piece.slot.kind !== "noAppEquivalent" && piece.slot.kind !== "bow")
     .sort((left, right) => order(left) - order(right))
+}
+
+export function bowPieces(result: GearImportResult): ImportedPiece[] {
+  return result.pieces
+    .filter((piece) => piece.slot.kind === "bow")
+    .sort((left, right) => BOW_SLOTS.indexOf(bowSlotOf(left)) - BOW_SLOTS.indexOf(bowSlotOf(right)))
+}
+
+function bowSlotOf(piece: ImportedPiece): BowSlot {
+  return (piece.slot as { kind: "bow"; slot: BowSlot }).slot
 }
 
 /** A capture that lists the key as an extra came from a bookmarklet too old to carry it. */
@@ -389,8 +466,14 @@ export function buildImportDiagnostics(result: GearImportResult): string {
       source: ENVELOPE_SOURCE,
       v: BOOKMARKLET_ENVELOPE_VERSION,
       unrecognizedPayloadKeys: result.unrecognizedPayloadKeys,
+      equippedMartialArts: result.equippedMartialArts,
       pieces: result.pieces.map((piece) => ({
         gameSlotId: piece.gameSlotId,
+        itemId: piece.itemId,
+        suffix: piece.suffix,
+        bow: piece.bow,
+        weaponType: piece.weaponType,
+        weaponPlacedByGameSlot: piece.weaponPlacedByGameSlot,
         slot: piece.slot,
         observedBaseStats: piece.observedBaseStats,
         baseAffixes: [...piece.affixes, ...piece.overflowAffixes].map((affix) => ({

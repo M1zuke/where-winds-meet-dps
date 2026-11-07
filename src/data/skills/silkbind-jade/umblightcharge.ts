@@ -1,73 +1,46 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { castSkill } from "../../../definitions/skills/triggers"
+import { CAST } from "../ids"
 import { SKILL } from "./ids"
-import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import {
+  SPRING_AWAY_BULLET,
+  SPRING_AWAY_BULLET_LAUNCH_FRAMES,
+  SPRING_AWAY_BULLET_PROJECTILE,
+  SPRING_AWAY_REACH_METERS,
+  SPRING_AWAY_RECEIVES,
+  SPRING_AWAY_TAGS,
+  springAwayHoverDrain,
+  springAwayHoverSeconds,
+  springAwayReleaseFrames,
+} from "./springAway"
 
-// The reference def carries these as ONE cast total spread over six hits, not
-// as a per-hit value: every other multi-hit skill in the reference set — 31 of
-// them across five specs — has a per-hit coefficient equal to its cast total
-// divided by its hit count, and the ÷3 ones still carry the repeating decimal
-// that proves it. This is the only multi-hit def whose value was left undivided,
-// which is why its 1.7173 sits alongside SINGLE-hit skills (FanLightCharged
-// 1.9039, UmbQ 2.3389) instead of below them.
-//
-// Kept as total ÷ hits rather than six decimals, so the number the reference
-// actually states stays legible.
-const CAST_HITS = 6
-const CAST_TOTAL = {
-  physMultiplier: 1.7173,
-  attributeMultiplier: 2.576,
-  physFixed: 396,
-  attributeFixed: 221,
-}
-
-const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
-  extraCritDamage: 1,
-}
+const BULLET_COUNT = 6
 
 export const umblightcharge = defineSkill({
   id: SKILL.umblightcharge,
   classId: "silkbindJade",
   name: "UmbLightCharge",
-  tags: [
-    PROP.isCharged,
-    PROP.hasQiBreakPhysPen,
-    WEAPON.umbrella,
-    ATTACK.light,
-    ATTUNE.umbFrequentProjectile,
-    ROLE.umbLightCharge,
-  ],
-  skillType: "sustain",
+  tags: SPRING_AWAY_TAGS,
+  skillType: "weapon",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbLightCharge,
-  receives: [
-    BUFF.mistwillowHeavyBuff,
-    BUFF.mistwillowBuff,
-    BUFF.combo,
-    BUFF.comboUmbLightBonus,
-    BUFF.windWall,
-    BUFF.pursuitChargedBoost,
-    BUFF.trajectorySkill,
-    BUFF.thunderousBloom,
-    BUFF.springThunder,
-    ...VERNAL_UMBRELLA_RECEIVES,
-  ],
-  castFrames: 147,
+  receives: SPRING_AWAY_RECEIVES,
+  castFrames: springAwayReleaseFrames(BULLET_COUNT),
   triggerable: true,
-  hits: [
-    hit(0, { frame: 0, ...COEFFICIENTS }),
-    hit(1, { frame: 10, ...COEFFICIENTS }),
-    hit(2, { frame: 20, ...COEFFICIENTS }),
-    hit(3, { frame: 30, ...COEFFICIENTS }),
-    hit(4, { frame: 40, ...COEFFICIENTS }),
-    hit(5, { frame: 50, ...COEFFICIENTS }),
-  ],
+  reachMeters: SPRING_AWAY_REACH_METERS,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
+  meterDrains: springAwayHoverDrain(springAwayHoverSeconds(BULLET_COUNT)),
+  hits: SPRING_AWAY_BULLET_LAUNCH_FRAMES.slice(0, BULLET_COUNT).map((frame, index) =>
+    hit(index, {
+      frame,
+      ...SPRING_AWAY_BULLET,
+      projectile: SPRING_AWAY_BULLET_PROJECTILE,
+      ...(index === 0 ? { triggers: [castSkill({ target: SKILL.umblightchargeLift })] } : {}),
+    }),
+  ),
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

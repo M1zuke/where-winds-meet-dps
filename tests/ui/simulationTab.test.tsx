@@ -6,17 +6,21 @@ const { created, MockWorker } = vi.hoisted(() => {
   const instances: {
     posted: unknown[]
     onmessage: ((event: { data: unknown }) => void) | null
+    terminated: boolean
   }[] = []
   class Mock {
     posted: unknown[] = []
     onmessage: ((event: { data: unknown }) => void) | null = null
+    terminated = false
     constructor() {
       instances.push(this)
     }
     postMessage(request: unknown) {
       this.posted.push(request)
     }
-    terminate() {}
+    terminate() {
+      this.terminated = true
+    }
   }
   return { created: instances, MockWorker: Mock }
 })
@@ -25,7 +29,7 @@ vi.mock("../../src/engine/dpsWorker?worker", () => ({ default: MockWorker }))
 
 const { defaultInputs } = await import("../../src/engine/defaults")
 const { withDerivedStats } = await import("../../src/engine/derivedInputs")
-const { applyArmorSet, applyBowSet } = await import("../../src/engine/panel")
+const { applySetBonuses } = await import("../../src/engine/setBonuses")
 const { I18nProvider } = await import("../../src/i18n/I18nProvider")
 const { SimulationTab } =
   await import("../../src/ui/features/simulation/simulation-tab/SimulationTab")
@@ -35,9 +39,7 @@ const { DEFAULT_RUN_COUNT } = await import("../../src/ui/features/simulation/sim
 
 const SIMULATION_SEED = 12345
 
-const umbra = applyBowSet(
-  applyArmorSet(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" })),
-)
+const umbra = applySetBonuses(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" }))
 
 function OwnedSimulationTab() {
   const simulation = useParseSimulation()
@@ -62,7 +64,12 @@ function lastRequest(): Record<string, unknown> {
 }
 
 function respond(response: WorkerResponse): void {
-  act(() => created[0].onmessage?.({ data: response }))
+  const owner = created.find(
+    (worker) =>
+      !worker.terminated &&
+      worker.posted.some((post) => (post as { reqId: number }).reqId === response.reqId),
+  )
+  act(() => owner?.onmessage?.({ data: response }))
 }
 
 function completion(
@@ -131,6 +138,7 @@ function runDetail(reqId: number, seed: number): WorkerResponse {
 }
 
 beforeEach(() => {
+  Object.defineProperty(navigator, "hardwareConcurrency", { value: 2, configurable: true })
   simulationViewState.optionId = null
   simulationViewState.runCount = DEFAULT_RUN_COUNT
   simulationViewState.ranSignature = null
@@ -152,6 +160,16 @@ describe("SimulationTab", () => {
     expect(screen.getByText("Avg DPS")).toBeInTheDocument()
     expect(screen.queryByText("Parse Ladder")).not.toBeInTheDocument()
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
+  })
+
+  it("says the simulation always uses the own Qi break", () => {
+    renderTab()
+
+    expect(
+      screen.getByText(
+        "The simulation always uses your own Qi break, even when “Use Graduation Qi break” is on in the encounter settings.",
+      ),
+    ).toBeInTheDocument()
   })
 
   it("starts a simulation with the run count in the field", () => {

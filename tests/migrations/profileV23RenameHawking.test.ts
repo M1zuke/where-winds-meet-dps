@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { SET_BY_ID } from "../../src/definitions/sets/registry"
-import type { StoredProfile } from "../../src/engine/types"
+import { carriedSets, type StoredProfile } from "./legacyProfile"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V23__renameHawking, migrateHawkingSetId } from "../../src/migrations/V23__renameHawking"
 import { importProfile } from "../../src/storage"
@@ -78,6 +78,6 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
 
   it("still renames the previous set id", () => {
     const imported = importProfile(JSON.stringify(clone(LEGACY.profile)))
-    expect(imported.inputs.set).toBe("hawkwing")
+    expect(carriedSets(imported.inputs)).toContain("hawkwing")
   })
 })

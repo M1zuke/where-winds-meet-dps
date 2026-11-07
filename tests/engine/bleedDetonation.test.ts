@@ -3,13 +3,36 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { simulateTimeline } from "../../src/engine/timeline"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
-import { builtinSkill } from "../builtins"
-import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { builtinSkill, testRotation as makeRotation } from "../builtins"
+import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import {
+  ZENITH_BAR_BUFF_ID,
+  ZENITH_DETONATION_BUFF_ID,
+} from "../../src/data/innerWays/swordHorizonZenith"
 
 const CLASS = "bellstrikeUmbra"
 const skillOf = (skillId: string) => builtinSkill(CLASS, skillId)
+
+describe("bleed detonation — forced-Affinity extension reaches Bleeding too", () => {
+  it("extends Bleeding on the same condition and terms as the shared Smolder/poison extension", () => {
+    const [hit] = skillOf(SKILL.bleedDetonation).hits
+    const bleedExtend = hit.triggers.find(
+      (t) => t.kind === "applyDebuff" && t.targetId === DEBUFF.bleedTick,
+    )!
+    expect(bleedExtend).toBeTruthy()
+    expect(bleedExtend.condition).toEqual({
+      buffId: ZENITH_DETONATION_BUFF_ID,
+      op: "gte",
+      stacks: 1,
+    })
+    expect(bleedExtend.extendOnly).toBe(true)
+    const smolderExtend = hit.triggers.find((t) => t.kind === "applyDebuff" && t !== bleedExtend)!
+    expect(bleedExtend.extendFrames).toBe(smolderExtend.extendFrames)
+    expect(bleedExtend.maxExtendedDurationFrames).toBe(smolderExtend.maxExtendedDurationFrames)
+  })
+})
 
 describe("bleed detonation — bellstrikeUmbra default rotation", () => {
   it("fires at least one Blood Burst hit", () => {
@@ -46,10 +69,10 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
       (ev) => ev.skillName === skillOf(SKILL.bleedDetonation).name,
     )
     expect(detonationEvents).toHaveLength(1)
-    expect(detonationEvents[0].frame).toBe(92)
+    expect(detonationEvents[0].frame).toBe(106)
   })
 
-  it("retains 2 stacks (instead of resetting to 0) at swordHorizon tier 6 — a second detonation follows 3 hits sooner", () => {
+  it("re-adds 2 stacks as the burst lands at swordHorizon tier 6 while Sword Spirit is banked — a second detonation follows 3 hits sooner", () => {
     const swordSpecial3 = builtinSkillsForClass("bellstrikeUmbra").find(
       (s) => s.id === SKILL.swordspecial3Hit,
     )!
@@ -59,6 +82,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
         makeStep({ skillId: swordSpecial3.id }),
         makeStep({ skillId: swordSpecial3.id }),
       ],
+      openingStacks: { [ZENITH_BAR_BUFF_ID]: 1 },
     })
     const below6: Inputs = {
       ...defaultInputs,
@@ -105,6 +129,14 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     const noneResult = simulateTimeline(noInnerWay)
     expect(
       noneResult.perSkill.find((p) => p.name === skillOf(SKILL.bleedDetonation).name)!.count,
+    ).toBe(1)
+
+    const emptySpirit = simulateTimeline({
+      ...at6,
+      activeCustomRotation: { ...rotation, openingStacks: { [ZENITH_BAR_BUFF_ID]: 0 } },
+    })
+    expect(
+      emptySpirit.perSkill.find((p) => p.name === skillOf(SKILL.bleedDetonation).name)!.count,
     ).toBe(1)
   })
 
@@ -228,21 +260,30 @@ describe("Sword Charge Stage 1, 3-Hit", () => {
   const NAME = SKILL.swordChargeStage13Hit
 
   it("carries the charge's first three hits, the opener heavier than the two that follow", () => {
-    const s = skillOf(NAME)
-    expect(s.hits).toHaveLength(3)
-    const sum = (f: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed") =>
-      s.hits.reduce((a, h) => a + h[f], 0)
+    const skill = skillOf(NAME)
+    const ownHits = skill.hits.filter((hit) => !hit.requiresNextStepSkillIds)
+    expect(ownHits).toHaveLength(3)
+    const sum = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => ownHits.reduce((total, hit) => total + hit[field], 0)
     expect(sum("physMultiplier")).toBeCloseTo(0.940156, 10)
     expect(sum("attributeMultiplier")).toBeCloseTo(1.410234, 10)
     expect(sum("physFixed")).toBeCloseTo(260.4, 10)
     expect(sum("attributeFixed")).toBeCloseTo(141.75, 10)
-    expect(s.hits[0].physMultiplier).toBeCloseTo(0.402924, 10)
-    expect(s.hits[1].physMultiplier).toBeCloseTo(0.268616, 10)
-    expect(s.hits[2].physMultiplier).toBeCloseTo(0.268616, 10)
+    expect(ownHits[0].physMultiplier).toBeCloseTo(0.402924, 10)
+    expect(ownHits[1].physMultiplier).toBeCloseTo(0.268616, 10)
+    expect(ownHits[2].physMultiplier).toBeCloseTo(0.268616, 10)
   })
 
+  // Cut short into the follow-up instead of by a Deflect, the 2-hit and
+  // 3-hit forms also land the hit(s) gated on that transition (docs/
+  // TIMELINE.md § "Conditional hits") — excluded here, since this compares
+  // each form's own unconditional coefficient total.
   it("sits below the 4-hit and 5-hit cancels it shares a charge with", () => {
-    const total = (name: string) => skillOf(name).hits.reduce((a, h) => a + h.physMultiplier, 0)
+    const total = (name: string) =>
+      skillOf(name)
+        .hits.filter((hit) => !hit.requiresNextStepSkillIds)
+        .reduce((sum, hit) => sum + hit.physMultiplier, 0)
     expect(total(NAME)).toBeLessThan(total(SKILL.swordChargeStage14Hit))
     expect(total(SKILL.swordChargeStage14Hit)).toBeLessThan(total(SKILL.swordChargeStage15Hit))
   })

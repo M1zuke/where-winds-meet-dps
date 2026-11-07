@@ -44,8 +44,8 @@ describe("custom-skills v9 fixture", () => {
     for (const id of SPEAR_Q_IDS) expect(skillIn(STORE, id).receives).toContain(BUFF_ID)
   })
 
-  it("holds the corrected shape on the built-ins the copies were seeded from", () => {
-    for (const id of SWORD_MARTIAL_Q_IDS) expect(builtin(id).receives ?? []).not.toContain(BUFF_ID)
+  it("now also carries the buff on every built-in this hop once stripped it from", () => {
+    for (const id of SWORD_MARTIAL_Q_IDS) expect(builtin(id).receives).toContain(BUFF_ID)
     for (const id of SPEAR_Q_IDS) expect(builtin(id).receives).toContain(BUFF_ID)
   })
 })

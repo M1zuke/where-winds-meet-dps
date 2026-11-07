@@ -1,0 +1,81 @@
+@use "breakpoints";
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--color-text);
+}
+
+.hint {
+  margin: -10px 0 0;
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 1.2em;
+  margin: -6px 0 0;
+  font-size: 0.78em;
+  color: var(--color-text-faint);
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+.note {
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 6px;
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.locked {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.8em;
+  color: var(--color-text-faint);
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

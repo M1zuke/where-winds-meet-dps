@@ -1,0 +1,685 @@
+{
+  "v": 63,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-1-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 1-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage11Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 0.3,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 48,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-2-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 2-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage12Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 0.3,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 72,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 60,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 80,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ],
+          "castFramesWhenGated": 86
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-3-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 3-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage13Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 0.3,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 82,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 60,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 80,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "requiresNextStepSkillIds": [
+            "bellstrikeUmbra-sword-r-charge-follow-up",
+            "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel"
+          ],
+          "castFramesWhenGated": 86
+        }
+      ],
+      "createdAt": "2026-07-31T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage14Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 0.3,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 86,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 60,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 80,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-5-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 5-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage15Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 0.3,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 151,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 60,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 80,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 138,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-level-0",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, Level 0 Release",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage1Level0",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 49,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.479274,
+          "attributeMultiplier": 0.718911,
+          "physFixed": 132.6,
+          "attributeFixed": 72.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-2-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 2, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage24Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 1.2,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-5-hit" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 142,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 91,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-2-5-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 2, 5-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage25Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [{ "meterId": "endurance", "amount": 6 }],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 12,
+          "stopAfterSec": 1.2,
+          "chargeRelease": { "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-5-hit" }
+        }
+      ],
+      "meterFreezes": [{ "meterId": "endurance", "fromFrame": 0 }],
+      "castFrames": 207,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 91,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged",
+      "breakdownName": "Vagrant Sword",
+      "tags": ["prop:isCharged", "weapon:Sword", "attack:heavy", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordHeavyCharged",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 126,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 3.2664,
+          "attributeMultiplier": 4.8996,
+          "physFixed": 904,
+          "attributeFixed": 493,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged-prepull",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged[Prepull]",
+      "breakdownName": "Vagrant Sword",
+      "tags": ["prop:isCharged", "weapon:Sword", "attack:heavy", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordHeavyChargedPrepull",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 51,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.3066,
+          "attributeMultiplier": 1.9598,
+          "physFixed": 361.6,
+          "attributeFixed": 197.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged-2-hit",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged 2 Hit",
+      "breakdownName": "Vagrant Sword",
+      "tags": ["prop:isCharged", "weapon:Sword", "attack:heavy", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordHeavyCharged2Hit",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 101,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 90,
+          "physMultiplier": 1.3066,
+          "attributeMultiplier": 1.9598,
+          "physFixed": 361.6,
+          "attributeFixed": 197.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-energysurge",
+      "classId": "bellstrikeSplendor",
+      "name": "EnergySurge",
+      "breakdownName": "Vagrant Sword",
+      "tags": ["prop:isCharged", "weapon:Sword", "attack:heavy", "attune:swordCharged", "user:favourite"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:energySurge",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "mistwillowLightBuff",
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 51,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 1.3066,
+          "attributeMultiplier": 1.9598,
+          "physFixed": 361.6,
+          "attributeFixed": 197.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-heros-blood",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Special",
+      "breakdownName": "Hero's Blood",
+      "tags": ["weapon:Twin Blades"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:herosBlood",
+      "receives": ["eonpourInebriateDamage", "rivenTwinbladesAdditionalAttack"],
+      "triggerable": false,
+      "castFrames": 46,
+      "hits": [
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-0",
+          "frame": 33,
+          "physMultiplier": 0.329365,
+          "attributeMultiplier": 0.4940475,
+          "physFixed": 91.5,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 33,
+          "physMultiplier": 0.329365,
+          "attributeMultiplier": 0.4940475,
+          "physFixed": 91.5,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castFrames": 36,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-02T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z"
+    }
+  ]
+}

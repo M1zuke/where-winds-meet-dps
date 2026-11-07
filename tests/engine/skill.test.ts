@@ -11,6 +11,7 @@ import {
   triggerConditions,
   newVariantId,
   type HitVariant,
+  type StatusCondition,
 } from "../../src/engine/skill"
 import {
   saveCustomSkill,
@@ -91,6 +92,61 @@ describe("isSkill — validation", () => {
     const { triggerable: _drop, ...legacy } = s
     void _drop
     expect(isSkill(legacy)).toBe(true)
+  })
+
+  it("accepts a hit's own requiresNextStepSkillIds and castFramesWhenGated, rejects malformed ones", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Next Step Gated",
+      hits: [makeHit({ requiresNextStepSkillIds: ["sk-follow-up"], castFramesWhenGated: 86 })],
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(
+      isSkill({
+        ...skill,
+        hits: [{ ...skill.hits[0], requiresNextStepSkillIds: "sk-follow-up" }],
+      }),
+    ).toBe(false)
+    expect(isSkill({ ...skill, hits: [{ ...skill.hits[0], requiresNextStepSkillIds: [] }] })).toBe(
+      false,
+    )
+    expect(isSkill({ ...skill, hits: [{ ...skill.hits[0], castFramesWhenGated: "soon" }] })).toBe(
+      false,
+    )
+  })
+
+  it("accepts a meter drain's own chargeRelease fallback, rejects a malformed one", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Charged",
+      meterDrains: [
+        {
+          meterId: "endurance",
+          perSecond: 20,
+          fromFrame: 0,
+          chargeRelease: { fallbackSkillId: "sk-fallback" },
+        },
+      ],
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(
+      isSkill({
+        ...skill,
+        meterDrains: [{ ...skill.meterDrains![0], chargeRelease: { fallbackSkillId: "" } }],
+      }),
+    ).toBe(false)
+    expect(
+      isSkill({ ...skill, meterDrains: [{ ...skill.meterDrains![0], chargeRelease: "soon" }] }),
+    ).toBe(false)
+  })
+
+  it("accepts a well-formed triggersBuffsAtFrame, rejects a malformed one", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Delayed Grant",
+      triggersBuffs: ["buff-a"],
+      triggersBuffsAtFrame: { "buff-a": 60 },
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(isSkill({ ...skill, triggersBuffsAtFrame: { "buff-a": "soon" } })).toBe(false)
+    expect(isSkill({ ...skill, triggersBuffsAtFrame: ["buff-a"] })).toBe(false)
   })
 })
 
@@ -300,6 +356,43 @@ describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
     expect(src.hits[0].variants![0].physMultiplier).toBe(2)
     expect(src.hits[0].variants![0].conditions).toHaveLength(1)
   })
+
+  it("copies castConditions, detached from the source", () => {
+    const src = makeSkill(CLASS, {
+      name: "Test",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    const s = seedSkillFromBuiltin(CLASS, src)
+    expect(s.castConditions).toEqual(src.castConditions)
+    expect(s.castConditions).not.toBe(src.castConditions)
+    ;(s.castConditions![0] as StatusCondition).stacks = 99
+    expect((src.castConditions![0] as StatusCondition).stacks).toBe(1)
+  })
+
+  it("leaves castConditions undefined when the source has none", () => {
+    const src = makeSkill(CLASS, { name: "Test" })
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.castConditions).toBeUndefined()
+  })
+
+  it("copies triggersBuffsAtFrame, detached from the source", () => {
+    const src = makeSkill(CLASS, {
+      name: "Test",
+      triggersBuffs: ["buff-a"],
+      triggersBuffsAtFrame: { "buff-a": 60 },
+    })
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.triggersBuffsAtFrame).toEqual({ "buff-a": 60 })
+    expect(seeded.triggersBuffsAtFrame).not.toBe(src.triggersBuffsAtFrame)
+    seeded.triggersBuffsAtFrame!["buff-a"] = 1
+    expect(src.triggersBuffsAtFrame).toEqual({ "buff-a": 60 })
+  })
+
+  it("leaves triggersBuffsAtFrame undefined when the source has none", () => {
+    const src = makeSkill(CLASS, { name: "Test" })
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.triggersBuffsAtFrame).toBeUndefined()
+  })
 })
 
 describe("storage round-trip", () => {
@@ -307,6 +400,42 @@ describe("storage round-trip", () => {
     try {
       kvStore.remove("wwm.customSkills")
     } catch {}
+  })
+
+  it("save → load preserves a hit's own requiresNextStepSkillIds and castFramesWhenGated", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Saved Next Step Gated Skill",
+      hits: [
+        makeHit({
+          physMultiplier: 1,
+          physFixed: 10,
+          requiresNextStepSkillIds: ["bellstrikeUmbra-follow-up"],
+          castFramesWhenGated: 86,
+        }),
+      ],
+    })
+    saveCustomSkill(skill)
+    const loaded = loadCustomSkillsForClass(CLASS)
+    const found = loaded.find((candidate) => candidate.id === skill.id)
+    expect(found!.hits[0].requiresNextStepSkillIds).toEqual(["bellstrikeUmbra-follow-up"])
+    expect(found!.hits[0].castFramesWhenGated).toBe(86)
+  })
+
+  it("load drops a stored hit's malformed requiresNextStepSkillIds and castFramesWhenGated instead of crashing", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Malformed Next Step Gated Skill",
+      hits: [makeHit({ physMultiplier: 1, physFixed: 10 })],
+    }) as unknown as Record<string, unknown>
+    const hit = (skill.hits as Record<string, unknown>[])[0]
+    hit.requiresNextStepSkillIds = "bellstrikeUmbra-follow-up"
+    hit.castFramesWhenGated = "not-a-number"
+    kvStore.set("wwm.customSkills", JSON.stringify({ v: 3, skills: [skill] }))
+    const found = loadCustomSkillsForClass(CLASS).find(
+      (candidate) => candidate.name === "Malformed Next Step Gated Skill",
+    )
+    expect(found).toBeTruthy()
+    expect(found!.hits[0].requiresNextStepSkillIds).toBeUndefined()
+    expect(found!.hits[0].castFramesWhenGated).toBeUndefined()
   })
 
   it("save → load preserves hits + triggers", () => {
@@ -343,6 +472,16 @@ describe("storage round-trip", () => {
     expect(imported.hits[0].triggers[0].targetId).toBe("sk-x")
   })
 
+  it("export → import carries a non-default Qi rate and flat channel through unchanged", () => {
+    const s = makeSkill(CLASS, {
+      name: "ExportQiSkill",
+      hits: [makeHit({ physMultiplier: 1, qiRate: 0.4, qiFlat: 12 })],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.hits[0].qiRate).toBe(0.4)
+    expect(imported.hits[0].qiFlat).toBe(12)
+  })
+
   it("export → import carries an explicit receives/triggersBuffs through unchanged", () => {
     const skill = makeSkill(CLASS, {
       name: "ExportReachSkill",
@@ -352,6 +491,23 @@ describe("storage round-trip", () => {
     const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
     expect(imported.receives).toEqual(["bellstrikeUmbraBleedPen"])
     expect(imported.triggersBuffs).toEqual(["jadeware"])
+  })
+
+  it("export → import carries triggersBuffsAtFrame through unchanged", () => {
+    const skill = makeSkill(CLASS, {
+      name: "ExportDelayedGrantSkill",
+      triggersBuffs: ["jadeware"],
+      triggersBuffsAtFrame: { jadeware: 60 },
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.triggersBuffsAtFrame).toEqual({ jadeware: 60 })
+  })
+
+  it("import drops a malformed triggersBuffsAtFrame rather than throwing", () => {
+    const skill = makeSkill(CLASS, { name: "MalformedDelayedGrantSkill" })
+    const raw = { ...skill, triggersBuffsAtFrame: { jadeware: "soon" } }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.triggersBuffsAtFrame).toBeUndefined()
   })
 
   it("import heals triggersBuffs immediately for a name-derived cast tag, same as saveCustomSkill", () => {
@@ -402,6 +558,160 @@ describe("storage round-trip", () => {
     expect(imported.hits[0].triggers[0].conditions).toEqual([
       { buffId: "bf-cooldown", op: "eq", stacks: 0 },
     ])
+  })
+
+  it("export → import carries a buff-engine-sourced condition and a param/tier requirement through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedByBuildRequirement",
+      hits: [
+        makeHit({
+          triggers: [
+            makeTrigger({
+              kind: "castSkill",
+              targetId: "sk-x",
+              condition: { buffId: "bf-active", op: "gte", stacks: 1, source: "buffEngine" },
+              requiresParam: "someParam",
+              requiresMinTier: 3,
+            }),
+          ],
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.hits[0].triggers[0].condition).toEqual({
+      buffId: "bf-active",
+      op: "gte",
+      stacks: 1,
+      source: "buffEngine",
+    })
+    expect(imported.hits[0].triggers[0].requiresParam).toBe("someParam")
+    expect(imported.hits[0].triggers[0].requiresMinTier).toBe(3)
+  })
+
+  it("export → import carries castConditions through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedCastSkill",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("export → import carries a hit's own requiresNextStepSkillIds and castFramesWhenGated through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "NextStepGatedSkill",
+      hits: [
+        makeHit({
+          physMultiplier: 1,
+          physFixed: 10,
+          requiresNextStepSkillIds: ["bellstrikeUmbra-follow-up"],
+          castFramesWhenGated: 86,
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.hits[0].requiresNextStepSkillIds).toEqual(["bellstrikeUmbra-follow-up"])
+    expect(imported.hits[0].castFramesWhenGated).toBe(86)
+  })
+
+  it("import drops a hit's malformed requiresNextStepSkillIds and castFramesWhenGated instead of crashing", () => {
+    const raw = {
+      ...makeSkill(CLASS, { name: "MalformedNextStepGatedSkill" }),
+      hits: [
+        {
+          ...makeHit({ physMultiplier: 1, physFixed: 10 }),
+          requiresNextStepSkillIds: "bellstrikeUmbra-follow-up",
+          castFramesWhenGated: "soon",
+        },
+      ],
+    }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.hits[0].requiresNextStepSkillIds).toBeUndefined()
+    expect(imported.hits[0].castFramesWhenGated).toBeUndefined()
+  })
+
+  it("export → import carries a meter drain's own chargeRelease fallback through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "ChargedSkill",
+      meterDrains: [
+        {
+          meterId: "endurance",
+          perSecond: 20,
+          fromFrame: 0,
+          chargeRelease: { fallbackSkillId: "sk-fallback" },
+        },
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.meterDrains?.[0]?.chargeRelease).toEqual({ fallbackSkillId: "sk-fallback" })
+  })
+
+  it("import drops a meter drain with a malformed chargeRelease instead of crashing", () => {
+    const raw = {
+      ...makeSkill(CLASS, { name: "MalformedChargeSkill" }),
+      meterDrains: [{ meterId: "endurance", perSecond: 20, fromFrame: 0, chargeRelease: "soon" }],
+    }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.meterDrains).toEqual([])
+  })
+
+  it("save → load carries castConditions through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedSavedSkill",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    saveCustomSkill(s)
+    const found = loadCustomSkillsForClass(CLASS).find((x) => x.id === s.id)
+    expect(found?.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("export → import carries a param condition and an anyOf castCondition through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "OrGatedCastSkill",
+      castConditions: [
+        { param: "someInnerWay", minTier: 3 },
+        { anyOf: [{ buffId: "bf-gate", op: "gte", stacks: 1 }, { param: "someInnerWay" }] },
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.castConditions).toEqual(skill.castConditions)
+  })
+
+  it("save → load carries a param condition and an anyOf castCondition through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "OrGatedSavedSkill",
+      castConditions: [
+        { param: "someInnerWay", minTier: 3 },
+        { anyOf: [{ buffId: "bf-gate", op: "gte", stacks: 1 }, { param: "someInnerWay" }] },
+      ],
+    })
+    saveCustomSkill(skill)
+    const found = loadCustomSkillsForClass(CLASS).find((candidate) => candidate.id === skill.id)
+    expect(found?.castConditions).toEqual(skill.castConditions)
+  })
+
+  it("export → import carries a cooldown floor and its group through", () => {
+    const s = makeSkill(CLASS, {
+      name: "FlooredCooldownSkill",
+      hits: [
+        makeHit({
+          triggers: [
+            makeTrigger({
+              kind: "applyBuff",
+              targetId: "bf-grant",
+              cooldownFrames: 100,
+              cooldownFloorFrames: 20,
+              cooldownGroup: "shared-grant",
+            }),
+          ],
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    const trigger = imported.hits[0].triggers[0]
+    expect(trigger.cooldownFrames).toBe(100)
+    expect(trigger.cooldownFloorFrames).toBe(20)
+    expect(trigger.cooldownGroup).toBe("shared-grant")
   })
 
   it("a stale v1 (customSkill) blob is dropped on load", () => {

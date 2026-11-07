@@ -1,17 +1,16 @@
 {
   "_meta": {
     "description": "Every inner way the game offers, with the panel line each Inner Way Breakthrough rank (the app's tier) unlocks and the value that line has at each character breakthrough. DEV-ONLY reference data: never import this from src/ or tests/ (see docs/REFERENCE-DATA.md). Copy values into src/data/innerWays/ by hand.",
-    "source": "Where Winds Meet oversea client, LocalData/Patch/HD/oversea bin tables xinfa, xinfa_uprank_info, xinfa_uprank_world_lv and xinfa_uprank_attr, plus translate_words_map_en for the names, as installed 2026-09-03.",
-    "generator": "reference-inner-ways.js in the sibling wwm-data workspace folder (D:/Projects/wwm/wwm-data/tools), which is not part of this repo. If that folder is gone, regenerating means decoding the client tables again; the container format is described in that folder's README.",
+    "source": "In-game values and English names as of 2026-09-03; the inner ways the app models, including the four Bamboocut Draught ones, were re-checked on 2026-10-15.",
+    "updating": "Nothing in this repo regenerates this file. Update it by hand from the in-game inner-way panels.",
     "howToRead": [
       "id is the game's inner way id, the same number the dashboard passive ids in src/data/innerWays/passiveIds.ts use.",
       "lines lists every panel line the inner way grants, each with the Inner Way Breakthrough rank (tier N in the app) that unlocks it: byBreakthrough is a line that scales with the character breakthrough, fixed is a line that never changes.",
-      "byBreakthrough is keyed by the app's breakthrough number, which is the game's world level. The client resolves each world level to a table row (world levels 10 and 11 share one); the values here are already resolved per breakthrough.",
+      "byBreakthrough is keyed by the app's breakthrough number, which is the game's world level. World levels 10 and 11 share one value.",
       "Keys are the app's panel-stat paths where one exists (phys.max, precision, critRate, affinityRate, physBoost, directCritRate, directAffinityRate, affinityDamageBoost, critDamageBoost, attributeDamageBoost, <attribute>.min/max/penetration). Attribute blocks: bellstrike, stonesplit, silkbind, bamboocut; a class's own block is what the app writes as primaryAttr.",
       "Rates and boosts are fractions (0.072 = 7.2 %). Penetration is already divided by 100 to the app's unit (the game shows 5.1 points, the app stores 0.051).",
-      "Lines with a game column name (HP_MAX, W_DEF, W_DEF_SCALE, W_HEAL_SCALE, HEAL_CRI_UP, W_ATK_PEN_RDC, ACTIVE_PRO_ATK, ACTIVE_PRO_PEN) have no app stat yet and keep the game's name and unit.",
-      "school is the class whose inner-way pool the game files this under; 'any' is the shared pool. Unlisted liupai ids are classes the app does not model.",
-      "greyLines appears only where the client's __grey tables (the staged rollout variant a server flag switches on) differ from the normal tables; check in game which variant is live before copying either."
+      "Lines keyed in upper case (HP_MAX, W_DEF, W_DEF_SCALE, W_HEAL_SCALE, HEAL_CRI_UP, W_ATK_PEN_RDC, MIN_ACTIVE_PRO_ATK, MAX_ACTIVE_PRO_ATK, ACTIVE_PRO_PEN) have no app stat yet and keep the game's own attribute key and unit.",
+      "school is the class whose inner-way pool this belongs to; 'any' is the shared pool, and 'class N' is a class the app does not model."
     ],
     "breakthroughs": [
       12,
@@ -1530,51 +1529,6 @@
           "unlockedAtRank": 5,
           "requiresWorldLevel": 8,
           "fixed": {
-            "critDamageBoost": 0.044
-          }
-        }
-      ],
-      "greyLines": [
-        {
-          "unlockedAtRank": 2,
-          "requiresWorldLevel": 5,
-          "byBreakthrough": {
-            "12": {
-              "phys.min": 47
-            },
-            "13": {
-              "phys.min": 54.8
-            },
-            "14": {
-              "phys.min": 63.9
-            },
-            "15": {
-              "phys.min": 70.9
-            },
-            "16": {
-              "phys.min": 74.4
-            },
-            "17": {
-              "phys.min": 77.9
-            },
-            "18": {
-              "phys.min": 84
-            },
-            "19": {
-              "phys.min": 90.6
-            },
-            "20": {
-              "phys.min": 97.8
-            },
-            "21": {
-              "phys.min": 105.5
-            }
-          }
-        },
-        {
-          "unlockedAtRank": 5,
-          "requiresWorldLevel": 8,
-          "fixed": {
             "directCritRate": 0.046
           }
         }
@@ -1584,7 +1538,7 @@
       "id": 351,
       "name": "Royal Remedy",
       "star": 5,
-      "school": "liupai 8",
+      "school": "class 8",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1635,7 +1589,7 @@
       "id": 352,
       "name": "Restoring Blossom",
       "star": 4,
-      "school": "liupai 8",
+      "school": "class 8",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1686,7 +1640,7 @@
       "id": 353,
       "name": "Esoteric Revival",
       "star": 4,
-      "school": "liupai 8",
+      "school": "class 8",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1737,7 +1691,7 @@
       "id": 354,
       "name": "Mending Loom",
       "star": 4,
-      "school": "liupai 8",
+      "school": "class 8",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1798,7 +1752,7 @@
       "id": 401,
       "name": "Exquisite Scenery",
       "star": 5,
-      "school": "liupai 7",
+      "school": "class 7",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1849,7 +1803,7 @@
       "id": 402,
       "name": "Trapped Beast",
       "star": 4,
-      "school": "liupai 7",
+      "school": "class 7",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1900,7 +1854,7 @@
       "id": 403,
       "name": "Art of Resistance",
       "star": 4,
-      "school": "liupai 7",
+      "school": "class 7",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -1961,7 +1915,7 @@
       "id": 404,
       "name": "Rock Solid",
       "star": 4,
-      "school": "liupai 7",
+      "school": "class 7",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2012,7 +1966,7 @@
       "id": 451,
       "name": "Echoes of Oblivion",
       "star": 5,
-      "school": "liupai 5",
+      "school": "class 5",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2063,7 +2017,7 @@
       "id": 452,
       "name": "Vendetta",
       "star": 4,
-      "school": "liupai 5",
+      "school": "class 5",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2114,7 +2068,7 @@
       "id": 453,
       "name": "Breaking Point",
       "star": 4,
-      "school": "liupai 5",
+      "school": "class 5",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2165,7 +2119,7 @@
       "id": 454,
       "name": "Riptide Reflex",
       "star": 4,
-      "school": "liupai 5",
+      "school": "class 5",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2216,7 +2170,7 @@
       "id": 501,
       "name": "Phantom Rally",
       "star": 5,
-      "school": "liupai 10",
+      "school": "class 10",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2267,7 +2221,7 @@
       "id": 502,
       "name": "Towline Sweep",
       "star": 4,
-      "school": "liupai 10",
+      "school": "class 10",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2318,7 +2272,7 @@
       "id": 503,
       "name": "Light Anew",
       "star": 4,
-      "school": "liupai 10",
+      "school": "class 10",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2369,7 +2323,7 @@
       "id": 504,
       "name": "Song of Tang",
       "star": 4,
-      "school": "liupai 10",
+      "school": "class 10",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2644,7 +2598,7 @@
       "id": 601,
       "name": "Soaring High",
       "star": 5,
-      "school": "liupai 12",
+      "school": "class 12",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2695,7 +2649,7 @@
       "id": 602,
       "name": "Sky Gripped",
       "star": 4,
-      "school": "liupai 12",
+      "school": "class 12",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2746,7 +2700,7 @@
       "id": 603,
       "name": "Empirical Edge",
       "star": 4,
-      "school": "liupai 12",
+      "school": "class 12",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2807,7 +2761,7 @@
       "id": 604,
       "name": "Celestial Vigor",
       "star": 4,
-      "school": "liupai 12",
+      "school": "class 12",
       "lines": [
         {
           "unlockedAtRank": 2,
@@ -2868,7 +2822,7 @@
       "id": 651,
       "name": "Song of Harmony",
       "star": 5,
-      "school": "liupai 13",
+      "school": "class 13",
       "lines": [
         {
           "unlockedAtRank": 6,
@@ -2911,6 +2865,230 @@
           "requiresWorldLevel": 10,
           "fixed": {
             "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 701,
+      "name": "Eonpour",
+      "star": 5,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 702,
+      "name": "Skyspeak",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.049
+            },
+            "13": {
+              "critRate": 0.057
+            },
+            "14": {
+              "critRate": 0.066
+            },
+            "15": {
+              "critRate": 0.073
+            },
+            "16": {
+              "critRate": 0.077
+            },
+            "17": {
+              "critRate": 0.081
+            },
+            "18": {
+              "critRate": 0.087
+            },
+            "19": {
+              "critRate": 0.094
+            },
+            "20": {
+              "critRate": 0.101
+            },
+            "21": {
+              "critRate": 0.109
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 703,
+      "name": "Mistwing",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 704,
+      "name": "Volutefit",
+      "star": 4,
+      "school": "Bamboocut Draught",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "MAX_ACTIVE_PRO_ATK": 17.7,
+              "MIN_ACTIVE_PRO_ATK": 8.9
+            },
+            "13": {
+              "MAX_ACTIVE_PRO_ATK": 20.7,
+              "MIN_ACTIVE_PRO_ATK": 10.3
+            },
+            "14": {
+              "MAX_ACTIVE_PRO_ATK": 24.1,
+              "MIN_ACTIVE_PRO_ATK": 12.1
+            },
+            "15": {
+              "MAX_ACTIVE_PRO_ATK": 26.8,
+              "MIN_ACTIVE_PRO_ATK": 13.4
+            },
+            "16": {
+              "MAX_ACTIVE_PRO_ATK": 28.1,
+              "MIN_ACTIVE_PRO_ATK": 14.1
+            },
+            "17": {
+              "MAX_ACTIVE_PRO_ATK": 29.5,
+              "MIN_ACTIVE_PRO_ATK": 14.7
+            },
+            "18": {
+              "MAX_ACTIVE_PRO_ATK": 31.7,
+              "MIN_ACTIVE_PRO_ATK": 15.9
+            },
+            "19": {
+              "MAX_ACTIVE_PRO_ATK": 34.3,
+              "MIN_ACTIVE_PRO_ATK": 17.1
+            },
+            "20": {
+              "MAX_ACTIVE_PRO_ATK": 36.9,
+              "MIN_ACTIVE_PRO_ATK": 18.5
+            },
+            "21": {
+              "MAX_ACTIVE_PRO_ATK": 39.9,
+              "MIN_ACTIVE_PRO_ATK": 19.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "ACTIVE_PRO_PEN": 0.06
           }
         }
       ]

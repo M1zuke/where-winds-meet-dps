@@ -1,0 +1,17 @@
+.stack {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 900;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(420px, calc(100vw - 32px));
+  max-height: min(50vh, 640px);
+  pointer-events: none;
+}
+
+.stack > * {
+  pointer-events: auto;
+}

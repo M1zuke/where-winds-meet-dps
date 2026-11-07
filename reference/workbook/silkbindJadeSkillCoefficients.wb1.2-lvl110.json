@@ -13,7 +13,7 @@
     "note": "Coefficients/flat values are verbatim cached cell values at full stored precision; formulas are retained in the complete workbook extraction."
   },
   "_translation": {
-    "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official ZH<->EN pairs from the game client); 'inherited' means the label was already rendered by the Stonesplit Strength, Bellstrike Umbra or Bellstrike Splendor extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand; 'untranslated' means the Chinese is kept because the client DB has no key for it.",
+    "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official in-game ZH<->EN text pairs); 'inherited' means the label was already rendered by the Stonesplit Strength, Bellstrike Umbra or Bellstrike Splendor extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand; 'untranslated' means the Chinese is kept because the official text has no entry for it.",
     "columns": [
       {
         "col": "A",

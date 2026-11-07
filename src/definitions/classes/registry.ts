@@ -4,8 +4,9 @@
 // `ClassDef`); the things that stay outside it are the built-in `Buff` gates
 // (registered through `engine/builtinBuffs.ts` so a class can be looked up by
 // id without importing its module directly — composed here from the class's
-// own `gateBuffs` plus the gates every inner way it can slot declares, each
-// stamped with this class's id), the attunement option list (global,
+// own `gateBuffs`, the gates every inner way it can slot declares and the
+// shared universal gates every class carries, each stamped with this class's
+// id), the attunement option list (global,
 // because a saved gear piece must resolve its attunement id regardless of
 // which class equipped it), the composed `buffModules` list (every
 // slottable inner way's `buffDefs` plus the class's own `classBuffDefs`),
@@ -18,12 +19,13 @@
 import type { Buff } from "../../engine/buff"
 import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { AttunementOption } from "../../engine/attunements"
-import type { AttributeKey } from "../../engine/types"
+import type { AttributeKey, GearSlot, WeaponName } from "../../engine/types"
 import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import type { ClassDef, RetunementPool } from "./classDef"
 import { CLASSES, RETUNEMENT_POOLS } from "../../data/classes"
 import { MYSTIC_DEBUFFS, MYSTIC_SKILLS } from "../../data/skills/mystic"
+import { UNIVERSAL_GATES } from "../../data/skills/universal"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
@@ -54,12 +56,32 @@ export function martialArtsOf(classDef: ClassDef): readonly MartialArtDef[] {
     .filter((def): def is MartialArtDef => !!def)
 }
 
+const MARTIAL_ART_WEAPON_SLOTS: readonly GearSlot[] = ["leftWeapon", "rightWeapon"]
+
+export function martialArtForWeaponSlot(classId: string, slot: GearSlot): MartialArtDef | null {
+  const slotIndex = MARTIAL_ART_WEAPON_SLOTS.indexOf(slot)
+  if (slotIndex < 0) return null
+  const martialArtId = CLASSES.find((classDef) => classDef.id === classId)?.weapons[slotIndex]
+  return (martialArtId && martialArtDefinition(martialArtId)) || null
+}
+
+export function weaponTypeForSlot(classId: string, slot: GearSlot): WeaponName | null {
+  return martialArtForWeaponSlot(classId, slot)?.weaponType ?? null
+}
+
+export function weaponSlotForWeaponType(classId: string, weapon: WeaponName): GearSlot | null {
+  return (
+    MARTIAL_ART_WEAPON_SLOTS.find((slot) => weaponTypeForSlot(classId, slot) === weapon) ?? null
+  )
+}
+
 for (const classDef of CLASSES) {
   const gateBuffs: Buff[] = [...classDef.gateBuffs]
   for (const innerWayId of innerWayIdsOf(classDef)) {
     for (const gate of innerWayDefinition(innerWayId)?.gateBuffs ?? [])
       gateBuffs.push({ ...gate, classId: classDef.id })
   }
+  for (const gate of UNIVERSAL_GATES) gateBuffs.push({ ...gate, classId: classDef.id })
   registerBuiltinBuffs(classDef.id, gateBuffs)
   for (const { mechanic } of classDef.mechanics) registerMechanic(mechanic)
   for (const { skillId, factory } of classDef.skillBehaviors)

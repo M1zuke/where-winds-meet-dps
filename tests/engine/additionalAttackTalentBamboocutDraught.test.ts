@@ -1,6 +1,6 @@
 // Scoped to Bamboocut Draught — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeSkill } from "../../src/engine/skill"
@@ -57,18 +57,18 @@ describe("additional-attack talent — receives wiring, one weapon tag one art b
 
 describe("additional-attack talent — Skystrike Gauntlets coefficient clause reach", () => {
   const factorFor = (breakthrough: number, receives: string[]) =>
-    new BuffEngine({ breakthrough }, [], bamboocutOwnBuffDefs()).calculateDamageEffects(
+    buffEngineWith({ breakthrough }, [], bamboocutOwnBuffDefs()).calculateDamageEffects(
       skill(receives),
       0,
     ).damageFactor
 
-  it("reaches exactly Falcon's Pursuit among the class's built-in skills", () => {
+  it("reaches exactly the two Falcon's Pursuit skills among the class's built-in skills", () => {
     const carriers = builtinSkillsForClass(CLASS)
       .filter((candidate) =>
         (candidate.receives ?? []).includes(BUFF.skystrikeGauntletsAdditionalAttackCoefficient),
       )
       .map((candidate) => candidate.id)
-    expect(carriers).toEqual([SKILL.falconsPursuit])
+    expect(carriers).toEqual([SKILL.falconsPursuit, SKILL.falconsPursuitTwinblades])
   })
 
   it("contributes nothing at breakthrough 17", () => {

@@ -11,7 +11,7 @@ import {
 import { GEAR_WORD_UNIT, statLineLabel } from "../../../../data/stats/statLines"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { statLineKey } from "../../../../i18n/contentKeys"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import styles from "./RetuneOptionsDialog.module.scss"
@@ -50,7 +50,7 @@ export function RetuneOptionsDialog({ piece, slotIndex, inputs, onChange, onClos
       <DialogHeader>
         <h2 id={titleId}>{t("gear.retuneOptionsDialog.title")}</h2>
         <span>
-          {t(GEAR_SLOT_KEYS[piece.slot])}
+          {t(gearSlotLabelKey(piece.slot, inputs.classId))}
           {currentWord ? ` — ${t(statLineKey(currentWord), statLineLabel(currentWord))}` : ""}
         </span>
       </DialogHeader>

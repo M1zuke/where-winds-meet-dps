@@ -74,14 +74,23 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
       perStackMultipliers: null,
     },
   })
+  // A trailing hit past the debuff's own last tick, so the fight's own
+  // window — now the last damaging hit, not the last cast's own end,
+  // docs/TIMELINE.md § "Fight window" — reaches far enough to still count it.
+  const poke = makeSkill(classId, {
+    id: `${classId}-test-${option.id}-poke`,
+    name: "Poke",
+    castFrames: 10,
+    hits: [makeHit({ physMultiplier: 1 })],
+  })
   const rotation = makeRotation(classId, {
-    steps: [makeStep({ skillId: directSkill.id })],
+    steps: [makeStep({ skillId: directSkill.id }), makeStep({ skillId: poke.id })],
   })
   return simulateTimeline({
     ...defaultInputs,
     classId,
     classSpecificAttunement: { [option.id]: value },
-    customSkills: [directSkill, tickSkill],
+    customSkills: [directSkill, tickSkill, poke],
     customDebuffs: [debuff],
     activeCustomRotation: rotation,
   })

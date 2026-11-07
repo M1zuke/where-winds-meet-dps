@@ -8,7 +8,7 @@ import { graduationBuildKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import { GearPieceForm, type ScanMarkField, type ScanMarks } from "../gear-piece-form/GearPieceForm"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import { terminateOcrWorker } from "../screenshot-ocr/ocrEngine"
 import { ScanCard } from "./scan-card/ScanCard"
@@ -116,7 +116,9 @@ export function NewGearPieceDialog({ initialSlot, inputs, profile, onCancel, onS
           <section className={`panel ${styles.gearCard}`}>
             <div className="panel-head">
               <h2>{t("gear.newGearPieceDialog.gearPiece")}</h2>
-              <span className="panel-head-meta">{t(GEAR_SLOT_KEYS[draft.slot])}</span>
+              <span className="panel-head-meta">
+                {t(gearSlotLabelKey(draft.slot, inputs.classId))}
+              </span>
             </div>
             <GearPieceForm
               piece={draft}

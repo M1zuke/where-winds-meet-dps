@@ -3,19 +3,20 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
-import { perfectDrinkGrants } from "./whaledraft"
+import { DRINK_CONVERSION_FRAME, drinkGrants } from "./whaledraft"
 
 // The drink at the perfect moment after a skill also unleashes Falcon's
 // Pursuit (in-game skill text, 2026-09-05).
 export const perfectQuickDrinkTriggers = [
-  ...perfectDrinkGrants,
+  ...drinkGrants,
   castSkill({ target: SKILL.falconsPursuit }),
 ]
 
-// The falcon launches 0.3 s in; cast length to the earliest next input
-// (in-game animation, 2026-09-05).
+// The drink converts on frame 19. The falcon launches on frame 18 and its
+// flight time is unknown, so it lands with the conversion. Cast length to the
+// earliest next input: in-game animation, 2026-10-15.
 export const perfectQuickDrinkHit = hit(0, {
-  frame: 18,
+  frame: DRINK_CONVERSION_FRAME,
   physMultiplier: 0,
   attributeMultiplier: 0,
   physFixed: 0,
@@ -36,6 +37,11 @@ export const quickDrink = defineSkill({
   receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 41,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range. The falcon it launches carries a
+  // fixed hit box, not a travel range, and is not modelled here.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [perfectQuickDrinkHit],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

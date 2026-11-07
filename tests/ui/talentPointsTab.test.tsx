@@ -43,12 +43,12 @@ function disabledFrom(onChange: ReturnType<typeof vi.fn>): number[] {
 
 describe("TalentPointsTab", () => {
   it("draws one node per grid position rather than a card per stat", () => {
-    renderTab({ ...defaultInputs, breakthrough: 17 })
+    renderTab({ ...defaultInputs, breakthrough: 18 })
     expect(nodes()).toHaveLength(TALENT_BOARD_CELLS.length)
   })
 
   it("opens with every node the profile's breakthrough reaches taken", () => {
-    renderTab({ ...defaultInputs, breakthrough: 17 })
+    renderTab({ ...defaultInputs, breakthrough: 18 })
     for (const node of nodes()) expect(node.getAttribute("data-state")).toBe("full")
   })
 
@@ -66,12 +66,12 @@ describe("TalentPointsTab", () => {
     const gated = TALENT_BOARD_CELLS.find((cell) =>
       talentNodesAboveBreakthrough(16).includes(cell.ranks[0].id),
     )!
-    renderTab({ ...defaultInputs, breakthrough: 17 })
+    renderTab({ ...defaultInputs, breakthrough: 18 })
     expect(nodeFor(gated).getAttribute("data-state")).toBe("full")
   })
 
   it("clears a full position together with everything behind it", () => {
-    const onChange = renderTab({ ...defaultInputs, breakthrough: 17 })
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 18 })
     fireEvent.click(nodeFor(ROOT))
     expect(disabledFrom(onChange)).toHaveLength(TALENT_POINT_BUDGET)
   })
@@ -81,14 +81,14 @@ describe("TalentPointsTab", () => {
       (cell) =>
         cell.ranks.length === 1 && !TALENT_BOARD.some((node) => node.requires === cell.ranks[0].id),
     )!
-    const onChange = renderTab({ ...defaultInputs, breakthrough: 17 })
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 18 })
     fireEvent.click(nodeFor(leaf))
     expect(disabledFrom(onChange)).toEqual([leaf.ranks[0].id])
   })
 
   it("takes one rank per click on a stacked position", () => {
     const cleared = closeDisabledTalentNodes(STACKED.ranks.map((rank) => rank.id))
-    const onChange = renderTab({ ...defaultInputs, breakthrough: 17, disabledTalentNodes: cleared })
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 18, disabledTalentNodes: cleared })
     fireEvent.click(nodeFor(STACKED))
     expect(disabledFrom(onChange)).toEqual(cleared.filter((id) => id !== STACKED.ranks[0].id))
   })
@@ -96,7 +96,7 @@ describe("TalentPointsTab", () => {
   it("refuses a node whose predecessor is not taken", () => {
     const onChange = renderTab({
       ...defaultInputs,
-      breakthrough: 17,
+      breakthrough: 18,
       disabledTalentNodes: EVERY_NODE,
     })
     fireEvent.click(nodeFor(STACKED))
@@ -107,7 +107,7 @@ describe("TalentPointsTab", () => {
   it("offers the node the cleared board starts from", () => {
     const onChange = renderTab({
       ...defaultInputs,
-      breakthrough: 17,
+      breakthrough: 18,
       disabledTalentNodes: EVERY_NODE,
     })
     expect(nodeFor(ROOT).getAttribute("data-state")).toBe("ready")
@@ -116,7 +116,7 @@ describe("TalentPointsTab", () => {
   })
 
   it("counts the points the board has spent", () => {
-    renderTab({ ...defaultInputs, breakthrough: 17 })
+    renderTab({ ...defaultInputs, breakthrough: 18 })
     expect(document.body.textContent).toContain(`${TALENT_POINT_BUDGET}`)
   })
 

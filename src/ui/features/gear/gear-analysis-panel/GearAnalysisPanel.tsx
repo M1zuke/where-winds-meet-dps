@@ -2,7 +2,7 @@ import type { GearSlot, Inputs } from "../../../../engine/types"
 import type { GearSlotAnalysisRow } from "../../../../engine/gearAnalysis"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useGearAnalysis } from "../../../hooks/useGearAnalysis"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import styles from "./GearAnalysisPanel.module.scss"
 
@@ -70,7 +70,7 @@ function RankCell({ gain, rank }: { gain: number | null; rank: number | undefine
 
 export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
   const { t } = useI18n()
-  const { rows, isPending } = useGearAnalysis(engineInputs, currentDps)
+  const { rows, allSlotsLoss, isPending } = useGearAnalysis(engineInputs, currentDps)
 
   if (rows.length === 0) {
     return (
@@ -89,7 +89,7 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
   const reattuneRanks = ranksBySlot(equippedRows, "reattuneGain")
   const relayRanks = ranksBySlot(equippedRows, "relayGain")
   const sorted = [...equippedRows].sort((rowA, rowB) => rowB.unequipLoss - rowA.unequipLoss)
-  const totalLoss = equippedRows.reduce((sum, row) => sum + row.unequipLoss, 0)
+  const totalLoss = allSlotsLoss ?? 0
 
   return (
     <div className={styles.analysis} style={{ opacity: isPending ? 0.6 : 1 }}>
@@ -118,7 +118,7 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
         <tbody>
           {sorted.map((row) => (
             <tr key={row.slot}>
-              <td>{t(GEAR_SLOT_KEYS[row.slot])}</td>
+              <td>{t(gearSlotLabelKey(row.slot, engineInputs.classId))}</td>
               <RankCell gain={row.retuneGain} rank={retuneRanks.get(row.slot)} />
               <RankCell gain={row.reattuneGain} rank={reattuneRanks.get(row.slot)} />
               <RankCell gain={row.relayGain} rank={relayRanks.get(row.slot)} />
@@ -131,7 +131,10 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}>{t("gear.analysis.totalTunedStatDpsContribution")}</td>
+            <td colSpan={4}>
+              {t("gear.analysis.totalTunedStatDpsContribution")}
+              <HelpHint text={t("gear.analysis.totalLossHint")} />
+            </td>
             <td className={`${styles.loss} ${lossSignClass(totalLoss)}`}>
               {fmtLoss(totalLoss)}
               <span className={styles.share}>({fmtShare(totalLoss, currentDps)})</span>

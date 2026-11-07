@@ -56,10 +56,10 @@ function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
 }
 
 describe("catalog summary pins — jadeware", () => {
-  it("Applies row on Sword Martial Q names the target state the bonus needs", () => {
+  it("Applies row on Sword Martial Q names both unconditional bonuses", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
+      "affinityDmg +10% for the whole window, directAffinity +7.5% for the whole window",
     )
   })
 })
@@ -70,7 +70,7 @@ describe("catalog summary pins — healerBuff", () => {
   // so no Receives/Applies/Class-Buffs row ever renders it. Pin the module's
   // own summary directly; it is the only text this buff carries.
   it("carries the (team) marker, the only signal it's a groupDamage bonus", () => {
-    expect(healerBuff.summary).toBe("+20.0% all (team)")
+    expect(healerBuff.summary).toBe("+10.0% all (team)")
   })
 })
 
@@ -78,7 +78,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
   it("Class Buffs row reads point units, not the app's internal fraction", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.effect).toBe(
-      "physPen +15, bellstrikePen +15",
+      "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
     )
   })
 
@@ -89,7 +89,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
       inputsWithSwordHorizon("tier 6"),
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.effect).toBe(
-      "physPen +15, bellstrikePen +15",
+      "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
     )
   })
 })
@@ -97,7 +97,9 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
 describe("catalog summary pins — soulShaken", () => {
   it("Applies row on SpearQ reads the pre-conversion per-stack text", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.spearq), CLASS)
-    expect(rows.find((row) => row.id === "soulShaken")!.effect).toBe("+10.0% all/stack")
+    expect(rows.find((row) => row.id === "soulShaken")!.effect).toBe(
+      "+10.0% all/stack; against a Soul-Shaken target, Bleeding's Qi rate +0.4 and Qi index ×3, Blood Burst's Qi rate +0.3",
+    )
   })
 })
 
@@ -112,7 +114,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
   it("Class Buffs row reads the pre-conversion key name and percent", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
-      "affinityDmg +18%",
+      "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
     )
   })
 
@@ -123,7 +125,7 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
       inputsWithSwordHorizon("tier 6"),
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
-      "affinityDmg +18%",
+      "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
     )
   })
 })
@@ -133,8 +135,8 @@ describe("Class Buffs column — class ownership and scope decide membership", (
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
       [
-        "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
-        "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
+        "bellstrikeUmbraBleedPen: physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
+        "bellstrikeUmbraBleedingDamage: affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
         "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough",
         "strategicSwordAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
         "heavenquakerSpearAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",

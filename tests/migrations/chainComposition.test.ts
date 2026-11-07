@@ -3,7 +3,7 @@ import { join } from "node:path"
 import { beforeEach, describe, expect, it } from "vitest"
 import { loadProfiles } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import {
   LATEST_PROFILES_VERSION,
@@ -92,6 +92,22 @@ describe("every captured fixture walks the whole chain", () => {
   )
 })
 
+describe("the sets walk onto the pieces", () => {
+  it.each(cases(FIXTURES))(
+    "%s ends with no build-level set and a bow gear container",
+    (_name, fixture) => {
+      const walked = inputsOf(runProfileMigrations(blobOf(fixture))!.blob) as unknown as Record<
+        string,
+        unknown
+      >
+      expect("set" in walked).toBe(false)
+      expect("bowSet" in walked).toBe(false)
+      expect(walked.bowGear).toHaveProperty("bow")
+      expect(walked.bowGear).toHaveProperty("thumbRing")
+    },
+  )
+})
+
 describe("the oldest fixture per class survives loadProfiles end to end", () => {
   beforeEach(() => localStorage.clear())
 
@@ -116,7 +132,7 @@ describe("the oldest fixture per class survives loadProfiles end to end", () => 
     (_name, fixture) => {
       localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(fixture)))
       const loaded = loadProfiles().profiles[0].inputs
-      const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(loaded))))
+      const result = runEngine(applySetBonuses(withDerivedStats(loaded)))
       expect(result.dps).toBeGreaterThan(0)
       expect(result.warnings.some((warning) => /no default rotation/i.test(warning))).toBe(false)
     },

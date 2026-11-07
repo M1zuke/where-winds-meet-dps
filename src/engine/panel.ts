@@ -1,18 +1,18 @@
-import type {
-  Inputs,
-  AttributeKey,
-  Arsenal,
-  ArsenalScores,
-  GearLevel,
-  GearLevelValues,
-} from "./types"
+import type { Inputs, AttributeKey, Arsenal, ArsenalScores } from "./types"
 import type { FormulaContext } from "./formula"
+import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
-import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
+import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
+import {
+  foodPhysAttackAfterMultiplier,
+  foodPhysAttackBeforeMultiplier,
+} from "../data/consumables/foods"
 import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
-import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
+import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { SET_BY_ID } from "../definitions/sets/registry"
+import { resolveActiveSets } from "./setBonuses"
 import {
   arsenalScoreCap,
   arsenalStoreAttack,
@@ -101,55 +101,6 @@ export function effectiveRates(inputs: Inputs) {
   return { precision, critRate, affinityRate, resistance: r }
 }
 
-export const BOW_SET_BONUS = {
-  affinity: 0.022,
-  crit: 0.045,
-  precision: 0.04,
-} as const
-
-// `setKey` is the set's id (`Inputs.set` value), not its display name; render
-// `name` for the label.
-export interface ArmorSetOption {
-  name: string
-  setKey: string
-  // Absent for a set whose whole effect is a 4-piece mechanic or a gated buff
-  // rather than a 2-piece panel stat. Such a set is still selectable — it has
-  // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
-  stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
-  value?: GearLevelValues
-}
-export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
-  name: set.name,
-  setKey: set.id,
-  ...set.panelBonus,
-}))
-
-// The pieces carrying a set aren't modeled individually, so the 2-piece bonus
-// follows the current breakthrough's gear level.
-export function armorSetValueForLevel(opt: ArmorSetOption, level: GearLevel): number | undefined {
-  return opt.value?.[level]
-}
-
-export function applyArmorSet(inputs: Inputs): Inputs {
-  if (!inputs.set) return inputs
-  const opt = ARMOR_SET_OPTIONS.find((o) => o.setKey === inputs.set)
-  if (!opt || opt.stat === undefined) return inputs
-  const value = armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough))
-  if (value === undefined) return inputs
-  switch (opt.stat) {
-    case "affinityRate":
-      return { ...inputs, affinityRate: inputs.affinityRate + value }
-    case "critRate":
-      return { ...inputs, critRate: inputs.critRate + value }
-    case "precisionRate":
-      return { ...inputs, precision: inputs.precision + value }
-    case "maxPhys":
-      return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + value } }
-    case "minPhys":
-      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + value } }
-  }
-}
-
 interface ArsenalUnlockState {
   graduatedStores: number
   currentStore?: number
@@ -226,26 +177,14 @@ export function swapArsenal(inputs: Inputs, next: Arsenal): Inputs {
   return { ...inputs, arsenal: next }
 }
 
-export function applyBowSet(inputs: Inputs): Inputs {
-  switch (inputs.bowSet) {
-    case "affinity":
-      return { ...inputs, affinityRate: inputs.affinityRate + BOW_SET_BONUS.affinity }
-    case "crit":
-      return { ...inputs, critRate: inputs.critRate + BOW_SET_BONUS.crit }
-    case "precision":
-      return { ...inputs, precision: inputs.precision + BOW_SET_BONUS.precision }
-    default:
-      return inputs
-  }
-}
-
 export function deriveStats(inputs: Inputs): DerivedStats {
   const school = getSchool(inputs.classId)
   const target = getBreakthrough(inputs.breakthrough)
 
   const effectiveDefense = target.defense * (1 - inputs.phys.penetration)
 
-  const setFormula = (inputs.set ? SET_BY_ID[inputs.set]?.formulaBonus : undefined) ?? {}
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
+  const setFormula = (fourPieceSet ? SET_BY_ID[fourPieceSet]?.formulaBonus : undefined) ?? {}
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
@@ -270,11 +209,11 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const typeBoosts: Record<string, number> = {
     Boss: effectiveBossBoost,
-    control: inputs.singleMysticBoost,
-    burst: inputs.singleMysticBoost,
-    area: inputs.areaMysticBoost,
-    "area-debuff": inputs.areaMysticBoost,
-    "area-damage": inputs.areaMysticBoost,
+    control: inputs.singleMysticBoost + inputs.allMysticBoost,
+    burst: inputs.singleMysticBoost + inputs.allMysticBoost,
+    area: inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-debuff": inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-damage": inputs.areaMysticBoost + inputs.allMysticBoost,
   }
 
   return {
@@ -299,8 +238,7 @@ export interface TargetOverride {
 export function buildContext(
   inputs: Inputs,
   targetOverride?: TargetOverride,
-  hawkwingPhysBonus?: number,
-  dotDamageMultiplier?: number,
+  contextPatch?: ContextPatch,
 ): FormulaContext {
   const school = getSchool(inputs.classId)
   const baseTarget = getBreakthrough(inputs.breakthrough)
@@ -336,13 +274,13 @@ export function buildContext(
   const targetCritDamageReduction = inputs.dummyMode ? 0 : target.critDamageReduction
   const targetAffinityDamageReduction = inputs.dummyMode ? 0 : target.affinityDamageReduction
   const effectiveBossBoost = inputs.bossBoost
+  const fourPieceSet = resolveActiveSets(inputs).fourPiece
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
     innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
-    (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
+    (fourPieceSet ? (SET_BY_ID[fourPieceSet]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
-    (inputs.divinecraft === "fire" ? 0.015 : 0) +
     (inputs.divinecraft === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
     (school.generalDamageBoost ?? 0)
@@ -406,8 +344,9 @@ export function buildContext(
     effectiveDefense,
     fatigueDamageTaken: targetFatigueDamageTaken,
     hasSixHenZhi: henZhiActive,
-    food: inputs.food,
-    set: inputs.set,
+    foodPhysAttack: foodPhysAttackBeforeMultiplier(inputs),
+    flatPhysAttack: foodPhysAttackAfterMultiplier(inputs),
+    set: fourPieceSet,
     divinecraft: inputs.divinecraft,
     classSpecificAttunement,
     attuneBoostByTag,
@@ -418,6 +357,7 @@ export function buildContext(
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
+    allMysticBoost: inputs.allMysticBoost,
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     damageReduction: targetDamageReduction,
@@ -425,8 +365,9 @@ export function buildContext(
     attrDamageBoostReduction: targetAttrDamageBoostReduction,
     critDamageReduction: targetCritDamageReduction,
     affinityDamageReduction: targetAffinityDamageReduction,
-    hawkwingPhysBonus,
-    dotDamageMultiplier,
+    hawkwingPhysBonus: contextPatch?.hawkwingPhysBonus,
+    bellstrikeAttackPctBonus: contextPatch?.bellstrikeAttackPctBonus,
+    formlessAttack: inputs.formlessAttack,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

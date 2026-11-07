@@ -11,6 +11,7 @@ import {
   ZENITH_BAR_DAMAGE_BONUS,
   ZENITH_BAR_MAX_CHARGES,
   ZENITH_DETONATION_BUFF_ID,
+  ZENITH_SPIRIT_BUFF_ID,
 } from "./swordHorizonZenith"
 import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
@@ -40,7 +41,10 @@ export function crosswindBehavior(build: BuildView): SkillBehavior | null {
         effects.push(setStatus(ZENITH_DETONATION_BUFF_ID, { stacks: 1 }))
         effects.push(forceOutcome("affinity"))
       }
-      if (outcome.damageBonusActive) effects.push(stat("allDamageBoost", ZENITH_BAR_DAMAGE_BONUS))
+      if (outcome.damageBonusActive) {
+        effects.push(setStatus(ZENITH_SPIRIT_BUFF_ID, { stacks: 1 }))
+        effects.push(stat("allDamageBoost", ZENITH_BAR_DAMAGE_BONUS))
+      }
       return effects
     },
   }

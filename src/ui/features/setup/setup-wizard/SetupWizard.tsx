@@ -80,6 +80,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
       ...draft,
       inventory: importDraft.pieces,
       equipped: equippedFromImported(importDraft.pieces),
+      bowGear: importDraft.bowGear,
       mindMethods: importDraft.mindMethods ?? draft.mindMethods,
     }
     const capturedName = importDraft.result.roleName?.trim()

@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest"
 import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { isHitTrigger, makeHit, makeSkill, makeTrigger, type Skill } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 
@@ -15,7 +16,6 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inp
     customSkills: skills,
     customBuffs: buffs,
     activeCustomRotation: rotation,
-    set: null,
   }
 }
 
@@ -143,7 +143,7 @@ describe("a trigger with transferFrom", () => {
     expect(chipStacks(inputs, 2, payout.id)).toBe(1)
   })
 
-  it("a cast-length gate on the target sees the transferred count in the layout pass", () => {
+  it("a cast-length gate on the target sees the transferred count", () => {
     const source = makeGate({ name: "Source" })
     const target = makeGate({ name: "Target" })
     const grant = granter(source.id, 5)
@@ -178,7 +178,7 @@ describe("a trigger with transferFrom", () => {
       [grant, convert, gated],
       [source, target],
     )
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
   })
 
   it("is rejected when combined with extendFrames", () => {

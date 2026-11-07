@@ -3,6 +3,7 @@ import type { AttunementId } from "../../engine/attunements"
 import { attunementMax, getAttunement } from "../../engine/attunements"
 import { relayedCapValue } from "../../engine/gearStats"
 import { gearBaseStatsFor } from "../stats/gearBaseStats"
+import { gearWordRelayedToLevel } from "../stats/gearWordPools"
 import { GEAR_WORD_UNIT, gearWordMaxRoll } from "../stats/statLines"
 
 export type GraduationWords = readonly [GearWordId, GearWordId, GearWordId, GearWordId, GearWordId]
@@ -14,7 +15,7 @@ interface GraduationGearPieceOptions {
   attunement: AttunementId
 }
 
-const GRADUATION_LEVEL = 96
+export const GRADUATION_LEVEL: GearLevel = 96
 const GRADUATION_RARITY = "legendary"
 
 export function createGraduationGearPiece(options: GraduationGearPieceOptions): GearPiece {
@@ -40,17 +41,17 @@ export function createGraduationGearPiece(options: GraduationGearPieceOptions): 
   }
 }
 
-// Keeps the word and attunement ids the class definition authored, and only
-// re-levels the base stats and their ceilings.
 export function gearPieceAtGearLevel(piece: GearPiece, level: GearLevel): GearPiece {
   const attunement = getAttunement(piece.attunement)
   return {
     ...piece,
     level,
     ...gearBaseStatsFor({ slot: piece.slot, rarity: piece.rarity, level }),
-    words: piece.words.map((entry) =>
-      entry.word ? { ...entry, value: gearWordMaxRoll(entry.word, level) } : entry,
-    ) as GearPiece["words"],
+    words: piece.words.map((entry) => {
+      if (!entry.word) return entry
+      const word = gearWordRelayedToLevel(entry.word, piece.level, level)
+      return { ...entry, word, value: gearWordMaxRoll(word, level) }
+    }) as GearPiece["words"],
     attunementValue: attunement ? attunementMax(attunement, level) : 0,
   }
 }

@@ -1,15 +1,18 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import {
+  effectiveEnhancementLevels,
+  enhancedSlotsOf,
   effectiveMaxHp,
   totalFormlessAttack,
   totalMaxHp,
   totalPhysDef,
   totalPlayerAttributes,
 } from "../../../definitions/baseStats"
-import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
+import { foodPhysAttackBeforeMultiplier } from "../../../data/consumables/foods"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
-import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
+import { effectiveRates, getSchool } from "../../../engine/panel"
+import { applySetBonuses, setPhysDefBonus } from "../../../engine/setBonuses"
 import { resolveEnginePath } from "../../../engine/statPaths"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
@@ -48,7 +51,7 @@ const MARTIAL_BOOST_PATHS = [
   "gauntletsBoost",
 ]
 
-const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost"]
+const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost", "allMysticBoost"]
 
 interface RowEntry {
   label: string
@@ -74,7 +77,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const school = getSchool(inputs.classId)
 
   const derived = withDerivedStats(inputs)
-  const withSets = applyBowSet(applyArmorSet(derived))
+  const withSets = applySetBonuses(derived)
 
   const eff = effectiveRates(withSets)
   const finalRates = finalHitOutcomeRates({
@@ -86,6 +89,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
   })
 
   const equippedPieces = equippedPiecesFor(inputs)
+  const enhancedSlots = enhancedSlotsOf(inputs)
+  const enhancements = effectiveEnhancementLevels(inputs.enhancements, inputs.breakthrough)
   const attrs = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
@@ -95,24 +100,28 @@ export function StatsOverviewPanel({ inputs }: Props) {
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const maxHpEffective = effectiveMaxHp(
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
+    enhancedSlots,
   )
   const physDef = totalPhysDef(
     inputs.breakthrough,
     equippedPieces,
     inputs.disabledTalentNodes,
-    inputs.enhancements,
+    enhancements,
     inputs.unclaimedOddityNodes,
+    setPhysDefBonus(inputs),
+    enhancedSlots,
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
@@ -149,18 +158,19 @@ export function StatsOverviewPanel({ inputs }: Props) {
 
   const physMin = readPath(withSets, "phys.min")
   const physMax = readPath(withSets, "phys.max")
+  const foodPhysAttack = foodPhysAttackBeforeMultiplier(withSets)
   const attackRows: RowEntry[] = [
     row(
       statPathLabel("phys.min", t),
       physMin,
       false,
-      withSets.food ? physMin + FOOD_MIN_PHYS_BONUS : undefined,
+      foodPhysAttack.min ? physMin + foodPhysAttack.min : undefined,
     ),
     row(
       statPathLabel("phys.max", t),
       physMax,
       false,
-      withSets.food ? physMax + FOOD_MAX_PHYS_BONUS : undefined,
+      foodPhysAttack.max ? physMax + foodPhysAttack.max : undefined,
     ),
   ]
   const penetrationRows: RowEntry[] = [

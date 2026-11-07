@@ -1,0 +1,98 @@
+@use "breakpoints";
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  background: var(--color-surface-selected);
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+
+.card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@include breakpoints.hoverable {
+  .card:hover:not(:disabled) {
+    border-color: var(--color-accent-bright);
+  }
+}
+
+.card:focus-visible {
+  border-color: var(--color-accent-bright);
+  outline: 2px solid var(--color-accent-bright);
+  outline-offset: 1px;
+}
+
+.iconTile {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 1.1em;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+  color: var(--color-accent-bright);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pill {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 0.78em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.open {
+  flex: none;
+  font-size: 0.82em;
+  color: var(--color-accent-bright);
+  white-space: nowrap;
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .subtitle,
+  .open {
+    display: none;
+  }
+}

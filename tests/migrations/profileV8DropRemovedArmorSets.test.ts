@@ -6,10 +6,10 @@
 // tests".
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
-import { ARMOR_SET_OPTIONS } from "../../src/engine/panel"
+import { GEAR_SET_OPTIONS } from "../../src/engine/setBonuses"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V8__dropRemovedArmorSets } from "../../src/migrations/V8__dropRemovedArmorSets"
-import type { Inputs, StoredProfile } from "../../src/engine/types"
+import { carriedSets, type Inputs, type StoredProfile } from "./legacyProfile"
 import legacyProfileFile from "./testProfiles/v7/bellstrikeUmbra.json"
 
 const REMOVED_SETS = ["Ivorybloom", "Rainwhisper", "Rainwhisper (no shield)"]
@@ -60,7 +60,7 @@ describe("V8__dropRemovedArmorSets — called directly", () => {
     })
   }
 
-  for (const option of ARMOR_SET_OPTIONS) {
+  for (const option of GEAR_SET_OPTIONS) {
     it(`leaves ${option.setKey} untouched`, () => {
       const migrated = V8__dropRemovedArmorSets.migrate(
         blobOf(withSet(clone(LEGACY.profile), option.setKey)),
@@ -116,12 +116,12 @@ describe("hydrateInputs — the paths that bypass the chain", () => {
 
   it("keeps a removed set on a bare imported profile", () => {
     const bare = withSet(clone(LEGACY.profile), "Ivorybloom")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("Ivorybloom")
+    expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain("Ivorybloom")
   })
 
   it("keeps a surviving set on a bare imported profile, healed to its id", () => {
     const bare = withSet(clone(LEGACY.profile), "Jadeware")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("jadeware")
+    expect(carriedSets(importProfile(JSON.stringify(bare)).inputs)).toContain("jadeware")
   })
 
   it("keeps a removed set on the legacy wwm.inputs blob rolled into a profile", () => {
@@ -129,6 +129,6 @@ describe("hydrateInputs — the paths that bypass the chain", () => {
       "wwm.inputs",
       JSON.stringify({ v: 5, inputs: withSet(clone(LEGACY.profile), "Rainwhisper").inputs }),
     )
-    expect(loadOne().inputs.set).toBe("Rainwhisper")
+    expect(carriedSets(loadOne().inputs)).toContain("Rainwhisper")
   })
 })

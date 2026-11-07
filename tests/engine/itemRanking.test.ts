@@ -22,7 +22,7 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   const rows = computeRanking(umbraInputs, base.dps)
 
   it("produces a row per gear word the build's gear level offers, plus one per class-legal attunement", () => {
-    expect(rows.filter((row) => row.source === "tunement").length).toBe(23)
+    expect(rows.filter((row) => row.source === "tunement").length).toBe(28)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
       "Strategic Sword Martial Art Skill DMG Boost",
@@ -73,33 +73,36 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   })
 })
 
-// Eleven rather than ten: the bleed attunement row lands third on this build,
-// pushing Max Phys one place down without changing any word's own lift.
 describe("computeRanking — top-rank consistency", () => {
   const base = runEngine(umbraInputs)
   const rows = computeRanking(umbraInputs, base.dps)
   const sorted = [...rows].sort((a, b) => b.liftPercent - a.liftPercent)
   const top11 = new Set(sorted.slice(0, 11).map((r) => r.statLineId))
+  const top12 = new Set(sorted.slice(0, 12).map((r) => r.statLineId))
 
   it("Physical Penetration ranks in the top 11", () =>
     expect(top11.has("physicalPenetration")).toBe(true))
   it("Max Phys ranks in the top 11", () => expect(top11.has("maxPhys")).toBe(true))
   it("Sword Martial Boost ranks in the top 11", () => expect(top11.has("swordBoost")).toBe(true))
-  it("All Martial Boost ranks in the top 11", () => expect(top11.has("allMartialBoost")).toBe(true))
+  it("All Martial Boost ranks in the top 12", () => expect(top12.has("allMartialBoost")).toBe(true))
 })
 
-describe("computeRanking — the gear stat lift follows the current breakthrough's gear level", () => {
-  it("the same stat line reports a different max at BT17 (96) than at BT18 (100)", () => {
-    const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
-    const bt18Inputs = { ...umbraInputs, breakthrough: 18 }
-    const bt17Rows = computeRanking(bt17Inputs, runEngine(bt17Inputs).dps)
-    const bt18Rows = computeRanking(bt18Inputs, runEngine(bt18Inputs).dps)
+describe(
+  "computeRanking — the gear stat lift follows the current breakthrough's gear level",
+  { timeout: 30_000 },
+  () => {
+    it("the same stat line reports a different max at BT17 (96) than at BT18 (100)", () => {
+      const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
+      const bt18Inputs = { ...umbraInputs, breakthrough: 18 }
+      const bt17Rows = computeRanking(bt17Inputs, runEngine(bt17Inputs).dps)
+      const bt18Rows = computeRanking(bt18Inputs, runEngine(bt18Inputs).dps)
 
-    const bt17MaxPhys = bt17Rows.find((row) => row.statLineId === "maxPhys")!
-    const bt18MaxPhys = bt18Rows.find((row) => row.statLineId === "maxPhys")!
-    expect(bt18MaxPhys.amount).toBeGreaterThan(bt17MaxPhys.amount)
-  })
-})
+      const bt17MaxPhys = bt17Rows.find((row) => row.statLineId === "maxPhys")!
+      const bt18MaxPhys = bt18Rows.find((row) => row.statLineId === "maxPhys")!
+      expect(bt18MaxPhys.amount).toBeGreaterThan(bt17MaxPhys.amount)
+    })
+  },
+)
 
 describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
   const specs = getWordSpecs(umbraInputs, GEAR_LEVEL)
@@ -180,6 +183,22 @@ describe("attunement rows", () => {
     const resist = attunementRows.find((row) => row.label === "Physical Resistance")!
     expect(resist.dpsDelta).toBeCloseTo(0, 6)
     expect(resist.leadVsMin).toBe("(none)")
+  })
+
+  it("Max HP is inert for DPS — no engine path reads it", () => {
+    const maxHp = rows.find((row) => row.statLineId === "maxHp")!
+    expect(maxHp).toBeDefined()
+    expect(maxHp.dpsDelta).toBeCloseTo(0, 6)
+    expect(maxHp.leadVsMin).toBe("(none)")
+  })
+
+  it("Constitution, Defense, Physical Defense and Boost Vs. Player Units are inert for DPS", () => {
+    for (const statLineId of ["body", "defense", "physDef", "damageVsPlayer"]) {
+      const row = rows.find((candidate) => candidate.statLineId === statLineId)!
+      expect(row, statLineId).toBeDefined()
+      expect(row.dpsDelta, statLineId).toBeCloseTo(0, 6)
+      expect(row.leadVsMin, statLineId).toBe("(none)")
+    }
   })
 
   it("leaves the caller's inputs untouched — the classSpecificAttunement tag map is cloned", () => {

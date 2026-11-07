@@ -1,18 +1,17 @@
 import type { Worker as TesseractWorker } from "tesseract.js"
+import {
+  filterGearPanel,
+  filterHeaderBar,
+  findHeaderBar,
+  type RgbaImage,
+} from "./gearScreenshotFilters"
 
 const WORKER_PATH = "/ocr/worker.min.js"
 const CORE_PATH = "/ocr/core"
 const LANG_PATH = "/ocr/lang"
 
-const CHAR_WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-.%[]·&/ "
-
-// Inverted (the panel is light-on-dark, tesseract wants dark-on-light) and
-// contrast-pushed — measured to make the italic value digits legible. CONTRAST
-// is on the -255..255 scale of the standard
-// `factor = (259*(c+255))/(255*(259-c))` formula.
-const CONTRAST = 71
-const BRIGHTNESS = 5
-const UPSCALE = 2
+export const CHAR_WHITELIST =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-.%[]·&/ "
 
 let workerPromise: Promise<TesseractWorker> | null = null
 let currentProgressHandler: ((progress: number) => void) | null = null
@@ -49,39 +48,38 @@ export async function decodeGearScreenshot(source: File | Blob): Promise<ImageBi
   return createImageBitmap(source)
 }
 
-export function preprocessGearScreenshot(bitmap: ImageBitmap): HTMLCanvasElement {
+export interface PreprocessedGearScreenshot {
+  panel: HTMLCanvasElement
+  headerBar: HTMLCanvasElement | null
+}
+
+function toCanvas(image: RgbaImage): HTMLCanvasElement {
+  const canvas = document.createElement("canvas")
+  canvas.width = image.width
+  canvas.height = image.height
+  const context = canvas.getContext("2d")
+  if (!context) return canvas
+  const imageData = context.createImageData(image.width, image.height)
+  imageData.data.set(image.data)
+  context.putImageData(imageData, 0, 0)
+  return canvas
+}
+
+export function preprocessGearScreenshot(bitmap: ImageBitmap): PreprocessedGearScreenshot {
   const source = document.createElement("canvas")
   source.width = bitmap.width
   source.height = bitmap.height
   const sourceContext = source.getContext("2d")
-  if (!sourceContext) return source
+  if (!sourceContext) return { panel: source, headerBar: null }
   sourceContext.drawImage(bitmap, 0, 0)
 
-  const imageData = sourceContext.getImageData(0, 0, source.width, source.height)
-  const pixels = imageData.data
-  const factor = (259 * (CONTRAST + 255)) / (255 * (259 - CONTRAST))
-  for (let index = 0; index < pixels.length; index += 4) {
-    const inverted = [255 - pixels[index]!, 255 - pixels[index + 1]!, 255 - pixels[index + 2]!]
-    const grey = 0.299 * inverted[0]! + 0.587 * inverted[1]! + 0.114 * inverted[2]!
-    const adjusted = Math.min(255, Math.max(0, factor * (grey - 128) + 128 + BRIGHTNESS))
-    pixels[index] = adjusted
-    pixels[index + 1] = adjusted
-    pixels[index + 2] = adjusted
+  const { data, width, height } = sourceContext.getImageData(0, 0, source.width, source.height)
+  const pixels: RgbaImage = { data, width, height }
+  const bar = findHeaderBar(pixels)
+  return {
+    panel: toCanvas(filterGearPanel(pixels)),
+    headerBar: bar ? toCanvas(filterHeaderBar(pixels, bar)) : null,
   }
-  sourceContext.putImageData(imageData, 0, 0)
-
-  // Upscale AFTER tone-mapping, with smoothing off: a smoothed upscale done
-  // first blurs glyph edges, and contrast then amplifies the blurred midtones
-  // instead of the hard edges tesseract needs — measured to read digits worse
-  // (an extra spurious digit, more junk lines) on the sample screenshots.
-  const canvas = document.createElement("canvas")
-  canvas.width = source.width * UPSCALE
-  canvas.height = source.height * UPSCALE
-  const context = canvas.getContext("2d")
-  if (!context) return canvas
-  context.imageSmoothingEnabled = false
-  context.drawImage(source, 0, 0, canvas.width, canvas.height)
-  return canvas
 }
 
 export async function recognizeGearScreenshot(

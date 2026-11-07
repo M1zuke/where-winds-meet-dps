@@ -1,0 +1,1743 @@
+{
+  "v": 66,
+  "skills": [
+    {
+      "id": "bellstrikeSplendor-swordheavycharged",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged",
+      "breakdownName": "Vagrant Sword",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
+      "castTag": "cast:swordHeavyCharged",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 121,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 3.2664,
+          "attributeMultiplier": 4.8996,
+          "physFixed": 904,
+          "attributeFixed": 493,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "cooldownFrames": 720,
+              "cooldownGroup": "battleAnthemEnduranceGain",
+              "requiresParam": "battleAnthem",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": {
+                "buffId": "qiImbalanceMarker",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "mountainsMightChargedHitGain",
+              "requiresParam": "mountainsMight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordheavycharged-hit-0-multi-wave-window",
+              "label": "Multi-Wave Window",
+              "conditions": [
+                {
+                  "param": "swordMorph"
+                },
+                {
+                  "anyOf": [
+                    {
+                      "buffId": "swordMorphMultiWaveWindow",
+                      "op": "gte",
+                      "stacks": 1
+                    },
+                    {
+                      "buffId": "qiShield",
+                      "op": "gte",
+                      "stacks": 1
+                    },
+                    {
+                      "buffId": "inCombat",
+                      "op": "lt",
+                      "stacks": 1
+                    }
+                  ]
+                }
+              ],
+              "physMultiplier": 1.3066,
+              "attributeMultiplier": 1.9598,
+              "physFixed": 361.6,
+              "attributeFixed": 197.2,
+              "castFrames": 135,
+              "frame": 90
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 100,
+          "physMultiplier": 1.5679,
+          "attributeMultiplier": 2.3518,
+          "physFixed": 433.92,
+          "attributeFixed": 236.64,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "conditions": [
+            {
+              "param": "swordMorph"
+            },
+            {
+              "anyOf": [
+                {
+                  "buffId": "swordMorphMultiWaveWindow",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "qiShield",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "inCombat",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 129,
+          "physMultiplier": 1.8292,
+          "attributeMultiplier": 2.7438,
+          "physFixed": 506.24,
+          "attributeFixed": 276.08,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -20,
+              "condition": null,
+              "meterSpendCapToCurrent": 20,
+              "recordSpendAsStatus": "swordMorphConvertedAmount"
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "conditions": [
+            {
+              "param": "swordMorph"
+            },
+            {
+              "anyOf": [
+                {
+                  "buffId": "swordMorphMultiWaveWindow",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "qiShield",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "inCombat",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 84,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "energySurgeGrant",
+              "stacks": 1,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "durationFrames": 300,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 4
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "conditions": [
+            {
+              "param": "swordMorph"
+            },
+            {
+              "anyOf": [
+                {
+                  "buffId": "swordMorphMultiWaveWindow",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "qiShield",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "inCombat",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z",
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 12.6,
+          "stopAfterSec": 1.2
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 12
+        }
+      ],
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      }
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged-prepull",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged[Prepull]",
+      "breakdownName": "Vagrant Sword",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
+      "castTag": "cast:swordHeavyChargedPrepull",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 37,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 12,
+          "physMultiplier": 3.2664,
+          "attributeMultiplier": 4.8996,
+          "physFixed": 904,
+          "attributeFixed": 493,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "energySurgeGrant",
+              "stacks": 1,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "durationFrames": 300,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 4
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -20,
+              "condition": null,
+              "meterSpendCapToCurrent": 20,
+              "recordSpendAsStatus": "swordMorphConvertedAmount"
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "cooldownFrames": 720,
+              "cooldownGroup": "battleAnthemEnduranceGain",
+              "requiresParam": "battleAnthem",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": {
+                "buffId": "qiImbalanceMarker",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "mountainsMightChargedHitGain",
+              "requiresParam": "mountainsMight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordheavycharged-prepull-hit-0-sword-morph",
+              "label": "Sword Morph",
+              "conditions": [
+                {
+                  "param": "swordMorph"
+                }
+              ],
+              "physMultiplier": 1.3066,
+              "attributeMultiplier": 1.9598,
+              "physFixed": 361.6,
+              "attributeFixed": 197.2,
+              "castFrames": 51,
+              "frame": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 17,
+          "physMultiplier": 1.5679,
+          "attributeMultiplier": 2.3518,
+          "physFixed": 433.92,
+          "attributeFixed": 236.64,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "conditions": [
+            {
+              "param": "swordMorph"
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 34,
+          "physMultiplier": 1.8292,
+          "attributeMultiplier": 2.7438,
+          "physFixed": 506.24,
+          "attributeFixed": 276.08,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "conditions": [
+            {
+              "param": "swordMorph"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z",
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 12.6,
+          "stopAfterSec": 1.2
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 12
+        }
+      ],
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      }
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged-2-hit",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged 2 Hit",
+      "breakdownName": "Vagrant Sword",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
+      "castTag": "cast:swordHeavyCharged2Hit",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 101,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 90,
+          "physMultiplier": 1.3066,
+          "attributeMultiplier": 1.9598,
+          "physFixed": 361.6,
+          "attributeFixed": 197.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "energySurgeGrant",
+              "stacks": 1,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "durationFrames": 294,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 4,
+              "durationFrames": 294
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "cooldownFrames": 720,
+              "cooldownGroup": "battleAnthemEnduranceGain",
+              "requiresParam": "battleAnthem",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": {
+                "buffId": "qiImbalanceMarker",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "mountainsMightChargedHitGain",
+              "requiresParam": "mountainsMight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 100,
+          "physMultiplier": 1.5679,
+          "attributeMultiplier": 2.3518,
+          "physFixed": 433.92,
+          "attributeFixed": 236.64,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -20,
+              "condition": null,
+              "meterSpendCapToCurrent": 20,
+              "recordSpendAsStatus": "swordMorphConvertedAmount"
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z",
+      "castConditions": [
+        {
+          "buffId": "swordMorphMultiWaveWindow",
+          "op": "gte",
+          "stacks": 1
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 12.6,
+          "stopAfterSec": 1.2,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeSplendor-swordheavycharged"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 12
+        }
+      ],
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      }
+    },
+    {
+      "id": "bellstrikeSplendor-swordspecial",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordSpecial",
+      "breakdownName": "Shadow Step",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "castTag": "cast:swordSpecial",
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 44,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 23,
+          "physMultiplier": 1.76747,
+          "attributeMultiplier": 2.651205,
+          "physFixed": 490,
+          "attributeFixed": 267,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "durationFrames": 277
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "shadowStepDashWindow",
+              "stacks": 1,
+              "condition": null,
+              "durationFrames": 144
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 25
+        }
+      ],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 30
+        }
+      ],
+      "reachMeters": 12.8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      }
+    },
+    {
+      "id": "bellstrikeSplendor-swordq-3rd",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordQ[3rd]",
+      "breakdownName": "Relentless Chase",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordQ3rd",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["jadeware", "mountainsMightQiImbalance"],
+      "receives": ["starweaveMartialBoost", "namelessSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "relentlessChaseWindow",
+          "op": "gte",
+          "stacks": 1
+        }
+      ],
+      "castFrames": 84,
+      "triggerable": true,
+      "reachMeters": 3,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "relentlessChaseWindow",
+              "stacks": -1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 19,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 34,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 64,
+          "physMultiplier": 1.025314,
+          "attributeMultiplier": 1.537971,
+          "physFixed": 283.6,
+          "attributeFixed": 154.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 60,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "qiShield",
+              "stacks": 1,
+              "condition": null,
+              "durationFrames": 180
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordheavycharged-tier-1",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordHeavyCharged Tier 1",
+      "breakdownName": "Vagrant Sword",
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordHeavyChargedTier1",
+      "startLatency": "noWaitOnDummy",
+      "serverWaitsInCast": 1,
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 82,
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 12,
+          "stopAfterSec": 0.55
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 12
+        }
+      ],
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 57,
+          "physMultiplier": 1.51032,
+          "attributeMultiplier": 2.26548,
+          "physFixed": 419,
+          "attributeFixed": 228,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "cooldownFrames": 720,
+              "cooldownGroup": "battleAnthemEnduranceGain",
+              "requiresParam": "battleAnthem",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": {
+                "buffId": "qiImbalanceMarker",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "mountainsMightChargedHitGain",
+              "requiresParam": "mountainsMight",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "energySurgeGrant",
+              "stacks": 60,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ],
+          "projectile": {
+            "speedMetersPerSecond": 36,
+            "maxTravelFrames": 24
+          }
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-energysurge",
+      "classId": "bellstrikeSplendor",
+      "name": "EnergySurge",
+      "breakdownName": "Vagrant Sword",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged", "user:favourite"],
+      "castTag": "cast:energySurge",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "swordMorphEnduranceBoost",
+        "battleAnthemChargedDamage",
+        "battleAnthemEnduranceBoost",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castFrames": 51,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 1.3066,
+          "attributeMultiplier": 1.9598,
+          "physFixed": 361.6,
+          "attributeFixed": 197.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "energySurgeGrant",
+              "stacks": -1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "energySurgeGrant",
+              "stacks": 1,
+              "condition": null,
+              "cooldownFrames": 900,
+              "cooldownDecayFramesPerAttempt": 60,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "durationFrames": 300,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 4
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -20,
+              "condition": null,
+              "meterSpendCapToCurrent": 20,
+              "recordSpendAsStatus": "swordMorphConvertedAmount"
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "cooldownFrames": 720,
+              "cooldownGroup": "battleAnthemEnduranceGain",
+              "requiresParam": "battleAnthem",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": null,
+              "cooldownFrames": 1200,
+              "cooldownDecayFramesPerAttempt": 60,
+              "cooldownFloorFrames": 720,
+              "cooldownGroup": "energySurgeGrant",
+              "requiresParam": "swordMorph",
+              "requiresMinTier": 6
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 16,
+          "physMultiplier": 1.5679,
+          "attributeMultiplier": 2.3518,
+          "physFixed": 433.92,
+          "attributeFixed": 236.64,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 45,
+          "physMultiplier": 1.8292,
+          "attributeMultiplier": 2.7438,
+          "physFixed": 506.24,
+          "attributeFixed": 276.08,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z",
+      "castConditions": [
+        {
+          "buffId": "energySurgeGrant",
+          "op": "gte",
+          "stacks": 1
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 1
+        }
+      ],
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 0,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1
+            }
+          },
+          {
+            "minMeters": 9,
+            "maxMeters": 100,
+            "then": {
+              "kind": "selfForward",
+              "meters": 8
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      }
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castFrames": 36,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-02T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-perfect-dodge",
+      "classId": "bellstrikeUmbra",
+      "name": "Perfect Dodge",
+      "tags": ["weapon:none"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:perfectDodge",
+      "triggersBuffs": ["mirageBonus", "disintegration"],
+      "castFrames": 0,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "mystic-ghostly-afterimage",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "ghostlyStepsUmbra",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-crosswind-blade",
+      "classId": "bellstrikeUmbra",
+      "name": "Crosswind Blade",
+      "breakdownName": "Crisscross - Inner Balance III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:crosswindBlade",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 57,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 0.625421,
+          "attributeMultiplier": 0.938132,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-crosswindBlade"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ]
+    },
+    {
+      "id": "bellstrikeUmbra-crosswind-blade-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Crosswind Blade [cancel]",
+      "breakdownName": "Crisscross - Inner Balance III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:crosswindBladeCancel",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 18,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 0.625421,
+          "attributeMultiplier": 0.938132,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-crosswindBlade"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-09-09T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ]
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 4-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial4Hit",
+      "receives": [
+        "wolfchasersArtMartialDamage",
+        "buff-bellstrikeUmbra-heavenquaker-additional-attack",
+        "buff-bellstrikeUmbra-strategic-sword-additional-attack"
+      ],
+      "castFrames": 84,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 29,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-innerBalanceStrikeIII"
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordspecial-4-hit-hit-0-sword-horizon",
+              "label": "Sword Horizon",
+              "conditions": [
+                {
+                  "param": "swordHorizon"
+                }
+              ],
+              "physMultiplier": 0.196354,
+              "attributeMultiplier": 0.294531,
+              "physFixed": 54.4,
+              "attributeFixed": 29.6,
+              "castFrames": 77
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-innerBalanceStrikeIII"
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 43,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-swordspecial-4-hit-final",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-innerBalanceStrikeIII"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ]
+    },
+    {
+      "id": "bellstrikeUmbra-sword-martial-qqq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQQ",
+      "breakdownName": "Crisscross - Inner Track",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQQQ",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ],
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "strategicSwordAdditionalAttack", "starweaveMartialBoost"],
+      "castFrames": 86,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 32,
+          "physMultiplier": 0.316911,
+          "attributeMultiplier": 0.475366,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-swordMartialQqq"
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 71,
+          "physMultiplier": 0.475366,
+          "attributeMultiplier": 0.713049,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 120,
+              "cooldownGroup": "bleedMechanismEnhancement-swordMartialQqq"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-1-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 1, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage14Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 0.3,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-level-0"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 87,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 37,
+          "physMultiplier": 0.402924,
+          "attributeMultiplier": 0.604386,
+          "physFixed": 111.6,
+          "attributeFixed": 60.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 61,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 71,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 81,
+          "physMultiplier": 0.268616,
+          "attributeMultiplier": 0.402924,
+          "physFixed": 74.4,
+          "attributeFixed": 40.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-charge-stage-2-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Charge Stage 2, 4-Hit",
+      "breakdownName": "Second Track Slash",
+      "tags": ["weapon:Sword", "attune:swordCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordChargeStage24Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 6
+        }
+      ],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 14,
+          "fromFrame": 13,
+          "stopAfterSec": 1.1833333333333333,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-sword-charge-stage-1-5-hit"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 142,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 91,
+          "physMultiplier": 0.67154,
+          "attributeMultiplier": 1.00731,
+          "physFixed": 186,
+          "attributeFixed": 101.25,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    }
+  ]
+}

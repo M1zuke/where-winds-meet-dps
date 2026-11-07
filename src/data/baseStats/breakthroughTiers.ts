@@ -151,6 +151,11 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
       { id: 4, stat: "momentum", value: 164 },
       { id: 5, stat: "body", value: 164 },
       { id: 6, stat: "defense", value: 164 },
+      // In-game world-level flat stats as of 2026-10-15.
+      { id: 7, stat: "minPhys", value: 14 },
+      { id: 8, stat: "maxPhys", value: 28 },
+      { id: 9, stat: "maxHp", value: 3500 },
+      { id: 10, stat: "physDef", value: 7 },
     ],
   },
   {
@@ -178,6 +183,10 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
       { id: 4, stat: "momentum", value: 178 },
       { id: 5, stat: "body", value: 178 },
       { id: 6, stat: "defense", value: 178 },
+      { id: 7, stat: "minPhys", value: 30 },
+      { id: 8, stat: "maxPhys", value: 60 },
+      { id: 9, stat: "maxHp", value: 7400 },
+      { id: 10, stat: "physDef", value: 15 },
     ],
   },
   {
@@ -205,6 +214,10 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
       { id: 4, stat: "momentum", value: 192 },
       { id: 5, stat: "body", value: 192 },
       { id: 6, stat: "defense", value: 192 },
+      { id: 7, stat: "minPhys", value: 48 },
+      { id: 8, stat: "maxPhys", value: 96 },
+      { id: 9, stat: "maxHp", value: 11600 },
+      { id: 10, stat: "physDef", value: 24 },
     ],
   },
   {
@@ -232,6 +245,10 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
       { id: 4, stat: "momentum", value: 208 },
       { id: 5, stat: "body", value: 208 },
       { id: 6, stat: "defense", value: 208 },
+      { id: 7, stat: "minPhys", value: 66 },
+      { id: 8, stat: "maxPhys", value: 132 },
+      { id: 9, stat: "maxHp", value: 16300 },
+      { id: 10, stat: "physDef", value: 33 },
     ],
   },
 ])

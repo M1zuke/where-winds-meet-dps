@@ -1,16 +1,21 @@
 import { describe, expect, it } from "vitest"
 import {
   ODDITY_BOARD,
+  RELEASED_ODDITY_BOARD,
+  accountOddityBoard,
   claimedOddityCost,
   claimedOddityNodes,
   closeUnclaimedOddityNodes,
+  convertedOddityNodes,
   getConfiguredBase,
   isOddityNodeClaimed,
   oddityBoardTotals,
   oddityContributions,
+  oddityEnduranceTotal,
   oddityHpTotal,
   oddityPhysDefTotal,
   withOddityNodeClaimed,
+  withReleasedOddityRegionsReset,
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
@@ -18,7 +23,7 @@ import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
 function rawTotals(): { min: number; max: number } {
   let min = 0
   let max = 0
-  for (const region of ODDITY_BOARD) {
+  for (const region of RELEASED_ODDITY_BOARD) {
     for (const node of region.nodes) {
       if (node.stat === "minPhys") min += node.value ?? 0
       if (node.stat === "maxPhys") max += node.value ?? 0
@@ -41,23 +46,76 @@ describe("oddity board", () => {
     expect(out["phys.max"]).toBeCloseTo(raw.max, 6)
   })
 
-  it("leaves the attack-melody total at 124", () => {
+  it("leaves the attack-melody total of the released regions at 136", () => {
     const raw = rawTotals()
-    expect(raw.min + raw.max).toBe(124)
+    expect(raw.min + raw.max).toBe(136)
   })
 
-  it("sums every region's Max HP melodies to 8150", () => {
-    expect(oddityHpTotal({})).toBe(8150)
+  it("sums every released region's Max HP melodies to 8650", () => {
+    expect(oddityHpTotal({})).toBe(8650)
   })
 
-  it("sums every region's Physical Defense melodies to 50", () => {
-    expect(oddityPhysDefTotal({})).toBe(50)
+  it("sums every released region's Physical Defense melodies to 54", () => {
+    expect(oddityPhysDefTotal({})).toBe(54)
   })
 
-  it("keeps Max HP and Physical Defense off the combat base, unlike the attack melodies", () => {
+  it("caps Max Endurance from every board at 40", () => {
+    expect(oddityEnduranceTotal({})).toBe(40)
+  })
+
+  it("caps Max Vitality from every board at 60", () => {
+    expect(oddityBoardTotals({}).vitality).toBe(60)
+  })
+
+  it("converts no resource melody to Max HP while every resource melody still fits under the caps", () => {
+    const flatMaxHp = RELEASED_ODDITY_BOARD.flatMap((region) => region.nodes)
+      .filter((node) => node.stat === "maxHp")
+      .reduce((sum, node) => sum + (node.value ?? 0), 0)
+    expect(oddityHpTotal({})).toBe(flatMaxHp)
+    expect(convertedOddityNodes({}).size).toBe(0)
+  })
+
+  it("lowers Max Endurance by a released melody when no later released region fills the gap", () => {
+    const releasedEarlier = withOddityNodeClaimed({}, "Hexi", 324, false)
+    expect(oddityBoardTotals(releasedEarlier).endurance).toBe(35)
+  })
+
+  it("adds nothing from an unreleased region", () => {
+    const withoutJiangnan = accountOddityBoard(RELEASED_ODDITY_BOARD, {}).totals
+    const withJiangnan = accountOddityBoard(ODDITY_BOARD, {}).totals
+    expect(withJiangnan.maxHp).toBeGreaterThan(withoutJiangnan.maxHp ?? 0)
+    expect(withJiangnan.physDef).toBeGreaterThan(withoutJiangnan.physDef ?? 0)
+    expect(oddityBoardTotals({})).toEqual(withoutJiangnan)
+  })
+
+  it("keeps an unreleased region out of the released board", () => {
+    expect(RELEASED_ODDITY_BOARD.map((region) => region.key)).not.toContain("Jiangnan")
+    expect(ODDITY_BOARD.map((region) => region.key)).toContain("Jiangnan")
+  })
+
+  it("converts a later region's resource melodies once the earlier regions fill the caps", () => {
+    const accounting = accountOddityBoard(ODDITY_BOARD, {})
+    expect(accounting.totals.endurance).toBe(40)
+    expect(accounting.totals.vitality).toBe(60)
+    expect(accounting.converted.size).toBeGreaterThan(0)
+    expect(accountOddityBoard(RELEASED_ODDITY_BOARD, {}).converted.size).toBe(0)
+  })
+
+  it("ignores a stored entry for an unreleased region", () => {
+    const stored: UnclaimedOddityNodes = { Jiangnan: [700] }
+    expect(oddityBoardTotals(stored)).toEqual(oddityBoardTotals({}))
+  })
+
+  it("resets the released regions and keeps the stored entry of an unreleased one", () => {
+    const stored: UnclaimedOddityNodes = { Jiangnan: [700], Qingzhou: [600] }
+    expect(withReleasedOddityRegionsReset(stored)).toEqual({ Jiangnan: [700] })
+  })
+
+  it("keeps Max HP, Physical Defense and Endurance off the combat base, unlike the attack melodies", () => {
     const out = oddityContributions({})
     expect(out.maxHp).toBeUndefined()
     expect(out.physDef).toBeUndefined()
+    expect(out.endurance).toBeUndefined()
   })
 
   it("contributes nothing once every region is released", () => {
@@ -66,6 +124,7 @@ describe("oddity board", () => {
     expect(oddityContributions(released)["phys.max"] ?? 0).toBe(0)
     expect(oddityHpTotal(released)).toBe(0)
     expect(oddityPhysDefTotal(released)).toBe(0)
+    expect(oddityEnduranceTotal(released)).toBe(0)
   })
 
   it("seeds a fully claimed board when inputs carry no oddity field", () => {
@@ -133,11 +192,10 @@ describe("oddity board", () => {
 
   it("gives every melody an icon, a chapter and a cost", () => {
     for (const region of ODDITY_BOARD) {
-      expect(region.chapters).toHaveLength(12)
       for (const node of region.nodes) {
         expect(node.icon).not.toBe("")
         expect(node.chapter).toBeGreaterThanOrEqual(1)
-        expect(node.chapter).toBeLessThanOrEqual(12)
+        expect(node.chapter).toBeLessThanOrEqual(region.chapters.length)
         expect(node.cost).toBeGreaterThan(0)
       }
     }
@@ -147,6 +205,7 @@ describe("oddity board", () => {
     const totals = oddityBoardTotals({})
     expect(totals.maxHp).toBe(oddityHpTotal({}))
     expect(totals.physDef).toBe(oddityPhysDefTotal({}))
+    expect(totals.endurance).toBe(oddityEnduranceTotal({}))
     expect(totals.maxPhys).toBe(rawTotals().max)
     expect(totals.minPhys).toBe(rawTotals().min)
   })

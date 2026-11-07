@@ -7,11 +7,12 @@ import {
 } from "../../src/definitions/baseStats/breakthroughs"
 import {
   averageEnhancementBonus,
-  DEFAULT_ENHANCEMENTS,
+  defaultEnhancementLevels,
   ODDITY_BOARD,
   effectiveMaxHp,
   enhancementHpTotal,
   getConfiguredBase,
+  globalBase,
   oddityHpTotal,
   playerAttributes,
   closeDisabledTalentNodes,
@@ -107,23 +108,24 @@ describe("Max HP", () => {
   })
 
   it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, without the average-level percentage", () => {
-    const attrs = playerAttributes(17)
+    const attrs = playerAttributes(18)
     const baseHp = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.maxHp
-    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    const bonus = averageEnhancementBonus(defaultEnhancementLevels(18))
     const expected =
       baseHp +
       talentStatTotal("maxHp") +
-      arsenalHp(17) +
+      attributeValue(18, "maxHp") +
+      arsenalHp(18) +
       attrs.body * BODY_PER_POINT.hp +
       attrs.defense * DEFENSE_PER_POINT.hp +
-      enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
+      enhancementHpTotal(defaultEnhancementLevels(18)) +
       bonus.maxHp +
       oddityHpTotal({})
-    expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
+    expect(totalMaxHp(18, [])).toBeCloseTo(expected, 9)
   })
 
   it("applies the average-level percentage only to the effective figure, leaving the raw total alone", () => {
-    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    const bonus = averageEnhancementBonus(defaultEnhancementLevels(17))
     expect(bonus.percent).toBeGreaterThan(0)
     expect(effectiveMaxHp(17, [])).toBeCloseTo(totalMaxHp(17, []) * (1 + bonus.percent), 9)
   })
@@ -155,6 +157,49 @@ describe("Max HP", () => {
   })
 })
 
+describe("Constitution and Defense lines rolled on gear", () => {
+  function greavesWithLine(word: "body" | "defense", value: number): GearPiece {
+    return {
+      id: "attribute-line-greaves",
+      slot: "greaves",
+      level: 96,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word, value, retuned: true },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+  }
+
+  const emptyGreaves = greavesWithLine("body", 0)
+
+  it("a Constitution line on gear adds 60 Max HP per point", () => {
+    const delta = totalMaxHp(17, [greavesWithLine("body", 40)]) - totalMaxHp(17, [emptyGreaves])
+    expect(BODY_PER_POINT.hp).toBe(60)
+    expect(delta).toBeCloseTo(40 * BODY_PER_POINT.hp, 9)
+  })
+
+  it("a Defense line on gear adds 17 Max HP and 0.57 Physical Defense per point", () => {
+    const withLine = [greavesWithLine("defense", 40)]
+    const maxHpDelta = totalMaxHp(17, withLine) - totalMaxHp(17, [emptyGreaves])
+    const physDefDelta = totalPhysDef(17, withLine) - totalPhysDef(17, [emptyGreaves])
+    expect(DEFENSE_PER_POINT.hp).toBe(17)
+    expect(DEFENSE_PER_POINT.physDef).toBe(0.57)
+    expect(maxHpDelta).toBeCloseTo(40 * DEFENSE_PER_POINT.hp, 9)
+    expect(physDefDelta).toBeCloseTo(40 * DEFENSE_PER_POINT.physDef, 9)
+  })
+})
+
 describe("the character-level row's Physical Defense column", () => {
   it("carries Physical Defense 128 at the pinned level", () => {
     expect(BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.physDef).toBe(128)
@@ -162,8 +207,8 @@ describe("the character-level row's Physical Defense column", () => {
 
   it("reaches totalPhysDef, moving it by exactly the row's own value", () => {
     const zeroEnhancements = Object.fromEntries(
-      Object.keys(DEFAULT_ENHANCEMENTS).map((slot) => [slot, 0]),
-    ) as typeof DEFAULT_ENHANCEMENTS
+      Object.keys(defaultInputs.enhancements).map((slot) => [slot, 0]),
+    ) as typeof defaultInputs.enhancements
     const disabledPhysDef = disableTalentGroup("physDef")
     const released = Object.fromEntries(
       ODDITY_BOARD.map((region) => [region.key, region.nodes.map((node) => node.id)]),
@@ -210,7 +255,7 @@ describe("tiers with no measured attribute row", () => {
   it("reports every tier from 18 up from its own row, not the highest measured one below it", () => {
     for (const breakthrough of [18, 19, 20, 21]) {
       expect(breakthroughAttributes(breakthrough)).not.toEqual(breakthroughAttributes(17))
-      expect(breakthroughAttributes(breakthrough)).toHaveLength(6)
+      expect(breakthroughAttributes(breakthrough)).toHaveLength(10)
     }
   })
 
@@ -246,5 +291,44 @@ describe("the merged tier table", () => {
     expect(attributeValue(16, "agility")).toBe(138)
     expect(attributeValue(16, "momentum")).toBe(138)
     expect(attributeValue(16, "precisionRate")).toBe(0.153)
+  })
+})
+
+describe("the world-level flat stats from breakthrough 18", () => {
+  const FLAT_STATS = [
+    { breakthrough: 18, minPhys: 14, maxPhys: 28, maxHp: 3500, physDef: 7 },
+    { breakthrough: 19, minPhys: 30, maxPhys: 60, maxHp: 7400, physDef: 15 },
+    { breakthrough: 20, minPhys: 48, maxPhys: 96, maxHp: 11600, physDef: 24 },
+    { breakthrough: 21, minPhys: 66, maxPhys: 132, maxHp: 16300, physDef: 33 },
+  ]
+
+  it.each(FLAT_STATS)(
+    "grants breakthrough $breakthrough its flat attack, HP and defense",
+    (row) => {
+      for (const stat of ["minPhys", "maxPhys", "maxHp", "physDef"] as const) {
+        expect(attributeValue(row.breakthrough, stat), stat).toBe(row[stat])
+      }
+    },
+  )
+
+  it("grants none of them at breakthrough 17", () => {
+    for (const stat of ["minPhys", "maxPhys", "maxHp", "physDef"]) {
+      expect(attributeValue(17, stat), stat).toBe(0)
+    }
+  })
+
+  it("reaches the panel: Max HP, Physical Defense and the physical attack base all rise by the tier's figure", () => {
+    const withTier = (breakthrough: number, disabled: DisabledTalentNodes) => ({
+      hp: totalMaxHp(breakthrough, [], disabled),
+      physDef: totalPhysDef(breakthrough, [], disabled),
+      base: globalBase(breakthrough, disabled),
+    })
+    const everyNode = closeDisabledTalentNodes(TALENT_BOARD.map((node) => node.id))
+    const at17 = withTier(17, everyNode)
+    const at18 = withTier(18, everyNode)
+    expect(at18.hp - at17.hp).toBeGreaterThanOrEqual(3500)
+    expect(at18.physDef - at17.physDef).toBeGreaterThanOrEqual(7)
+    expect(at18.base["phys.min"] - at17.base["phys.min"]).toBeGreaterThanOrEqual(14)
+    expect(at18.base["phys.max"] - at17.base["phys.max"]).toBeGreaterThanOrEqual(28)
   })
 })

@@ -1,13 +1,16 @@
 import { describe, expect, it } from "vitest"
 import {
   GearImportError,
+  bowPieces,
   buildImportDiagnostics,
   parseDashboardGearPayload,
   previewablePieces,
 } from "../../src/ui/features/gear/import-gear-dialog/dashboardGearPayload"
 import fixture from "./fixtures/dashboardRoleInfo.json"
+import fullFixture from "./fixtures/dashboardRoleInfoMartialArts.json"
 
 const fixtureText = JSON.stringify(fixture)
+const fullFixtureText = JSON.stringify(fullFixture)
 
 function pieceFor(text: string, gameSlotId: string) {
   const found = parseDashboardGearPayload(text).pieces.find(
@@ -91,15 +94,23 @@ describe("slot resolution", () => {
     expect(pieceFor(fixtureText, "3").slot).toEqual({ kind: "mapped", slot: "helm" })
   })
 
-  it("marks the bow as having no app equivalent", () => {
-    expect(pieceFor(fixtureText, "9").slot).toEqual({ kind: "noAppEquivalent" })
+  it("routes game slot 9 to the thumb ring and slot 21 to the bow", () => {
+    expect(pieceFor(fullFixtureText, "9").slot).toEqual({ kind: "bow", slot: "thumbRing" })
+    expect(pieceFor(fullFixtureText, "21").slot).toEqual({ kind: "bow", slot: "bow" })
   })
 
   it("marks a slot id absent from the table", () => {
     expect(pieceFor(fixtureText, "33").slot).toEqual({ kind: "unknownSlotId" })
   })
 
-  it("hides bow and ring from the preview but keeps unknown slots visible", () => {
+  it("lists bow and ring in their own preview group, not among the gear pieces", () => {
+    const result = parseDashboardGearPayload(fullFixtureText)
+    expect(bowPieces(result).map((piece) => piece.gameSlotId)).toEqual(["21", "9"])
+    expect(previewablePieces(result).map((piece) => piece.gameSlotId)).not.toContain("9")
+    expect(previewablePieces(result).map((piece) => piece.gameSlotId)).not.toContain("21")
+  })
+
+  it("hides bow and ring from the gear preview but keeps unknown slots visible", () => {
     const shown = previewablePieces(parseDashboardGearPayload(fixtureText))
     expect(shown.map((piece) => piece.gameSlotId)).toEqual(["1", "2", "3", "33"])
   })
@@ -208,6 +219,20 @@ describe("buildImportDiagnostics", () => {
     expect(weapon.baseAffixes).toHaveLength(5)
     expect(weapon.baseAffixes[0].affixId).toBe("9713001")
     expect(weapon.attunement.affixId).toBe("280701")
+  })
+
+  it("carries each piece's set suffix and the bow level, rarity and set", () => {
+    const diagnostics = JSON.parse(
+      buildImportDiagnostics(parseDashboardGearPayload(fullFixtureText)),
+    )
+    const byGameSlot = (gameSlotId: string) =>
+      diagnostics.pieces.find((piece: { gameSlotId: string }) => piece.gameSlotId === gameSlotId)
+    expect(byGameSlot("1").suffix).toBe(3)
+    expect(byGameSlot("3").suffix).toBe(4)
+    expect(byGameSlot("21").bow).toEqual({
+      reading: { kind: "importable", part: "bow", level: 96, rarity: "legendary" },
+      set: "affinity",
+    })
   })
 
   it("leaks no role identity", () => {

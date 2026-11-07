@@ -13,10 +13,22 @@ export interface StatusWindow {
   // Write order, not time order — `asOf` walks it to answer "as this ledger
   // stood before a given write" for a query that must not see its own cause.
   seq?: number
-  extensions?: Array<{ frame: number; amount: number }>
+  extensions?: WindowEndEdit[]
+  cuts?: WindowEndEdit[]
+}
+
+export interface WindowEndEdit {
+  frame: number
+  amount: number
+  owner: number
 }
 
 export const UNOWNED = Number.NEGATIVE_INFINITY
+
+export interface OwnerScope {
+  ids: ReadonlySet<string>
+  owner: number
+}
 
 export interface StatusView {
   activeIdsAt(frame: number): string[]
@@ -24,7 +36,24 @@ export interface StatusView {
   stacksAt(id: string, frame: number): number
   conditionStacksAt(id: string, frame: number): number
   remainingFramesAt(id: string, frame: number): number | undefined
+  framesSinceLastEnd(id: string, frame: number): number | undefined
+  // The counter counterpart of `framesSinceLastEnd`, for an id with no
+  // window to close — see `docs/TIMELINE.md` § "The class-buff system".
+  framesSinceStacksBelowThreshold(id: string, frame: number, threshold: number): number | undefined
+  frameStacksLastReachedThreshold(id: string, frame: number, threshold: number): number | undefined
   windowsOf(id: string): readonly StatusWindow[]
+}
+
+// The latest window end at or before `frame` — an in-progress window (its own
+// end past `frame`) does not count, so this reads "since it last closed", not
+// "since it last opened".
+function latestEndAt(windows: Iterable<StatusWindow>, frame: number): number | undefined {
+  let latestEnd: number | undefined
+  for (const window of windows) {
+    const endHere = windowEndAt(window, frame)
+    if (endHere <= frame && (latestEnd === undefined || endHere > latestEnd)) latestEnd = endHere
+  }
+  return latestEnd
 }
 
 // An extension applied after `frame` has not happened yet from that frame's
@@ -37,22 +66,57 @@ export function windowEndAt(window: StatusWindow, frame: number): number {
 }
 
 function cloneWindow(window: StatusWindow): StatusWindow {
-  return window.extensions ? { ...window, extensions: [...window.extensions] } : { ...window }
+  const clone = { ...window }
+  if (window.extensions) clone.extensions = [...window.extensions]
+  if (window.cuts) clone.cuts = [...window.cuts]
+  return clone
+}
+
+function withoutHiddenEdits(
+  window: StatusWindow,
+  visible: (owner: number, frame: number) => boolean,
+): StatusWindow {
+  const clone = cloneWindow(window)
+  if (clone.extensions) {
+    for (const edit of clone.extensions)
+      if (!visible(edit.owner, edit.frame)) clone.end -= edit.amount
+    clone.extensions = clone.extensions.filter((edit) => visible(edit.owner, edit.frame))
+  }
+  if (clone.cuts) {
+    for (const edit of clone.cuts) if (!visible(edit.owner, edit.frame)) clone.end += edit.amount
+    clone.cuts = clone.cuts.filter((edit) => visible(edit.owner, edit.frame))
+  }
+  return clone
+}
+
+export interface WindowObserver {
+  opened?(id: string, window: StatusWindow): void
+  extended?(id: string, window: StatusWindow): void
+  cut?(id: string, window: StatusWindow): void
 }
 
 export class StatusLedger implements StatusView {
   private readonly windows = new Map<string, StatusWindow[]>()
+  private readonly windowIds = new WeakMap<StatusWindow, string>()
+  private observer: WindowObserver | null = null
   private readonly stacks = new Map<
     string,
     Array<{ frame: number; value: number; owner: number; seq: number }>
   >()
   private readonly permanentOpened = new Set<string>()
+  private readonly permanentWindows: StatusWindow[] = []
   private writeSeq = 0
 
   constructor(
     private readonly spanStart: number,
-    private readonly spanEnd: number,
+    private spanEnd: number,
   ) {}
+
+  setSpanEnd(spanEnd: number): void {
+    for (const window of this.permanentWindows)
+      if (window.end === this.spanEnd) window.end = spanEnd
+    this.spanEnd = spanEnd
+  }
 
   // How many writes this ledger has taken so far — pair with `asOf` to give a
   // query a view that stops just before a write it must not see.
@@ -60,17 +124,25 @@ export class StatusLedger implements StatusView {
     return this.writeSeq
   }
 
+  observeWindows(observer: WindowObserver): void {
+    this.observer = observer
+  }
+
   pushWindow(id: string, start: number, end: number, owner: number = UNOWNED): void {
     const window: StatusWindow = { start, end, owner, seq: this.writeSeq++ }
     const existing = this.windows.get(id)
     if (existing) existing.push(window)
     else this.windows.set(id, [window])
+    this.windowIds.set(window, id)
+    this.observer?.opened?.(id, window)
   }
 
-  openPermanent(id: string): void {
+  openPermanent(id: string, causedAtFrame?: number): void {
     if (this.permanentOpened.has(id)) return
     this.permanentOpened.add(id)
-    this.pushWindow(id, this.spanStart, this.spanEnd)
+    this.pushWindow(id, Math.max(this.spanStart, causedAtFrame ?? this.spanStart), this.spanEnd)
+    const windows = this.windows.get(id)!
+    this.permanentWindows.push(windows[windows.length - 1])
   }
 
   constrainWindows(id: string, intervals: readonly { start: number; end: number }[]): void {
@@ -87,18 +159,50 @@ export class StatusLedger implements StatusView {
   recordStack(id: string, frame: number, value: number, owner: number = UNOWNED): void {
     const entry = { frame, value, owner, seq: this.writeSeq++ }
     const existing = this.stacks.get(id)
-    if (existing) existing.push(entry)
-    else this.stacks.set(id, [entry])
+    if (!existing) {
+      this.stacks.set(id, [entry])
+      return
+    }
+    let insertAt = existing.length
+    while (insertAt > 0 && existing[insertAt - 1].frame > frame) insertAt--
+    existing.splice(insertAt, 0, entry)
   }
 
-  throughOwner(ownerLimit: number): StatusLedger {
+  extendWindow(window: StatusWindow, frame: number, nextEnd: number, owner: number): void {
+    const amount = nextEnd - window.end
+    window.end = nextEnd
+    if (amount > 0) (window.extensions ??= []).push({ frame, amount, owner })
+    const id = this.windowIds.get(window)
+    if (id !== undefined) this.observer?.extended?.(id, window)
+  }
+
+  cutWindowsAt(id: string, frame: number, owner: number): void {
+    for (const window of this.windows.get(id) ?? [])
+      if (window.start < frame && frame < window.end) this.cutWindow(window, frame, owner)
+  }
+
+  cutWindow(window: StatusWindow, frame: number, owner: number): void {
+    const amount = window.end - frame
+    window.end = frame
+    if (amount > 0) (window.cuts ??= []).push({ frame, amount, owner })
+    const id = this.windowIds.get(window)
+    if (id !== undefined) this.observer?.cut?.(id, window)
+  }
+
+  throughOwner(ownerLimit: number, unownedThroughFrame = Number.POSITIVE_INFINITY): StatusLedger {
+    const visible = (owner: number, frame: number) =>
+      owner <= ownerLimit && (owner !== UNOWNED || frame <= unownedThroughFrame)
     const view = new StatusLedger(this.spanStart, this.spanEnd)
     for (const [id, windows] of this.windows) {
-      const kept = windows.filter((window) => (window.owner ?? UNOWNED) <= ownerLimit)
-      if (kept.length > 0) view.windows.set(id, kept.map(cloneWindow))
+      const kept = windows.filter((window) => visible(window.owner ?? UNOWNED, window.start))
+      if (kept.length > 0)
+        view.windows.set(
+          id,
+          kept.map((window) => withoutHiddenEdits(window, visible)),
+        )
     }
     for (const [id, history] of this.stacks) {
-      const kept = history.filter((entry) => entry.owner <= ownerLimit)
+      const kept = history.filter((entry) => visible(entry.owner, entry.frame))
       if (kept.length > 0) view.stacks.set(id, kept)
     }
     return view
@@ -107,6 +211,10 @@ export class StatusLedger implements StatusView {
   hasStackHistory(id: string): boolean {
     const history = this.stacks.get(id)
     return !!history && history.length > 0
+  }
+
+  stackHistory(id: string): readonly { frame: number; value: number }[] {
+    return (this.stacks.get(id) ?? []).map(({ frame, value }) => ({ frame, value }))
   }
 
   stacksAt(id: string, frame: number): number {
@@ -155,6 +263,43 @@ export class StatusLedger implements StatusView {
     return end === undefined ? undefined : end - frame
   }
 
+  framesSinceLastEnd(id: string, frame: number): number | undefined {
+    const latestEnd = latestEndAt(this.windows.get(id) ?? [], frame)
+    return latestEnd === undefined ? undefined : frame - latestEnd
+  }
+
+  framesSinceStacksBelowThreshold(
+    id: string,
+    frame: number,
+    threshold: number,
+  ): number | undefined {
+    const history = this.stacks.get(id)
+    if (!history) return undefined
+    let latestDrop: number | undefined
+    let previousValue = 0
+    for (const entry of history) {
+      if (entry.frame > frame) break
+      if (previousValue >= threshold && entry.value < threshold) latestDrop = entry.frame
+      previousValue = entry.value
+    }
+    return latestDrop === undefined ? undefined : frame - latestDrop
+  }
+
+  frameStacksLastReachedThreshold(
+    id: string,
+    frame: number,
+    threshold: number,
+  ): number | undefined {
+    let latestRise: number | undefined
+    let previousValue = 0
+    for (const entry of this.stacks.get(id) ?? []) {
+      if (entry.frame > frame) break
+      if (previousValue < threshold && entry.value >= threshold) latestRise = entry.frame
+      previousValue = entry.value
+    }
+    return latestRise
+  }
+
   windowsOf(id: string): readonly StatusWindow[] {
     return this.windows.get(id) ?? []
   }
@@ -162,17 +307,19 @@ export class StatusLedger implements StatusView {
   // A view that only sees writes strictly before `beforeSeq` — what a hit's
   // own damage query reads, so a status its own trigger just opened cannot
   // reach its own hit.
-  asOf(beforeSeq: number): StatusView {
+  asOf(beforeSeq: number, ownerScope?: OwnerScope): StatusView {
     const windowsFor = (id: string): StatusWindow[] =>
       (this.windows.get(id) ?? []).filter((window) => (window.seq ?? 0) < beforeSeq)
     const activeAt = (id: string, frame: number): boolean =>
       windowsFor(id).some((window) => frame >= window.start && frame < window.end)
+    const inScope = (id: string, entry: { owner: number }): boolean =>
+      !ownerScope || !ownerScope.ids.has(id) || entry.owner === ownerScope.owner
     const stackValueAt = (id: string, frame: number): number => {
       let bestFrame = Number.NEGATIVE_INFINITY
       let bestSeq = -1
       let found = 0
       for (const entry of this.stacks.get(id) ?? []) {
-        if (entry.seq >= beforeSeq || entry.frame > frame) continue
+        if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
         if (entry.frame > bestFrame || (entry.frame === bestFrame && entry.seq > bestSeq)) {
           bestFrame = entry.frame
           bestSeq = entry.seq
@@ -198,6 +345,30 @@ export class StatusLedger implements StatusView {
             end = endHere
         }
         return end === undefined ? undefined : end - frame
+      },
+      framesSinceLastEnd: (id, frame) => {
+        const latestEnd = latestEndAt(windowsFor(id), frame)
+        return latestEnd === undefined ? undefined : frame - latestEnd
+      },
+      framesSinceStacksBelowThreshold: (id, frame, threshold) => {
+        let latestDrop: number | undefined
+        let previousValue = 0
+        for (const entry of this.stacks.get(id) ?? []) {
+          if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
+          if (previousValue >= threshold && entry.value < threshold) latestDrop = entry.frame
+          previousValue = entry.value
+        }
+        return latestDrop === undefined ? undefined : frame - latestDrop
+      },
+      frameStacksLastReachedThreshold: (id, frame, threshold) => {
+        let latestRise: number | undefined
+        let previousValue = 0
+        for (const entry of this.stacks.get(id) ?? []) {
+          if (entry.seq >= beforeSeq || entry.frame > frame || !inScope(id, entry)) continue
+          if (previousValue < threshold && entry.value >= threshold) latestRise = entry.frame
+          previousValue = entry.value
+        }
+        return latestRise
       },
       windowsOf: windowsFor,
     }

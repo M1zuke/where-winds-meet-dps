@@ -6,4 +6,11 @@ export const SET_ID = {
   cleftpeak: "cleftpeak",
   tiltrim: "tiltrim",
   brimflow: "brimflow",
+  calmwaters: "calmwaters",
+  ivorybloom: "ivorybloom",
+  starweave: "starweave",
+  swayingHeights: "swayingHeights",
+  etherwrath: "etherwrath",
+  swallowcall: "swallowcall",
+  swiftGale: "swiftGale",
 } as const

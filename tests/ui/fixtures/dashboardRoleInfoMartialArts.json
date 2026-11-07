@@ -1,0 +1,199 @@
+{
+  "source": "wwm-dashboard",
+  "v": 1,
+  "capturedAt": "2026-10-12T00:00:00.000Z",
+  "roleName": "Fixture",
+  "level": 100,
+  "school": 11,
+  "kongfuMain": 10101,
+  "kongfuSub": 10201,
+  "passiveSlots": [154, 81, 151, 153],
+  "wearEquips": {
+    "11": 1101666,
+    "1": 1101672,
+    "2": 1101643,
+    "3": 1101661,
+    "4": 1101662,
+    "5": 1101634,
+    "8": 1101633,
+    "9": 1101667,
+    "10": 1101665,
+    "21": 1101671
+  },
+  "wearEquipsDetailed": {
+    "11": {
+      "no": "1101666",
+      "exVo": {
+        "durability": 80,
+        "suffix": 3,
+        "baseAttrs": { "MAX_W_ATK": 129 },
+        "baseAffixes": [
+          { "equipmentDetails": [9733002, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793105, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9793102, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9793121, 0.03008, 0.94, 3, true] },
+          { "equipmentDetails": [280701, 11, 1, 3, true] }
+        ]
+      }
+    },
+    "1": {
+      "no": "1101672",
+      "exVo": {
+        "durability": 82,
+        "suffix": 3,
+        "baseAttrs": { "MIN_W_ATK": 65, "MAX_W_ATK": 151 },
+        "baseAffixes": [
+          { "equipmentDetails": [9713002, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793008, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793015, 0.05828, 0.94, 3, true] },
+          { "equipmentDetails": [9793013, 0.0846, 0.94, 3, true] },
+          { "equipmentDetails": [9793005, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [280701, 11, 1, 3, true] }
+        ]
+      }
+    },
+    "2": {
+      "no": "1101643",
+      "exVo": {
+        "durability": 82,
+        "suffix": 3,
+        "baseAttrs": { "MIN_W_ATK": 59, "MAX_W_ATK": 136 },
+        "baseAffixes": [
+          { "equipmentDetails": [9712002, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9794005, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9794014, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9794002, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9794008, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [280701, 11, 1, 3, true] }
+        ]
+      }
+    },
+    "3": {
+      "no": "1101661",
+      "exVo": {
+        "durability": 79,
+        "suffix": 4,
+        "baseAttrs": { "W_DEF": 22, "HP_MAX": 5774 },
+        "baseAffixes": [
+          { "equipmentDetails": [9743005, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9793120, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9793111, 41.548, 0.94, 3, true] },
+          { "equipmentDetails": [9793108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793102, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [280103, 0.06, 1, 3, true] }
+        ]
+      }
+    },
+    "4": {
+      "no": "1101662",
+      "exVo": {
+        "durability": 82,
+        "suffix": 4,
+        "baseAttrs": { "W_DEF": 22, "HP_MAX": 11547 },
+        "baseAffixes": [
+          { "equipmentDetails": [9743005, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9793102, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9793108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793120, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9793117, 41.548, 0.94, 3, false] },
+          { "equipmentDetails": [280103, 0.06, 1, 3, true] }
+        ]
+      }
+    },
+    "5": {
+      "no": "1101634",
+      "exVo": {
+        "durability": 74,
+        "suffix": 4,
+        "baseAttrs": { "W_DEF": 39, "HP_MAX": 5196 },
+        "baseAffixes": [
+          { "equipmentDetails": [9752007, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9794108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9794124, 0.03008, 0.94, 3, true] },
+          { "equipmentDetails": [9794120, 0.041359999999999994, 0.94, 3, true] },
+          { "equipmentDetails": [9794102, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [280103, 0.06, 1, 3, true] }
+        ]
+      }
+    },
+    "8": {
+      "no": "1101633",
+      "exVo": {
+        "durability": 81,
+        "suffix": 4,
+        "baseAttrs": { "W_DEF": 20, "HP_MAX": 5196 },
+        "baseAffixes": [
+          { "equipmentDetails": [9752007, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9794119, 0.0846, 0.94, 3, true] },
+          { "equipmentDetails": [9794108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9794105, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9794102, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [280103, 0.06, 1, 3, true] }
+        ]
+      }
+    },
+    "9": {
+      "no": "1101667",
+      "exVo": {
+        "durability": 65,
+        "suffix": 46,
+        "baseAttrs": { "ARCHER_WEAKPOINT_DAMAGE": 342 },
+        "baseAffixes": [
+          { "equipmentDetails": [9773001, 0.187, 0.9444444444444444, 3, false] },
+          { "equipmentDetails": [9783003, 0.165, 0.8333333333333334, 2, false] },
+          { "equipmentDetails": [9783007, 0.77, 0.9746835443037974, 3, false] },
+          { "equipmentDetails": [9783006, 0.055, 0.9322033898305085, 3, false] },
+          { "equipmentDetails": [9783004, 0.35000000000000003, 0.8974358974358975, 2, false] }
+        ]
+      }
+    },
+    "10": {
+      "no": "1101665",
+      "exVo": {
+        "durability": 77,
+        "suffix": 3,
+        "baseAttrs": { "MIN_W_ATK": 86 },
+        "baseAffixes": [
+          { "equipmentDetails": [9733002, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793105, 46.43599999999999, 0.9399999999999998, 3, true] },
+          { "equipmentDetails": [9793121, 0.03008, 0.94, 3, true] },
+          { "equipmentDetails": [9793108, 73.13199999999999, 0.94, 3, true] },
+          { "equipmentDetails": [9793119, 0.0846, 0.94, 3, true] },
+          { "equipmentDetails": [280701, 11, 1, 3, true] }
+        ]
+      }
+    },
+    "21": {
+      "no": "1101671",
+      "exVo": {
+        "durability": 47,
+        "suffix": 46,
+        "baseAttrs": { "ARCHER_DAMAGE": 342 },
+        "baseAffixes": [
+          { "equipmentDetails": [9773002, 0.156, 0.7878787878787878, 2, false] },
+          { "equipmentDetails": [9783006, 0.051000000000000004, 0.8644067796610171, 2, false] },
+          { "equipmentDetails": [9783009, 0.34, 0.8717948717948718, 2, false] },
+          { "equipmentDetails": [9783005, 3.4000000000000004, 0.8717948717948719, 2, false] },
+          { "equipmentDetails": [9783002, 0.19, 0.9595959595959596, 3, false] }
+        ]
+      }
+    }
+  },
+  "unrecognizedPayloadKeys": [
+    "roleId",
+    "roleAvatar",
+    "bodyType",
+    "crDay",
+    "onlineTime",
+    "createTime",
+    "bg",
+    "scores58",
+    "scores59",
+    "scores60",
+    "maxXiuWeiKungFu",
+    "fashionScore",
+    "xiuWeiKungFu",
+    "battleQs"
+  ]
+}

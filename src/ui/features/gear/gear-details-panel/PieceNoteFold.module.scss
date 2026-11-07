@@ -1,0 +1,65 @@
+@use "mixins";
+
+.fold {
+  margin-top: 12px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary::before {
+  content: "▸";
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+}
+
+.fold[open] .summary::before {
+  content: "▾";
+}
+
+.title {
+  font-size: 0.72em;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.preview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82em;
+  color: var(--color-text-dim);
+}
+
+.empty {
+  color: var(--color-text-muted);
+}
+
+.body {
+  padding: 4px 10px 10px;
+}
+
+.noteInput {
+  @include mixins.field-input;
+  @include mixins.field-states;
+  min-height: 64px;
+  resize: vertical;
+  font-family: inherit;
+}

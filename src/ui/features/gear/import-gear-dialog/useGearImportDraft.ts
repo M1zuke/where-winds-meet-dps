@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
-import type { GearLevel, GearPiece, GearRarity, Inputs } from "../../../../engine/types"
+import { EMPTY_BOW_GEAR } from "../../../../engine/types"
+import type { BowGear, GearLevel, GearPiece, GearRarity, Inputs } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import {
   AFFIX_MAPPINGS_FILE_NAME,
@@ -10,6 +11,7 @@ import {
 } from "./affixChoiceStore"
 import {
   GearImportError,
+  bowPieces,
   buildImportDiagnostics,
   parseDashboardGearPayload,
   previewablePieces,
@@ -19,6 +21,7 @@ import {
 } from "./dashboardGearPayload"
 import {
   resolveAgainstBuild,
+  toBowGear,
   toGearPieces,
   type AffixChoices,
   type IdentityOverrides,
@@ -36,14 +39,14 @@ export function useGearImportDraft(inputs: Inputs) {
     if (!pasted.trim()) return { result: null, error: "" }
     try {
       return {
-        result: resolveAgainstBuild(parseDashboardGearPayload(pasted), inputs, choices),
+        result: resolveAgainstBuild(parseDashboardGearPayload(pasted), inputs, choices, overrides),
         error: "",
       }
     } catch (failure) {
       if (failure instanceof GearImportError) return { result: null, error: failure.message }
       throw failure
     }
-  }, [pasted, inputs, choices])
+  }, [pasted, inputs, choices, overrides])
 
   const result = parsed.result
   const summary = useMemo(() => (result ? summarizeImport(result) : null), [result])
@@ -52,6 +55,8 @@ export function useGearImportDraft(inputs: Inputs) {
     [result, overrides],
   )
   const shown = useMemo((): ImportedPiece[] => (result ? previewablePieces(result) : []), [result])
+  const bowGear = useMemo((): BowGear => (result ? toBowGear(result) : EMPTY_BOW_GEAR), [result])
+  const shownBow = useMemo((): ImportedPiece[] => (result ? bowPieces(result) : []), [result])
   const innerWays = result?.innerWays ?? []
   const mindMethods = useMemo(() => (result ? toMindMethods(result.innerWays) : null), [result])
 
@@ -123,6 +128,8 @@ export function useGearImportDraft(inputs: Inputs) {
     summary,
     pieces,
     shown,
+    bowGear,
+    shownBow,
     innerWays,
     mindMethods,
     overrides,
@@ -134,6 +141,7 @@ export function useGearImportDraft(inputs: Inputs) {
     copyNotice,
     copyDiagnostics,
     breakthrough: inputs.breakthrough,
+    classId: inputs.classId,
   }
 }
 

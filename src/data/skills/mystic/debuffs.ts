@@ -12,14 +12,18 @@ export const toadPoison = defineDebuff({
   activation: "triggered",
   durationFrames: 601,
   effects: [],
+  tags: [ROLE.toadVenom],
   dot: {
     tickIntervalFrames: 300,
-    physMultiplier: 1.62189,
-    physFixed: 243.7,
-    attributeMultiplier: 1.62189,
+    physMultiplier: 1.622006,
+    physFixed: 254.7984,
+    // In-game values as of 2026-10-15.
+    attributeMultiplier: 2.433009,
     attributeFixed: 0,
     attributeAttack: "",
-    skillType: "sustain",
+    // In-game hit type as of 2026-09-24: a direct hit, not a DoT tick.
+    skillType: "mystic",
+    directHit: true,
     mysticCategory: "area-debuff",
     count: 1,
     perStackShapes: null,
@@ -28,7 +32,36 @@ export const toadPoison = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [],
+})
+
+export const toadPoisonFury = defineDebuff({
+  id: DEBUFF.toadPoisonFury,
+  classId: MYSTIC_ARTS_CLASS_ID,
+  name: "Toad Poison (Fury)",
+  activation: "triggered",
+  durationFrames: 601,
+  effects: [],
+  tags: [ROLE.toadVenom],
+  dot: {
+    tickIntervalFrames: 300,
+    // In-game values as of 2026-10-15 (level 176).
+    physMultiplier: 1.530217,
+    physFixed: 242.4702,
+    attributeMultiplier: 2.295325,
+    attributeFixed: 0,
+    attributeAttack: "",
+    skillType: "mystic",
+    directHit: true,
+    mysticCategory: "area-debuff",
+    count: 1,
+    perStackShapes: null,
+  },
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
+  receives: [],
 })
 
 export const combustion = defineDebuff({
@@ -43,13 +76,16 @@ export const combustion = defineDebuff({
     // In-game cadence as of 2026-09-10: ticks on application.
     firstTickOffsetFrames: 0,
     reschedulesPerTick: true,
-    physMultiplier: 0.29545,
-    physFixed: 44.62,
-    attributeMultiplier: 0.29545,
+    physMultiplier: 0.295506,
+    physFixed: 46.75,
+    // In-game values as of 2026-10-15.
+    attributeMultiplier: 0.443259,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.6,
     count: 1,
     perStackShapes: null,
   },
@@ -75,13 +111,16 @@ export const smolder = defineDebuff({
     // second.
     firstTickOffsetFrames: 0,
     reschedulesPerTick: true,
-    physMultiplier: 0.24991,
-    physFixed: 37.74,
-    attributeMultiplier: 0.374865,
+    physMultiplier: 0.235818,
+    physFixed: 37.6455,
+    // In-game values as of 2026-10-15.
+    attributeMultiplier: 0.353727,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.6,
     count: 1,
     perStackShapes: null,
     perStackMultipliers: null,
@@ -106,12 +145,15 @@ export const fluteRipple = defineDebuff({
     // Pulses on its own schedule rather than re-arming a tick timer — in-game
     // tick counts as of 2026-09-10.
     reschedulesPerTick: false,
-    physMultiplier: 1.47645,
-    physFixed: 320.97,
-    attributeMultiplier: 2.214675,
+    // In-game values as of 2026-10-15, level 76.
+    physMultiplier: 1.483296,
+    physFixed: 330.4793,
+    attributeMultiplier: 2.224945,
     attributeFixed: 0,
     attributeAttack: "",
-    skillType: "sustain",
+    // In-game hit type as of 2026-09-24: a direct hit, not a DoT tick.
+    skillType: "mystic",
+    directHit: true,
     mysticCategory: "area-damage",
     count: 1,
     perStackShapes: null,
@@ -120,7 +162,13 @@ export const fluteRipple = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [],
 })
 
-export const MYSTIC_DEBUFFS: readonly Debuff[] = [toadPoison, combustion, smolder, fluteRipple]
+export const MYSTIC_DEBUFFS: readonly Debuff[] = [
+  toadPoison,
+  combustion,
+  smolder,
+  fluteRipple,
+  toadPoisonFury,
+]

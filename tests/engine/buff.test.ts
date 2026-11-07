@@ -172,6 +172,32 @@ describe("persistence — customBuffs CRUD (player/team-only, no DoT)", () => {
     expect(imported.stackScaling).toBe("perStack")
   })
 
+  it("export → import and save → load carry maxStacksByTier through", () => {
+    const buff = makeBuffStore("bellstrikeUmbra", {
+      name: "Tiered",
+      maxStacks: 3,
+      maxStacksByTier: { param: "someParam", byTier: { 4: 6, 6: 10 } },
+    })
+    const imported = importCustomBuff(exportCustomBuff(buff), "bellstrikeUmbra")
+    expect(imported.maxStacksByTier).toEqual(buff.maxStacksByTier)
+
+    saveCustomBuff(buff)
+    const loaded = loadCustomBuffsForClass("bellstrikeUmbra").find(
+      (candidate) => candidate.id === buff.id,
+    )
+    expect(loaded?.maxStacksByTier).toEqual(buff.maxStacksByTier)
+  })
+
+  it("drops a malformed maxStacksByTier on import rather than throwing", () => {
+    const raw = JSON.stringify({
+      name: "Malformed",
+      maxStacks: 3,
+      maxStacksByTier: { param: "someParam", byTier: { four: "six" } },
+    })
+    const imported = importCustomBuff(raw, "bellstrikeUmbra")
+    expect(imported.maxStacksByTier).toBeUndefined()
+  })
+
   it("a buff missing stackScaling (pre-stacking blob) hydrates to 'flat' with maxStacks >= 1", () => {
     const b = makeBuffStore("bellstrikeUmbra", { name: "legacy" })
     const legacy = { ...b, maxStacks: 0 } as Buff

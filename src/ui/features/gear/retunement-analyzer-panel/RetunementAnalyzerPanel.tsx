@@ -7,7 +7,7 @@ import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom
 import { retuneAttemptBudget } from "../../../../engine/retunement"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { statLineKey } from "../../../../i18n/contentKeys"
+import { graduationBuildKey, statLineKey } from "../../../../i18n/contentKeys"
 import retunement from "../shared/retunement.module.scss"
 
 interface Props {
@@ -64,7 +64,7 @@ export function RetunementAnalyzerPanel({ piece, profile, rows, reason, isPendin
 
   const heirloom = useMemo(() => (piece ? heirloomMatch(piece, profile) : null), [piece, profile])
   const isHeirloom = (heirloom?.builds.length ?? 0) > 0
-  const heirloomSwap = heirloom?.swap ?? null
+  const heirloomSwaps = heirloom?.swaps ?? []
 
   const countBySlot = useMemo(() => {
     const counts = new Map<number, number>()
@@ -201,8 +201,11 @@ export function RetunementAnalyzerPanel({ piece, profile, rows, reason, isPendin
         </div>
       )}
 
-      {heirloomSwap && (
-        <div className={`${retunement.best} ${retunement.heirloomPick}`}>
+      {heirloomSwaps.map((heirloomSwap) => (
+        <div
+          key={`${heirloomSwap.slotIndex}-${heirloomSwap.word}`}
+          className={`${retunement.best} ${retunement.heirloomPick}`}
+        >
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>
               {t("gear.retunementAnalyzer.makesItAnHeirloom")}
@@ -218,10 +221,16 @@ export function RetunementAnalyzerPanel({ piece, profile, rows, reason, isPendin
             <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>
           </div>
           <div className={retunement.heirloomNote}>
-            {t("gear.retunementAnalyzer.worthMoreThanTheDpsPick")}
+            {t("gear.retunementAnalyzer.worthMoreThanTheDpsPick")}{" "}
+            {t("gear.retunementAnalyzer.completesTheBuild")}{" "}
+            <b>
+              {heirloomSwap.builds
+                .map((build) => t(graduationBuildKey(build.id), build.name))
+                .join(" · ")}
+            </b>
           </div>
         </div>
-      )}
+      ))}
 
       {best && !isHeirloom && (
         <div className={retunement.best}>
@@ -296,10 +305,9 @@ export function RetunementAnalyzerPanel({ piece, profile, rows, reason, isPendin
             <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
               <div className={retunement.cell}>
                 {t(statLineKey(candidate.word), statLineLabel(candidate.word))}
-                {heirloomSwap?.slotIndex === candidate.slotIndex &&
-                  heirloomSwap.word === candidate.word && (
-                    <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>
-                  )}
+                {heirloomSwaps.some(
+                  (swap) => swap.slotIndex === candidate.slotIndex && swap.word === candidate.word,
+                ) && <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>}
               </div>
               <div className={`${retunement.cell} ${deltaSignClass(candidate.deltaDps)}`}>
                 {fmtDpsDelta(candidate.deltaDps)}

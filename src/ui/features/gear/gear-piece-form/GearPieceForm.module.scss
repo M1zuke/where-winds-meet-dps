@@ -69,12 +69,31 @@
   padding-top: 8px;
 }
 
+.tunementSetChance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.85em;
+  color: var(--color-text);
+}
+
+.tunementSetChance b {
+  font-variant-numeric: tabular-nums;
+}
+
 .relayedCell {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   grid-column: 1 / -1;
   padding-bottom: 8px;
+}
+
+.relayedRowLead {
+  min-width: 0;
+  margin-right: auto;
 }
 
 .gearWordsGrid {

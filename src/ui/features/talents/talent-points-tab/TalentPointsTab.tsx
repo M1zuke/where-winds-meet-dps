@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import type {
   TalentBoardCell,
@@ -81,9 +81,21 @@ const LANE_GAP = 82
 const COLUMN_WIDTH = 84
 const SIDE_PAD = 58
 const FALLBACK_HEIGHT = 380
-const TOOLTIP_WIDTH = 240
+const TOOLTIP_GAP = 8
 const COLUMNS = Math.max(...TALENT_BOARD_CELLS.map((cell) => cell.column))
 const BOARD_WIDTH = SIDE_PAD * 2 + (COLUMNS - 1) * COLUMN_WIDTH
+
+function placeTooltipVertically(
+  nodeCenterY: number,
+  tooltipHeight: number,
+  boardHeight: number,
+): number {
+  const below = nodeCenterY + HALF + 6
+  const above = nodeCenterY - HALF - 6 - tooltipHeight
+  const fitsBelow = below + tooltipHeight <= boardHeight - TOOLTIP_GAP
+  const top = fitsBelow ? below : above
+  return Math.max(TOOLTIP_GAP, Math.min(top, boardHeight - tooltipHeight - TOOLTIP_GAP))
+}
 
 function formatValue(stat: TalentPointStat, value: number): string {
   if (RATE_STATS.has(stat)) return `+${Math.round(value * 1000) / 10}%`
@@ -99,6 +111,8 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
   const [hovered, setHovered] = useState<TalentBoardCell | null>(null)
   const [scrollLeft, setScrollLeft] = useState(0)
   const [frame, setFrame] = useState({ width: 0, height: FALLBACK_HEIGHT })
+  const [tooltipSize, setTooltipSize] = useState({ width: 0, height: 0 })
+  const tooltipRef = useRef<HTMLDivElement | null>(null)
 
   const cellByKey = useMemo(() => new Map(TALENT_BOARD_CELLS.map((cell) => [cell.key, cell])), [])
   const beyondBreakthrough = useMemo(
@@ -131,6 +145,12 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
     observer.observe(element)
     return () => observer.disconnect()
   }, [])
+
+  useLayoutEffect(() => {
+    const element = tooltipRef.current
+    if (!element) return
+    setTooltipSize({ width: element.offsetWidth, height: element.offsetHeight })
+  }, [hovered])
 
   function parentTaken(cell: TalentBoardCell): boolean {
     const requires = cell.ranks[0].requires
@@ -182,18 +202,16 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
     : null
   const tooltipLeft = hovered
     ? Math.max(
-        8,
+        TOOLTIP_GAP,
         Math.min(
-          centerX(hovered) - scrollLeft + HALF + 8,
-          (frame.width || BOARD_WIDTH) - TOOLTIP_WIDTH - 8,
+          centerX(hovered) - scrollLeft + HALF + TOOLTIP_GAP,
+          (frame.width || BOARD_WIDTH) - tooltipSize.width - TOOLTIP_GAP,
         ),
       )
     : 0
-  const tooltipAnchor = hovered
-    ? hovered.lane === 3
-      ? { bottom: `${frame.height - centerY(hovered) + HALF + 6}px` }
-      : { top: `${centerY(hovered) + HALF + 6}px` }
-    : {}
+  const tooltipTop = hovered
+    ? placeTooltipVertically(centerY(hovered), tooltipSize.height, frame.height)
+    : 0
 
   return (
     <div className={styles.tab}>
@@ -351,7 +369,11 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
         </div>
 
         {hovered && hoveredNode && (
-          <div className={styles.tooltip} style={{ left: `${tooltipLeft}px`, ...tooltipAnchor }}>
+          <div
+            className={styles.tooltip}
+            ref={tooltipRef}
+            style={{ left: `${tooltipLeft}px`, top: `${tooltipTop}px` }}
+          >
             <div className={styles.tooltipTitle}>
               {t(talentNodeKey(hoveredNode), hoveredNode.name)}
             </div>

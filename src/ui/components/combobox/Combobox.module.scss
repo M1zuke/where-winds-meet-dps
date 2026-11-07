@@ -25,53 +25,22 @@
   border-left-color: var(--color-accent-bright);
 }
 
+.comboboxInput.hasSelectedDetail {
+  padding-right: 52px;
+}
+
+.comboboxSelectedDetail {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 0.85em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
 .comboboxInput:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Portaled to <body> and fixed-positioned so it never gets clipped by a
-   scrolling ancestor (e.g. the gear dialog body). Geometry comes from JS. */
-.comboboxDropdown {
-  position: fixed;
-  z-index: 1300;
-  margin: 0;
-  padding: 2px 0;
-  list-style: none;
-  background: var(--color-surface-alt);
-  border: 1px solid #555;
-  border-radius: 4px;
-  overflow-y: auto;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-.comboboxOption {
-  padding: 4px 8px;
-  font-size: 0.85em;
-  color: var(--color-text);
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.comboboxOption.isHighlight {
-  background: var(--color-surface-raised);
-  color: var(--color-accent-bright);
-}
-
-.comboboxOption.isSelected {
-  color: var(--color-accent);
-}
-
-.comboboxOption.isSelected.isHighlight {
-  background: #2a2419;
-}
-
-.comboboxEmpty {
-  padding: 4px 8px;
-  font-size: 0.85em;
-  color: var(--color-text-faint);
-  text-align: center;
-  list-style: none;
 }

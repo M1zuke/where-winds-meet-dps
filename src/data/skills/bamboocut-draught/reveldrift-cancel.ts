@@ -3,11 +3,12 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
-import { reveldriftHits } from "./reveldrift"
+import { REVELDRIFT_CAST_CONDITIONS, reveldriftHits, reveldriftSpacingHit } from "./reveldrift"
+import { reveldriftChargeCost } from "../../classes/bamboocut-draught/chargeMeters"
 
-// A cancel form ends where the animation opens its interrupt window — 28
-// frames in, after the first hit (in-game animation, 2026-09-06); the parry
-// that ends it is the next rotation step.
+// A cancel form ends where the animation opens its interrupt window — 21
+// frames in (in-game animation, 2026-09-24); the parry that ends it is the
+// next rotation step.
 export const reveldriftCancel = defineSkill({
   id: SKILL.reveldriftCancel,
   classId: "bamboocutDraught",
@@ -18,11 +19,18 @@ export const reveldriftCancel = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.reveldriftCancel,
-  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
+  cancelledBy: "deflectCancel",
+  receives: [BUFF.starweaveMartialBoost, ...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
+  castConditions: REVELDRIFT_CAST_CONDITIONS,
+  meterCosts: [reveldriftChargeCost],
   triggerable: false,
-  castFrames: 28,
-  hits: [reveldriftHits[0]],
+  castFrames: 21,
+  // In-game values as of 2026-09-28: 18 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 18,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
+  hits: [reveldriftHits[0], reveldriftSpacingHit],
   createdAt: "2026-09-05T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

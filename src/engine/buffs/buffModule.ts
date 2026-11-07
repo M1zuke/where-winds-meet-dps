@@ -1,5 +1,20 @@
 import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
+import type { BuffParams } from "./buffEngine"
+import type { WindowExtensionSpec } from "./windowExtension"
+
+// A phase, or a genuine target-Qi-fraction threshold — for a gate the game
+// keys to a real percentage rather than to the compatibility phase window
+// (docs/TIMELINE.md § "Qi bar"). A broken bar reads fraction 0.
+export type QiGate = QiPhase | { qiBelow: number } | { qiAtMost: number }
+
+export type DamageGrantTiming = "preScore" | "postQi"
+
+export type TriggerPhaseTiming = "beforeHits" | "afterHits"
+
+export type DamageGrantSource = "directHits" | "anyDamage"
+
+export type DamageEventKind = "hit" | "tick"
 
 export interface BuffRequirements {
   param?: string
@@ -43,27 +58,60 @@ export interface PerCastConsume {
   phaseAlternative?: { phase: QiPhase | readonly QiPhase[]; requires?: BuffRequirements }
 }
 
+// Mutually exclusive — see TIMELINE.md § "The class-buff system".
+export type BuffGate =
+  | { requires?: BuffRequirements; grantRequires?: undefined }
+  | { requires?: undefined; grantRequires: Record<string, BuffRequirements> }
+
+// A `grantRequires` key reserved for "every source this map does not name" —
+// a tag family never collides with it, since every real tag carries its own
+// namespace prefix. Absent, an unmapped source still grants ungated, same as
+// before this key existed.
+export const GRANT_REQUIRES_DEFAULT = "grantRequires:default"
+
 // The declarative core: the Skill Editor catalog derives `bonus`, `enabledParam`,
 // `minTier` and the Receives / Applies / Class Buffs rows from these fields, and
 // `displayGates.ts` filters on them, so they must stay readable without
 // executing anything.
-export interface BuffMeta {
+export type BuffMeta = BuffGate & {
   id: string
   name: string
-  requires?: BuffRequirements
   affectsAll?: boolean
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean
-  maxStacks?: number
-  cooldown?: number
+  // Opens the window this many seconds after the triggering cast's start
+  // instead of at the trigger hit's own frame. Ignored when
+  // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
+  buffAppliesAfterSec?: number
+  // Opens the window this many seconds after the triggering cast's last landed
+  // hit instead of at its start. Yields to `buffAppliesOnCastEnd` and to a
+  // per-site delay; a cast with no landed hit grants at its start.
+  buffAppliesAfterLastHitSec?: number
+  // Unlike `duration`/`cooldown`, a function here resolves once at
+  // registration rather than being re-read per event.
+  maxStacks?: number | ((params: BuffParams) => number)
+  cooldown?: number | ((ctx: EffectContext) => number)
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
+  // One stack per damaging hit of a cast whose skill lists this def in
+  // `triggersBuffs`, landing just after that hit's own damage. The cast
+  // grants nothing itself, and only `requires` / `grantRequires` gate a hit.
+  stackOnGrantingHit?: boolean
+  vitalityPerStack?: number
   stackOnDamage?: boolean
-  // Restricts `stackOnDamage` to the listed Qi phases; a damaging hit outside
+  // When the grant of `stackOnDamage` or `perHitConsume` is decided against the
+  // hit's own damage and Qi: `preScore` reads the bar before the hit's Qi and
+  // counts for that hit; `postQi` reads it after and counts for later events
+  // only. Absent behaves as `preScore`.
+  damageGrantTiming?: DamageGrantTiming
+  // Which damage events the grant of `stackOnDamage` or `perHitConsume` listens
+  // to. Absent is `directHits`: damage-over-time ticks grant nothing.
+  damageGrantListensTo?: DamageGrantSource
+  // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.
-  stackOnDamagePhase?: QiPhase | readonly QiPhase[]
+  stackOnDamagePhase?: QiGate | readonly QiGate[]
   // Restricts `stackOnDamage` to hits from skills that reach this def — the
   // same `reaches` predicate the damage query uses.
   stackOnDamageScoped?: boolean
@@ -78,7 +126,15 @@ export interface BuffMeta {
   triggersFromGeneratedSkills?: boolean
   // Restricts the trigger to one Qi phase; a cast in any other phase is not a
   // trigger for this def at all, so no stack and no refresh.
-  triggerPhase?: QiPhase
+  triggerPhase?: QiGate | readonly QiGate[]
+  // Which bar `triggerPhase` reads for a grant that lands after its cast's last
+  // hit: `beforeHits` the bar before that hit's Qi, `afterHits` the bar once the
+  // hits of the landing frame have spent theirs. Absent behaves as `beforeHits`.
+  triggerPhaseTiming?: TriggerPhaseTiming
+  // The listed modules' windows must be down for this grant to land.
+  blockedWhileActive?: readonly string[]
+  // The listed modules' windows end where this grant lands.
+  dispelsOnGrant?: readonly string[]
   seedAtStart?: boolean
   refreshOnAnyCast?: boolean
   requiresBuffActive?: string
@@ -88,6 +144,7 @@ export interface BuffMeta {
   // window, never open one. A trigger without the property is unaffected, so
   // one def can have both an opening source and an extending source.
   extendedOnlyByProperty?: string
+  extendsBuffs?: WindowExtensionSpec
   activeAfterBuffEnds?: ActiveAfterBuffEnds
   conditionalFinalCrit?: ConditionalFinalCrit
   perCastConsume?: PerCastConsume
@@ -99,6 +156,10 @@ export interface BuffMeta {
   // this module yet, and it keeps reaching ticks exactly as it does today.
   // Only an explicit `false` excludes them.
   reachesDotTicks?: boolean
+  // Whether this module's `effects` read `ctx.target.distanceMeters` — the
+  // Encounter Settings panel shows the distance input only while the build
+  // carries a module or mechanic that declares this.
+  readsTargetDistance?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

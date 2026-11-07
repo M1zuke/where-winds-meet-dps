@@ -1,0 +1,486 @@
+{
+  "v": 89,
+  "skills": [
+    {
+      "id": "bamboocutDraught-nightwick-primepick",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Special - Tipsylay",
+      "breakdownName": "Nightwick - Tipsylay",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial", "role:inebriateEnhanced"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:nightwickPrimepick",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggerable": false,
+      "castFrames": 51,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.9444,
+          "attributeMultiplier": 1.4166,
+          "physFixed": 262,
+          "attributeFixed": 143,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T23:00:00.000Z",
+      "updatedAt": "2026-10-15T23:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-skystrike-gauntlets-ex",
+      "classId": "bamboocutDraught",
+      "name": "Skystrike Gauntlets - EX",
+      "tags": ["weapon:Gauntlets"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:skystrikeGauntletsEx",
+      "receives": ["skystrikeGauntletsAdditionalAttack"],
+      "triggerable": false,
+      "castFrames": 48,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-points",
+              "stacks": 200,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "durationFrames": 600
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-clash-toast",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T23:00:00.000Z",
+      "updatedAt": "2026-10-15T23:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-peakfall",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Q",
+      "breakdownName": "Peakfall",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsMartialArt", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:peakfall",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40",
+        "starweaveMartialBoost"
+      ],
+      "triggersBuffs": ["jadeware"],
+      "triggerable": false,
+      "castFrames": 38,
+      "reachMeters": 18,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.91934,
+          "attributeMultiplier": 1.37901,
+          "physFixed": 255,
+          "attributeFixed": 139,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-strayhunt",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-drunkslay",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted",
+              "extendFrames": 360,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-binge-points",
+              "stacks": 200,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-inebriate-deepdaze",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 200
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "skyspeakDeepdazeDuration",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted",
+              "durationFrames": 600
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-enhance-special-skill",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-inebriate-deepdaze",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+              "stacks": 1,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "eonpourExhaustedPeakfall",
+                  "op": "gte",
+                  "stacks": 1
+                },
+                {
+                  "buffId": "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ],
+              "phase": "exhausted"
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-consecutive-punches",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-peakfall-cooldown",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-peakfall-jadeflush",
+              "label": "Gauntlet Q - Jadeflush",
+              "conditions": [
+                {
+                  "buffId": "buff-bamboocutDraught-binge-points",
+                  "op": "gte",
+                  "stacks": 100
+                }
+              ],
+              "physMultiplier": 0.78782,
+              "attributeMultiplier": 1.18173,
+              "physFixed": 218.5,
+              "attributeFixed": 119,
+              "castFrames": 52
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 34,
+          "physMultiplier": 0.78782,
+          "attributeMultiplier": 1.18173,
+          "physFixed": 218.5,
+          "attributeFixed": 119,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [
+            {
+              "buffId": "buff-bamboocutDraught-binge-points",
+              "op": "gte",
+              "stacks": 100
+            },
+            {
+              "buffId": "buff-bamboocutDraught-peakfall-cooldown",
+              "op": "eq",
+              "stacks": 0
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-15T23:00:00.000Z",
+      "updatedAt": "2026-10-15T23:00:00.000Z"
+    }
+  ]
+}

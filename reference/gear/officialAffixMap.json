@@ -2275,5 +2275,9 @@
   "10694124": "bossDmg",
   "10694125": "playerUnitDmg",
   "10694126": "minVoid",
-  "10694127": "maxVoid"
+  "10694127": "maxVoid",
+  "100931001": "allMysticDmg",
+  "100941001": "allMysticDmg",
+  "105931001": "allMysticDmg",
+  "105941001": "allMysticDmg"
 }

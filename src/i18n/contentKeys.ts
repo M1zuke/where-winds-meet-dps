@@ -35,6 +35,10 @@ export function debuffKey(debuffId: string): string {
   return `content.debuff.${debuffId}`
 }
 
+export function meterKey(meterId: string): string {
+  return `content.meter.${meterId}`
+}
+
 export function debuffBreakdownKey(debuffId: string): string {
   return `content.debuff.${debuffId}.breakdown`
 }
@@ -69,6 +73,14 @@ export function weaponKey(weaponType: string): string {
 
 export function setKey(setId: string): string {
   return `content.set.${setId}`
+}
+
+export function setFourPieceKey(setId: string): string {
+  return `content.setFourPiece.${setId}`
+}
+
+export function setFourPieceFullKey(setId: string): string {
+  return `content.setFourPieceFull.${setId}`
 }
 
 export function attunementKey(attunementId: string, classId?: string | null): string {

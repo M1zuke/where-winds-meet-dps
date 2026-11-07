@@ -12,7 +12,7 @@
     "note": "Coefficients/flat values are verbatim cell values at full stored precision. Identical to the constants compiled into yysls.leoq7.com's yysls_calc.wasm (module yysls_flow_mjy)."
   },
   "_translation": {
-    "method": "Labels joined against the game client's official ZH<->EN localization (translate_words_map_en / _zh_cn, 461291 shared hashes). 'official' = exact key present in the client DB; 'composed' = built only from official component terms present in that DB (spreadsheet-only shorthand such as 固伤/打满 has no in-game key).",
+    "method": "Labels joined against the official in-game ZH<->EN text pairs in reference/locale/zhToEnOfficial.json. 'official' = exact entry present in that list; 'composed' = built only from official component terms present in it (spreadsheet-only shorthand such as 固伤/打满 has no in-game entry).",
     "columns": [
       {
         "col": "A",

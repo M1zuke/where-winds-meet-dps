@@ -19,7 +19,9 @@ export const springThunder = defineBuff({
   maxStacks: 5,
   stacks: () => 5,
   stackOnDamage: true,
-  stackOnDamagePhase: ["below30", "exhausted"],
+  damageGrantTiming: "postQi",
+  // Exhausted (Qi 0) is already under 30% — the one gate covers both.
+  stackOnDamagePhase: { qiBelow: 0.3 },
   stackOnDamageScoped: true,
   stackOnDamageOnlyWhileActive: true,
   stackOnDamageRateLimit: { count: 1, window: 2 },
@@ -31,6 +33,7 @@ export const thunderousBloomBuffDef = defineBuff({
   name: "Spring Thunder DMG Boost",
   requires: { param: PARAM.thunderousBloom },
   perHitConsume: { from: BUFF.springThunder },
+  damageGrantTiming: "preScore",
   duration: 2,
   effects: [stat("allDamageBoost", 0.15)],
 })

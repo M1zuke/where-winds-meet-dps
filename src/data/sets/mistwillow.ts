@@ -10,6 +10,7 @@ import { SET_ID } from "./ids"
 // granted by `buffEngine.ts`'s `processMistwillowBuffGrant`.
 export const mistwillow = defineSet({
   id: SET_ID.mistwillow,
+  group: "gear",
   name: "Mistwillow",
   siteKey: "mistwillow",
   panelBonus: {

@@ -1,7 +1,7 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 import { PROP } from "../../skills/ids"
-import { stat } from "../../../engine/effects/effect"
+import { damageMultiplier } from "../../../engine/effects/effect"
 
 // The bonus lands on a cast that actually spent an Inner Passion stack, so it
 // is scoped to that cast rather than opening a window — hence `duration: 0`.
@@ -19,6 +19,6 @@ export const frostCladSnowbreakIPConsume = defineBuff({
       requires: { param: PARAM.frostCladNight, minTier: 6 },
     },
   },
-  summary: "bossBoost +40% on a cast that consumes Inner Passion",
-  effects: (ctx) => (ctx.self.reachesEvent ? [stat("bossBoost", 0.4)] : []),
+  summary: "Snowbreak Spring ×1.76 instead of ×1.36 on a cast that consumes Inner Passion",
+  effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.76 / 1.36)] : []),
 })

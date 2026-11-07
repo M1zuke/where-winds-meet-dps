@@ -19,7 +19,7 @@
   "devOnly": "Contains Chinese verbatim — must never be imported from src/ or tests/ (CLAUDE.md: the app is English-only). The curated app-facing subset is silkbindJadeSkillCoefficients.wb1.2-lvl110.json."
  },
  "_translation": {
-  "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official ZH<->EN pairs from the game client); 'inherited' means the label was already rendered by the Stonesplit Strength, Bellstrike Umbra or Bellstrike Splendor extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand; 'untranslated' means the Chinese is kept because the client DB has no key for it.",
+  "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official in-game ZH<->EN text pairs); 'inherited' means the label was already rendered by the Stonesplit Strength, Bellstrike Umbra or Bellstrike Splendor extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand; 'untranslated' means the Chinese is kept because the official text has no entry for it.",
   "changelogNote": "更新日志 descriptions are free prose with no official keys and are kept in Chinese verbatim, untranslated by design."
  },
  "sheets": {

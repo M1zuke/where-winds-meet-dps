@@ -2,15 +2,18 @@
 // deobfuscated source, except `calculateDamageEffects` emits this app's
 // `{ statKey, amount }[]` instead of the site's own `os()` formula.
 //
-// Two-pass usage (see timeline.ts): pass 1 replays the rotation via
-// `processSkillCast` (records into `buffHistory`); pass 2 queries
-// `calculateDamageEffects` per damage event, time-indexed against that history.
-//
 // Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
 import type { StatusView } from "../ledger"
-import type { BuffModule, BuffRequirements, ConditionalFinalCrit } from "./buffModule"
+import {
+  GRANT_REQUIRES_DEFAULT,
+  type BuffModule,
+  type BuffRequirements,
+  type ConditionalFinalCrit,
+  type DamageEventKind,
+  type QiGate,
+} from "./buffModule"
 
 // What a cast carries away from the buff engine: ids that count as active for
 // that cast alone, and the subset its generated skills inherit.
@@ -18,6 +21,14 @@ export interface CastBuffResult {
   buffIds: string[]
   propagatedBuffIds: string[]
 }
+
+export interface DeferredBuffGrant {
+  timeSec: number
+  settlesAfterHits?: true
+  commit(): void
+}
+
+export type DeferGrant = (grant: DeferredBuffGrant) => void
 import { reaches } from "../scope"
 import { castTagOf, skillTagsOf, PROP_TAG } from "./tags"
 import type {
@@ -29,8 +40,11 @@ import type {
 } from "../effects/context"
 import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
-import { clockQiPhase, paramOnOf, paramTierOf } from "./params"
+import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
+import type { QiReader } from "../qiBar"
+import { EXTENSION_PARTICLES, WindowExtensionEnsemble, type BaseWindow } from "./windowExtension"
+import { AFTER_HIT_SEC } from "./frameOrder"
 
 export type BuffParams = Record<string, unknown>
 
@@ -52,6 +66,7 @@ interface HistoryEntry {
   action: "apply" | "refresh"
   expiresAt: number
   stacks?: number
+  grant?: true
 }
 
 export type { QiPhase }
@@ -59,6 +74,7 @@ export type { QiPhase }
 export interface DamageEffectsResult {
   effects: { statKey: StatKey; amount: number }[]
   forceCrit: boolean
+  forceNoAbrasion: boolean
   // Post-formula, so it multiplies the finished number rather than joining the
   // stat sum — 1 when no active def contributes one.
   damageFactor: number
@@ -75,6 +91,9 @@ export interface DamageEffectsResult {
 }
 
 const DEFAULT_DURATION = 15
+const COOLDOWN_TOLERANCE = 1e-9
+const DEFER_EPSILON_SEC = 1e-9
+
 // `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}
@@ -87,25 +106,49 @@ const MISTWILLOW_MERGED_BUFF = BUFF.mistwillowBuff
 // so the engine learns no class (docs/CLASSES.md § "One definition per class").
 export const QI_IMBALANCE_STATUS = "qiImbalance"
 
+// The simulated ground distance to the target, kept on the ledger the same way
+// a meter is — docs/TIMELINE.md § "Target distance".
+export const TARGET_DISTANCE_STATUS = "targetDistance"
+
 function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
+}
+
+function weightedEffect(effect: Effect, weight: number, buffId: string): Effect {
+  if (effect.kind !== "stat" || effect.statKey !== "allDamageBoost")
+    throw new Error(`${buffId} is live only part of the time, so it may carry allDamageBoost only`)
+  return { ...effect, amount: effect.amount * weight }
 }
 
 export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffModule>()
-  private activeBuffs = new Map<string, ActiveBuff>()
+  private maxStacksById = new Map<string, number>()
   private buffHistory: HistoryEntry[] = []
+  private historyByBuffId = new Map<string, HistoryEntry[]>()
+  private idsWrittenOutOfOrder = new Set<string>()
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
+  private vitalitySpent = new Map<string, number>()
   private statuses: TimelineStatuses | null = null
+  private readonly extensions = new Map<string, WindowExtensionEnsemble>()
+  private extensionGenerator: (() => number) | undefined
+
+  attachExtensionGenerator(generator: () => number): void {
+    this.extensionGenerator = generator
+  }
 
   attachStatuses(statuses: TimelineStatuses): void {
     this.statuses = statuses
   }
 
+  attachQiReader(reader: QiReader): void {
+    this.qiReader = reader
+  }
+
   constructor(
     params: BuffParams,
+    private qiReader: QiReader,
     modules: readonly BuffModule[],
     groupModules: readonly BuffModule[] = [],
   ) {
@@ -113,6 +156,12 @@ export class BuffEngine {
     const register = (module: BuffModule) => {
       if (module.requires?.set && module.requires.set !== this.params.armorSet) return
       this.definitions.set(module.id, module)
+      if (module.maxStacks !== undefined) {
+        this.maxStacksById.set(
+          module.id,
+          typeof module.maxStacks === "function" ? module.maxStacks(this.params) : module.maxStacks,
+        )
+      }
     }
     for (const module of modules) register(module)
     for (const module of groupModules) register(module)
@@ -131,8 +180,7 @@ export class BuffEngine {
     return paramTierOf(this.params, name)
   }
   paramNum(name: string): number {
-    const value = this.params[name]
-    return typeof value === "number" ? value : 0
+    return paramNumOf(this.params, name)
   }
 
   private requirementsMet(requires: BuffRequirements | undefined): boolean {
@@ -145,31 +193,34 @@ export class BuffEngine {
     return true
   }
 
-  private gateOk(module: BuffModule): boolean {
+  private gateOk(module: BuffModule, castTag?: string, tagSet?: ReadonlySet<string>): boolean {
+    if (module.grantRequires) {
+      if (castTag !== undefined && Object.hasOwn(module.grantRequires, castTag))
+        return this.requirementsMet(module.grantRequires[castTag])
+      if (tagSet) {
+        for (const tag of Object.keys(module.grantRequires)) {
+          if (tag !== GRANT_REQUIRES_DEFAULT && tagSet.has(tag))
+            return this.requirementsMet(module.grantRequires[tag])
+        }
+      }
+      if (Object.hasOwn(module.grantRequires, GRANT_REQUIRES_DEFAULT))
+        return this.requirementsMet(module.grantRequires[GRANT_REQUIRES_DEFAULT])
+    }
     return this.requirementsMet(module.requires)
   }
 
   qiPhase(time: number): QiPhase {
-    const clockPhase = clockQiPhase(this.params, time)
-    if (clockPhase !== "normal") return clockPhase
+    const readerPhase = this.qiReader.phaseAt(time)
+    if (readerPhase !== "normal") return readerPhase
     return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
-  qiBreakWindow(): { start: number; end: number } {
-    const params = this.params
-    const qiBreakTime = (params.qiBreakTime as number) ?? 25
-    const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-    const healerExt = (params.healerBreakExtension as number) ?? 0
-    return { start: qiBreakTime, end: qiBreakTime + bossBreakDuration + healerExt }
+  qiFraction(time: number): number {
+    return this.qiReader.fractionAt(time)
   }
 
-  // Clock-driven lead-in only: the timeline already draws a Qi Imbalance
-  // window in its own lane, so folding it in here would show the span twice.
-  lowQiWindow(): { start: number; end: number } | null {
-    const params = this.params
-    const qiBreakTime = (params.qiBreakTime as number) ?? 25
-    const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-    return belowQiTime < qiBreakTime ? { start: belowQiTime, end: qiBreakTime } : null
+  qiBroken(time: number): boolean {
+    return this.qiReader.isBroken(time)
   }
 
   private statusActive(id: string, time: number, statusesView?: StatusView): boolean {
@@ -186,10 +237,67 @@ export class BuffEngine {
     return view && fps ? view.conditionStacksAt(id, Math.round(time * fps)) : 0
   }
 
+  private secondsSinceLastEnd(id: string, time: number, statusesView?: StatusView): number | null {
+    if (this.definitions.has(id)) {
+      let latestExpiry: number | undefined
+      for (const historyEntry of this.buffHistory) {
+        if (historyEntry.buffType !== id || historyEntry.action !== "apply") continue
+        if (historyEntry.expiresAt > time) continue
+        if (latestExpiry === undefined || historyEntry.expiresAt > latestExpiry)
+          latestExpiry = historyEntry.expiresAt
+      }
+      return latestExpiry === undefined ? null : time - latestExpiry
+    }
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const framesSince = view.framesSinceLastEnd(id, Math.round(time * fps))
+    return framesSince === undefined ? null : framesSince / fps
+  }
+
+  // Reads the ledger's counter-stack history — the only StatusView carries
+  // one, a permanent-activation gate buff never being a registered module.
+  private secondsSinceStacksBelowThreshold(
+    id: string,
+    time: number,
+    threshold: number,
+    statusesView?: StatusView,
+  ): number | null {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const framesSince = view.framesSinceStacksBelowThreshold(id, Math.round(time * fps), threshold)
+    return framesSince === undefined ? null : framesSince / fps
+  }
+
+  private secondsSinceStacksReachedThreshold(
+    id: string,
+    time: number,
+    threshold: number,
+    statusesView?: StatusView,
+  ): number | null {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const riseFrame = view.frameStacksLastReachedThreshold(id, Math.round(time * fps), threshold)
+    return riseFrame === undefined ? null : time - riseFrame / fps
+  }
+
   private remainingHealthFraction(damageSoFar: number): number {
     const targetMaxHp = this.paramNum("targetMaxHp")
     if (targetMaxHp <= 0) return 1
     return Math.min(1, Math.max(0, 1 - damageSoFar / targetMaxHp))
+  }
+
+  // Falls back to the flat `distanceMeters` param when no ledger is attached
+  // (a direct-construction caller, e.g. a fixture probe) — the same
+  // parameter `paramsFromInputs` seeds the distance simulation with.
+  private targetDistanceMeters(time: number, statusesView?: StatusView): number {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    return view && fps
+      ? view.stacksAt(TARGET_DISTANCE_STATUS, Math.round(time * fps))
+      : this.paramNum("distanceMeters")
   }
 
   private buildContext(
@@ -206,6 +314,8 @@ export class BuffEngine {
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
       minPhysAttack: this.paramNum("minPhysAttack"),
+      maxPhysAttack: this.paramNum("maxPhysAttack"),
+      whiteCritRate: this.paramNum("whiteCritRate"),
       breakthrough: this.paramNum("breakthrough"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
@@ -218,12 +328,20 @@ export class BuffEngine {
       target: {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
+        distanceMeters: this.targetDistanceMeters(time, statusesView),
+        qiFraction: this.qiFraction(time),
+        qiBroken: this.qiBroken(time),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),
         stacks: (id) => this.statusStacks(id, time, statusesView),
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
+        secondsSinceLastEnd: (id) => this.secondsSinceLastEnd(id, time, statusesView),
+        secondsSinceStacksBelowThreshold: (id, threshold) =>
+          this.secondsSinceStacksBelowThreshold(id, time, threshold, statusesView),
+        secondsSinceStacksReachedThreshold: (id, threshold) =>
+          this.secondsSinceStacksReachedThreshold(id, time, threshold, statusesView),
       },
       self: {
         stacks: selfStacks,
@@ -244,12 +362,24 @@ export class BuffEngine {
     return module.duration(this.buildContext(time, event, 0, module))
   }
 
+  private resolveCooldown(module: BuffModule, time: number): number {
+    if (module.cooldown === undefined) return 0
+    if (typeof module.cooldown === "number") return module.cooldown
+    return module.cooldown(this.buildContext(time, { kind: "display" }, 0, module))
+  }
+
+  private maxStacksOf(id: string): number | undefined {
+    return this.maxStacksById.get(id)
+  }
+
   // What is left of the window the caller is standing in, never the def's own
   // `duration`: an extension moves `expiresAt` and this has to follow it, and
   // an `alwaysActive` def's duration is a stand-in for "on for the fight"
   // rather than a countdown, so it reports none at all.
   private displayRemainingSec(module: BuffModule | undefined, id: string, time: number) {
     if (module?.alwaysActive) return undefined
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.expectedRemainingSec(id, time, this.baseWindowOf)
     const window = this.historicalApplyAt(id, time)
     return window ? window.expiresAt - time : undefined
   }
@@ -257,7 +387,7 @@ export class BuffEngine {
   displayEffectsFor(
     module: BuffModule,
     time: number,
-    stacks: number = module.maxStacks ?? 1,
+    stacks: number = this.maxStacksOf(module.id) ?? 1,
   ): Effect[] {
     const asDamage: EffectEvent = { kind: "damage", castTag: "", tags: new Set() }
     const ctx = this.buildContext(time, asDamage, stacks, module, true)
@@ -321,7 +451,7 @@ export class BuffEngine {
         id,
         name: module?.name ?? id,
         stacks: Math.max(1, stacks),
-        maxStacks: module?.maxStacks ?? 1,
+        maxStacks: (module && this.maxStacksOf(module.id)) ?? 1,
         effects: stats,
         extras,
         requires: module?.requires?.set ?? module?.requires?.param,
@@ -333,8 +463,11 @@ export class BuffEngine {
       const module = this.definitions.get(id)
       if (module?.activeAfterBuffEnds) continue
       if (module && !this.gateOk(module)) continue
-      if (!this.isBuffActiveAtTime(id, time)) continue
-      const stacks = module?.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      if (this.liveFraction(id, time) <= 0) continue
+      const stacks =
+        module && this.maxStacksOf(module.id) !== undefined
+          ? this.getHistoricalBuffStacks(id, time)
+          : 1
       push(id, module, stacks)
     }
     for (const [id, module] of this.definitions) {
@@ -391,27 +524,87 @@ export class BuffEngine {
     const duration =
       durationOverride ?? (module ? this.resolveDuration(module, time) : DEFAULT_DURATION)
     let stacks: number | undefined
-    if (module?.maxStacks !== undefined) {
-      const max = module.maxStacks
-      const cur = this.activeBuffs.get(id)
-      if (cur && time >= cur.appliedAt && time < cur.expiresAt)
-        stacks = Math.min((cur.stacks || 1) + stacksToAdd, max)
+    const max = module ? this.maxStacksOf(module.id) : undefined
+    if (max !== undefined) {
+      const cur = this.liveStateAt(id, time)
+      if (cur && time < cur.expiresAt) stacks = Math.min((cur.stacks || 1) + stacksToAdd, max)
       else stacks = Math.min(stacksToAdd, max)
     }
-    const entry: ActiveBuff = {
-      appliedAt: time,
-      expiresAt: time + duration,
-      ...(stacks !== undefined && { stacks }),
-    }
-    this.activeBuffs.set(id, entry)
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
       expiresAt: time + duration,
+      grant: true,
       ...(stacks !== undefined && { stacks }),
     })
+    for (const dispelledId of module?.dispelsOnGrant ?? []) this.endWindow(dispelledId, time)
     if (module) this.runCastEffects(module, time, stacks ?? 1)
+  }
+
+  spendVitality(time: number, amount: number): void {
+    for (const [id, module] of this.definitions) {
+      if (module.vitalityPerStack === undefined || !this.gateOk(module)) continue
+      const spent = (this.vitalitySpent.get(id) ?? 0) + amount
+      if (spent < module.vitalityPerStack) {
+        this.vitalitySpent.set(id, spent)
+        continue
+      }
+      this.vitalitySpent.set(id, 0)
+      this.applyBuff(id, time)
+    }
+  }
+
+  private endWindow(id: string, time: number): void {
+    if (!this.isBuffActiveAtTime(id, time)) return
+    this.recordHistory({ time, buffType: id, action: "apply", expiresAt: time })
+  }
+
+  private recordHistory(entry: HistoryEntry): void {
+    this.buffHistory.push(entry)
+    const entriesForId = this.historyByBuffId.get(entry.buffType)
+    if (!entriesForId) {
+      this.historyByBuffId.set(entry.buffType, [entry])
+      return
+    }
+    if (entry.time < entriesForId[entriesForId.length - 1].time)
+      this.idsWrittenOutOfOrder.add(entry.buffType)
+    entriesForId.push(entry)
+  }
+
+  private entriesInTimeOrder(id: string): readonly HistoryEntry[] {
+    const entries = this.historyByBuffId.get(id) ?? []
+    return this.idsWrittenOutOfOrder.has(id)
+      ? [...entries].sort((left, right) => left.time - right.time)
+      : entries
+  }
+
+  private lastAppliedAt(id: string, time: number): number | null {
+    return this.liveStateAt(id, time)?.appliedAt ?? null
+  }
+
+  private liveStateAt(id: string, time: number): ActiveBuff | null {
+    let state = null as ActiveBuff | null
+    for (const entry of this.entriesInTimeOrder(id)) {
+      if (entry.time > time) break
+      state =
+        entry.action === "refresh"
+          ? {
+              appliedAt: entry.time,
+              expiresAt: entry.expiresAt,
+              ...(state?.stacks !== undefined && { stacks: state.stacks }),
+            }
+          : {
+              appliedAt: entry.grant ? entry.time : (state?.appliedAt ?? entry.time),
+              expiresAt: entry.expiresAt,
+              ...(entry.stacks !== undefined && { stacks: entry.stacks }),
+            }
+    }
+    return state
+  }
+
+  private triggerPhaseHolds(module: BuffModule, time: number): boolean {
+    return !module.triggerPhase || this.qiGateHolds(module.triggerPhase, time)
   }
 
   private runCastEffects(module: BuffModule, time: number, selfStacks: number): void {
@@ -429,6 +622,7 @@ export class BuffEngine {
       damageMultiplier: () => {},
       setStatus: () => {},
       echo: () => {},
+      finalCritAtLeast: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -439,34 +633,100 @@ export class BuffEngine {
   }
 
   private refreshBuff(id: string, time: number): void {
-    const cur = this.activeBuffs.get(id)
-    if (!cur || time < cur.appliedAt || time >= cur.expiresAt) return
+    if (!this.isBuffActive(id, time)) return
     const module = this.definitions.get(id)
     const duration = module ? this.resolveDuration(module, time) : 12
-    this.activeBuffs.set(id, {
-      appliedAt: time,
-      expiresAt: time + duration,
-      ...(cur.stacks !== undefined && { stacks: cur.stacks }),
-    })
-    this.buffHistory.push({ time, buffType: id, action: "refresh", expiresAt: time + duration })
+    this.recordHistory({ time, buffType: id, action: "refresh", expiresAt: time + duration })
+  }
+
+  moduleName(id: string): string | undefined {
+    return this.definitions.get(id)?.name
   }
 
   isBuffActive(id: string, time: number): boolean {
-    const active = this.activeBuffs.get(id)
-    return !!active && time >= active.appliedAt && time < active.expiresAt
+    const state = this.liveStateAt(id, time)
+    return !!state && time < state.expiresAt
   }
   isBuffActiveAtTime(id: string, time: number): boolean {
     return this.historicalApplyAt(id, time) !== null
   }
+
+  liveFraction(id: string, time: number): number {
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.liveFraction(id, time, this.baseWindowOf)
+    return this.isBuffActiveAtTime(id, time) ? 1 : 0
+  }
+
+  get extensionParticleCount(): number {
+    return this.extensionGenerator ? 1 : EXTENSION_PARTICLES
+  }
+
+  liveParticles(id: string, time: number): boolean | Uint8Array {
+    const ensemble = this.extensionCovering(id)
+    if (ensemble) return ensemble.liveMask(id, time, this.baseWindowOf)
+    return this.isBuffActiveAtTime(id, time)
+  }
+
+  private extensionCovering(id: string): WindowExtensionEnsemble | undefined {
+    for (const ensemble of this.extensions.values()) if (ensemble.covers(id)) return ensemble
+    return undefined
+  }
+
+  private readonly baseWindowOf = (id: string, time: number): BaseWindow | null => {
+    const latest = this.latestApplyAt(id, time)
+    return latest ? { start: latest.time, expiresAt: latest.expiresAt } : null
+  }
+
+  processDamagingEvent(event: {
+    skill: Skill
+    timeSec: number
+    stampSec?: number
+    runKey?: string
+    particles?: Uint8Array | null
+  }): void {
+    const tagSet = skillTagsOf(event.skill)
+    for (const [id, module] of this.definitions) {
+      const spec = module.extendsBuffs
+      if (!spec || !this.gateOk(module) || !reaches(tagSet, module)) continue
+      let ensemble = this.extensions.get(id)
+      if (!ensemble) {
+        ensemble = new WindowExtensionEnsemble(spec, this.extensionGenerator)
+        this.extensions.set(id, ensemble)
+      }
+      ensemble.trigger(
+        {
+          timeSec: event.timeSec,
+          stampSec: event.stampSec ?? null,
+          runKey: event.runKey ?? null,
+          latenessMaxSec:
+            spec.lateness && tagSet.has(spec.lateness.property) ? spec.lateness.maxSec : 0,
+          conditionsHold: this.triggerPhaseHolds(module, event.timeSec),
+          cooldownSec: this.resolveCooldown(module, event.timeSec),
+          requiredWindowId: module.requiresActiveBuffOnTrigger ?? null,
+          particles: event.particles ?? null,
+        },
+        this.baseWindowOf,
+      )
+    }
+  }
+
   // The latest apply at or before `time`, chosen by timestamp and NOT by array
-  // position: `buffHistory` is not in chronological order. The DoT-tick pass
-  // runs after the cast walk and appends applies stamped earlier than entries
-  // already recorded, so a backwards walk stops at whichever apply happens to
-  // sit last and reads a live window as expired.
+  // position: entries can be recorded out of time order, so a backwards walk
+  // would read a live window as expired.
   private latestApplyAt(id: string, time: number): HistoryEntry | null {
     let latest: HistoryEntry | null = null
-    for (const historyEntry of this.buffHistory) {
-      if (historyEntry.buffType !== id || historyEntry.action !== "apply") continue
+    for (const historyEntry of this.historyByBuffId.get(id) ?? []) {
+      if (historyEntry.action !== "apply") continue
+      if (historyEntry.time > time) continue
+      if (!latest || historyEntry.time >= latest.time) latest = historyEntry
+    }
+    return latest
+  }
+
+  private latestGrantAt(id: string, time: number): HistoryEntry | null {
+    let latest: HistoryEntry | null = null
+    for (const historyEntry of this.historyByBuffId.get(id) ?? []) {
+      if (historyEntry.grant !== true) continue
       if (historyEntry.time > time) continue
       if (!latest || historyEntry.time >= latest.time) latest = historyEntry
     }
@@ -487,13 +747,8 @@ export class BuffEngine {
     const rule = module.activeAfterBuffEnds
     if (!rule) return false
     const duration = this.resolveDuration(module, time)
-    const applies = this.buffHistory
-      .filter(
-        (historyEntry) =>
-          historyEntry.buffType === rule.buffId &&
-          historyEntry.action === "apply" &&
-          historyEntry.time <= time,
-      )
+    const applies = (this.historyByBuffId.get(rule.buffId) ?? [])
+      .filter((historyEntry) => historyEntry.action === "apply" && historyEntry.time <= time)
       .sort((a, b) => a.time - b.time)
     if (applies.length === 0) return false
     if (rule.cancelledByReapply) {
@@ -505,7 +760,10 @@ export class BuffEngine {
     )
   }
   private requiresBuffActiveGate(module: BuffModule, applyTime: number): boolean | null {
-    if (module.requiresBuffActive) return this.isBuffActive(module.requiresBuffActive, applyTime)
+    if (module.requiresBuffActive)
+      return module.buffAppliesAfterLastHitSec === undefined
+        ? this.isBuffActive(module.requiresBuffActive, applyTime)
+        : this.isBuffActiveAtTime(module.requiresBuffActive, applyTime)
     return null
   }
 
@@ -515,12 +773,24 @@ export class BuffEngine {
     props: SkillProperties = {},
     fromGeneratedSkill = false,
     declaredBuffIds: readonly string[] = [],
+    tagSet?: ReadonlySet<string>,
+    grantAtSec?: ReadonlyMap<string, number>,
+    deferGrant?: DeferGrant,
   ): CastBuffResult {
     const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
     if (props.noBuffTrigger) return result
     if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
 
-    this.triggerDeclaredBuffs(declaredBuffIds, castTag, time, props, fromGeneratedSkill)
+    this.triggerDeclaredBuffs(
+      declaredBuffIds,
+      castTag,
+      time,
+      props,
+      fromGeneratedSkill,
+      tagSet,
+      grantAtSec,
+      deferGrant,
+    )
 
     for (const [id, module] of this.definitions) {
       if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
@@ -531,19 +801,36 @@ export class BuffEngine {
     return result
   }
 
+  // `grantAtSec` overrides a listed id's own grant time to a fixed offset from
+  // this cast's start — the per-grant-site counterpart of a module's own
+  // `buffAppliesAfterSec`, for a grant whose timing depends on which skill
+  // fired it rather than on the module alone (docs/TIMELINE.md § "Triggers").
   triggerDeclaredBuffs(
     declaredBuffIds: readonly string[],
     castTag: string,
     time: number,
     props: SkillProperties = {},
     fromGeneratedSkill = false,
+    tagSet?: ReadonlySet<string>,
+    grantAtSec?: ReadonlyMap<string, number>,
+    deferGrant?: DeferGrant,
   ): void {
     const triggered = new Set<string>()
     for (const buffId of declaredBuffIds) {
       if (triggered.has(buffId)) continue
       triggered.add(buffId)
       const module = this.definitions.get(buffId)
-      if (module) this.applyTriggeredModule(module, castTag, time, props, fromGeneratedSkill)
+      if (module)
+        this.applyTriggeredModule(
+          module,
+          castTag,
+          time,
+          props,
+          fromGeneratedSkill,
+          tagSet,
+          grantAtSec?.get(buffId),
+          deferGrant,
+        )
     }
   }
 
@@ -560,24 +847,78 @@ export class BuffEngine {
     time: number,
     props: SkillProperties,
     fromGeneratedSkill: boolean,
+    tagSet?: ReadonlySet<string>,
+    grantAtSec?: number,
+    deferGrant?: DeferGrant,
   ): void {
-    if (!this.gateOk(module)) return
+    if (module.extendsBuffs || module.stackOnGrantingHit) return
+    if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
-    if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) return
+    const afterLastHit =
+      module.buffAppliesAfterLastHitSec !== undefined && props.lastHitSec !== undefined
+    const applyTime =
+      grantAtSec !== undefined
+        ? time + grantAtSec
+        : module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
+          ? time + (props.castTime ?? 1)
+          : afterLastHit
+            ? time + props.lastHitSec! + module.buffAppliesAfterLastHitSec!
+            : time + (module.buffAppliesAfterSec ?? 0)
+    const settlesAfterHits = afterLastHit && module.triggerPhaseTiming === "afterHits"
+    if (deferGrant && (settlesAfterHits || applyTime > time + DEFER_EPSILON_SEC)) {
+      deferGrant({
+        timeSec: applyTime,
+        ...(settlesAfterHits ? { settlesAfterHits: true as const } : {}),
+        commit: () =>
+          this.commitTriggeredGrant(module, castTag, time, applyTime, props, afterLastHit, true),
+      })
+      return
+    }
+    this.commitTriggeredGrant(module, castTag, time, applyTime, props, afterLastHit, false)
+  }
+
+  private commitTriggeredGrant(
+    module: BuffModule,
+    castTag: string,
+    time: number,
+    applyTime: number,
+    props: SkillProperties,
+    afterLastHit: boolean,
+    deferred: boolean,
+  ): void {
+    const triggerTime = deferred ? applyTime : time
+    const gateTime = deferred || afterLastHit ? applyTime : time
+    if (!this.triggerPhaseHolds(module, gateTime)) return
     if (
       module.requiresActiveBuffOnTrigger &&
-      !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
+      !this.isBuffActive(module.requiresActiveBuffOnTrigger, triggerTime)
     )
       return
-    if (this.triggerOnlyExtends(module, props) && !this.isBuffActiveAtTime(module.id, time)) return
-    if (module.cooldown) {
-      const last = this.activeBuffs.get(module.id)
-      if (last && time - last.appliedAt < module.cooldown) return
+    if (this.triggerOnlyExtends(module, props) && !this.isBuffActiveAtTime(module.id, triggerTime))
+      return
+    if (
+      module.blockedWhileActive?.some((blockingId) =>
+        this.isBuffActiveAtTime(blockingId, applyTime),
+      )
+    )
+      return
+    if (module.cooldown !== undefined) {
+      if (module.buffAppliesAfterLastHitSec === undefined) {
+        const lastAppliedAt = this.lastAppliedAt(module.id, triggerTime)
+        if (
+          lastAppliedAt !== null &&
+          triggerTime - lastAppliedAt < this.resolveCooldown(module, triggerTime)
+        )
+          return
+      } else {
+        const last = this.latestGrantAt(module.id, gateTime)
+        if (
+          last &&
+          gateTime - last.time < this.resolveCooldown(module, triggerTime) - COOLDOWN_TOLERANCE
+        )
+          return
+      }
     }
-    const applyTime =
-      module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
-        ? time + (props.castTime ?? 1)
-        : time
 
     if (!this.canGrantTrigger(module, applyTime)) return
 
@@ -625,29 +966,97 @@ export class BuffEngine {
   // such a def says who RECEIVES its bonus, never what grants it a stack, and
   // a def that wants the hit's origin to matter opts in via
   // `stackOnDamageScoped` / `perHitConsume`, both of which go through the same
-  // `reaches` the damage query uses. The timeline drives this over the
-  // prepass's sorted damage frames, so the stack history is complete before
-  // the first damage query reads it — which is also why every read and write
-  // here is history-indexed rather than against the live map: the cast walk
-  // has already run in full, so the live map holds only each id's last window.
-  processDamageHit(time: number, skill?: Skill): void {
+  // `reaches` the damage query uses.
+  processDamageHitPreScore(time: number, skill?: Skill, eventKind: DamageEventKind = "hit"): void {
     const tagSet = skill ? skillTagsOf(skill) : undefined
+    const eligible: BuffModule[] = []
+    for (const module of this.definitions.values()) {
+      if (module.stackOnGrantingHit || module.damageGrantTiming === "postQi") continue
+      if (!this.listensTo(module, eventKind) || !this.gateOk(module)) continue
+      if (this.requiredStatePresent(module, time)) eligible.push(module)
+    }
+    for (const module of eligible) this.processDamageGrant(module, time, time, tagSet)
+  }
+
+  private requiredStatePresent(module: BuffModule, time: number): boolean {
+    if (module.requiresBuffActive && !this.isBuffActiveAtTime(module.requiresBuffActive, time))
+      return false
+    if (module.stackOnDamageOnlyWhileActive && !this.isBuffActiveAtTime(module.id, time))
+      return false
+    if (module.perHitConsume && !this.isBuffActiveAtTime(module.perHitConsume.from, time))
+      return false
+    return true
+  }
+
+  processDamageHitPostQi(
+    time: number,
+    skill?: Skill,
+    fromGeneratedSkill = false,
+    eventKind: DamageEventKind = "hit",
+  ): void {
+    const tagSet = skill ? skillTagsOf(skill) : undefined
+    const stampTime = time + AFTER_HIT_SEC
     for (const [id, module] of this.definitions) {
+      if (module.stackOnGrantingHit) {
+        if (
+          eventKind === "hit" &&
+          skill &&
+          this.grantsOnHit(module, skill, tagSet!, fromGeneratedSkill)
+        )
+          this.applyBuff(id, stampTime, null, 1)
+        continue
+      }
+      if (module.damageGrantTiming !== "postQi" || !this.listensTo(module, eventKind)) continue
       if (!this.gateOk(module)) continue
-      if (module.perHitConsume) this.processPerHitConsume(module, time, tagSet)
-      if (!module.stackOnDamage) continue
-      if (!this.stackOnDamagePhaseHolds(module, time)) continue
-      if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) continue
-      if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, time)
-      else if (this.canGrantDamageStack(module, time)) this.applyBuff(id, time, null, 1)
+      this.processDamageGrant(module, time, stampTime, tagSet)
     }
   }
 
+  private listensTo(module: BuffModule, eventKind: DamageEventKind): boolean {
+    return eventKind === "hit" || module.damageGrantListensTo === "anyDamage"
+  }
+
+  private processDamageGrant(
+    module: BuffModule,
+    readTime: number,
+    stampTime: number,
+    tagSet: ReadonlySet<string> | undefined,
+  ): void {
+    if (module.perHitConsume) this.processPerHitConsume(module, stampTime, tagSet)
+    if (!module.stackOnDamage) return
+    if (!this.stackOnDamagePhaseHolds(module, readTime)) return
+    if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) return
+    if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, stampTime)
+    else if (this.canGrantDamageStack(module, stampTime))
+      this.applyBuff(module.id, stampTime, null, 1)
+  }
+
+  private grantsOnHit(
+    module: BuffModule,
+    skill: Skill,
+    tagSet: ReadonlySet<string>,
+    fromGeneratedSkill: boolean,
+  ): boolean {
+    if (!skill.triggersBuffs?.includes(module.id)) return false
+    if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return false
+    return this.gateOk(module, castTagOf(skill), tagSet)
+  }
+
+  private static singleGateHolds(gate: QiGate, phase: QiPhase, fraction: number): boolean {
+    if (typeof gate === "string") return gate === phase
+    if ("qiBelow" in gate) return fraction < gate.qiBelow
+    return fraction <= gate.qiAtMost
+  }
+
+  private qiGateHolds(gate: QiGate | readonly QiGate[], time: number): boolean {
+    const phase = this.qiPhase(time)
+    const fraction = this.qiFraction(time)
+    const gates: readonly QiGate[] = Array.isArray(gate) ? gate : [gate as QiGate]
+    return gates.some((candidate) => BuffEngine.singleGateHolds(candidate, phase, fraction))
+  }
+
   private stackOnDamagePhaseHolds(module: BuffModule, time: number): boolean {
-    const phase = module.stackOnDamagePhase
-    if (!phase) return true
-    const current = this.qiPhase(time)
-    return Array.isArray(phase) ? phase.includes(current) : phase === current
+    return !module.stackOnDamagePhase || this.qiGateHolds(module.stackOnDamagePhase, time)
   }
 
   private canGrantDamageStack(module: BuffModule, time: number): boolean {
@@ -672,9 +1081,9 @@ export class BuffEngine {
     const window = this.latestApplyAt(module.id, time)
     if (!window || time >= window.expiresAt) return
     const before = window.stacks ?? 1
-    if (before <= 0 || before >= (module.maxStacks ?? 1)) return
+    if (before <= 0 || before >= (this.maxStacksOf(module.id) ?? 1)) return
     if (!this.canGrantDamageStack(module, time)) return
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: module.id,
       action: "apply",
@@ -699,7 +1108,7 @@ export class BuffEngine {
     if (!window || time >= window.expiresAt) return false
     const before = window.stacks ?? 1
     if (before <= 0) return false
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
@@ -758,13 +1167,12 @@ export class BuffEngine {
   // `getHistoricalBuffStacks` reads `apply` entries alone, so a spend written
   // any other way is invisible to every later damage query.
   private spendStack(id: string, time: number): boolean {
-    const active = this.activeBuffs.get(id)
-    if (!active || time < active.appliedAt || time >= active.expiresAt) return false
+    const active = this.liveStateAt(id, time)
+    if (!active || time >= active.expiresAt) return false
     const before = active.stacks ?? 1
     if (before <= 0) return false
     const next = Math.max(0, before - 1)
-    this.activeBuffs.set(id, { ...active, stacks: next })
-    this.buffHistory.push({
+    this.recordHistory({
       time,
       buffType: id,
       action: "apply",
@@ -806,9 +1214,10 @@ export class BuffEngine {
     }
   }
   private refreshMistwillowThrottled(id: string, time: number): void {
-    const active = this.activeBuffs.get(id)
-    if (!active || time < active.appliedAt || time >= active.expiresAt) return
-    const cooldown = this.definitions.get(id)?.cooldown ?? 0
+    const active = this.liveStateAt(id, time)
+    if (!active || time >= active.expiresAt) return
+    const module = this.definitions.get(id)
+    const cooldown = module ? this.resolveCooldown(module, time) : 0
     if (time - active.appliedAt < cooldown) return
     this.applyBuff(id, time)
   }
@@ -830,6 +1239,7 @@ export class BuffEngine {
     const breakdown: Record<string, number> = {}
     let forceCrit = false
     let damageFactor = 1
+    let forceNoAbrasion = false
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
     const echoFeeds: { debuffId: string }[] = []
@@ -842,6 +1252,7 @@ export class BuffEngine {
       },
       forceOutcome(outcome) {
         if (outcome === "crit") forceCrit = true
+        if (outcome === "noAbrasion") forceNoAbrasion = true
       },
       applyBuff: () => {},
       consumeStacks: () => {},
@@ -855,9 +1266,15 @@ export class BuffEngine {
       echo(debuffId) {
         echoFeeds.push({ debuffId })
       },
+      finalCritAtLeast(threshold, bonusBelowThreshold) {
+        conditionalFinalCrit = { threshold, bonusBelowThreshold }
+      },
     }
 
     for (const [id, module] of this.definitions) {
+      const windowDriven =
+        !scopedBuffIds.has(id) && !module.perCastConsume && !module.activeAfterBuffEnds
+      const windowWeight = windowDriven ? this.liveFraction(id, time) : 1
       // A cast-scoped id counts as active for this cast alone: a def whose
       // window never opens (a per-cast consume) and one another def attached to
       // this cast both arrive here, and neither is live on the clock.
@@ -868,7 +1285,7 @@ export class BuffEngine {
             this.phaseAlternativeHolds(module, time)
           : module.activeAfterBuffEnds
             ? this.isActiveAfterBuffEndsActive(module, time)
-            : this.isBuffActiveAtTime(id, time))
+            : windowWeight > 0)
       if (!active) continue
       if (!this.gateOk(module)) continue
       if (
@@ -880,10 +1297,11 @@ export class BuffEngine {
       if (!reaches(tagSet, module)) continue
       if (module.reachesDotTicks === false && skill.isDotTick) continue
 
-      const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      const stacks =
+        this.maxStacksOf(module.id) !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
       const ctx = this.buildContext(
         time,
-        { kind: "damage", castTag, tags: tagSet },
+        { kind: "damage", castTag, tags: tagSet, isDotTick: skill.isDotTick === true },
         stacks,
         module,
         false,
@@ -891,13 +1309,18 @@ export class BuffEngine {
         statusesView,
       )
       currentId = id
-      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+      // The declarative field first, so a `finalCritAtLeast` effect this same
+      // module returns — genuinely scoped, unlike the whole-module field —
+      // always wins if a module somehow carried both.
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
+      for (const effect of resolveEffects(module, ctx))
+        applyEffect(sink, windowWeight < 1 ? weightedEffect(effect, windowWeight, id) : effect)
     }
 
     return {
       effects,
       forceCrit,
+      forceNoAbrasion,
       damageFactor,
       conditionalFinalCrit,
       artBonuses,

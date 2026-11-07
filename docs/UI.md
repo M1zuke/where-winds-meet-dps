@@ -6,8 +6,10 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
 ## The rules
 
 1. **At most ONE synchronous engine pass per input change** — the baseline pass
-   that feeds the DPS header. Anything that runs the engine more than once per
-   change (ranking sweeps, per-piece deltas, tile variants, retunement and
+   that feeds the DPS header. The baseline pass never computes another pass's
+   Qi log itself: a log it spends arrives from the worker, and until one has
+   arrived it runs on its own bar. Anything that runs the engine more than once
+   per change (ranking sweeps, per-piece deltas, tile variants, retunement and
    word-max analyses) goes through the shared worker client: add a request kind
    and a compute function there, and drive it from a hook shaped like the
    existing ones — subscribe on mount and unsubscribe on unmount, and an empty
@@ -16,7 +18,12 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    kind's retained response, read in the `useState` initializer and projected by
    the same function its listener uses — never replayed into state from an
    effect. **Never** run the engine in a render-path memo outside that one
-   baseline pass.
+   baseline pass. **Inside one worker request, a repeated engine pass is answered
+   from that request's memo**, keyed by an exact encoding of the pass's inputs
+   and options, bounded, and discarded when the request ends; nothing else
+   memoizes engine passes. An engine pass stays a pure function of its inputs
+   and options — no clock, no unseeded randomness, no state carried between
+   passes.
 2. **The client assigns request ids; a hook never numbers its own requests.**
    Superseded responses are recognised by id against document-lifetime state, so
    a counter that restarts — as any per-mount counter does on a route revisit —
@@ -25,20 +32,26 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    so a second subscriber to a kind receives the first one's results and their
    posts coalesce into one request.
 4. **Never construct a worker in a hook.** The client owns a bounded, lazily
-   grown pool and keeps it for the life of the document. A hook that spawns its
-   own pays a full module instantiation per mount — for a route-mounted tab, per
-   visit. **A request goes to the freest worker at the moment it is sent** — an
-   idle one where there is one, a new one while the pool may still grow, the
-   least loaded otherwise. Nothing is pinned to a kind: pinning puts a cheap
-   sweep behind an expensive one while another worker sits idle.
+   grown pool and keeps it for the life of the document, replacing a worker only
+   when it terminates one (rule 5). A hook that spawns its own pays a full
+   module instantiation per mount — for a route-mounted tab, per visit. **A
+   worker holds at most one request at a time.** A request goes to an idle
+   worker — a new one while the pool may still grow; while none is idle it waits
+   in the client, where a newer request of its kind replaces it. Nothing is
+   pinned to a kind: pinning puts a cheap sweep behind an expensive one while
+   another worker sits idle.
 5. **Post through the client, never around it.** It debounces per kind with the
-   shared table, keeps only the newest request, discards superseded responses,
-   and once a kind has no listeners left drops its queued request and **aborts**
-   the ones already in flight, so the next mount is never handed the previous
-   one's result and no worker keeps computing for a tab that is gone. Each post
-   structured-clones the full inputs, gear inventory included, on the main thread
-   — a zero-delay timeout is not a debounce, so a kind that must fire at once
-   takes a zero entry in that table and posts synchronously.
+   shared table, keeps only the newest request and discards superseded
+   responses. **A run nobody is waiting for is stopped, not finished:** when a
+   request is superseded or its kind loses its last listener, the client drops it
+   if it is still waiting and terminates the worker running it if it was sent — a
+   synchronous engine loop cannot be interrupted any other way. The only run a
+   newer request keeps alive is one computing that request's own signature
+   (rule 6). A user's cancel of a progress-reporting kind is the cooperative one
+   in rule 12, because it keeps the partial result. Each post structured-clones
+   the full inputs, gear inventory included, on the main thread — a zero-delay
+   timeout is not a debounce, so a kind that must fire at once takes a zero
+   entry in that table and posts synchronously.
 6. **The client answers from memory where the request settles it.** Each cacheable
    kind keeps a bounded set of responses keyed by a signature of the request, and
    each kind retains its last response for the next mount. Both live only in the
@@ -48,10 +61,8 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    the request-id and delivery path of a computed one, and never raises pending.
    **No signature is ever computed twice.** A request whose signature is already
    being computed waits on that run rather than starting a second, and answers
-   under the waiting request's id. A run abandoned under rule 5 still fills the
-   cache **and becomes the retained response** when it lands, so the mount that
-   re-posts it opens on that answer instead of on an empty panel — abandoning
-   drops the _delivery_, never the work. Retention tracks its own newest-answer
+   under the waiting request's id. A terminated run leaves nothing behind — no
+   cache entry and no retained response. Retention tracks its own newest-answer
    mark, so a superseded or out-of-order response can never overwrite a newer
    one with an older one.
 7. **Mount worker hooks where the results are consumed**, not in the app shell, so
@@ -79,10 +90,10 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    per item than the whole sweep was, and a parity test states that the split
    answers what the whole answered.
 10. **While a shell-owned run is in flight, no control may change engine inputs.**
-   Disable the whole route panel through one `fieldset`, disable the shell
-   controls that write inputs, and have every shell writer refuse the write —
-   the disabled markup is the affordance, the refusal is the invariant. Release
-   both the moment the run stops, however it stopped.
+    Disable the whole route panel through one `fieldset`, disable the shell
+    controls that write inputs, and have every shell writer refuse the write —
+    the disabled markup is the affordance, the refusal is the invariant. Release
+    both the moment the run stops, however it stopped.
 11. **Never serialize large state per render.** Memoize on the value that actually
     changed.
 12. **A kind that reports progress reports it on its own message kind**, routed
@@ -108,8 +119,22 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
     remaining time are its information, and a module declared with a literal
     empty `effects` array, a state marker other modules read. A gate a build
     opens for the whole fight as a bare unlock marker is not a chip at all.
+15. **A cast's chips show the state once its own trigger chain has landed.**
+    The cast's own end is the later of its last frame and its last own hit.
+    Ledger statuses are read at the last hit the cast's trigger chain lands, at
+    any depth, or at the cast's own end if that is later. The read sees only
+    writes owned by that cast or an earlier one, and unowned writes no later
+    than the cast's own end. A later cast's extension or cut of an earlier
+    window is rolled back. Class-buff modules and mechanic chips are read at
+    the cast's own end.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
+
+## Fight clock
+
+Every time a view renders is fight-clock seconds — counted from the fight's
+own start, the first damaging hit — through the one shared `fightClockSec`
+conversion, never recomputed per view.
 
 ## Component layout
 
@@ -140,6 +165,11 @@ Follow the nearest existing worker hook rather than inventing a new shape.
   Breakpoints go through the shared mixin, never a hardcoded media query.
   Repeated form-control declarations go through the shared field mixins. Hover
   styles go through the shared hover mixin, never a bare `:hover`.
+- **Every dropdown or listbox menu renders through the shared `DropdownList`** —
+  never a hand-rolled absolute or fixed menu.
+- **An absolutely positioned element needs a positioned ancestor inside its own
+  scroll container.** Otherwise it resolves against the page, escapes the panel's
+  scroll and stretches the document.
 - Bare element selectors inside a module are not hashed and keep working through
   ancestor scoping. That is what lets a class-less shared input stay styled by
   whichever module renders it — **never add a class to it**.

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
-import { activeRotationForInputs } from "../../src/engine/dps"
+import { activeRotationForInputs } from "../../src/engine/activeRotation"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import {

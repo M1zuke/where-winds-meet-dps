@@ -49,6 +49,7 @@ function Harness({ initialInventory }: { initialInventory: GearPiece[] }) {
       <ConfirmProvider>
         <GearTab
           inputs={inputs}
+          configuredInputs={inputs}
           engineInputs={inputs}
           customGraduationBuild={null}
           onChange={setInputs}
@@ -73,14 +74,14 @@ describe("GearPiece.label rendering", () => {
 
     const tile = within(helmSlotTile())
     expect(tile.getByText("Retune slot 3")).toBeInTheDocument()
-    expect(tile.getByText("lv91 · Legendary")).toBeInTheDocument()
+    expect(tile.getByText("Lv91")).toBeInTheDocument()
   })
 
   it("renders an unlabelled piece's slot tile exactly as it does today", () => {
     renderHarness([piece("helm", "helm")])
 
     const tile = within(helmSlotTile())
-    expect(tile.getByText("lv91 · Legendary")).toBeInTheDocument()
+    expect(tile.getByText("Lv91")).toBeInTheDocument()
     expect(tile.queryByText("Retune slot 3")).not.toBeInTheDocument()
   })
 
@@ -112,7 +113,7 @@ describe("GearPiece.label rendering", () => {
     fireEvent.change(screen.getByLabelText("Name"), { target: { value: "   " } })
 
     const tile = within(helmSlotTile())
-    expect(tile.getByText("lv91 · Legendary")).toBeInTheDocument()
+    expect(tile.getByText("Lv91")).toBeInTheDocument()
     expect(tile.queryByText("Retune slot 3")).not.toBeInTheDocument()
   })
 })

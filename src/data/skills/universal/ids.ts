@@ -8,6 +8,7 @@ export const SKILL = {
   deflectCancel: "universal-deflect-cancel",
   delay: "universal-delay",
   ghostlySteps: "universal-ghostly-steps",
+  ghostlyStepsUmbra: "universal-ghostly-steps-umbra",
   goldenBodyCancel: "universal-golden-body-cancel",
   goldenBodyDeflectCancel: "universal-golden-body-deflect-cancel",
   perfectDodgeFull: "universal-perfect-dodge-full",

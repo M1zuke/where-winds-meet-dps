@@ -1,5 +1,13 @@
 import type { Skill } from "./skill"
-import type { QiBreakWindow } from "./types"
+import {
+  DEFAULT_AVERAGE_FPS,
+  DEFAULT_PING_MS,
+  DEFAULT_SERVER_PROCESSING_MS,
+  isValidAverageFps,
+  isValidPingMs,
+  isValidServerProcessingMs,
+} from "./pingFps"
+import { DEFAULT_PREFERRED_DISTANCE_METERS, isValidPreferredDistanceMeters } from "./distance"
 
 export interface RotationStep {
   id: string
@@ -13,8 +21,12 @@ export interface Rotation {
   steps: RotationStep[]
   permanentBuffIds: string[]
   openingStacks?: Record<string, number>
-  qiBreak?: QiBreakWindow
   fixedWindowSec?: number
+  // The rotation's own connection assumptions (docs/TIMELINE.md § "Coefficients").
+  pingMs: number
+  averageFps: number
+  serverProcessingMs: number
+  preferredDistanceMeters: number
   createdAt: string
   updatedAt: string
   description?: string
@@ -50,6 +62,10 @@ export function makeRotation(classId: string, patch: Partial<Rotation> = {}): Ro
     classId,
     steps: [],
     permanentBuffIds: [],
+    pingMs: DEFAULT_PING_MS,
+    averageFps: DEFAULT_AVERAGE_FPS,
+    serverProcessingMs: DEFAULT_SERVER_PROCESSING_MS,
+    preferredDistanceMeters: DEFAULT_PREFERRED_DISTANCE_METERS,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -85,21 +101,19 @@ export function isRotation(x: unknown): x is Rotation {
       if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) return false
     }
   }
-  if (r.qiBreak !== undefined && !isQiBreakWindow(r.qiBreak)) return false
   if (r.fixedWindowSec !== undefined && readFixedWindowSec(r.fixedWindowSec) === undefined)
+    return false
+  if (typeof r.pingMs !== "number" || !isValidPingMs(r.pingMs)) return false
+  if (typeof r.averageFps !== "number" || !isValidAverageFps(r.averageFps)) return false
+  if (typeof r.serverProcessingMs !== "number" || !isValidServerProcessingMs(r.serverProcessingMs))
+    return false
+  if (
+    typeof r.preferredDistanceMeters !== "number" ||
+    !isValidPreferredDistanceMeters(r.preferredDistanceMeters)
+  )
     return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
-  return true
-}
-
-export function isQiBreakWindow(x: unknown): x is QiBreakWindow {
-  if (!x || typeof x !== "object" || Array.isArray(x)) return false
-  const w = x as Record<string, unknown>
-  for (const key of ["startSec", "durationSec", "lowQiLeadSec"] as const) {
-    const value = w[key]
-    if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return false
-  }
   return true
 }
 

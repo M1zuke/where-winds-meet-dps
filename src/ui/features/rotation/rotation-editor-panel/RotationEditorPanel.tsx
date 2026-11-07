@@ -1,5 +1,11 @@
-import { useMemo, useRef, useState } from "react"
-import type { Inputs, Result, CastBuffTag, RotationCast } from "../../../../engine/types"
+import { Fragment, useMemo, useRef, useState } from "react"
+import type {
+  Inputs,
+  Result,
+  CastBuffTag,
+  CastMeterLevel,
+  RotationCast,
+} from "../../../../engine/types"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
 import {
@@ -12,17 +18,22 @@ import {
   type Rotation,
   type RotationStep,
 } from "../../../../engine/rotation"
-import { activeRotationForInputs } from "../../../../engine/dps"
-import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engine/qiBreak"
-import type { QiBreakWindow } from "../../../../engine/types"
+import { activeRotationForInputs } from "../../../../engine/activeRotation"
+import {
+  PREFERRED_DISTANCE_METERS_MAX,
+  PREFERRED_DISTANCE_METERS_MIN,
+} from "../../../../engine/distance"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
-import { isPrePullSkill, type Skill } from "../../../../engine/skill"
+import { isPrePullSkill, type ConditionFailureReason, type Skill } from "../../../../engine/skill"
+import { deflectCancelSkillId } from "../../../../engine/deflectCancels"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { classDefinition } from "../../../../definitions/classes/registry"
-import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
+import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
+import { buildReadsTargetDistance, hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
   buffChipAbbreviation,
@@ -30,6 +41,10 @@ import {
   castBuffDisplayOrder,
   visibleCastBuffs,
 } from "../buffChips"
+import { fightClockSec } from "../fightClock"
+import { buildQiLedger, type QiLedgerCell, type QiLedgerMarker } from "../qiLedger"
+import { QiLedgerCells, QiLedgerHeaderCells, QiStatusChip } from "./qi-ledger-cells/QiLedgerCells"
+import { conditionFailureReasonsText } from "../../skills/statusText"
 import {
   inputsWithRotationOption,
   rotationOptions,
@@ -51,14 +66,15 @@ import {
   buffDescriptionKey,
   buffKey,
   debuffKey,
+  meterKey,
   rotationKey,
   skillKey,
 } from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
+import { MultiSelect } from "../../../components/select/MultiSelect"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
-import { rotationDurationSec } from "./rotationDuration"
 
 interface Props {
   inputs: Inputs
@@ -141,6 +157,26 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
   )
 }
 
+function MeterLevelChip({ level }: { level: CastMeterLevel }) {
+  const { t } = useI18n()
+  const shown = (amount: number) =>
+    level.unitSize === undefined ? Math.round(amount) : inDisplayUnits(amount, level.unitSize)
+  return (
+    <span className={styles.meterLevel}>
+      {t(meterKey(level.id), level.name)} {shown(level.amount)}/{shown(level.capacity)}
+    </span>
+  )
+}
+
+function DistanceChip({ distanceMeters }: { distanceMeters: number }) {
+  const { t } = useI18n()
+  return (
+    <span className={styles.meterLevel}>
+      {t("rotation.editor.distanceM")} {distanceMeters.toFixed(1)}
+    </span>
+  )
+}
+
 export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -201,10 +237,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
 
-  const computedDurationSec = useMemo(
-    () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
-    [activeRotation, skillsById, result],
-  )
+  const computedDurationSec = result.rotationDuration
 
   const diagnostics = useMemo(() => {
     if (!isCustom || !activeRotation) return []
@@ -221,12 +254,30 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     for (const cast of result.casts ?? []) map.set(cast.stepIndex, cast)
     return map
   }, [result.casts])
+  const attachedCastsByParentStepId = useMemo(() => {
+    const map = new Map<string, RotationCast>()
+    for (const cast of result.casts ?? []) {
+      if (cast.attachedToStepId) map.set(cast.attachedToStepId, cast)
+    }
+    return map
+  }, [result.casts])
+  const qiLedger = useMemo(
+    () => (result.qiTrace ? buildQiLedger(result.qiTrace, result.casts ?? []) : null),
+    [result.qiTrace, result.casts],
+  )
+  const deflectCancelSkill = skillsById.get(deflectCancelSkillId(inputs.classId))
+  const invalidStepIds = useMemo(
+    () => new Set(result.invalidStepIds ?? []),
+    [result.invalidStepIds],
+  )
+  const invalidStepReasons = result.invalidStepReasons ?? {}
 
   const hiddenBuffIds = useMemo(() => hiddenTimelineBuffIds(inputs.classId), [inputs.classId])
   const buffOrder = useMemo(
     () => castBuffDisplayOrder(result.casts, hiddenBuffIds),
     [result.casts, hiddenBuffIds],
   )
+  const showDistance = useMemo(() => buildReadsTargetDistance(inputs), [inputs])
 
   function selectRotation(id: string) {
     const option = options.find((candidate) => candidate.id === id)
@@ -279,11 +330,13 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
-  function setQiBreak(patch: Partial<typeof DEFAULT_QI_BREAK_WINDOW>) {
-    commitRotation((rotation) => ({
-      ...rotation,
-      qiBreak: { ...(rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW), ...patch },
-    }))
+  function setRotationConnection(
+    connection: Pick<Rotation, "pingMs" | "averageFps" | "serverProcessingMs">,
+  ) {
+    commitRotation((rotation) => ({ ...rotation, ...connection }))
+  }
+  function setPreferredDistanceMeters(preferredDistanceMeters: number) {
+    commitRotation((rotation) => ({ ...rotation, preferredDistanceMeters }))
   }
   function setFixedWindowSec(windowSec: number | undefined) {
     commitRotation((rotation) => {
@@ -313,8 +366,11 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       steps: activeRotation.steps.map((step) => ({ ...step, id: newStepId() })),
       permanentBuffIds: [...activeRotation.permanentBuffIds],
       openingStacks: { ...activeRotation.openingStacks },
-      qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
       fixedWindowSec: activeRotation.fixedWindowSec,
+      pingMs: activeRotation.pingMs,
+      averageFps: activeRotation.averageFps,
+      serverProcessingMs: activeRotation.serverProcessingMs,
+      preferredDistanceMeters: activeRotation.preferredDistanceMeters,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -391,6 +447,30 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   }
 
   const steps = activeRotation?.steps ?? []
+  const castRowsInOrder = steps.flatMap((step, idx) => {
+    const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
+    const attachedCast = attachedCastsByParentStepId.get(step.id)
+    return [
+      ...(cast ? [{ rowKey: `step:${step.id}`, cast }] : []),
+      ...(attachedCast ? [{ rowKey: `attached:${step.id}`, cast: attachedCast }] : []),
+    ]
+  })
+  const { markersBeforeRow, trailingMarkers } = placeQiMarkers(
+    qiLedger?.markers ?? [],
+    castRowsInOrder,
+  )
+  const qiMax = qiLedger?.max ?? 0
+  const qiCellOf = (cast: RotationCast | undefined): QiLedgerCell | null =>
+    (cast && qiLedger?.castCells.get(cast.index)) ?? null
+  const renderQiMarkers = (markers: readonly QiLedgerMarker[] | undefined) =>
+    markers?.map((marker) => (
+      <QiMarkerRow
+        key={`${marker.kind}:${marker.timeSec}`}
+        marker={marker}
+        max={qiMax}
+        result={result}
+      />
+    ))
 
   return (
     <div className={`panel ${styles.customRotationPanel}`}>
@@ -478,6 +558,47 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 )}
               </span>
             </label>
+            <label className={styles.field}>
+              <span>{t("rotation.editor.connection")}</span>
+              <span className={styles.fixedWindow}>
+                <PingFpsFields
+                  pingMs={activeRotation.pingMs}
+                  averageFps={activeRotation.averageFps}
+                  serverProcessingMs={activeRotation.serverProcessingMs}
+                  disabled={!isCustom}
+                  onPingMsChange={(next) =>
+                    next !== null && setRotationConnection({ ...activeRotation, pingMs: next })
+                  }
+                  onAverageFpsChange={(next) =>
+                    next !== null && setRotationConnection({ ...activeRotation, averageFps: next })
+                  }
+                  onServerProcessingMsChange={(next) =>
+                    next !== null &&
+                    setRotationConnection({ ...activeRotation, serverProcessingMs: next })
+                  }
+                />
+              </span>
+            </label>
+            {showDistance ? (
+              <label className={styles.field} title={t("rotation.editor.preferredDistanceHint")}>
+                <span>{t("rotation.editor.preferredDistanceM")}</span>
+                <span className={styles.fixedWindow}>
+                  <NumInput
+                    value={activeRotation.preferredDistanceMeters}
+                    min={PREFERRED_DISTANCE_METERS_MIN}
+                    disabled={!isCustom}
+                    onChange={(next) =>
+                      setPreferredDistanceMeters(
+                        Math.min(
+                          PREFERRED_DISTANCE_METERS_MAX,
+                          Math.max(PREFERRED_DISTANCE_METERS_MIN, next),
+                        ),
+                      )
+                    }
+                  />
+                </span>
+              </label>
+            ) : null}
             <div className={styles.actions}>
               {isCustom ? (
                 <>
@@ -521,10 +642,23 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
+            {qiLedger && (
+              <div className={`${styles.entry} ${styles.ledgerHead}`}>
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <QiLedgerHeaderCells max={qiMax} />
+              </div>
+            )}
             <QiBreakRow
-              window={resolveQiBreakWindow(inputs.combatSettings, activeRotation.qiBreak)}
-              overridden={!!inputs.combatSettings?.qiBreakOverride}
-              onChange={isCustom ? setQiBreak : null}
+              withLedger={qiLedger !== null}
+              breaks={(result.qiBreaks ?? []).map((qiBreak) => ({
+                startSec: fightClockSec(result, qiBreak.startSec),
+                endSec: fightClockSec(result, qiBreak.endSec),
+              }))}
             />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
@@ -538,86 +672,126 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               const skill = skillsById.get(step.skillId)
               const maxHits = Math.max(1, skill?.hits.length ?? 1)
               const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
+              const invalid = invalidStepIds.has(step.id)
+              const invalidReasons = invalidStepReasons[step.id]
+              const invalidTitle = invalid
+                ? invalidReasons && invalidReasons.length > 0
+                  ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+                  : t("rotation.editor.invalidInGameTitle")
+                : undefined
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
+              const attachedCast = attachedCastsByParentStepId.get(step.id)
+              const qiCell = qiCellOf(cast)
               return (
-                <div
-                  key={step.id}
-                  className={styles.entry + (isCustom ? "" : ` ${styles.entryReadonly}`)}
-                >
-                  <div className={styles.idx}>{idx + 1}</div>
-                  <span className={styles.time}>
-                    {cast ? `${Math.max(0, cast.timeSec).toFixed(2)}s` : "—"}
-                  </span>
-                  {isCustom ? (
-                    <Combobox
-                      value={step.skillId}
-                      options={skillOpts}
-                      onChange={(skillId) => updateStep(idx, { skillId })}
-                      placeholder={t("rotation.editor.selectSkill")}
-                    />
-                  ) : (
-                    <span className={styles.skillStatic}>
-                      {skill ? t(skillKey(skill), skill.name) : step.skillId}
-                    </span>
-                  )}
-                  <span className={styles.castReadonly}>
-                    {maxHits} {t("common.hits")}
-                  </span>
-                  <span
-                    className={styles.prepull}
-                    title={t("rotation.editor.prePullExcludedFromDuration")}
+                <Fragment key={step.id}>
+                  {renderQiMarkers(markersBeforeRow.get(`step:${step.id}`))}
+                  <div
+                    className={
+                      styles.entry +
+                      (isCustom ? "" : ` ${styles.entryReadonly}`) +
+                      (invalid ? ` ${styles.entryInvalid}` : "")
+                    }
                   >
-                    {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
-                  </span>
-                  <div className={styles.buffsCell}>
-                    {shownBuffs.length === 0 ? (
-                      <span className="muted">—</span>
+                    <div className={styles.idx}>{idx + 1}</div>
+                    <span className={styles.time} title={invalidTitle}>
+                      {cast ? `${fightClockSec(result, cast.timeSec).toFixed(2)}s` : "—"}
+                      {invalid ? " ⚠" : ""}
+                    </span>
+                    {isCustom ? (
+                      <Combobox
+                        value={step.skillId}
+                        options={skillOpts}
+                        onChange={(skillId) => updateStep(idx, { skillId })}
+                        placeholder={t("rotation.editor.selectSkill")}
+                      />
                     ) : (
-                      shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      <span className={styles.skillStatic}>
+                        {skill ? t(skillKey(skill), skill.name) : step.skillId}
+                      </span>
+                    )}
+                    <span className={styles.castReadonly}>
+                      {maxHits} {t("common.hits")}
+                    </span>
+                    <span
+                      className={styles.prepull}
+                      title={t("rotation.editor.prePullExcludedFromDuration")}
+                    >
+                      {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
+                    </span>
+                    <div className={styles.buffsCell}>
+                      {shownBuffs.length === 0 ? (
+                        <span className="muted">—</span>
+                      ) : (
+                        shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      )}
+                      {cast?.meterLevels?.map((level) => (
+                        <MeterLevelChip key={level.id} level={level} />
+                      ))}
+                      {showDistance && cast ? (
+                        <DistanceChip distanceMeters={cast.distanceMeters} />
+                      ) : null}
+                      {qiCell?.status ? <QiStatusChip status={qiCell.status} /> : null}
+                    </div>
+                    {qiLedger && <QiLedgerCells cell={qiCell} max={qiMax} />}
+                    {isCustom && (
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => addStepAfter(idx)}
+                          title={t("rotation.editor.addSkillAfterThisLine")}
+                          aria-label="add after"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, -1)}
+                          disabled={idx === 0}
+                          aria-label="move up"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, 1)}
+                          disabled={idx === steps.length - 1}
+                          aria-label="move down"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon danger"
+                          onClick={() => removeStep(idx)}
+                          aria-label="remove"
+                        >
+                          ×
+                        </button>
+                      </div>
                     )}
                   </div>
-                  {isCustom && (
-                    <div className={styles.rowActions}>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => addStepAfter(idx)}
-                        title={t("rotation.editor.addSkillAfterThisLine")}
-                        aria-label="add after"
-                      >
-                        +
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, -1)}
-                        disabled={idx === 0}
-                        aria-label="move up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, 1)}
-                        disabled={idx === steps.length - 1}
-                        aria-label="move down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon danger"
-                        onClick={() => removeStep(idx)}
-                        aria-label="remove"
-                      >
-                        ×
-                      </button>
-                    </div>
+                  {attachedCast && renderQiMarkers(markersBeforeRow.get(`attached:${step.id}`))}
+                  {attachedCast && (
+                    <AttachedDeflectCancelRow
+                      qiCell={qiLedger ? qiCellOf(attachedCast) : undefined}
+                      qiMax={qiMax}
+                      cast={attachedCast}
+                      skill={deflectCancelSkill}
+                      invalid={invalidStepIds.has(attachedCast.stepId)}
+                      invalidReasons={invalidStepReasons[attachedCast.stepId]}
+                      hiddenBuffIds={hiddenBuffIds}
+                      buffOrder={buffOrder}
+                      showDistance={showDistance}
+                      result={result}
+                    />
                   )}
-                </div>
+                </Fragment>
               )
             })}
+            {renderQiMarkers(trailingMarkers)}
             {steps.length === 0 && <div className={styles.entriesEmpty}>{t("common.none")}</div>}
           </div>
 
@@ -637,15 +811,21 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               <span className={styles.permanentLabel}>
                 {t("rotation.editor.permanentBuffsDebuffs")}
               </span>
-              <BuffMultiSelect
+              <MultiSelect
                 label={t("rotation.editor.permanentBuffs")}
-                buffs={classBuffs}
+                options={classBuffs.map((buff) => ({
+                  id: buff.id,
+                  label: buff.name || "(unnamed)",
+                }))}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
               />
-              <BuffMultiSelect
+              <MultiSelect
                 label={t("rotation.editor.permanentDebuffs")}
-                buffs={classDebuffs}
+                options={classDebuffs.map((buff) => ({
+                  id: buff.id,
+                  label: buff.name || "(unnamed)",
+                }))}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
               />
@@ -683,58 +863,162 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 }
 
-function QiBreakRow({
-  window,
-  overridden,
-  onChange,
+function AttachedDeflectCancelRow({
+  cast,
+  skill,
+  invalid,
+  invalidReasons,
+  hiddenBuffIds,
+  buffOrder,
+  showDistance,
+  result,
+  qiCell,
+  qiMax,
 }: {
-  window: QiBreakWindow
-  overridden: boolean
-  onChange: ((patch: Partial<QiBreakWindow>) => void) | null
+  qiCell: QiLedgerCell | null | undefined
+  qiMax: number
+  cast: RotationCast
+  skill: Skill | undefined
+  invalid: boolean
+  invalidReasons?: ConditionFailureReason[]
+  hiddenBuffIds: ReadonlySet<string>
+  buffOrder: ReadonlyMap<string, number>
+  showDistance: boolean
+  result: Result
 }) {
   const { t } = useI18n()
-  const editable = onChange !== null && !overridden
-  const rowClassName = [styles.entry, styles.qiBreakRow, editable ? "" : styles.qiBreakRowLocked]
+  const invalidTitle = invalid
+    ? invalidReasons && invalidReasons.length > 0
+      ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+      : t("rotation.editor.invalidInGameTitle")
+    : undefined
+  const shownBuffs = visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder)
+  const rowClassName = [styles.entry, styles.entryReadonly, styles.entryAttached]
+    .concat(invalid ? styles.entryInvalid : "")
     .filter(Boolean)
     .join(" ")
-  const note = overridden
-    ? t("rotation.editor.overridden")
-    : window.durationSec === 0
-      ? t("rotation.editor.noExhaustedPhase")
-      : ""
-  const field = (label: string, value: number, patch: (next: number) => Partial<QiBreakWindow>) => (
-    <span className={styles.headField}>
-      <span className={styles.headCap}>{label}</span>
-      <NumInput value={value} onChange={(next) => onChange?.(patch(next))} disabled={!editable} />
-    </span>
-  )
   return (
-    <div
-      className={rowClassName}
-      title={
-        overridden
-          ? t("rotation.editor.overriddenFromEncounterSettings")
-          : onChange
-            ? undefined
-            : t("rotation.editor.qiBreakReadonly")
-      }
-    >
+    <div className={rowClassName}>
+      <div className={styles.idx}>—</div>
+      <span className={styles.time} title={invalidTitle}>
+        {`${fightClockSec(result, cast.timeSec).toFixed(2)}s`}
+        {invalid ? " ⚠" : ""}
+      </span>
+      <span className={styles.skillStatic}>
+        {skill ? t(skillKey(skill), skill.name) : cast.skillName}
+      </span>
+      <span className={styles.castReadonly} />
+      <span className={styles.prepull} />
+      <div className={styles.buffsCell}>
+        {shownBuffs.length === 0 ? (
+          <span className="muted">—</span>
+        ) : (
+          shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+        )}
+        {cast.meterLevels?.map((level) => (
+          <MeterLevelChip key={level.id} level={level} />
+        ))}
+        {showDistance ? <DistanceChip distanceMeters={cast.distanceMeters} /> : null}
+        {qiCell?.status ? <QiStatusChip status={qiCell.status} /> : null}
+      </div>
+      {qiCell !== undefined && <QiLedgerCells cell={qiCell} max={qiMax} />}
+      <div className={styles.rowActions} />
+    </div>
+  )
+}
+
+function placeQiMarkers(
+  markers: readonly QiLedgerMarker[],
+  rows: readonly { rowKey: string; cast: RotationCast }[],
+): {
+  markersBeforeRow: Map<string, QiLedgerMarker[]>
+  trailingMarkers: QiLedgerMarker[]
+} {
+  const markersBeforeRow = new Map<string, QiLedgerMarker[]>()
+  let next = 0
+  for (const { rowKey, cast } of rows) {
+    const before: QiLedgerMarker[] = []
+    while (next < markers.length && precedesCast(markers[next], cast.timeSec))
+      before.push(markers[next++])
+    if (before.length > 0) markersBeforeRow.set(rowKey, before)
+  }
+  return { markersBeforeRow, trailingMarkers: markers.slice(next) }
+}
+
+function precedesCast(marker: QiLedgerMarker, castTimeSec: number): boolean {
+  return marker.kind === "refill" ? marker.timeSec <= castTimeSec : marker.timeSec < castTimeSec
+}
+
+function QiMarkerRow({
+  marker,
+  max,
+  result,
+}: {
+  marker: QiLedgerMarker
+  max: number
+  result: Result
+}) {
+  const { t } = useI18n()
+  const { span } = marker
+  const startSec = fightClockSec(result, span.startSec)
+  const endSec = fightClockSec(result, span.endSec)
+  const immunitySec =
+    span.directImmunityEndSec === null ? null : span.directImmunityEndSec - span.endSec
+  const text =
+    marker.kind === "break"
+      ? `${t("common.qiBreak")} · ${t("rotation.editor.qiLedgerExhausted")} ${startSec.toFixed(2)}s – ${endSec.toFixed(2)}s (${(span.endSec - span.startSec).toFixed(1)}s)`
+      : `${t("rotation.editor.qiLedgerRefill")} · ${endSec.toFixed(2)}s` +
+        (immunitySec === null
+          ? ""
+          : ` · ${t("rotation.editor.qiLedgerDirectImmunity")} ${immunitySec.toFixed(1)}s`)
+  return (
+    <div className={`${styles.entry} ${styles.qiMarkerRow}`}>
+      <div className={styles.idx}>—</div>
+      <span className={styles.qiMarkerText}>{text}</span>
+      <QiLedgerCells cell={marker.cell} max={max} />
+      <div className={styles.rowActions} />
+    </div>
+  )
+}
+
+function QiBreakRow({
+  breaks,
+  withLedger,
+}: {
+  breaks: readonly { startSec: number; endSec: number }[]
+  withLedger: boolean
+}) {
+  const { t } = useI18n()
+  const rowClassName = [styles.entry, styles.qiBreakRow, styles.qiBreakRowLocked].join(" ")
+  return (
+    <div className={rowClassName}>
       <div className={styles.idx}>—</div>
       <span className={styles.openingBadge}>{t("common.qiBreak")}</span>
       <span className={styles.skillStatic}>{t("common.qiBreakWindow")}</span>
-      {note ? (
-        <span className={overridden ? styles.overrideFlag : styles.rowNote}>{note}</span>
-      ) : (
-        <>
-          <span />
-          <span />
-        </>
-      )}
+      <span />
+      <span />
       <div className={styles.headControls}>
-        {field(t("common.startS"), window.startSec, (next) => ({ startSec: next }))}
-        {field(t("common.durationS"), window.durationSec, (next) => ({ durationSec: next }))}
-        {field(t("common.lowQiLeadS"), window.lowQiLeadSec, (next) => ({ lowQiLeadSec: next }))}
+        {breaks.length === 0 ? (
+          <span className={styles.headField}>
+            <span className={styles.headCap}>{t("rotation.editor.computedBreak")}</span>
+            <span className={styles.durationDisplay}>
+              {t("rotation.editor.computedFirstBreakNone")}
+            </span>
+          </span>
+        ) : (
+          breaks.map((qiBreak, index) => (
+            <span className={styles.headField} key={index}>
+              <span className={styles.headCap}>
+                {t("rotation.editor.computedBreak")} {index + 1}
+              </span>
+              <span className={styles.durationDisplay}>
+                {qiBreak.startSec.toFixed(1)}s – {qiBreak.endSec.toFixed(1)}s
+              </span>
+            </span>
+          ))
+        )}
       </div>
+      {withLedger && <QiLedgerCells cell={null} max={0} />}
       <div className={styles.rowActions} />
     </div>
   )
@@ -819,50 +1103,5 @@ function OpeningStackPips({
         />
       ))}
     </span>
-  )
-}
-
-function BuffMultiSelect({
-  label,
-  buffs,
-  selected,
-  onChange,
-}: {
-  label: string
-  buffs: readonly { id: string; name: string }[]
-  selected: string[]
-  onChange: (ids: string[]) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const selectedSet = new Set(selected)
-  const count = selected.length
-  const toggle = (id: string) => {
-    const next = new Set(selectedSet)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    onChange([...next])
-  }
-  return (
-    <div className={styles.buffSelect}>
-      <button type="button" className="btn" onClick={() => setOpen((prev) => !prev)}>
-        {label}
-        {count > 0 ? ` (${count})` : ""} ▾
-      </button>
-      {open && (
-        <div className={styles.buffDropdown}>
-          {buffs.length === 0 && <div className={styles.buffEmpty}>—</div>}
-          {buffs.map((buff) => (
-            <label key={buff.id} className={styles.buffOption}>
-              <input
-                type="checkbox"
-                checked={selectedSet.has(buff.id)}
-                onChange={() => toggle(buff.id)}
-              />
-              <span>{buff.name || "(unnamed)"}</span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
   )
 }

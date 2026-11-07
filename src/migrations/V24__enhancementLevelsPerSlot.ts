@@ -7,8 +7,9 @@
 import type { Migration, RawProfilesBlob } from "./types"
 import type { EnhancementLevels, GearSlot } from "../engine/types"
 import { GEAR_SLOTS } from "../engine/types"
-import { DEFAULT_ENHANCEMENT_LEVEL, levelForEnhancementValue } from "../definitions/baseStats"
+import { levelForEnhancementValue } from "../definitions/baseStats"
 
+const LEGACY_DEFAULT_LEVEL = 65
 const KNOWN_SLOTS: ReadonlySet<string> = new Set(GEAR_SLOTS)
 
 function isRec(value: unknown): value is Record<string, unknown> {
@@ -31,7 +32,7 @@ export function enhancementLevelsFromLegacyNodes(nodes: unknown): EnhancementLev
     }
   }
   const out = {} as EnhancementLevels
-  for (const slot of GEAR_SLOTS) out[slot] = levelBySlot[slot] ?? DEFAULT_ENHANCEMENT_LEVEL
+  for (const slot of GEAR_SLOTS) out[slot] = levelBySlot[slot] ?? LEGACY_DEFAULT_LEVEL
   return out
 }
 

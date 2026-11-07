@@ -6,7 +6,7 @@ import type { ArtBonusField, Effect } from "./effect"
 // the exhaustiveness this buys is fake.
 export interface EffectSink {
   stat(statKey: StatKey, amount: number): void
-  forceOutcome(outcome: "crit" | "affinity"): void
+  forceOutcome(outcome: "crit" | "affinity" | "noAbrasion"): void
   applyBuff(id: string, stacks: number | undefined, durationSec: number | undefined): void
   consumeStacks(id: string, count: number): void
   artBonus(field: ArtBonusField, amount: number): void
@@ -18,6 +18,7 @@ export interface EffectSink {
     durationFrames: number | undefined,
   ): void
   echo(debuffId: string): void
+  finalCritAtLeast(threshold: number, bonusBelowThreshold: number): void
 }
 
 export function assertNever(value: never): never {
@@ -49,6 +50,9 @@ export function applyEffect(sink: EffectSink, effect: Effect): void {
       return
     case "echo":
       sink.echo(effect.debuffId)
+      return
+    case "finalCritAtLeast":
+      sink.finalCritAtLeast(effect.threshold, effect.bonusBelowThreshold)
       return
     default:
       assertNever(effect)

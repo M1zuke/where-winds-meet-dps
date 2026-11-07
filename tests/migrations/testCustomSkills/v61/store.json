@@ -1,0 +1,111 @@
+{
+  "v": 61,
+  "skills": [
+    {
+      "id": "bellstrikeSplendor-swordspecial",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordSpecial",
+      "breakdownName": "Shadow Step",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial",
+      "triggersBuffs": ["swordSlashDamageBoost"],
+      "receives": [
+        "swordSlashDamageBoost",
+        "swordEnergyEnhancement",
+        "swordEnergyHpDamage",
+        "namelessSwordAdditionalAttack"
+      ],
+      "castConditions": [{ "buffId": "meter:endurance", "op": "gte", "stacks": 30 }],
+      "meterCosts": [{ "meterId": "endurance", "amount": 25 }],
+      "castFrames": 44,
+      "triggerable": true,
+      "reachMeters": 12.8,
+      "displacement": { "kind": "towardTarget", "referenceMeters": 1 },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 23,
+          "physMultiplier": 1.76747,
+          "attributeMultiplier": 2.651205,
+          "physFixed": 490,
+          "attributeFixed": 267,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "swordMorphMultiWaveWindow",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "swordMorph"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordspecial-2nd",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordSpecial[2nd]",
+      "breakdownName": "Shadow Step (2nd)",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial2nd",
+      "receives": ["namelessSwordAdditionalAttack"],
+      "castFrames": 24,
+      "triggerable": true,
+      "reachMeters": 12.8,
+      "displacement": { "kind": "towardTarget", "referenceMeters": 1 },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.76747,
+          "attributeMultiplier": 2.651205,
+          "physFixed": 490,
+          "attributeFixed": 267,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordspecial-deflect",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordSpecial[Deflect]",
+      "breakdownName": "Shadow Step (deflect)",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecialDeflect",
+      "receives": ["namelessSwordAdditionalAttack"],
+      "castFrames": 51,
+      "triggerable": true,
+      "reachMeters": 12.8,
+      "displacement": { "kind": "towardTarget", "referenceMeters": 1 },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 1.76747,
+          "attributeMultiplier": 2.651205,
+          "physFixed": 490,
+          "attributeFixed": 267,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    }
+  ]
+}

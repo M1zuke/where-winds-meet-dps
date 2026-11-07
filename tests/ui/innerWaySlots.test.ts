@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest"
 import { allowedInnerWaysForClass } from "../../src/engine/panel"
 import { syncClassPermanent } from "../../src/ui/utils/classSetup"
 import { blankInputs, defaultInputs } from "../../src/engine/defaults"
+import { runEngine } from "../../src/engine/dps"
 import type { Inputs } from "../../src/engine/types"
+import { slotInnerWayId } from "../../src/definitions/innerWays/registry"
 
 describe("allowedInnerWaysForClass", () => {
-  it("is exactly the six Bellstrike Umbra inner ways, signature first", () => {
+  it("is exactly the seven Bellstrike Umbra inner ways, signature first", () => {
     expect(allowedInnerWaysForClass("bellstrikeUmbra")).toEqual([
       "swordHorizon",
       "wolfchasersArt",
@@ -13,6 +15,7 @@ describe("allowedInnerWaysForClass", () => {
       "moraleChant",
       "bitterSeason",
       "breakingPoint",
+      "evasiveCharge",
     ])
   })
 
@@ -39,13 +42,44 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     }
   }
 
-  it("leaves every slot empty rather than seeding the class signature", () => {
+  it("seeds a profile with no inner ways of its own with the class's standardized ones", () => {
     const next = syncClassPermanent(defaultInputs, "bellstrikeUmbra")
-    expect(next.mindMethods).toEqual([
-      { name: "", stacks: "" },
-      { name: "", stacks: "" },
-      { name: "", stacks: "" },
-      { name: "", stacks: "" },
+    expect(next.mindMethods.map((slot) => slot.id)).toEqual([
+      "swordHorizon",
+      "moraleChant",
+      "wolfchasersArt",
+      "insightfulStrike",
+    ])
+    expect(next.mindMethods.every((slot) => slot.stacks === "tier 6")).toBe(true)
+  })
+
+  it("fills a switched-to class's empty slots with its standard inner ways, keeping what carries over", () => {
+    const before = {
+      ...withSlots(defaultInputs, ["moraleChant", "", "", ""]),
+      classId: "stonesplitStrength",
+    }
+    const next = syncClassPermanent(before, "bellstrikeUmbra")
+    expect(next.mindMethods.map((slot) => slotInnerWayId(slot))).toEqual([
+      "moraleChant",
+      "swordHorizon",
+      "wolfchasersArt",
+      "insightfulStrike",
+    ])
+  })
+
+  it("never overwrites an existing profile's own inner ways with the class standard", () => {
+    const before = withSlots(defaultInputs, [
+      "bitterSeason",
+      "breakingPoint",
+      "evasiveCharge",
+      "swordHorizon",
+    ])
+    const next = syncClassPermanent(before, "bellstrikeUmbra")
+    expect(next.mindMethods.map((slot) => slot.name)).toEqual([
+      "bitterSeason",
+      "breakingPoint",
+      "evasiveCharge",
+      "swordHorizon",
     ])
   })
 
@@ -118,5 +152,11 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     const next = syncClassPermanent(edited, edited.classId)
 
     expect(next.martialArtsTalents).toEqual(edited.martialArtsTalents)
+  })
+
+  it("runs a brand-new profile's default rotation with no Sword Horizon legality warning", () => {
+    const created = syncClassPermanent(blankInputs, "bellstrikeUmbra")
+    const result = runEngine(created)
+    expect(result.warnings.some((warning) => warning.includes("Sword Horizon"))).toBe(false)
   })
 })

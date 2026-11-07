@@ -87,12 +87,13 @@ export function useScreenshotImport(
     })
     try {
       const bitmap = await decodeGearScreenshot(source)
-      const canvas = preprocessGearScreenshot(bitmap)
-      const text = await recognizeGearScreenshot(canvas, (progress) =>
+      const { panel, headerBar } = preprocessGearScreenshot(bitmap)
+      const text = await recognizeGearScreenshot(panel, (progress) =>
         setState((previous) => (runRef.current === run ? { ...previous, progress } : previous)),
       )
+      const headerBarText = headerBar ? await recognizeGearScreenshot(headerBar) : ""
       if (runRef.current !== run) return
-      const parsed = parseGearScreenshot(text, inputs, fallbackSlot)
+      const parsed = parseGearScreenshot(text, inputs, fallbackSlot, headerBarText)
       if (parsed.error) {
         setState({
           status: "error",

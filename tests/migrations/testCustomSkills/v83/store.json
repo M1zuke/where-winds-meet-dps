@@ -1,0 +1,1212 @@
+{
+  "v": 83,
+  "skills": [
+    {
+      "id": "silkbindJade-fanlightcharged",
+      "classId": "silkbindJade",
+      "name": "FanLightCharged",
+      "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanLightCharged",
+      "receives": [
+        "windWall",
+        "pursuitChargedBoost",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["lingeringBone"],
+      "triggersBuffsAtFrame": {
+        "lingeringBone": 71
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 30,
+          "fromFrame": 14.4,
+          "stopAfterSec": 0.55
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 98,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 71,
+          "physMultiplier": 1.9044,
+          "attributeMultiplier": 2.8566,
+          "physFixed": 527,
+          "attributeFixed": 287,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-fanlightcharged-hit-0-flying-tornado",
+              "label": "Flying Tornado",
+              "conditions": [
+                {
+                  "buffId": "gourdTossFlyingTornado",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.9044,
+              "attributeMultiplier": 2.8566,
+              "physFixed": 527,
+              "attributeFixed": 287,
+              "frame": 60,
+              "castFrames": 86
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanspecial",
+      "classId": "silkbindJade",
+      "name": "FanSpecial",
+      "tags": ["weapon:Fan", "attune:fanSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanSpecial",
+      "receives": ["gourdTossThunder", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["lingeringBone"],
+      "triggersBuffsAtFrame": {
+        "lingeringBone": 33
+      },
+      "castFrames": 67,
+      "triggerable": true,
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 33,
+          "physMultiplier": 1.273401,
+          "attributeMultiplier": 1.9101015,
+          "physFixed": 353.225,
+          "attributeFixed": 192.035,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "gourdTossThunder",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 3
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "gourdTossFlyingTornado",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 4
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanq",
+      "classId": "silkbindJade",
+      "name": "FanQ",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQ",
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
+      "castFrames": 61,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 9,
+          "physMultiplier": 0.9271,
+          "attributeMultiplier": 1.3907,
+          "physFixed": 257,
+          "attributeFixed": 140,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanq-prepull",
+      "classId": "silkbindJade",
+      "name": "FanQ Prepull",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQPrepull",
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "windWallPursuit", "springThunder"],
+      "castFrames": 0,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanqcancel",
+      "classId": "silkbindJade",
+      "name": "FanQCancel",
+      "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanQCancel",
+      "cancelledBy": "nextSkill",
+      "receives": ["starweaveMartialBoost", "inkwellFanAdditionalAttack"],
+      "triggersBuffs": ["jadeware", "windWall", "springThunder"],
+      "castFrames": 10,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.9271,
+          "attributeMultiplier": 1.3907,
+          "physFixed": 257,
+          "attributeFixed": 140,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "UmbQ",
+      "tags": [
+        "prop:isMartialSkillQ",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbQ",
+        "role:umbQ"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbQ",
+      "receives": [
+        "combo",
+        "windWall",
+        "trajectorySkill",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "starweaveMartialBoost",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
+      "castFrames": 67,
+      "triggerable": true,
+      "reachMeters": 20,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 50,
+          "physMultiplier": 2.3397,
+          "attributeMultiplier": 3.5095,
+          "physFixed": 648,
+          "attributeFixed": 353,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbq-prepull",
+      "classId": "silkbindJade",
+      "name": "UmbQ Prepull",
+      "tags": [
+        "prop:isMartialSkillQ",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbQ",
+        "role:umbQ"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbQPrepull",
+      "receives": [
+        "combo",
+        "windWall",
+        "trajectorySkill",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "starweaveMartialBoost",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "triggersBuffs": ["jadeware", "combo", "comboUmbLightBonus", "comboSpringAwayBonus", "springThunder"],
+      "castFrames": 18,
+      "triggerable": true,
+      "reachMeters": 20,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 2.3397,
+          "attributeMultiplier": 3.5095,
+          "physFixed": 648,
+          "attributeFixed": 353,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-08-17T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch20hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[12hit]",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch12hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-12hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-16hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[16hit]",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch16hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-16hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-20hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[20hit]",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch20hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-20hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-23hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[23hit]",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch23hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-23hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-26hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[26hit]",
+      "breakdownName": "Umbrella Launch",
+      "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castTag": "cast:umbDroneLaunch26hit",
+      "castFrames": 66,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-26hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone",
+      "classId": "silkbindJade",
+      "name": "UmbDrone Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick20hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[12hit] Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick12hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone-16hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[16hit] Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick16hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone-20hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[20hit] Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick20hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone-23hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[23hit] Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick23hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umbdrone-26hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[26hit] Tick",
+      "breakdownName": "Umbrella Drone",
+      "tags": ["prop:isDrone", "weapon:Umbrella", "attack:light", "attune:umbFrequentProjectile", "role:umbDrone"],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbDroneTick26hit",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "soulShaken",
+        "thunderousBloom",
+        "springThunder",
+        "combo",
+        "comboUmbLightBonus",
+        "windWall",
+        "trajectorySkill",
+        "nonPlayerBaseDamage115",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.510829,
+          "attributeMultiplier": 0.766243,
+          "physFixed": 141.375,
+          "attributeFixed": 77,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanheavypursuit-3-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 3-Hit",
+      "breakdownName": "Moon Shatter Spring",
+      "tags": [
+        "prop:isExecution",
+        "prop:hasLowQiCritBoost",
+        "prop:hasLowQiDmgBoost",
+        "weapon:Fan",
+        "attack:heavy",
+        "attune:fanSpecial",
+        "role:fanHeavyPursuit"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanHeavyPursuit3Hit",
+      "receives": [
+        "windWallPursuit",
+        "lowQiFollowUp",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["pursuitChargedBoost"],
+      "castFrames": 93,
+      "triggerable": true,
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.37434,
+          "attributeMultiplier": 0.56148,
+          "physFixed": 103.8,
+          "attributeFixed": 56.4,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 34,
+          "physMultiplier": 0.37434,
+          "attributeMultiplier": 0.56148,
+          "physFixed": 103.8,
+          "attributeFixed": 56.4,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 72,
+          "physMultiplier": 0.49912,
+          "attributeMultiplier": 0.74864,
+          "physFixed": 138.4,
+          "attributeFixed": 75.2,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-fanheavypursuit-5-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 5-Hit",
+      "breakdownName": "Moon Shatter Spring",
+      "tags": [
+        "prop:isExecution",
+        "prop:hasLowQiCritBoost",
+        "prop:hasLowQiDmgBoost",
+        "weapon:Fan",
+        "attack:heavy",
+        "attune:fanSpecial",
+        "role:fanHeavyPursuit"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:fanHeavyPursuit5Hit",
+      "receives": [
+        "windWallPursuit",
+        "lowQiFollowUp",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowLightBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "triggersBuffs": ["pursuitChargedBoost"],
+      "castFrames": 146,
+      "triggerable": true,
+      "reachMeters": 9,
+      "displacement": {
+        "kind": "toTarget",
+        "meters": 1.5
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 33,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 69,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 84,
+          "physMultiplier": 0.5282374999999999,
+          "attributeMultiplier": 0.792365,
+          "physFixed": 146.125,
+          "attributeFixed": 79.625,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 112,
+          "physMultiplier": 0.90555,
+          "attributeMultiplier": 1.3583399999999999,
+          "physFixed": 250.5,
+          "attributeFixed": 136.5,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "silkbindJade-umblightcharge",
+      "classId": "silkbindJade",
+      "name": "UmbLightCharge",
+      "tags": [
+        "prop:isCharged",
+        "prop:hasQiBreakPhysPen",
+        "weapon:Umbrella",
+        "attack:light",
+        "attune:umbFrequentProjectile",
+        "role:umbLightCharge"
+      ],
+      "skillType": "sustain",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "castTag": "cast:umbLightCharge",
+      "receives": [
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "combo",
+        "comboSpringAwayBonus",
+        "comboExtendMark",
+        "windWall",
+        "pursuitChargedBoost",
+        "trajectorySkill",
+        "thunderousBloom",
+        "springThunder",
+        "nonPlayerBaseDamage125",
+        "vernalUmbrellaAdditionalAttack"
+      ],
+      "castFrames": 132.05,
+      "triggerable": true,
+      "reachMeters": 13,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 10,
+          "fromFrame": 44.4,
+          "stopAfterSec": 0.87
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 47.4,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "silkbindJade-umblightcharge-lift",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-1",
+          "frame": 57,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-2",
+          "frame": 66.6,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-3",
+          "frame": 77.4,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-4",
+          "frame": 87,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        },
+        {
+          "id": "hit-5",
+          "frame": 96.6,
+          "physMultiplier": 0.286244,
+          "attributeMultiplier": 0.429367,
+          "physFixed": 79.16,
+          "attributeFixed": 43.16,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 80,
+            "acceleration": {
+              "initialSpeedMetersPerSecond": 10,
+              "metersPerSecondSquared": 700
+            },
+            "collisionDelayFrames": 2.4,
+            "contactAdvanceMeters": 0.5,
+            "maxTravelFrames": 300
+          }
+        }
+      ],
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-umbrella-slash",
+      "classId": "silkbindJade",
+      "name": "User-authored umbrella slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 50,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1.5,
+          "physFixed": 100,
+          "attributeFixed": 50,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 67,
+      "triggerable": true,
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

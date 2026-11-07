@@ -6,9 +6,11 @@ import { SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
 // The ultimate deals no damage of its own: a big drink that fills Binge
-// Points to their cap and grants Clash-toast for 15 s at rank 5, entering
-// Deepdaze through the same threshold every other source does (in-game
-// ultimate text, 2026-09-06). Cast length: in-game animation, 2026-09-05.
+// Points to their cap and grants Clash-toast for 15 s at rank 5. It removes
+// and re-enters Deepdaze unconditionally, restarting its duration even mid-
+// window (in-game ultimate text, 2026-09-06; restart behavior as of
+// 2026-09-16). Cast length: in-game animation, 2026-09-05. The 60 s cooldown
+// is the top rank's (in-game values as of 2026-10-15).
 export const skystrikeGauntletsEx = defineSkill({
   id: SKILL.skystrikeGauntletsEx,
   classId: "bamboocutDraught",
@@ -19,8 +21,12 @@ export const skystrikeGauntletsEx = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.skystrikeGauntletsEx,
   receives: SKYSTRIKE_GAUNTLETS_RECEIVES,
+  castConditions: [{ buffId: STATUS.skystrikeGauntletsExCooldown, op: "eq", stacks: 0 }],
   triggerable: false,
   castFrames: 48,
+  // In-game values as of 2026-09-28: no approach, no engagement-range field
+  // at all — a self-centred stationary ultimate.
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 0,
@@ -30,8 +36,9 @@ export const skystrikeGauntletsEx = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyBuff({ target: STATUS.bingePoints, stacks: 200 }),
-        ...deepdazeEntryTriggers(),
+        ...deepdazeEntryTriggers({ forceRestart: true }),
         applyBuff({ target: STATUS.clashToast, stacks: 1 }),
+        applyBuff({ target: STATUS.skystrikeGauntletsExCooldown, stacks: 1 }),
       ],
     }),
   ],

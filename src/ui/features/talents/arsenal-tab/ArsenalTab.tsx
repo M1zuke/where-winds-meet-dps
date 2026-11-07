@@ -20,6 +20,7 @@ import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { statPathLabel } from "../../../utils/statFormatting"
 import { ARSENAL_STORE_NAME_KEYS } from "../shared/arsenalStoreKeys"
+import { ArsenalChoicePanel } from "./ArsenalChoicePanel"
 import styles from "./ArsenalTab.module.scss"
 
 interface Props {
@@ -88,6 +89,10 @@ export function ArsenalTab({ inputs, onChange }: Props) {
         <span>
           {attackMaxLabel} <b>+{fmtNum(totalAttack.max)}</b>
         </span>
+      </div>
+
+      <div className="panel">
+        <ArsenalChoicePanel inputs={inputs} onChange={onChange} />
       </div>
 
       <div className={`panel ${styles.summaryPanel}`}>

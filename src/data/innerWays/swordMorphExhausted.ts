@@ -1,11 +1,12 @@
 import { DEFAULT_BEHAVIOR, type SkillBehavior, type BuildView } from "../../engine/behavior"
 import { forceOutcome, type HitEffect } from "../../engine/effects/effect"
+import { hitDealsDamage } from "../../engine/skill"
 import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { swordMorph } from "./swordMorph"
 
-// Position in `Skill.hits` is a hit's identity, so the two-wave cast never
-// reaches this index rather than needing to be excluded.
+// Position in `Skill.hits` is a hit's identity. The two-wave cast reaches this
+// index only with its damage-free release hit, which has no outcome to force.
 const THIRD_WAVE = 2
 
 // "The multiple sword energy attacks will not cause Abrasion when hitting
@@ -32,7 +33,9 @@ export function swordMorphExhaustedBehavior(build: BuildView): SkillBehavior | n
 
     claimStatEffects(input, phase): HitEffect[] {
       if (phase !== "exhausted") return []
-      return input.skill.hits.indexOf(input.hit) === THIRD_WAVE ? [forceOutcome("affinity")] : []
+      return input.skill.hits.indexOf(input.hit) === THIRD_WAVE && hitDealsDamage(input.hit)
+        ? [forceOutcome("affinity")]
+        : []
     },
   }
 }

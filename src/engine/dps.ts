@@ -1,27 +1,46 @@
 import type { EngineRunOptions, Inputs, Result } from "./types"
-import type { Rotation } from "./rotation"
 import { simulateTimeline } from "./timeline"
-import { defaultRotationForClass, builtinRotationsForClass } from "./builtinLibrary"
+import { activeRotationForInputs } from "./activeRotation"
+import { rememberedPass } from "./passMemo"
+import { withDerivedStats } from "./derivedInputs"
+import { applySetBonuses } from "./setBonuses"
+import { graduationQiSourceInputs } from "./graduation"
+import type { QiDamageLog } from "./qiBar"
 
-export function activeRotationForInputs(inputs: Inputs): Rotation | null {
-  const active = inputs.activeCustomRotation
-  if (active && active.classId === inputs.classId) return active
-  if (inputs.selectedBuiltinRotationId) {
-    const r = builtinRotationsForClass(inputs.classId).find(
-      (x) => x.id === inputs.selectedBuiltinRotationId,
-    )
-    if (r) return r
-  }
-  return defaultRotationForClass(inputs.classId)
+export const TOTALS_RUN: EngineRunOptions = { collect: "totals" }
+
+export function qiDamageLogOfSource(source: Inputs): QiDamageLog | null {
+  return runEngine(applySetBonuses(withDerivedStats(source)), TOTALS_RUN).qiDamageLog ?? null
+}
+
+export function graduationQiDamageLog(inputs: Inputs): QiDamageLog | null {
+  const source = graduationQiSourceInputs(inputs)
+  return source ? qiDamageLogOfSource(source) : null
 }
 
 export function runEngine(inputs: Inputs, options?: EngineRunOptions): Result {
+  return rememberedPass(inputs, options, () =>
+    computePass(inputs, withResolvedQiSource(inputs, options)),
+  )
+}
+
+function withResolvedQiSource(
+  inputs: Inputs,
+  options: EngineRunOptions | undefined,
+): EngineRunOptions | undefined {
+  if (options?.qiDamageLog || options?.fixedQiBreaks || options?.qiBar === "own") return options
+  const qiDamageLog = graduationQiDamageLog(inputs)
+  return qiDamageLog ? { ...options, qiDamageLog } : options
+}
+
+function computePass(inputs: Inputs, options: EngineRunOptions | undefined): Result {
   const rotation = activeRotationForInputs(inputs)
   if (!rotation) {
     return {
       dps: 0,
       totalDamage: 0,
       rotationDuration: 0,
+      fightStartSec: 0,
       castDuration: 0,
       graduationRate: null,
       perSkill: [],

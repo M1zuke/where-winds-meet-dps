@@ -52,7 +52,6 @@ export default defineRotation({
     { skillId: "silkbindJade-fanheavypursuit-3-hit" },
   ],
   permanentBuffIds: [],
-  qiBreak: { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",
   description: "Tier 5 rotation (reference/classes/defaultRotations.json).",

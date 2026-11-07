@@ -12,6 +12,7 @@ import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
+import { engineRunOptionsSharingQiOf } from "../../src/engine/qiBar"
 import {
   followedGraduationBuild,
   followedGraduationBuildAmong,
@@ -19,14 +20,17 @@ import {
   graduationInputs,
   graduationRatedInputs,
   repairGraduationBuildId,
+  resolveStandardizedFood,
   standardizedGraduationInputs,
 } from "../../src/engine/graduation"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
 import {
   defaultCombatSettings,
   GEAR_SLOTS,
+  WEAPON_SLOTS,
   type GearLevel,
   type Inputs,
+  type Result,
 } from "../../src/engine/types"
 
 const GRADUATION_LEVEL: GearLevel = 96
@@ -44,7 +48,7 @@ const FOLLOWING: Inputs = {
 }
 
 function dpsFor(inputs = FOLLOWING): number {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs)))).dps
+  return runEngine(applySetBonuses(withDerivedStats(inputs))).dps
 }
 
 function fictionalBuild(id: string): GraduationBuild {
@@ -157,6 +161,27 @@ describe("graduation builds", () => {
     expect(build.bowSet).toBe(followed.bowSet)
   })
 
+  it("writes the build's authored set onto the four set-bearing pieces and nowhere else", () => {
+    const followed = followedGraduationBuild(FOLLOWING)!
+    const benchmarkInputs = graduationInputs(FOLLOWING)!
+    for (const piece of benchmarkInputs.inventory) {
+      expect(piece.set).toBe(WEAPON_SLOTS.includes(piece.slot) ? followed.set : undefined)
+    }
+  })
+
+  it("creates no bow pieces below gear level 91", () => {
+    const { bowGear } = graduationInputs({ ...FOLLOWING, breakthrough: 13 })!
+    expect(bowGear).toEqual({ bow: null, thumbRing: null })
+  })
+
+  it("writes the build's bow set onto both bow pieces at the gear level", () => {
+    const followed = followedGraduationBuild(FOLLOWING)!
+    const { bowGear } = graduationInputs({ ...FOLLOWING, breakthrough: 16 })!
+    expect(followed.bowSet).not.toBeNull()
+    expect(bowGear.bow).toEqual({ level: 96, rarity: "legendary", set: followed.bowSet })
+    expect(bowGear.thumbRing).toEqual(bowGear.bow)
+  })
+
   it("always enables every class talent and claims every oddity", () => {
     const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
@@ -206,7 +231,8 @@ describe("a standardized graduation build", () => {
 
       for (const side of [rated, benchmark]) {
         expect(side.dummyMode).toBe(encounter.dummyMode)
-        expect(side.food).toBe(encounter.food)
+        expect(side.food).toBe(resolveStandardizedFood(encounter.food, inputs.breakthrough))
+        expect(side.hpFood).toBe(encounter.hpFood)
         expect(side.divinecraft).toBe(encounter.divinecraft)
         expect(side.shareDebuff5HenZhi).toBe(encounter.shareDebuff5HenZhi)
         expect(side.shareEasyHurt).toBe(encounter.shareEasyHurt)
@@ -216,7 +242,6 @@ describe("a standardized graduation build", () => {
         expect(side.combatSettings!.breakExtension).toBe(encounter.breakExtension)
         expect(side.combatSettings!.dragonHeadFullStacks).toBe(encounter.dragonHeadFullStacks)
         expect(side.combatSettings!.dragonHeadLowHpMaxBonus).toBe(encounter.dragonHeadLowHpMaxBonus)
-        expect(side.combatSettings!.lowEndurance).toBe(encounter.lowEndurance)
         expect(side.mindMethods.map((slot) => slot.id ?? "")).toEqual([
           ...build.standardized!.innerWays.map((innerWay) => innerWay.id),
           ...Array(4 - build.standardized!.innerWays.length).fill(""),
@@ -225,24 +250,30 @@ describe("a standardized graduation build", () => {
     },
   )
 
-  it("leaves the break window to the rotation the build benchmarks on", () => {
-    const overridden: Inputs = {
-      ...FOLLOWING,
-      combatSettings: {
-        ...defaultCombatSettings(),
-        qiBreakOverride: { startSec: 3, durationSec: 40, lowQiLeadSec: 2 },
-      },
-    }
-
-    expect(graduationRatedInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
-    expect(graduationInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
-  })
+  it.each(STANDARDIZED)(
+    "%s rates both sides on the rotation's own ping and fps, ignoring a stored override",
+    (id, classDef) => {
+      const plain: Inputs = { ...defaultInputs, classId: classDef.id, graduationBuildId: id }
+      for (const side of [graduationRatedInputs, graduationInputs]) {
+        const plainInputs = side(plain)!
+        const rotationId = plainInputs.selectedBuiltinRotationId ?? classDef.defaultRotationId!
+        const overridden = {
+          ...plain,
+          builtinRotationPingFpsOverrides: {
+            [rotationId]: { pingMs: 120, averageFps: 30, serverProcessingMs: 80 },
+          },
+        } as Inputs
+        expect(runEngine(side(overridden)!).castDuration).toBe(runEngine(plainInputs).castDuration)
+      }
+    },
+  )
 
   it("rates the same however the profile's own encounter and inner ways are set", () => {
     const tinkered: Inputs = {
       ...FOLLOWING,
       dummyMode: true,
-      food: false,
+      food: null,
+      hpFood: "lotusSoup",
       divinecraft: "poison",
       shareDebuff5HenZhi: true,
       shareEasyHurt: true,
@@ -268,10 +299,29 @@ describe("a standardized graduation build", () => {
 
   it("keeps the profile's own encounter and inner ways for a build that fixes none", () => {
     const plain: GraduationBuild = { ...fictionalBuild("plain"), classId: FOLLOWING.classId }
-    const tinkered: Inputs = { ...FOLLOWING, dummyMode: true, food: false }
+    const tinkered: Inputs = { ...FOLLOWING, dummyMode: true, food: null }
 
     expect(standardizedGraduationInputs(tinkered, plain)).toBe(tinkered)
   })
+
+  it.each([
+    [14, "wildGinsengMeatballs"],
+    [16, "simmeringFishSlices"],
+    [20, "twinImmortalsStew"],
+  ] as const)(
+    "eats the best recipe food available at breakthrough %i when the standard says best available",
+    (breakthrough, expectedFood) => {
+      const eating: GraduationBuild = {
+        ...fictionalBuild("eating"),
+        classId: FOLLOWING.classId,
+        standardized: { encounter: { food: "bestAvailable" }, innerWays: [] },
+      }
+
+      expect(standardizedGraduationInputs({ ...FOLLOWING, breakthrough }, eating).food).toBe(
+        expectedFood,
+      )
+    },
+  )
 })
 
 describe("following a graduation build", () => {
@@ -342,9 +392,56 @@ describe("graduation build follows the current breakthrough's gear level", () =>
   })
 })
 
+function prep(inputs: Inputs): Inputs {
+  return applySetBonuses(withDerivedStats(inputs))
+}
+
+function ratedOnBenchmarkQi(inputs: Inputs): Result {
+  const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
+  return runEngine(prep(graduationRatedInputs(inputs)!), engineRunOptionsSharingQiOf(benchmarkRun))
+}
+
+function relayedOnBenchmarkQi(inputs: Inputs): Result {
+  const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
+  return runEngine(
+    prep(graduationInputs(inputs, "relayed")!),
+    engineRunOptionsSharingQiOf(benchmarkRun),
+  )
+}
+
+describe("the rated side shares the benchmark's Qi", () => {
+  it("scores the benchmark rated on its own Qi damage exactly as the benchmark", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+
+    expect(
+      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun)).dps,
+    ).toBe(benchmarkRun.dps)
+  })
+
+  it("rates YOUR BUILD on the benchmark's Qi breaks, not its own", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+    const ratedOnOwnQi = runEngine(prep(graduationRatedInputs(FOLLOWING)!), { qiBar: "own" })
+    const ratedOnBenchmarkQiRun = ratedOnBenchmarkQi(FOLLOWING)
+
+    expect(ratedOnBenchmarkQiRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
+    expect(ratedOnOwnQi.qiBreaks).not.toEqual(benchmarkRun.qiBreaks)
+    expect(ratedOnBenchmarkQiRun.dps).not.toBe(ratedOnOwnQi.dps)
+  })
+
+  it("leaves a run given no Qi damage log simulating its own bar", () => {
+    const before = runEngine(prep(FOLLOWING))
+    computeGraduation({ reqId: 22, inputs: FOLLOWING })
+    const after = runEngine(prep(FOLLOWING))
+
+    expect(after.dps).toBe(before.dps)
+    expect(after.qiBreaks).toEqual(before.qiBreaks)
+    expect(after.qiDamageLog).toEqual(before.qiDamageLog)
+  })
+})
+
 describe("computeGraduation", () => {
   it("matches the direct benchmark pipeline and current-to-theoretical ratio", () => {
-    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
+    const currentDps = ratedOnBenchmarkQi(FOLLOWING).dps
     const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     const theoreticalDps = dpsFor(benchmarkInputs!)
@@ -361,15 +458,38 @@ describe("computeGraduation", () => {
   })
 
   it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
-    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
+    const currentDps = ratedOnBenchmarkQi(FOLLOWING).dps
     const relayedInputs = graduationInputs(FOLLOWING, "relayed")
     expect(relayedInputs).not.toBeNull()
 
     const response = computeGraduation({ reqId: 18, inputs: FOLLOWING })
 
-    expect(response.relayedTheoreticalDps).toBe(dpsFor(relayedInputs!))
+    expect(response.relayedTheoreticalDps).toBe(relayedOnBenchmarkQi(FOLLOWING).dps)
     expect(response.relayedTheoreticalDps!).toBeLessThan(response.theoreticalDps!)
     expect(response.graduationRate).toBe(currentDps / response.theoreticalDps!)
+  })
+
+  it("the relayed figure breaks Qi where the benchmark breaks", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+    const relayedOnOwnQi = runEngine(prep(graduationInputs(FOLLOWING, "relayed")!))
+    const relayedRun = relayedOnBenchmarkQi(FOLLOWING)
+
+    expect(relayedRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
+    expect(relayedRun.dps).not.toBe(relayedOnOwnQi.dps)
+  })
+
+  it("a profile wearing exactly the relayed gear rates exactly the relayed figure", () => {
+    const wearingRelayedGear: Inputs = {
+      ...FOLLOWING,
+      ...graduationInputs(FOLLOWING, "relayed")!,
+    }
+
+    const response = computeGraduation({ reqId: 23, inputs: wearingRelayedGear })
+
+    expect(response.currentDps).toBe(response.relayedTheoreticalDps)
+    expect(response.currentDps).toBe(
+      computeGraduation({ reqId: 23, inputs: FOLLOWING }).relayedTheoreticalDps,
+    )
   })
 
   it("rates the build and the benchmark on the graduation rotation, whichever rotation the build has selected", () => {

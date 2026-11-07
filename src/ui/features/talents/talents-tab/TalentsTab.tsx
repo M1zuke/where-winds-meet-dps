@@ -79,6 +79,10 @@ function formatStatValue(stat: TalentStat, value: number): string {
   return `${sign}${Math.round(value * 100) / 100}`
 }
 
+function formatScaleCap(value: number): string {
+  return String(Number(value.toFixed(2)))
+}
+
 function talentCurrent(row: MartialArtsTalent, sources: Record<ScalingSource, number>): number {
   const attr = sources[row.scalesWith] ?? 0
   const scale = row.scaleMax > 0 ? Math.min(attr / row.scaleMax, 1) : 1
@@ -396,7 +400,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "static",
               textKey: "talents.effect.10MaxEnduranceAndUp",
-              subNoteKey: "talents.note.theEngineRunsHint",
+              subNoteKey: "talents.note.modelledAsTheEnduranceMeterHint",
             },
           ],
         },
@@ -410,7 +414,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "static",
               textKey: "talents.effect.18AffinityDmgHint",
-              subNoteKey: "talents.note.oneBonusBehindHint",
+              subNoteKey: "talents.note.modelledFromTheSimulatedEnduranceHint",
             },
           ],
         },
@@ -563,6 +567,51 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
       weaponKey: "content.martialArt.phalanxbaneBlade",
       cards: [
         {
+          nameKey: "talents.card.criticalRateUp",
+          lines: [{ kind: "talent", skill: "Critical Rate UP" }],
+        },
+        {
+          nameKey: "talents.card.ironGuardsPenetrationUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.ironGuardsPenetrationHint",
+              subNoteKey: "talents.note.modelledInsideTheIronGuardsHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.stonesplitAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Mo Blade Stonesplit Attack Min", "Mo Blade Stonesplit Attack Max"],
+              textKey: "talents.effect.stonesplitAttackAlways",
+            },
+            { kind: "talent", skill: "Stonesplit Penetration Scale" },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.stonesplitAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.maxBladeMomentumUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.maxBladeMomentumHint",
+              subNoteKey: "talents.note.modelledAsTheBladeMomentumMeterHint",
+            },
+          ],
+        },
+        {
           nameKey: "talents.card.additionalAttackUp",
           lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
@@ -571,6 +620,49 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
     {
       weaponKey: "content.martialArt.snowpartingBlade",
       cards: [
+        {
+          nameKey: "talents.card.physicalAttackUp",
+          lines: [{ kind: "talent", skill: "Physical Attack UP" }],
+        },
+        {
+          nameKey: "talents.card.criticalDmgUp",
+          lines: [{ kind: "mechanic", id: "stonesplitStrengthSkillCritDamage" }],
+        },
+        {
+          nameKey: "talents.card.stonesplitAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Heng Blade Stonesplit Attack Min", "Heng Blade Stonesplit Attack Max"],
+              textKey: "talents.effect.stonesplitAttackAlways",
+            },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "talents.line.stonesplitDmgBonus",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.stonesplitAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.specialSkillEnhancement",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.dreadDamageHint",
+              subNoteKey: "talents.note.modelledByTheDreadDebuffHint",
+            },
+          ],
+        },
         {
           nameKey: "talents.card.additionalAttackUp",
           lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
@@ -605,7 +697,9 @@ export function TalentsTab({ inputs }: Props) {
     const row = talentsByName.get(line.skill)
     if (!row) return null
     const current = talentCurrent(row, sources)
-    const capDisplay = RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax
+    const capDisplay = formatScaleCap(
+      RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax,
+    )
     return (
       <div className={styles.classBuffLine} key={`talent:${line.skill}`}>
         <div className={styles.classBuffHead}>
@@ -768,9 +862,9 @@ export function TalentsTab({ inputs }: Props) {
               <div className={styles.classBuffsList}>
                 {talents.map((row) => {
                   const current = talentCurrent(row, sources)
-                  const capDisplay = RATE_SOURCES.has(row.scalesWith)
-                    ? row.scaleMax * 100
-                    : row.scaleMax
+                  const capDisplay = formatScaleCap(
+                    RATE_SOURCES.has(row.scalesWith) ? row.scaleMax * 100 : row.scaleMax,
+                  )
                   return (
                     <div key={row.id} className={styles.classBuffRow}>
                       <div className={styles.classBuffHead}>

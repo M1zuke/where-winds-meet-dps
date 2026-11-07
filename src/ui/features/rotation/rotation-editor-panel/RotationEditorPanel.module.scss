@@ -79,7 +79,9 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr) 92px;
+  grid-template-columns:
+    28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr)
+    56px 88px 84px 92px;
   gap: 10px;
   align-items: center;
   padding: 5px 8px;
@@ -94,6 +96,19 @@
 
 .entryReadonly {
   opacity: 0.85;
+}
+
+.entryInvalid {
+  border-color: #553030;
+}
+
+.entryAttached {
+  margin-left: 24px;
+  opacity: 0.75;
+}
+
+.entryInvalid .time {
+  color: #c87878;
 }
 
 .skillStatic {
@@ -153,13 +168,49 @@
   background: var(--color-bg);
 }
 
+.ledgerHead {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.qiMarkerRow {
+  background: rgba(216, 122, 74, 0.14);
+  border-color: rgba(216, 122, 74, 0.5);
+}
+
+.qiMarkerText {
+  grid-column: span 5;
+  color: #f0c8a8;
+  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+}
+
 @include breakpoints.below(breakpoints.$bp-720) {
   .entry {
     grid-template-columns: 1fr;
   }
+  .qiMarkerText {
+    grid-column: auto;
+  }
+  .ledgerHead {
+    display: none;
+  }
   .meta input[type="text"] {
     min-width: 160px;
   }
+}
+
+.meterLevel {
+  display: inline-block;
+  margin: 1px 4px 1px 0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: hsla(200, 40%, 45%, 0.2);
+  border: 1px solid hsla(200, 45%, 60%, 0.45);
+  font-size: 0.78em;
+  color: hsl(200, 60%, 78%);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* Hue comes from `src/ui/features/rotation/buffChips.ts`'s `buffChipHue`
@@ -240,41 +291,6 @@
 }
 .permanentLabel {
   color: var(--color-text-dim);
-  font-size: 0.85em;
-}
-.buffSelect {
-  position: relative;
-  display: inline-block;
-}
-.buffDropdown {
-  position: absolute;
-  z-index: 20;
-  top: 100%;
-  left: 0;
-  margin-top: 2px;
-  background: #1e1e1e;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  padding: 4px;
-  min-width: 160px;
-  max-height: 220px;
-  overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-.buffOption {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 4px;
-  font-size: 0.85em;
-  cursor: pointer;
-}
-.buffOption:hover {
-  background: var(--color-surface-raised);
-}
-.buffEmpty {
-  color: var(--color-text-faint);
-  padding: 4px;
   font-size: 0.85em;
 }
 .openingRow {
@@ -369,27 +385,4 @@
 .qiBreakRowLocked .headCap,
 .openingRowReadonly .headCap {
   opacity: 0.55;
-}
-
-.rowNote,
-.overrideFlag {
-  grid-column: 4 / 6;
-  justify-self: start;
-  white-space: nowrap;
-}
-
-.rowNote {
-  font-size: 0.76em;
-  color: var(--color-text-faint);
-}
-
-.overrideFlag {
-  font-size: 0.7em;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-accent-bright);
-  border: 1px solid rgba(192, 160, 96, 0.5);
-  background: rgba(192, 160, 96, 0.1);
-  border-radius: 3px;
-  padding: 1px 6px;
 }

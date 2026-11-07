@@ -1,0 +1,103 @@
+{
+  "v": 62,
+  "skills": [
+    {
+      "id": "bamboocutDraught-boundvessel",
+      "classId": "bamboocutDraught",
+      "name": "Twinblade Heavy Attack",
+      "breakdownName": "Boundvessel",
+      "tags": ["weapon:Twin Blades"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:boundvessel",
+      "receives": ["nonPlayerBaseDamage50"],
+      "triggerable": false,
+      "castFrames": 208,
+      "reachMeters": 4,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 40,
+          "stopAfterSec": 1.6
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 24,
+          "physMultiplier": 0.300265,
+          "attributeMultiplier": 0.4503975,
+          "physFixed": 83.5,
+          "attributeFixed": 45.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-12",
+          "frame": 144,
+          "physMultiplier": 0.11544,
+          "attributeMultiplier": 0.17316,
+          "physFixed": 32.2,
+          "attributeFixed": 17.4,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        },
+        {
+          "id": "hit-13",
+          "frame": 161,
+          "physMultiplier": 0.23088,
+          "attributeMultiplier": 0.34632,
+          "physFixed": 64.4,
+          "attributeFixed": 34.8,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bamboocutDraught-cloudvault",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [{ "buffId": "buff-bamboocutDraught-binge-points", "op": "gte", "stacks": 100 }]
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-heavy",
+      "classId": "bamboocutDraught",
+      "name": "My Heavy",
+      "tags": ["weapon:Twin Blades"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Twin Blades",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:myHeavy",
+      "receives": [],
+      "triggerable": false,
+      "castFrames": 60,
+      "hits": [
+        {
+          "id": "hit-12",
+          "frame": 144,
+          "physMultiplier": 0.11544,
+          "attributeMultiplier": 0.17316,
+          "physFixed": 32.2,
+          "attributeFixed": 17.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    }
+  ]
+}

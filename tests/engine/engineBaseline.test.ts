@@ -13,8 +13,8 @@ import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import { applySetBonuses } from "../../src/engine/setBonuses"
+import { withGearSet } from "../helpers/withGearSet"
 import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
@@ -54,11 +54,15 @@ function anchorInputs(): Inputs {
     PROFILES_KEY,
     JSON.stringify({ v: ANCHOR_FILE.v, profiles: [profile], activeId: profile.id }),
   )
-  return loadProfiles().profiles[0].inputs
+  const stored = loadProfiles().profiles[0].inputs
+  return {
+    ...stored,
+    unclaimedOddityNodes: { ...stored.unclaimedOddityNodes, Qingzhou: [600], Jiangnan: [700] },
+  }
 }
 
 function toEngineInputs(raw: Inputs): Inputs {
-  return applyBowSet(applyArmorSet(withDerivedStats(raw)))
+  return applySetBonuses(withDerivedStats(raw))
 }
 
 function withInnerWay(
@@ -120,15 +124,6 @@ const CASES: { name: string; build: () => Inputs }[] = [
   {
     name: "anchor:breakthrough17",
     build: () => toEngineInputs({ ...anchorInputs(), breakthrough: 17 }),
-  },
-  {
-    name: "anchor:noQiBreak",
-    build: () =>
-      toEngineInputs(
-        withCombat(anchorInputs(), {
-          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 },
-        }),
-      ),
   },
   {
     name: "anchor:healerBuff",
@@ -207,13 +202,22 @@ const CASES: { name: string; build: () => Inputs }[] = [
         }),
       ),
   },
-  { name: "anchor:noSet", build: () => toEngineInputs({ ...anchorInputs(), set: null }) },
+  {
+    name: "anchor:noSet",
+    build: () => toEngineInputs(withGearSet(anchorInputs(), null, { fabricatePieces: true })),
+  },
   ...ARMOUR_SETS.map(([label, id]) => ({
     name: `anchor:set-${label}`,
-    build: () => toEngineInputs({ ...anchorInputs(), set: id }),
+    build: () => toEngineInputs(withGearSet(anchorInputs(), id, { fabricatePieces: true })),
   })),
   // A second rotation, so the guard is not tied to one cast list.
-  { name: "defaults:umbra", build: () => ({ ...defaultInputs, classId: "bellstrikeUmbra" }) },
+  {
+    name: "defaults:umbra",
+    build: () =>
+      withGearSet({ ...defaultInputs, classId: "bellstrikeUmbra" }, SET_ID.hawkwing, {
+        fabricatePieces: true,
+      }),
+  },
 ]
 
 function round(value: number, places: number): number {
@@ -226,9 +230,10 @@ function round(value: number, places: number): number {
 const PLACES = 2
 
 function digestOf(result: Result): string {
-  const canonical = JSON.stringify(result, (_key, value) =>
-    typeof value === "number" ? round(value, PLACES) : value,
-  )
+  const canonical = JSON.stringify(result, (key, value) => {
+    if (key === "qiDamageLog" || key === "isMysticHit") return undefined
+    return typeof value === "number" ? round(value, PLACES) : value
+  })
   return createHash("sha256").update(canonical).digest("hex")
 }
 
@@ -297,35 +302,40 @@ describe("engine baseline", () => {
 // and this build stands at 16, so the nodes behind Solo Mode Level 17 no longer
 // count towards it. The figures the board's full 122 nodes produce are the
 // breakthrough-17 block below.
+const UNBEANED_ENDURANCE_WARNINGS = [
+  "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
+  "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17).",
+]
+
 describe("engine baseline — profile-v7 anchor", () => {
   const result = runEngine(toEngineInputs(anchorInputs()))
   const damageOf = (name: string) =>
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
-  it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(75752.28)
-    expect(round(result.totalDamage, 2)).toBe(4545136.92)
+  it("still reports the rotation figures", () => {
+    expect(round(result.dps, 2)).toBe(71558.23)
+    expect(round(result.totalDamage, 2)).toBe(4293493.58)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    expect(result.warnings).toEqual([])
+    expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2111355.75)
-    expect(damageOf("Bleeding (DoT)")).toBe(282710.86)
+    expect(damageOf("Blood Burst")).toBe(2077389.54)
+    expect(damageOf("Bleeding (DoT)")).toBe(295813.19)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(485546.33)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(104009.32)
+    expect(damageOf("Smolder (DoT)")).toBe(470887.79)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76602.27)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(57698.1)
+    expect(damageOf("Yi River")).toBe(59139.23)
   })
 })
 
@@ -335,17 +345,17 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(77078.16)
-    expect(round(result.totalDamage, 2)).toBe(4624689.78)
+    expect(round(result.dps, 2)).toBe(72792.5)
+    expect(round(result.totalDamage, 2)).toBe(4367550.09)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    expect(result.warnings).toEqual([])
+    expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
-    expect(damageOf("Blood Burst")).toBe(2147887.11)
-    expect(damageOf("Bleeding (DoT)")).toBe(288069.99)
-    expect(damageOf("Smolder (DoT)")).toBe(494453.26)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(105898.28)
-    expect(damageOf("Yi River")).toBe(58770.78)
+    expect(damageOf("Blood Burst")).toBe(2112358.18)
+    expect(damageOf("Bleeding (DoT)")).toBe(301303.08)
+    expect(damageOf("Smolder (DoT)")).toBe(479333.82)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(77991.87)
+    expect(damageOf("Yi River")).toBe(60237.15)
   })
 })

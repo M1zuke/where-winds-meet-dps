@@ -1,10 +1,10 @@
 // v7 → v8 — Ivorybloom and Rainwhisper were removed from the armor-set data,
 // so a profile saved while they were selectable holds a `set` the picker can no
-// longer show. Nothing errors on it: `applyArmorSet`, `formula.ts setValue` and
+// longer show. Nothing errors on it: the set bonus lookup, `formula.ts setValue` and
 // `APP_SET_TO_SITE_SET` all simply miss, so the value survives every save/export
 // round-trip while reading as unset everywhere it matters.
 //
-// The removed names are frozen here rather than derived from `ARMOR_SET_OPTIONS`:
+// The removed names are frozen here rather than derived from the live set registry:
 // this step is a one-time hop for these two sets, so a later removal needs its
 // own step instead of being retroactively applied by this one. The standing
 // "must be selectable" invariant lives in `hydrateInputs`, which also covers the

@@ -3,30 +3,29 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import {
+  FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS,
+  PURSUIT_RECHARGE_CUT,
+  STARTLING_SPRING_STACK,
+} from "./moonShatterSpring"
 
-// The authored value is the whole cast spread over its hits, not a per-hit
-// value — the reference def states it per hit. Kept as total ÷ hits so the
-// number the source actually carries stays legible.
-const CAST_HITS = 5
+// In-game values as of 2026-10-05.
 const CAST_TOTAL = {
-  physMultiplier: 4.376825,
-  attributeMultiplier: 6.56531,
-  physFixed: 1210.75,
-  attributeFixed: 659.75,
+  physMultiplier: 3.0185,
+  attributeMultiplier: 4.5278,
+  physFixed: 835,
+  attributeFixed: 455,
 }
+const HIT_SHARES = [0.175, 0.175, 0.175, 0.175, 0.3]
 
-// The cast total also carries the breakthrough-14 multiplier the engine never
-// applies (`targetMultiplier` is set in panel.ts and read nowhere) — a uniform
-// 1.450 against the reference def on all four tracks, same as FanLightCharged.
-const BREAKTHROUGH_SCALE = 1.45
-
-const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS / BREAKTHROUGH_SCALE,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS / BREAKTHROUGH_SCALE,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS / BREAKTHROUGH_SCALE,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS / BREAKTHROUGH_SCALE,
+const coefficientsFor = (share: number) => ({
+  physMultiplier: CAST_TOTAL.physMultiplier * share,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
+  physFixed: CAST_TOTAL.physFixed * share,
+  attributeFixed: CAST_TOTAL.attributeFixed * share,
   extraCritDamage: 1,
-}
+  triggers: [PURSUIT_RECHARGE_CUT, STARTLING_SPRING_STACK],
+})
 
 export const fanheavypursuit5Hit = defineSkill({
   id: SKILL.fanheavypursuit5Hit,
@@ -53,18 +52,26 @@ export const fanheavypursuit5Hit = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
+    BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
-  triggersBuffs: [BUFF.pursuitChargedBoost],
-  castFrames: 150,
+  triggersBuffs: [BUFF.pursuitChargedBoost, BUFF.moonShatterSpringLockout],
+  castConditions: FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS,
+  // Cast length to the earliest next input and the strike frames (in-game
+  // animation, 2026-10-15).
+  castFrames: 145.98,
   triggerable: true,
+  // In-game values as of 2026-09-28: 9 m approach reach; the cast's own
+  // segments then teleport to about 1.5 m from the target, along its facing.
+  reachMeters: 9,
+  displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 0, ...COEFFICIENTS }),
-    hit(1, { frame: 30, ...COEFFICIENTS }),
-    hit(2, { frame: 60, ...COEFFICIENTS }),
-    hit(3, { frame: 90, ...COEFFICIENTS }),
-    hit(4, { frame: 120, ...COEFFICIENTS }),
+    hit(0, { frame: 14.05, ...coefficientsFor(HIT_SHARES[0]) }),
+    hit(1, { frame: 32.51, ...coefficientsFor(HIT_SHARES[1]) }),
+    hit(2, { frame: 68.97, ...coefficientsFor(HIT_SHARES[2]) }),
+    hit(3, { frame: 84.2, ...coefficientsFor(HIT_SHARES[3]) }),
+    hit(4, { frame: 111.9, ...coefficientsFor(HIT_SHARES[4]) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

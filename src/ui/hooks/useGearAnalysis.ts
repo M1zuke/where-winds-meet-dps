@@ -6,24 +6,36 @@ import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export interface GearAnalysisResult {
   rows: GearSlotAnalysisRow[]
+  allSlotsLoss: number | null
   isPending: boolean
+}
+
+interface ReceivedAnalysis {
+  rows: GearSlotAnalysisRow[]
+  allSlotsLoss: number | null
 }
 
 const NO_ROWS: GearSlotAnalysisRow[] = []
 
 export function useGearAnalysis(engineInputs: Inputs, baselineDps: number): GearAnalysisResult {
-  const [received, setReceived] = useState<GearSlotAnalysisRow[] | null>(
-    () => retainedResponse("gearAnalysis")?.rows ?? null,
+  const [received, setReceived] = useState<ReceivedAnalysis | null>(
+    () => retainedResponse("gearAnalysis") ?? null,
   )
   const isPending = useDpsWorkerPending("gearAnalysis")
 
   useEffect(() => {
-    return subscribeToDpsWorker("gearAnalysis", ({ rows }) => setReceived(rows))
+    return subscribeToDpsWorker("gearAnalysis", ({ rows, allSlotsLoss }) =>
+      setReceived({ rows, allSlotsLoss }),
+    )
   }, [])
 
   useEffect(() => {
     postToDpsWorker({ kind: "gearAnalysis", inputs: engineInputs, baselineDps })
   }, [engineInputs, baselineDps])
 
-  return { rows: received ?? NO_ROWS, isPending }
+  return {
+    rows: received?.rows ?? NO_ROWS,
+    allSlotsLoss: received?.allSlotsLoss ?? null,
+    isPending,
+  }
 }

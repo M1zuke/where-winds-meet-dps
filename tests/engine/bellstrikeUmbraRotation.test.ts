@@ -26,6 +26,22 @@ import { spearspecial } from "../../src/data/skills/bellstrike-umbra/spearspecia
 import { spearspecial1HitCancel } from "../../src/data/skills/bellstrike-umbra/spearspecial-1-hit-cancel"
 import { dragonFireSmolder1Hit } from "../../src/data/skills/mystic/dragon-fire-smolder-1-hit"
 import { dragonFireSmolder2Hits } from "../../src/data/skills/mystic/dragon-fire-smolder-2-hits"
+import { ATTUNE } from "../../src/data/skills/ids"
+import type { SkillHit } from "../../src/engine/skill"
+
+// Each form's own Sword Horizon variant ends its own cast at a different
+// length, and a hit cut short straight into the follow-up gates on the next
+// rotation step rather than on any of this comparison's own casts — both
+// excluded from a hits-are-a-prefix comparison.
+const withoutSituational = (hits: readonly SkillHit[]) =>
+  hits.map(
+    ({
+      variants: _variants,
+      requiresNextStepSkillIds: _requiresNextStepSkillIds,
+      castFramesWhenGated: _castFramesWhenGated,
+      ...rest
+    }) => rest,
+  )
 
 const CLASS = "bellstrikeUmbra"
 
@@ -71,17 +87,24 @@ describe("the built-in Bellstrike Umbra default rotation", () => {
     }
   })
 
+  // A hit's own `castFramesWhenGated` is the cast length it actually lands
+  // inside of — the skill's static `castFrames` is what an ungated cast of
+  // the same skill keeps instead.
+  const castLengthFor = (skill: (typeof RETIMED_SKILLS)[number], hit: SkillHit) =>
+    hit.castFramesWhenGated ?? skill.castFrames
+
   it("every hit of a retimed module lands inside its cast", () => {
     for (const skill of RETIMED_SKILLS) {
-      const maxHitFrame = Math.max(...skill.hits.map((hit) => hit.frame))
-      expect(maxHitFrame, skill.id).toBeLessThan(skill.castFrames)
+      for (const hit of skill.hits) {
+        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(castLengthFor(skill, hit))
+      }
     }
   })
 
   it("no retimed module has a hit on or past its own castFrames", () => {
     for (const skill of RETIMED_SKILLS) {
       for (const hit of skill.hits) {
-        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(skill.castFrames)
+        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(castLengthFor(skill, hit))
       }
     }
   })
@@ -89,17 +112,25 @@ describe("the built-in Bellstrike Umbra default rotation", () => {
 
 describe("a cancel form shares its full form's hits over a shorter cast", () => {
   it("Sword Martial QQ 1-Hit [Cancel] keeps only the first hit", () => {
-    expect(swordqFollowUp1HitCancel.hits).toEqual([swordqfollowup.hits[0]])
+    expect(withoutSituational(swordqFollowUp1HitCancel.hits)).toEqual(
+      withoutSituational([swordqfollowup.hits[0]]),
+    )
     expect(swordqFollowUp1HitCancel.castFrames).toBeLessThan(swordqfollowup.castFrames)
   })
 
   it("Sword Martial QQ 2-Hit [Cancel] keeps the first two hits", () => {
-    expect(swordqFollowUp2HitCancel.hits[0]).toEqual(swordqfollowup.hits[0])
+    expect(withoutSituational([swordqFollowUp2HitCancel.hits[0]])).toEqual(
+      withoutSituational([swordqfollowup.hits[0]]),
+    )
     expect(swordqFollowUp2HitCancel.castFrames).toBeLessThan(swordqfollowup.castFrames)
   })
 
   it("Sword R Charge - Follow Up 1-Hit[cancel] keeps only the first hit", () => {
-    expect(swordRChargeFollowUp1HitCancel.hits).toEqual([swordRChargeFollowUp.hits[0]])
+    // The cancel form's own last hit carries the Endurance gain the full
+    // form's true last hit (hit 1, not present here) carries instead.
+    const [{ triggers: _triggers, ...cancelHit }] = swordRChargeFollowUp1HitCancel.hits
+    const { triggers: _fullTriggers, ...fullHit } = swordRChargeFollowUp.hits[0]
+    expect(cancelHit).toEqual(fullHit)
     expect(swordRChargeFollowUp1HitCancel.castFrames).toBeLessThan(swordRChargeFollowUp.castFrames)
   })
 
@@ -114,7 +145,9 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     for (let index = 0; index < chain.length - 1; index++) {
       const shorter = chain[index]
       const longer = chain[index + 1]
-      expect(shorter.hits).toEqual(longer.hits.slice(0, shorter.hits.length))
+      expect(withoutSituational(shorter.hits)).toEqual(
+        withoutSituational(longer.hits.slice(0, shorter.hits.length)),
+      )
       expect(shorter.castFrames).toBeLessThan(longer.castFrames)
     }
   })
@@ -123,8 +156,19 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     expect(spearq5HitCancel.castFrames).toBeLessThan(spearq.castFrames)
   })
 
-  it("Spear Special (1 Hit Cancel) keeps Sweep All's first hit, ending before its own cast", () => {
-    expect(spearspecial1HitCancel.hits).toEqual([spearspecial.hits[0]])
+  it("Spear Special (1 Hit Cancel) keeps Sweep All's Shattered Stone hit and its first damage hit, ending before its own cast", () => {
+    // The cancel form's own copy of hit 1 carries its own cast-length
+    // override on the River Flow variant, everything else shared.
+    const [shatteredStone, sharedHit] = spearspecial.hits
+    expect(spearspecial1HitCancel.hits).toEqual([
+      shatteredStone,
+      {
+        ...sharedHit,
+        variants: sharedHit.variants!.map((variant) =>
+          variant.label === "River Flow" ? { ...variant, castFrames: 19 } : variant,
+        ),
+      },
+    ])
     expect(spearspecial1HitCancel.castFrames).toBeLessThan(spearspecial.castFrames)
   })
 
@@ -133,25 +177,45 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     expect(crosswindBladeCancel.castFrames).toBeLessThan(crosswindBlade.castFrames)
   })
 
+  it("Crosswind Blade and its cancel form both reach the Special attunement", () => {
+    expect(crosswindBlade.tags).toContain(ATTUNE.swordSpecial)
+    expect(crosswindBladeCancel.tags).toContain(ATTUNE.swordSpecial)
+  })
+
   it("SwordSpecial's four player-ended forms each keep the next one's hits, each over a shorter cast", () => {
-    const chain = [swordspecial1Hit, swordspecial2Hit, swordspecial3Hit, swordspecial4Hit]
+    const chain = [swordspecial1Hit, swordspecial2Hit, swordspecial3Hit]
     for (let index = 0; index < chain.length - 1; index++) {
       const shorter = chain[index]
       const longer = chain[index + 1]
-      expect(shorter.hits).toEqual(longer.hits.slice(0, shorter.hits.length))
+      expect(withoutSituational(shorter.hits)).toEqual(
+        withoutSituational(longer.hits.slice(0, shorter.hits.length)),
+      )
       expect(shorter.castFrames).toBeLessThan(longer.castFrames)
     }
+    expect(swordspecial3Hit.castFrames).toBeLessThan(swordspecial4Hit.castFrames)
+  })
+
+  it("SwordSpecial 4-Hit's hit 3 matches the 3-Hit cancel's own hit 3 except for the companion-cast trigger", () => {
+    const [hit0, hit1, hit2] = swordspecial4Hit.hits
+    expect(withoutSituational([hit0, hit1])).toEqual(
+      withoutSituational(swordspecial3Hit.hits.slice(0, 2)),
+    )
+    const [, , cancelHit2] = swordspecial3Hit.hits
+    expect(hit2.triggers.slice(0, cancelHit2.triggers.length)).toEqual(cancelHit2.triggers)
+    expect(hit2.triggers.length).toBe(cancelHit2.triggers.length + 1)
+    expect(hit2.triggers.at(-1)!.kind).toBe("castSkill")
   })
 })
 
-describe("Sweep All lands two hits", () => {
-  it("Spear Special carries both hits, 42 frames apart", () => {
-    expect(spearspecial.hits).toHaveLength(2)
-    expect(spearspecial.hits[1].frame - spearspecial.hits[0].frame).toBe(42)
+describe("Sweep All lands a Shattered Stone hit and two damage hits, 42 frames apart", () => {
+  it("Spear Special carries all three hits", () => {
+    expect(spearspecial.hits).toHaveLength(3)
+    const [, first, second] = spearspecial.hits
+    expect(second.frame - first.frame).toBe(42)
   })
 
-  it("the two hits' coefficients split 0.40 / 0.60 of the whole skill", () => {
-    const [first, second] = spearspecial.hits
+  it("the two damage hits' coefficients split 0.40 / 0.60 of the whole skill", () => {
+    const [, first, second] = spearspecial.hits
     const total = (
       field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
     ) => first[field] + second[field]

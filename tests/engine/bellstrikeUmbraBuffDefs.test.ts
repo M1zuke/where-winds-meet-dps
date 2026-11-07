@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffEngineWith } from "../helpers/qiBars"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
@@ -16,7 +16,7 @@ function skill(receives: string[]) {
 }
 
 function sumsFor(params: Record<string, unknown>, receives: string[]) {
-  const engine = new BuffEngine(params, [], umbraOwnBuffDefs())
+  const engine = buffEngineWith(params, [], umbraOwnBuffDefs())
   const result = engine.calculateDamageEffects(skill(receives), 0)
   return Object.fromEntries(
     TRACKED.map((statKey) => [
@@ -28,7 +28,8 @@ function sumsFor(params: Record<string, unknown>, receives: string[]) {
   )
 }
 
-const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6 }
+const MAX_PHYS_AT_CAP = 1500
+const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6, maxPhysAttack: MAX_PHYS_AT_CAP }
 
 describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   it("Blood Burst gets both the affinity-damage and bleed-penetration terms", () => {
@@ -57,18 +58,50 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
     })
   })
 
-  it("with no swordHorizon param, neither Umbra buff is seeded (alwaysActive gated off)", () => {
-    expect(sumsFor({}, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"])).toEqual({
+  // In-game talent gating as of 2026-09-24: neither talent has an inner-way
+  // condition, so both stay active with no Sword Horizon param at all.
+  it("with no swordHorizon param, both Umbra buffs still apply — neither is gated on Sword Horizon", () => {
+    expect(
+      sumsFor({ maxPhysAttack: MAX_PHYS_AT_CAP }, [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+      ]),
+    ).toEqual({
+      affinityDamageBoost: 0.18,
+      "phys.penetration": 0.15,
+      "bellstrike.penetration": 0.15,
+    })
+  })
+})
+
+describe("Bellstrike Umbra bleed buff-defs — scale with Max Physical Attack in steps of 100", () => {
+  const BOTH = ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]
+
+  it("adds 1 penetration and 1.2 % affinity damage per full 100 Max Physical Attack", () => {
+    const sums = sumsFor({ maxPhysAttack: 1234 }, BOTH)
+    expect(sums["phys.penetration"]).toBeCloseTo(0.12, 10)
+    expect(sums["bellstrike.penetration"]).toBeCloseTo(0.12, 10)
+    expect(sums.affinityDamageBoost).toBeCloseTo(0.144, 10)
+  })
+
+  it("gives nothing below the first full 100", () => {
+    expect(sumsFor({ maxPhysAttack: 99 }, BOTH)).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
     })
   })
+
+  it("stops at 1500 Max Physical Attack", () => {
+    expect(sumsFor({ maxPhysAttack: 6000 }, BOTH)).toEqual(
+      sumsFor({ maxPhysAttack: MAX_PHYS_AT_CAP }, BOTH),
+    )
+  })
 })
 
 describe("Bellstrike Umbra bleed power coefficient — a multiplier, never a damage-boost term", () => {
   const factorFor = (params: Record<string, unknown>, receives: string[]) =>
-    new BuffEngine(params, [], umbraOwnBuffDefs()).calculateDamageEffects(skill(receives), 0)
+    buffEngineWith(params, [], umbraOwnBuffDefs()).calculateDamageEffects(skill(receives), 0)
       .damageFactor
 
   it("contributes nothing below breakthrough 18", () => {
