@@ -741308,7 +741308,7 @@
           "duration": "[fn]",
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +8%, physPen/stonesplitPen +1 per full 62.5 Max Physical Attack (cap 12)"
+          "summary": "allDamageBoost +8% on every hit; physPen/stonesplitPen +1 per full 62.5 Max Physical Attack (cap 12) on direct hits only"
         },
         {
           "id": "cleftpeakDeflect",

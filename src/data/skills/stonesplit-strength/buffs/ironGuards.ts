@@ -20,8 +20,9 @@ export const ironGuards = defineClassBuff({
   duration: (ctx) => (hasSteadfastDevotion(ctx.build.paramTier) ? 40 : 30),
   cooldown: (ctx) => (hasSteadfastDevotion(ctx.build.paramTier) ? 1 : 20),
   summary:
-    "allDamageBoost +8%, physPen/stonesplitPen +1 per full 62.5 Max Physical Attack (cap 12)",
+    "allDamageBoost +8% on every hit; physPen/stonesplitPen +1 per full 62.5 Max Physical Attack (cap 12) on direct hits only",
   effects: (ctx) => {
+    if (ctx.event.kind === "damage" && ctx.event.isDotTick) return [stat("allDamageBoost", 0.08)]
     const penetrationFraction = penetration(ctx.build.maxPhysAttack)
     return [
       stat("allDamageBoost", 0.08),
