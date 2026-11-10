@@ -45,6 +45,7 @@ import { deflectCancel } from "./deflect-cancel"
 import { umbrellaDual } from "./umbrella-dual"
 import { fanDual } from "./fan-dual"
 import { umbrellaDash } from "./umbrella-dash"
+import { umbrellaDashBullet } from "./umbrella-dash-bullet"
 import { fanLight } from "./fan-light"
 import { fanLightChain } from "./fan-light-chain"
 import { fanDash } from "./fan-dash"
@@ -99,6 +100,7 @@ export const SKILLS: Skill[] = [
   umbrellaDual,
   fanDual,
   umbrellaDash,
+  umbrellaDashBullet,
   fanLight,
   fanLightChain,
   fanDash,

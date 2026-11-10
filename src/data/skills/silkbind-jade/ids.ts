@@ -46,6 +46,7 @@ export const SKILL = {
   umbrellaDual: "silkbindJade-umbrella-dual",
   fanDual: "silkbindJade-fan-dual",
   umbrellaDash: "silkbindJade-umbrella-dash",
+  umbrellaDashBullet: "silkbindJade-umbrella-dash-bullet",
   fanLight: "silkbindJade-fan-light",
   fanLightChain: "silkbindJade-fan-light-chain",
   fanDash: "silkbindJade-fan-dash",

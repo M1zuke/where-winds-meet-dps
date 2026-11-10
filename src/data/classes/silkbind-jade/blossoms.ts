@@ -85,11 +85,9 @@ export const blossomResource = defineResource({
     {
       id: "umbrellaDashBullet",
       name: "Umbrella - Dash bullet gain",
-      // In-game values as of 2026-10-06: +4 on the bullet hit, paid across
-      // this module's 3 hits.
+      // In-game values as of 2026-10-06: +4 on the bullet hit.
       defaultAmount: 4,
-      skillIds: [SKILL.umbrellaDash],
-      divideAcrossSkillHits: true,
+      skillIds: [SKILL.umbrellaDashBullet],
     },
     {
       id: "chargedHitLift",

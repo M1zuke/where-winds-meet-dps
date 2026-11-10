@@ -11,8 +11,16 @@ const FIRST_STAGE = {
   attributeFixed: 61.6,
 }
 
-// In-game values as of 2026-10-06: the four stages pressed in a row, each hit
-// at its melee frame.
+// In-game values as of 2026-11-10: at maximum distance the stage-1 hit is the
+// 80 m/s bullet, launched 17.4 f into the clip that follows the 14.4 f hold
+// decision, not the melee collider; the bullet lives 0.2 s.
+const STAGE_ONE_BULLET = {
+  frame: 31.8,
+  projectile: { speedMetersPerSecond: 80, maxTravelFrames: 12 },
+}
+
+// In-game values as of 2026-10-06: the four stages pressed in a row, stages 2
+// to 4 hit at their melee frames.
 export const fanLightChain = defineSkill({
   id: SKILL.fanLightChain,
   classId: "silkbindJade",
@@ -24,6 +32,7 @@ export const fanLightChain = defineSkill({
   castTag: CAST.fanLightChain,
   receives: [
     BUFF.windWall,
+    BUFF.trajectorySkill,
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
@@ -33,7 +42,7 @@ export const fanLightChain = defineSkill({
   castFrames: 150,
   triggerable: true,
   hits: [
-    hit(0, { frame: 28, ...FIRST_STAGE }),
+    hit(0, { ...STAGE_ONE_BULLET, ...FIRST_STAGE }),
     hit(1, {
       frame: 55,
       physMultiplier: 0.306048,

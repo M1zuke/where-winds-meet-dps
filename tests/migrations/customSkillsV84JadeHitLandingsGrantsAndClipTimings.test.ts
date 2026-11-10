@@ -12,6 +12,7 @@ import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migratio
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { throughJadeAuditHops } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV83File from "./testCustomSkills/v83/store.json"
@@ -76,13 +77,15 @@ describe("custom-skills v83 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healFractionalFrameTiming(
-      healJadeSpringSorrowChargesAndComboRechargeCut(
-        healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
-          healJadeAvailabilityAndRecharge(healSkill(clone(skillIn(STORE, id)))),
+    const healed = throughJadeAuditHops(
+      healFractionalFrameTiming(
+        healJadeSpringSorrowChargesAndComboRechargeCut(
+          healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
+            healJadeAvailabilityAndRecharge(healSkill(clone(skillIn(STORE, id)))),
+          ),
         ),
       ),
-    ) as Skill
+    )
     const builtin = builtinOf(id)
     for (const field of CHECKED_FIELDS)
       expect(healed[field], `${id}.${field}`).toEqual(builtin[field])

@@ -35,6 +35,7 @@ export const fanlightcharged = defineSkill({
   castTag: CAST.fanLightCharged,
   receives: [
     BUFF.windWall,
+    BUFF.trajectorySkill,
     BUFF.pursuitChargedBoost,
     BUFF.thunderousBloom,
     BUFF.springThunder,

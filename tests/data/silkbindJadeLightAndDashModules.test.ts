@@ -20,6 +20,7 @@ const hitValues = (skillId: string) =>
 
 describe.each([
   [SKILL.umbrellaDash, CAST.umbrellaDash, "Umbrella - Dash", 88],
+  [SKILL.umbrellaDashBullet, CAST.umbrellaDashBullet, "Umbrella - Dash (Bullet)", 0],
   [SKILL.fanLight, CAST.fanLight, "Fan - Light Attack", 37],
   [SKILL.fanLightChain, CAST.fanLightChain, "Fan - Light Attack (4-stage)", 150],
   [SKILL.fanDash, CAST.fanDash, "Fan - Dash", 63],
@@ -44,57 +45,70 @@ describe.each([
 })
 
 describe("Umbrella - Dash", () => {
-  it("hits twice by collider, then lands its bullet at 30 m/s", () => {
+  it("hits twice by collider, then launches its bullet at 30 m/s as its own skill", () => {
     expect(hitValues(SKILL.umbrellaDash)).toEqual([
       [17, 0.439065, 0.658598, 122, 66.5],
       [51, 0.439065, 0.658598, 122, 66.5],
-      [51, 0.304656, 0.456984, 84.4, 46.0],
     ])
-    expect(jadeSkill(SKILL.umbrellaDash).hits.map((skillHit) => skillHit.projectile)).toEqual([
-      undefined,
-      undefined,
-      { speedMetersPerSecond: 30, maxTravelFrames: 120 },
-    ])
+    expect(
+      jadeSkill(SKILL.umbrellaDash).hits[1]!.triggers.map((trigger) => trigger.targetId),
+    ).toEqual([SKILL.umbrellaDashBullet])
+    expect(hitValues(SKILL.umbrellaDashBullet)).toEqual([[0, 0.304656, 0.456984, 84.4, 46.0]])
+    expect(jadeSkill(SKILL.umbrellaDashBullet).hits[0]!.projectile).toEqual({
+      speedMetersPerSecond: 30,
+      maxTravelFrames: 120,
+    })
   })
 
-  it("is an umbrella skill that receives the umbrella buffs", () => {
-    const skill = jadeSkill(SKILL.umbrellaDash)
-    expect(skill.tags).toEqual([WEAPON.umbrella])
-    expect(skill.receives).toEqual(
-      expect.arrayContaining([
-        BUFF.windWall,
-        BUFF.trajectorySkill,
-        BUFF.vernalUmbrellaAdditionalAttack,
-      ]),
-    )
+  it("gives the trajectory-tagged bullet the talents the untagged colliders never get", () => {
+    const talents = [BUFF.windWall, BUFF.trajectorySkill, BUFF.combo]
+    for (const buffId of talents) {
+      expect(jadeSkill(SKILL.umbrellaDash).receives).not.toContain(buffId)
+      expect(jadeSkill(SKILL.umbrellaDashBullet).receives).toContain(buffId)
+    }
+    for (const skillId of [SKILL.umbrellaDash, SKILL.umbrellaDashBullet]) {
+      expect(jadeSkill(skillId).tags).toEqual([WEAPON.umbrella])
+      expect(jadeSkill(skillId).receives).toContain(BUFF.vernalUmbrellaAdditionalAttack)
+    }
   })
 
-  it("pays 4 Blossoms in total, divided across its hits", () => {
+  it("pays 4 Blossoms on the bullet hit", () => {
     expect(blossomResource.gains.find((rule) => rule.id === "umbrellaDashBullet")).toMatchObject({
       defaultAmount: 4,
-      skillIds: [SKILL.umbrellaDash],
-      divideAcrossSkillHits: true,
+      skillIds: [SKILL.umbrellaDashBullet],
     })
   })
 })
 
 describe("Fan light attacks", () => {
-  it("taps stage 1 only", () => {
-    expect(hitValues(SKILL.fanLight)).toEqual([[28, 0.408064, 0.612096, 113, 61.6]])
+  it("taps stage 1 only, landing as the 80 m/s bullet at maximum distance", () => {
+    expect(hitValues(SKILL.fanLight)).toEqual([[31.8, 0.408064, 0.612096, 113, 61.6]])
+    expect(jadeSkill(SKILL.fanLight).hits[0]!.projectile).toEqual({
+      speedMetersPerSecond: 80,
+      maxTravelFrames: 12,
+    })
   })
 
   it("splits the 4-stage chain by ratio 0.2 / 0.15 / 0.2 / 0.45", () => {
     expect(hitValues(SKILL.fanLightChain)).toEqual([
-      [28, 0.408064, 0.612096, 113, 61.6],
+      [31.8, 0.408064, 0.612096, 113, 61.6],
       [55, 0.306048, 0.459072, 84.75, 46.2],
       [75, 0.408064, 0.612096, 113, 61.6],
       [103, 0.918144, 1.377216, 254.25, 138.6],
     ])
   })
 
-  it("never receives the umbrella penetration talent and earns no Blossoms", () => {
+  it("reaches the light attacks with the umbrella penetration talent and Jadebreak", () => {
+    for (const skillId of [SKILL.fanLight, SKILL.fanLightChain]) {
+      expect(jadeSkill(skillId).receives).toEqual(
+        expect.arrayContaining([BUFF.trajectorySkill, BUFF.windWall]),
+      )
+    }
+    expect(jadeSkill(SKILL.fanDash).receives).not.toContain(BUFF.trajectorySkill)
+  })
+
+  it("earns no Blossoms", () => {
     for (const skillId of [SKILL.fanLight, SKILL.fanLightChain, SKILL.fanDash]) {
-      expect(jadeSkill(skillId).receives).not.toContain(BUFF.trajectorySkill)
       const paying = blossomResource.gains.filter(
         (rule) => "skillIds" in rule && (rule.skillIds as readonly string[]).includes(skillId),
       )
