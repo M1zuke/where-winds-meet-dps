@@ -12,7 +12,7 @@ import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migratio
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
-import { throughJadeAuditHops } from "./jadeAuditHops"
+import { throughJadeAuditHops, withoutLaunchFollowUpGate } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV83File from "./testCustomSkills/v83/store.json"
@@ -148,7 +148,7 @@ describe("V84__jadeHitLandingsGrantsAndClipTimings — called directly", () => {
           ) as Skill
         ).hits,
         id,
-      ).toEqual(builtinOf(id).hits)
+      ).toEqual(withoutLaunchFollowUpGate(builtinOf(id)))
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)

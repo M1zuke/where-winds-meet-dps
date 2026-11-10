@@ -14,6 +14,7 @@ import { healSkill as healSplendorRootMotion } from "../../src/migrations/custom
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
+import { throughJadeAuditHops, withoutLaunchFollowUpGate } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV94File from "./testCustomSkills/v94/store.json"
@@ -60,9 +61,9 @@ describe("custom-skills v94 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healLatestSplendorHops(
-      healLaterStartOrder(healSkill(clone(skillIn(STORE, id)))),
-    ) as Skill
+    const healed = throughJadeAuditHops(
+      healLatestSplendorHops(healLaterStartOrder(healSkill(clone(skillIn(STORE, id))))),
+    )
     const live = builtinOf(id)
     expect(healed.hits).toEqual(live.hits)
     expect(healed.castFrames).toBe(live.castFrames)
@@ -132,7 +133,7 @@ describe("V95__fractionalFrameTiming — called directly", () => {
     expect(after.v).toBe(95)
     for (const id of HEALED_IDS) {
       const settled = healLatestSplendorHops(healLaterStartOrder(skillIn(after, id))) as Skill
-      expect(settled.hits, id).toEqual(builtinOf(id).hits)
+      expect(settled.hits, id).toEqual(withoutLaunchFollowUpGate(builtinOf(id)))
     }
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID]) {
       expect(skillIn(after, id)).toEqual(skillIn(STORE, id))

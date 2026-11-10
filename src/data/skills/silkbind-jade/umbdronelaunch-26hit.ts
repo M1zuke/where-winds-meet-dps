@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTACK, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
+import { launchHigherPriorityBreak } from "./droneLaunchBreak"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 export const umbdronelaunch26Hit = defineSkill({
@@ -41,6 +42,7 @@ export const umbdronelaunch26Hit = defineSkill({
       extraCritDamage: 0,
       triggers: [applyDebuff({ target: DEBUFF.umbdrone26Hit })],
     }),
+    launchHigherPriorityBreak(1),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-10-05T00:00:00.000Z",
