@@ -1,9 +1,9 @@
 {
   "builtin-bellstrikeUmbra-36-bbs": {
-    "dps": 75162.7616250673,
-    "totalDamage": 4509765.697504038,
+    "dps": 75162.27805261801,
+    "totalDamage": 4509736.683157081,
     "damageBySkill": {
-      "Sword Charge Stage 1, 4-Hit": 30421.934001161604,
+      "Sword Charge Stage 1, 4-Hit": 30392.919654204376,
       "Divinecraft - Fire": 89003.21394998203,
       "Bleeding (DoT)": 360518.4144493344,
       "Dragon's Breath: Smolder 1 Hit": 38067.88541279183,
@@ -26,10 +26,10 @@
     }
   },
   "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": {
-    "dps": 78375.58063364873,
-    "totalDamage": 4702534.838018924,
+    "dps": 78375.09706119944,
+    "totalDamage": 4702505.823671967,
     "damageBySkill": {
-      "Sword Charge Stage 1, 4-Hit": 30256.327741015677,
+      "Sword Charge Stage 1, 4-Hit": 30227.31339405844,
       "Divinecraft - Fire": 89537.62198774706,
       "Bleeding (DoT)": 355004.9228507873,
       "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
@@ -53,10 +53,10 @@
     }
   },
   "builtin-bellstrikeUmbra-38-bbs": {
-    "dps": 81473.4109889125,
-    "totalDamage": 4888404.65933475,
+    "dps": 81472.92741646321,
+    "totalDamage": 4888375.644987793,
     "damageBySkill": {
-      "Sword Charge Stage 1, 4-Hit": 30256.327741015677,
+      "Sword Charge Stage 1, 4-Hit": 30227.31339405844,
       "Divinecraft - Fire": 89252.33660663888,
       "Bleeding (DoT)": 341487.18123313587,
       "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
@@ -82,10 +82,10 @@
     }
   },
   "builtin-bellstrikeUmbra-nox-1m-dh": {
-    "dps": 75696.40089595049,
-    "totalDamage": 4541784.05375703,
+    "dps": 75695.91732350121,
+    "totalDamage": 4541755.039410072,
     "damageBySkill": {
-      "Sword Charge Stage 1, 4-Hit": 66139.45296763309,
+      "Sword Charge Stage 1, 4-Hit": 66110.43862067585,
       "Divinecraft - Fire": 88953.26124825123,
       "Bleeding (DoT)": 350425.7131957672,
       "Dragon's Breath: Smolder 2 Hits": 38137.586612466126,
@@ -108,10 +108,10 @@
     }
   },
   "builtin-bellstrikeUmbra-nox-30s-dh": {
-    "dps": 68194.66859256422,
-    "totalDamage": 2045840.0577769266,
+    "dps": 68193.70144766565,
+    "totalDamage": 2045811.0434299693,
     "damageBySkill": {
-      "Sword Charge Stage 1, 4-Hit": 12044.024532948082,
+      "Sword Charge Stage 1, 4-Hit": 12015.01018599085,
       "Divinecraft - Fire": 42752.620090721975,
       "Bleeding (DoT)": 149945.03800031872,
       "Dragon's Breath: Smolder 2 Hits": 36751.73551076451,
@@ -133,10 +133,10 @@
     }
   },
   "builtin-stonesplitStrength-tilla-dummy-rotation": {
-    "dps": 53659.431334573106,
-    "totalDamage": 3219565.8800743865,
+    "dps": 53657.882635403446,
+    "totalDamage": 3219472.958124207,
     "damageBySkill": {
-      "SnowpartingSlide Prepull[Hit]": 12804.644734780637,
+      "SnowpartingSlide Prepull[Hit]": 12711.722784600805,
       "Divinecraft - Fire": 78034.09164896802,
       "SnowpartingVC": 1110292.9342519848,
       "AnxiSoldierHeng": 395288.01698712155,
@@ -159,10 +159,10 @@
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch": {
-    "dps": 71391.13681067529,
-    "totalDamage": 4283468.208640518,
+    "dps": 71390.60863186233,
+    "totalDamage": 4283436.51791174,
     "damageBySkill": {
-      "SnowpartingSpecial": 150353.87035937663,
+      "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77533.63610501599,
       "Divinecraft - Fire Explosion": 11767.015338624,
       "SnowpartingQ-Stab": 98479.76486394893,
@@ -185,10 +185,10 @@
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch-no-toad": {
-    "dps": 73386.30069163571,
-    "totalDamage": 4403178.041498142,
+    "dps": 73385.77251282275,
+    "totalDamage": 4403146.350769365,
     "damageBySkill": {
-      "SnowpartingSpecial": 150353.87035937663,
+      "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77342.28935669601,
       "Divinecraft - Fire Explosion": 11459.836612223999,
       "SnowpartingQ-Stab": 98479.76486394893,
@@ -258,10 +258,10 @@
     }
   },
   "builtin-silkbindJade-20-dh-video-60s": {
-    "dps": 74414.94591354553,
-    "totalDamage": 4100263.5198363587,
+    "dps": 74411.27273633813,
+    "totalDamage": 4100061.1277722307,
     "damageBySkill": {
-      "UmbQ": 408286.7904944516,
+      "UmbQ": 408084.39843032375,
       "Umb HeavyLight": 72389.85628858797,
       "Umb HeavyLight (Heavy Share)": 34003.96213646278,
       "Divinecraft - Fire": 60402.49642108244,
@@ -280,10 +280,10 @@
     }
   },
   "builtin-silkbindJade-30s-dummy-max": {
-    "dps": 51828.95977511455,
-    "totalDamage": 1554868.7932534365,
+    "dps": 51822.213372976956,
+    "totalDamage": 1554666.4011893086,
     "damageBySkill": {
-      "UmbQ": 214939.2720052498,
+      "UmbQ": 214736.87994112194,
       "Divinecraft - Fire": 32260.066454526575,
       "Flute Ripple (DoT)": 66205.45049043125,
       "UmbDroneLaunch": 18822.0879192917,
@@ -309,10 +309,10 @@
     }
   },
   "builtin-silkbindJade-standardized-1-7": {
-    "dps": 50347.87654178999,
-    "totalDamage": 3144224.890034785,
+    "dps": 50344.68264844267,
+    "totalDamage": 3144025.431395245,
     "damageBySkill": {
-      "UmbQ Prepull": 34905.261919579265,
+      "UmbQ Prepull": 34705.80328003881,
       "Umb HeavyLight": 73105.88739669132,
       "Umb HeavyLight (Heavy Share)": 34110.58811508477,
       "Divinecraft - Fire": 68061.31805104327,
@@ -334,10 +334,10 @@
     }
   },
   "builtin-silkbindJade-t5": {
-    "dps": 42529.24957712529,
-    "totalDamage": 2963579.874699347,
+    "dps": 42526.38721922708,
+    "totalDamage": 2963380.416059807,
     "damageBySkill": {
-      "UmbQ Prepull": 34905.261919579265,
+      "UmbQ Prepull": 34705.80328003881,
       "Divinecraft - Fire": 75666.62385993372,
       "UmbLightCharge": 984974.4519999818,
       "UmbLightCharge (Lift)": 59918.53711234137,
@@ -355,10 +355,10 @@
     }
   },
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": {
-    "dps": 80091.10305049006,
-    "totalDamage": 4780104.000396748,
+    "dps": 80090.01417597142,
+    "totalDamage": 4780039.012735894,
     "damageBySkill": {
-      "Gauntlet Q Prepull": 8773.334215311435,
+      "Gauntlet Q Prepull": 8708.346554457275,
       "Twinblade Special": 34506.23015654416,
       "Divinecraft - Fire": 71741.6857169675,
       "Twinblade Q [1-hit cancel]": 7906.163350046103,

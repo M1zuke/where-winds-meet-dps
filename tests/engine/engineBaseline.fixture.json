@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 71325.22,
-    "totalDamage": 4279513.31,
+    "dps": 71324.77,
+    "totalDamage": 4279486.3,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -13,7 +13,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56611.3,
+        "expectedDamage": 56584.29,
         "castCount": 4
       },
       {
@@ -174,11 +174,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "580f08953cf1e3449c6b89440b095a7b2f5155d4de3c8d59fe2e4e49c3f60513"
+    "digest": "081cfa690dc89e38e9c1c96b49fe9e44bfedc837c461811b75dba7af845060b2"
   },
   "anchor:noAttunement": {
-    "dps": 64038.53,
-    "totalDamage": 3842311.67,
+    "dps": 64038.08,
+    "totalDamage": 3842284.66,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -190,7 +190,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56611.3,
+        "expectedDamage": 56584.29,
         "castCount": 4
       },
       {
@@ -351,11 +351,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "1444777450cd5fb8f21703a189d4be9dfa91eeef58a696600bd8081f65023be4"
+    "digest": "22db80f91d485eebe5d0b19c3ac46533527c0d629200c387c12f8b19b2c4a8ab"
   },
   "anchor:dummyOff": {
-    "dps": 76355.75,
-    "totalDamage": 4581344.74,
+    "dps": 76355.3,
+    "totalDamage": 4581317.73,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -367,7 +367,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 62174.54,
+        "expectedDamage": 62147.52,
         "castCount": 4
       },
       {
@@ -528,11 +528,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "07afd7debbd6a37d352520af6a69b0f975878a0d937d11535bc5c87f320aad38"
+    "digest": "8a6ae7594497654c880b1bbad9840c4342146ec8fd1e629abf2fcb98b764dced"
   },
   "anchor:breakthrough17": {
-    "dps": 72560.3,
-    "totalDamage": 4353618.26,
+    "dps": 72559.85,
+    "totalDamage": 4353590.76,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -544,7 +544,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57589.68,
+        "expectedDamage": 57562.18,
         "castCount": 4
       },
       {
@@ -705,11 +705,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "60d22b2190e33fa02b408362a78d30c1b833b001e53ab50a3731df141f8d109a"
+    "digest": "0f86f9f5e181aab4306dd4e4d947726cfb7480082e401ac114093185e4d41cab"
   },
   "anchor:healerBuff": {
-    "dps": 74686.65,
-    "totalDamage": 4481198.82,
+    "dps": 74686.2,
+    "totalDamage": 4481171.81,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -721,7 +721,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 60320.13,
+        "expectedDamage": 60293.11,
         "castCount": 4
       },
       {
@@ -882,11 +882,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "c5e8dba648a31c4d9e7a41743d51029fe9d0f817ae1a190f1461dda0c56eec12"
+    "digest": "21996f94aae967be1e84a29dc00f06d72f5e0d4eb838a4ab8a8790652ca9731c"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 71740.11,
-    "totalDamage": 4304406.7,
+    "dps": 71739.66,
+    "totalDamage": 4304379.69,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -898,7 +898,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56852.71,
+        "expectedDamage": 56825.7,
         "castCount": 4
       },
       {
@@ -1059,11 +1059,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "699a221c4adbe037f31aa4250b4161fcd14af35a637afdab2ef63988fb53b19c"
+    "digest": "e2994cd2c73130df963c5fe9b54b0c93ef7bb2b98cbcd48ef04fb37b1d4b24af"
   },
   "anchor:voidrotScript": {
-    "dps": 72683.33,
-    "totalDamage": 4360999.76,
+    "dps": 72682.88,
+    "totalDamage": 4360972.75,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1075,7 +1075,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57233.1,
+        "expectedDamage": 57206.08,
         "castCount": 4
       },
       {
@@ -1236,11 +1236,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "e466c9cb28cfbc678a4d68aff395561ab0a196165bf965ac04a6d658d0943433"
+    "digest": "607612b56307d00298aca87621c71930c515e7476065158d79883206798871d4"
   },
   "anchor:breakExtension": {
-    "dps": 72818.67,
-    "totalDamage": 4369120,
+    "dps": 72818.22,
+    "totalDamage": 4369092.99,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1252,7 +1252,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 58143.68,
+        "expectedDamage": 58116.67,
         "castCount": 4
       },
       {
@@ -1413,11 +1413,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "32dc945aabb0e00094c0fe4bcce05d559ac39bceccec2044472db5d6b5d7b984"
+    "digest": "e6b2c8985975863cf5a700c7dfffd50957c7976d2c2338ff41a0b7bf5fc30556"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41561.09,
-    "totalDamage": 2493665.26,
+    "dps": 41560.65,
+    "totalDamage": 2493639.05,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1432,7 +1432,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53011.36,
+        "expectedDamage": 52985.14,
         "castCount": 4
       },
       {
@@ -1593,11 +1593,11 @@
       "buffWindows": 143,
       "casts": 90
     },
-    "digest": "c9ae9c8abd1cc344fd062557a89750f2591b91747e24ce26ddee66286a890271"
+    "digest": "bffa3e14ddd8e5a38e05370a69ab12a2f4e4907183995f60b736d7415dae923e"
   },
   "anchor:noSwordHorizon": {
-    "dps": 36391.2,
-    "totalDamage": 2183472.2,
+    "dps": 36390.77,
+    "totalDamage": 2183445.98,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 5.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1635,7 +1635,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54398.78,
+        "expectedDamage": 54372.56,
         "castCount": 4
       },
       {
@@ -1796,11 +1796,11 @@
       "buffWindows": 122,
       "casts": 90
     },
-    "digest": "f28dec100822620693abc20d7b32e06e71c9fa9888d651f38185a26a99b427dc"
+    "digest": "4ddc881c69207714a36f9fa2553fd67a7bca1ca35f393431f1c10d3f4541a85c"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 62811.53,
-    "totalDamage": 3768691.72,
+    "dps": 62811.09,
+    "totalDamage": 3768665.34,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1812,7 +1812,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52110.72,
+        "expectedDamage": 52084.34,
         "castCount": 4
       },
       {
@@ -1973,7 +1973,7 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "300e9f1bcabc643d6baec4d399b61b37769f1fed3a91ad45415fe691d2930bbe"
+    "digest": "2bbe3d53b2ab0b45c371d5ee9f5b24d646ede8788c6dd12970bdcb6c470094fe"
   },
   "anchor:noMoraleChant": {
     "dps": 65558.69,
@@ -2145,8 +2145,8 @@
     "digest": "7739358ebb4835a34841803e42cdcde7b13af009f24b21e6d007a85197fa0609"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40831.68,
-    "totalDamage": 2449900.55,
+    "dps": 40831.32,
+    "totalDamage": 2449879.06,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 13.72s would be illegal in the game: needs Endurance ≥ 50 (has 27.34).",
@@ -2163,7 +2163,7 @@
         "breakdownName": "Drifting Thrust",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2533.07,
+        "expectedDamage": 2511.59,
         "castCount": 1
       },
       {
@@ -2356,11 +2356,11 @@
       "buffWindows": 204,
       "casts": 99
     },
-    "digest": "59cac8f770c8dc1373af8368a91911c4cf61c3b1c6a5daaed2acc6e74905925d"
+    "digest": "66e4100309759c011032c627c315b02064763fa007d3f9eafd1b3d82e0272104"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 44123.29,
-    "totalDamage": 2647397.17,
+    "dps": 44122.84,
+    "totalDamage": 2647370.26,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
@@ -2376,7 +2376,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51997.53,
+        "expectedDamage": 51970.62,
         "castCount": 4
       },
       {
@@ -2545,11 +2545,11 @@
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "fd7699ea805745820b4f5d495a53fb8592f0fe47fd35c17eb38028f1691fbd26"
+    "digest": "29e380b2708051ac7b4a500887f049001b3a0414fdfde2700004fd5e2b42363a"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 43292.95,
-    "totalDamage": 2597577.03,
+    "dps": 43292.51,
+    "totalDamage": 2597550.6,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
@@ -2565,7 +2565,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51064.39,
+        "expectedDamage": 51037.96,
         "castCount": 4
       },
       {
@@ -2734,11 +2734,11 @@
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "6ac4eabc9257a8b8b3720e44812d3f2a381f4cc9d9761a898df2ac29aa364175"
+    "digest": "d5b1d0e029cc99358e07f750c84ab439b6f228ea7a5b31bcbfcdb86011250b47"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 42933.46,
-    "totalDamage": 2576007.41,
+    "dps": 42933.02,
+    "totalDamage": 2575981.29,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
@@ -2754,7 +2754,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50501.64,
+        "expectedDamage": 50475.52,
         "castCount": 4
       },
       {
@@ -2923,11 +2923,11 @@
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "e5e936770bd6e1f11d1e35435b4b6e92c80eb9e1736399f5b4003e5830290b1f"
+    "digest": "1a567b0002d6df3dbde9841b7a9820c5e0806ce4e7454ae46e25325a793fc65c"
   },
   "anchor:noSet": {
-    "dps": 64022.37,
-    "totalDamage": 3841342.43,
+    "dps": 64021.93,
+    "totalDamage": 3841315.84,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2939,7 +2939,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51948.69,
+        "expectedDamage": 51922.1,
         "castCount": 4
       },
       {
@@ -3100,11 +3100,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "f049dcb540f6104bf060aac252b0a44778702aa133b079dba8c009f9c5484668"
+    "digest": "5aaf0593207a501fc602bfd9d4e9837c1f7151145006a686b066d32d2dd99b2f"
   },
   "anchor:set-Jadeware": {
-    "dps": 70706.45,
-    "totalDamage": 4242386.73,
+    "dps": 70706,
+    "totalDamage": 4242359.79,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3116,7 +3116,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57165.22,
+        "expectedDamage": 57138.28,
         "castCount": 4
       },
       {
@@ -3277,11 +3277,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "5bbf30b338233f0dce4b353edd53ba6140fff9fcb08a7fca347924c5cc2e0fb2"
+    "digest": "4a98f198e37ea213fc200b7ca46609e92a3fa0357e5e111a656ae92c890b162a"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64605.37,
-    "totalDamage": 3876321.96,
+    "dps": 64604.92,
+    "totalDamage": 3876295,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3293,7 +3293,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52609.94,
+        "expectedDamage": 52582.99,
         "castCount": 4
       },
       {
@@ -3454,11 +3454,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "a1a0fe209d5ee6a052604efd3d4e63c210466e7af475911d1bcbc3b4c1ced658"
+    "digest": "16dbd9833e9293831b0d8753042da501e0af95a2faf93d4d62c0dfed8972f2e1"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65429.21,
-    "totalDamage": 3925752.33,
+    "dps": 65428.75,
+    "totalDamage": 3925724.89,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3470,7 +3470,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53500.86,
+        "expectedDamage": 53473.42,
         "castCount": 4
       },
       {
@@ -3631,11 +3631,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "d32720c5fa0dd62ba4b8ac18b043f771d83125702fd029688812d7fc75950b8f"
+    "digest": "332dc4813d750a561fc94086511c94742c9d63f73697a60fce4eb7ff30e6cf41"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 65853.58,
-    "totalDamage": 3951214.84,
+    "dps": 65853.13,
+    "totalDamage": 3951188.08,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3647,7 +3647,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53786.75,
+        "expectedDamage": 53760,
         "castCount": 4
       },
       {
@@ -3808,7 +3808,7 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "e1048d35b7268258bb872b9547563e57d325abecb9fd99083c161938f77fbdc6"
+    "digest": "852e89e9e5a713ace331efc26d68d12a1fbbd150e2fa2849a89a11a43f9ed83b"
   },
   "defaults:umbra": {
     "dps": 12359.43,

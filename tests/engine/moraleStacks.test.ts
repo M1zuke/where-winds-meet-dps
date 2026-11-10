@@ -31,6 +31,32 @@ describe("Morale Chant stacks", () => {
   })
 })
 
+describe("the hit that adds a Morale Chant stack", () => {
+  it("counts a stack that creates the buff for penetration but not for damage", () => {
+    const stacks = new MoraleStacks()
+    stacks.gainFromDirectHit(0)
+    expect(stacks.stacksAt(0)).toBe(1)
+    expect(stacks.damageStacksAt(0)).toBe(0)
+    expect(stacks.damageStacksAt(0.5)).toBe(1)
+  })
+
+  it("counts the buff's first stack after a lapse as creating it again", () => {
+    const stacks = new MoraleStacks()
+    stacks.gainFromDirectHit(0)
+    stacks.gainFromDirectHit(30)
+    expect(stacks.stacksAt(30)).toBe(1)
+    expect(stacks.damageStacksAt(30)).toBe(0)
+  })
+
+  it("counts a later added stack for both while the buff is already up", () => {
+    const stacks = new MoraleStacks()
+    stacks.gainFromDirectHit(0)
+    stacks.gainFromDirectHit(2)
+    expect(stacks.stacksAt(2)).toBe(2)
+    expect(stacks.damageStacksAt(2)).toBe(2)
+  })
+})
+
 describe("Yi River", () => {
   const CLASS = "bellstrikeUmbra"
   const FPS = 60

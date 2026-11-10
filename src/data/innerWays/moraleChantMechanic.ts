@@ -31,9 +31,9 @@ interface State {
 // a training stake is never one.
 const CONTROLLED_TARGET = false
 
-function effectsFor(stacks: number, controlled: boolean) {
+function effectsFor(stacks: number, damageStacks: number, controlled: boolean) {
   return [
-    { statKey: "allDamageBoost" as const, amount: stacks * moraleDmgPerStack(controlled) },
+    { statKey: "allDamageBoost" as const, amount: damageStacks * moraleDmgPerStack(controlled) },
     { statKey: "phys.penetration" as const, amount: stacks * MORALE_PEN_PER_STACK },
   ]
 }
@@ -107,9 +107,11 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
     },
 
     contributeAt(state, frame, _skill, setup) {
-      const stacks = state.stacks.stacksAt(frame / setup.fps)
+      const timeSec = frame / setup.fps
+      const stacks = state.stacks.stacksAt(timeSec)
       if (stacks <= 0) return null
-      return { effects: effectsFor(stacks, CONTROLLED_TARGET) }
+      const damageStacks = state.stacks.damageStacksAt(timeSec)
+      return { effects: effectsFor(stacks, damageStacks, CONTROLLED_TARGET) }
     },
 
     display(state, timeSec) {
@@ -121,7 +123,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           name: "Morale Chant",
           stacks,
           maxStacks: MORALE_MAX_STACKS,
-          effects: effectsFor(stacks, CONTROLLED_TARGET),
+          effects: effectsFor(stacks, stacks, CONTROLLED_TARGET),
         },
       ]
     },

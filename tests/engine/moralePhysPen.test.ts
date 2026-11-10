@@ -22,9 +22,9 @@ const T_FIVE_STACKS = 8
 const T_QI_BREAK = 27
 const HIT_SECONDS = [T_ONE_STACK, 2, 4, 6, T_FIVE_STACKS, T_QI_BREAK]
 const SAMPLES = [
-  { tSec: T_ONE_STACK, stacks: 1 },
-  { tSec: T_FIVE_STACKS, stacks: 5 },
-  { tSec: T_QI_BREAK, stacks: 1 },
+  { tSec: T_ONE_STACK, stacks: 1, damageStacks: 0 },
+  { tSec: T_FIVE_STACKS, stacks: 5, damageStacks: 5 },
+  { tSec: T_QI_BREAK, stacks: 1, damageStacks: 0 },
 ]
 
 function baseInputs(classId: string, mindMethods: Inputs["mindMethods"]): Inputs {
@@ -80,7 +80,7 @@ describe("Morale Chant phys-penetration term", () => {
     expect(events).toHaveLength(HIT_SECONDS.length)
     const breaks = result.qiBreaks ?? []
 
-    for (const { tSec, stacks } of SAMPLES) {
+    for (const { tSec, stacks, damageStacks } of SAMPLES) {
       const event = events[HIT_SECONDS.indexOf(tSec)]!
       // The engine's own exhausted-phase independentDamageBoost is unrelated
       // to Morale Chant and fires regardless of it — read off the run's own
@@ -94,7 +94,7 @@ describe("Morale Chant phys-penetration term", () => {
             ...inputs.phys,
             penetration: inputs.phys.penetration + stacks * MORALE_PEN_PER_STACK,
           },
-          allDamageBoost: (inputs.allDamageBoost ?? 0) + stacks * moraleDmgPerStack(false),
+          allDamageBoost: (inputs.allDamageBoost ?? 0) + damageStacks * moraleDmgPerStack(false),
           independentDamageBoost: inQiBreak ? 0.1 : 0,
         }),
         1,
@@ -155,7 +155,7 @@ describe("Morale Chant phys-penetration term", () => {
         attributeAttack: "Bellstrike",
         specialTag: "sustain",
       } as never,
-      buildContext({ ...inputs, allDamageBoost: (inputs.allDamageBoost ?? 0) + 1 * 0.01 }),
+      buildContext({ ...inputs, allDamageBoost: inputs.allDamageBoost ?? 0 }),
       1,
     ).expectedDamage
     expect(row.expectedDamage).toBeCloseTo(withoutMoralePen, 6)

@@ -27,7 +27,10 @@ export function moraleDmgPerStack(controlled: boolean): number {
 interface StackStep {
   gainedAtSec: number
   stacks: number
+  createdBuff: boolean
 }
+
+const SAME_HIT_EPSILON_SEC = 1e-9
 
 export class MoraleStacks {
   private steps: StackStep[] = []
@@ -41,12 +44,24 @@ export class MoraleStacks {
     return 0
   }
 
+  // The hit that creates the buff is read before the buff's damage listener
+  // exists, so it carries the new stack's penetration but not its damage bonus.
+  damageStacksAt(timeSec: number): number {
+    const stacks = this.stacksAt(timeSec)
+    const creating = this.steps.some(
+      (step) => step.createdBuff && Math.abs(step.gainedAtSec - timeSec) < SAME_HIT_EPSILON_SEC,
+    )
+    return creating ? stacks - 1 : stacks
+  }
+
   gainFromDirectHit(timeSec: number): void {
     const last = this.steps[this.steps.length - 1]
     if (last && timeSec - last.gainedAtSec < MORALE_STACK_INTERVAL_SEC) return
+    const stacksBefore = this.stacksAt(timeSec)
     this.steps.push({
       gainedAtSec: timeSec,
-      stacks: Math.min(MORALE_MAX_STACKS, this.stacksAt(timeSec) + 1),
+      stacks: Math.min(MORALE_MAX_STACKS, stacksBefore + 1),
+      createdBuff: stacksBefore === 0,
     })
   }
 }
