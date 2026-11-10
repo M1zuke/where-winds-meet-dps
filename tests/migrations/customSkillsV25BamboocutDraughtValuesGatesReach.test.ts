@@ -11,6 +11,7 @@ import {
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healCalmwatersPerfectDodgeGain } from "../../src/migrations/customSkills/V42__calmwatersPerfectDodgeGain"
 import { healSkill as healEvasiveChargeDodgeRefund } from "../../src/migrations/customSkills/V43__evasiveChargeDodgeRefund"
+import { healSkill as healEvasiveChargeRefundFromRankOne } from "../../src/migrations/customSkills/V107__evasiveChargeRefundFromRankOne"
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healSkill as healWeaponDrawnGates } from "../../src/migrations/customSkills/V47__weaponDrawnGates"
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
@@ -96,7 +97,9 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withMistwillow = healDraughtMistwillowReach(withGrantTiming)
   const withCharges = healDraughtReveldriftChargesAndEmpoweredLightAttack(withMistwillow)
   const withCooldowns = healDraughtTipsylayAndExCooldowns(withCharges)
-  return healDraughtNightwickStanceAndVariedComboOverrides(withCooldowns) as Skill
+  return healEvasiveChargeRefundFromRankOne(
+    healDraughtNightwickStanceAndVariedComboOverrides(withCooldowns),
+  ) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
