@@ -35,6 +35,7 @@ export const throatPierced = defineBuff({
   },
   triggersFromGeneratedSkills: true,
   affectsAll: true,
+  reachesDotTicks: false,
   duration: (ctx) => (ctx.build.paramTier(PARAM.throatPierced) >= 1 ? 15 : 8),
   // In-game values as of 2026-09-26: 3 stacks below tier 4, 5 from tier 4 on.
   maxStacks: (params) => (paramTierOf(params, PARAM.throatPierced) >= 4 ? 5 : 3),

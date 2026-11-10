@@ -415,6 +415,18 @@ describe("direct-hit-only talents and Iron Guards' penetration skip damage-over-
     expect(statOf(guarded, tick(), 1, "stonesplit.penetration")).toBe(0)
   })
 
+  it("Throat-Pierced pays nothing on a tick", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    for (let hit = 0; hit < 5; hit++)
+      landDamageHit(
+        pierced,
+        hit * 0.1,
+        builtinSkillsForClass(CLASS).find((candidate) => candidate.id === SKILL.phalanxq)!,
+      )
+    expect(statOf(pierced, tick(), 1, "phys.penetration")).toBe(0)
+    expect(statOf(pierced, tick(), 1, "critDamageBoost")).toBe(0)
+  })
+
   it("the class critical damage talent does not reach a tick", () => {
     const talented = engine({ whiteCritRate: 0.6 })
     talented.attachStatuses({
