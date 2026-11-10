@@ -6,11 +6,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -23,9 +19,7 @@
           "stacks": 1
         }
       ],
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -54,90 +48,27 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            84,
-            0
-          ],
-          [
-            86,
-            0.029
-          ],
-          [
-            88,
-            0.073
-          ],
-          [
-            90,
-            0.132
-          ],
-          [
-            92,
-            0.213
-          ],
-          [
-            94,
-            0.311
-          ],
-          [
-            96,
-            0.406
-          ],
-          [
-            98,
-            0.493
-          ],
-          [
-            100,
-            0.591
-          ],
-          [
-            102,
-            0.68
-          ],
-          [
-            104,
-            0.785
-          ],
-          [
-            106,
-            0.843
-          ],
-          [
-            108,
-            0.881
-          ],
-          [
-            110,
-            0.912
-          ],
-          [
-            112,
-            0.944
-          ],
-          [
-            114,
-            0.982
-          ],
-          [
-            116,
-            1.038
-          ],
-          [
-            118,
-            1.12
-          ],
-          [
-            120,
-            1.211
-          ],
-          [
-            121.8,
-            1.274
-          ]
+          [0, 0],
+          [84, 0],
+          [86, 0.029],
+          [88, 0.073],
+          [90, 0.132],
+          [92, 0.213],
+          [94, 0.311],
+          [96, 0.406],
+          [98, 0.493],
+          [100, 0.591],
+          [102, 0.68],
+          [104, 0.785],
+          [106, 0.843],
+          [108, 0.881],
+          [110, 0.912],
+          [112, 0.944],
+          [114, 0.982],
+          [116, 1.038],
+          [118, 1.12],
+          [120, 1.211],
+          [121.8, 1.274]
         ]
       },
       "hits": [
@@ -220,118 +151,34 @@
               "displacement": {
                 "kind": "rootMotion",
                 "metersAtFrame": [
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    84,
-                    0
-                  ],
-                  [
-                    86,
-                    0.034
-                  ],
-                  [
-                    88,
-                    0.087
-                  ],
-                  [
-                    90,
-                    0.166
-                  ],
-                  [
-                    92,
-                    0.278
-                  ],
-                  [
-                    94,
-                    0.394
-                  ],
-                  [
-                    96,
-                    0.497
-                  ],
-                  [
-                    98,
-                    0.61
-                  ],
-                  [
-                    100,
-                    0.722
-                  ],
-                  [
-                    102,
-                    0.822
-                  ],
-                  [
-                    104,
-                    0.873
-                  ],
-                  [
-                    106,
-                    0.91
-                  ],
-                  [
-                    108,
-                    0.948
-                  ],
-                  [
-                    110,
-                    0.995
-                  ],
-                  [
-                    112,
-                    1.074
-                  ],
-                  [
-                    114,
-                    1.186
-                  ],
-                  [
-                    116,
-                    1.272
-                  ],
-                  [
-                    118,
-                    1.322
-                  ],
-                  [
-                    120,
-                    1.357
-                  ],
-                  [
-                    122,
-                    1.379
-                  ],
-                  [
-                    124,
-                    1.389
-                  ],
-                  [
-                    126,
-                    1.392
-                  ],
-                  [
-                    128,
-                    1.391
-                  ],
-                  [
-                    130,
-                    1.392
-                  ],
-                  [
-                    132,
-                    1.395
-                  ],
-                  [
-                    134,
-                    1.401
-                  ],
-                  [
-                    135.6,
-                    1.405
-                  ]
+                  [0, 0],
+                  [84, 0],
+                  [86, 0.034],
+                  [88, 0.087],
+                  [90, 0.166],
+                  [92, 0.278],
+                  [94, 0.394],
+                  [96, 0.497],
+                  [98, 0.61],
+                  [100, 0.722],
+                  [102, 0.822],
+                  [104, 0.873],
+                  [106, 0.91],
+                  [108, 0.948],
+                  [110, 0.995],
+                  [112, 1.074],
+                  [114, 1.186],
+                  [116, 1.272],
+                  [118, 1.322],
+                  [120, 1.357],
+                  [122, 1.379],
+                  [124, 1.389],
+                  [126, 1.392],
+                  [128, 1.391],
+                  [130, 1.392],
+                  [132, 1.395],
+                  [134, 1.401],
+                  [135.6, 1.405]
                 ]
               }
             }
@@ -518,11 +365,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged 2 Hit",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -540,9 +383,7 @@
           "stacks": 1
         }
       ],
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -574,50 +415,17 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            84,
-            0
-          ],
-          [
-            86,
-            0.034
-          ],
-          [
-            88,
-            0.087
-          ],
-          [
-            90,
-            0.166
-          ],
-          [
-            92,
-            0.278
-          ],
-          [
-            94,
-            0.394
-          ],
-          [
-            96,
-            0.497
-          ],
-          [
-            98,
-            0.61
-          ],
-          [
-            100,
-            0.722
-          ],
-          [
-            101.62,
-            0.81
-          ]
+          [0, 0],
+          [84, 0],
+          [86, 0.034],
+          [88, 0.087],
+          [90, 0.166],
+          [92, 0.278],
+          [94, 0.394],
+          [96, 0.497],
+          [98, 0.61],
+          [100, 0.722],
+          [101.62, 0.81]
         ]
       },
       "hits": [
@@ -750,11 +558,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged (Wushuang Stance)",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -767,9 +571,7 @@
         }
       ],
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -798,66 +600,21 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            60,
-            0
-          ],
-          [
-            62,
-            0.05
-          ],
-          [
-            64,
-            0.132
-          ],
-          [
-            66,
-            0.262
-          ],
-          [
-            68,
-            0.406
-          ],
-          [
-            70,
-            0.543
-          ],
-          [
-            72,
-            0.68
-          ],
-          [
-            74,
-            0.817
-          ],
-          [
-            76,
-            0.881
-          ],
-          [
-            78,
-            0.927
-          ],
-          [
-            80,
-            0.982
-          ],
-          [
-            82,
-            1.075
-          ],
-          [
-            84,
-            1.211
-          ],
-          [
-            85.2,
-            1.274
-          ]
+          [0, 0],
+          [60, 0],
+          [62, 0.05],
+          [64, 0.132],
+          [66, 0.262],
+          [68, 0.406],
+          [70, 0.543],
+          [72, 0.68],
+          [74, 0.817],
+          [76, 0.881],
+          [78, 0.927],
+          [80, 0.982],
+          [82, 1.075],
+          [84, 1.211],
+          [85.2, 1.274]
         ]
       },
       "hits": [
@@ -921,118 +678,34 @@
               "displacement": {
                 "kind": "rootMotion",
                 "metersAtFrame": [
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    60,
-                    0
-                  ],
-                  [
-                    62,
-                    0.039
-                  ],
-                  [
-                    64,
-                    0.092
-                  ],
-                  [
-                    66,
-                    0.176
-                  ],
-                  [
-                    68,
-                    0.29
-                  ],
-                  [
-                    70,
-                    0.404
-                  ],
-                  [
-                    72,
-                    0.509
-                  ],
-                  [
-                    74,
-                    0.621
-                  ],
-                  [
-                    76,
-                    0.734
-                  ],
-                  [
-                    78,
-                    0.828
-                  ],
-                  [
-                    80,
-                    0.877
-                  ],
-                  [
-                    82,
-                    0.914
-                  ],
-                  [
-                    84,
-                    0.952
-                  ],
-                  [
-                    86,
-                    1
-                  ],
-                  [
-                    88,
-                    1.083
-                  ],
-                  [
-                    90,
-                    1.197
-                  ],
-                  [
-                    92,
-                    1.277
-                  ],
-                  [
-                    94,
-                    1.326
-                  ],
-                  [
-                    96,
-                    1.36
-                  ],
-                  [
-                    98,
-                    1.38
-                  ],
-                  [
-                    100,
-                    1.39
-                  ],
-                  [
-                    102,
-                    1.392
-                  ],
-                  [
-                    104,
-                    1.391
-                  ],
-                  [
-                    106,
-                    1.392
-                  ],
-                  [
-                    108,
-                    1.396
-                  ],
-                  [
-                    110,
-                    1.401
-                  ],
-                  [
-                    111.4,
-                    1.405
-                  ]
+                  [0, 0],
+                  [60, 0],
+                  [62, 0.039],
+                  [64, 0.092],
+                  [66, 0.176],
+                  [68, 0.29],
+                  [70, 0.404],
+                  [72, 0.509],
+                  [74, 0.621],
+                  [76, 0.734],
+                  [78, 0.828],
+                  [80, 0.877],
+                  [82, 0.914],
+                  [84, 0.952],
+                  [86, 1],
+                  [88, 1.083],
+                  [90, 1.197],
+                  [92, 1.277],
+                  [94, 1.326],
+                  [96, 1.36],
+                  [98, 1.38],
+                  [100, 1.39],
+                  [102, 1.392],
+                  [104, 1.391],
+                  [106, 1.392],
+                  [108, 1.396],
+                  [110, 1.401],
+                  [111.4, 1.405]
                 ]
               }
             }
@@ -1157,11 +830,7 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged 2 Hit (Wushuang Stance)",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
@@ -1177,9 +846,7 @@
         }
       ],
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1208,50 +875,17 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            60,
-            0
-          ],
-          [
-            62,
-            0.039
-          ],
-          [
-            64,
-            0.092
-          ],
-          [
-            66,
-            0.176
-          ],
-          [
-            68,
-            0.29
-          ],
-          [
-            70,
-            0.404
-          ],
-          [
-            72,
-            0.509
-          ],
-          [
-            74,
-            0.621
-          ],
-          [
-            76,
-            0.734
-          ],
-          [
-            77.42,
-            0.81
-          ]
+          [0, 0],
+          [60, 0],
+          [62, 0.039],
+          [64, 0.092],
+          [66, 0.176],
+          [68, 0.29],
+          [70, 0.404],
+          [72, 0.509],
+          [74, 0.621],
+          [76, 0.734],
+          [77.42, 0.81]
         ]
       },
       "hits": [
@@ -1390,19 +1024,13 @@
       "classId": "bellstrikeSplendor",
       "name": "SwordHeavyCharged[Prepull]",
       "breakdownName": "Vagrant Sword",
-      "tags": [
-        "prop:isCharged",
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["prop:isCharged", "weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordHeavyChargedPrepull",
       "serverWaitsInCast": 1,
-      "triggersBuffs": [
-        "swordSlashDamageBoost"
-      ],
+      "triggersBuffs": ["swordSlashDamageBoost"],
       "receives": [
         "swordSlashDamageBoost",
         "swordEnergyEnhancement",
@@ -1431,86 +1059,26 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            2,
-            0.042
-          ],
-          [
-            4,
-            0.087
-          ],
-          [
-            6,
-            0.153
-          ],
-          [
-            8,
-            0.242
-          ],
-          [
-            10,
-            0.34
-          ],
-          [
-            12,
-            0.432
-          ],
-          [
-            14,
-            0.523
-          ],
-          [
-            16,
-            0.618
-          ],
-          [
-            18,
-            0.711
-          ],
-          [
-            20,
-            0.807
-          ],
-          [
-            22,
-            0.857
-          ],
-          [
-            24,
-            0.891
-          ],
-          [
-            26,
-            0.921
-          ],
-          [
-            28,
-            0.954
-          ],
-          [
-            30,
-            0.994
-          ],
-          [
-            32,
-            1.06
-          ],
-          [
-            34,
-            1.15
-          ],
-          [
-            36,
-            1.233
-          ],
-          [
-            37.2,
-            1.274
-          ]
+          [0, 0],
+          [2, 0.042],
+          [4, 0.087],
+          [6, 0.153],
+          [8, 0.242],
+          [10, 0.34],
+          [12, 0.432],
+          [14, 0.523],
+          [16, 0.618],
+          [18, 0.711],
+          [20, 0.807],
+          [22, 0.857],
+          [24, 0.891],
+          [26, 0.921],
+          [28, 0.954],
+          [30, 0.994],
+          [32, 1.06],
+          [34, 1.15],
+          [36, 1.233],
+          [37.2, 1.274]
         ]
       },
       "hits": [
@@ -1574,114 +1142,33 @@
               "displacement": {
                 "kind": "rootMotion",
                 "metersAtFrame": [
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    2,
-                    0.05
-                  ],
-                  [
-                    4,
-                    0.108
-                  ],
-                  [
-                    6,
-                    0.198
-                  ],
-                  [
-                    8,
-                    0.313
-                  ],
-                  [
-                    10,
-                    0.424
-                  ],
-                  [
-                    12,
-                    0.532
-                  ],
-                  [
-                    14,
-                    0.642
-                  ],
-                  [
-                    16,
-                    0.759
-                  ],
-                  [
-                    18,
-                    0.84
-                  ],
-                  [
-                    20,
-                    0.885
-                  ],
-                  [
-                    22,
-                    0.921
-                  ],
-                  [
-                    24,
-                    0.96
-                  ],
-                  [
-                    26,
-                    1.013
-                  ],
-                  [
-                    28,
-                    1.105
-                  ],
-                  [
-                    30,
-                    1.213
-                  ],
-                  [
-                    32,
-                    1.287
-                  ],
-                  [
-                    34,
-                    1.333
-                  ],
-                  [
-                    36,
-                    1.365
-                  ],
-                  [
-                    38,
-                    1.383
-                  ],
-                  [
-                    40,
-                    1.391
-                  ],
-                  [
-                    42,
-                    1.392
-                  ],
-                  [
-                    44,
-                    1.391
-                  ],
-                  [
-                    46,
-                    1.392
-                  ],
-                  [
-                    48,
-                    1.397
-                  ],
-                  [
-                    50,
-                    1.403
-                  ],
-                  [
-                    51,
-                    1.405
-                  ]
+                  [0, 0],
+                  [2, 0.05],
+                  [4, 0.108],
+                  [6, 0.198],
+                  [8, 0.313],
+                  [10, 0.424],
+                  [12, 0.532],
+                  [14, 0.642],
+                  [16, 0.759],
+                  [18, 0.84],
+                  [20, 0.885],
+                  [22, 0.921],
+                  [24, 0.96],
+                  [26, 1.013],
+                  [28, 1.105],
+                  [30, 1.213],
+                  [32, 1.287],
+                  [34, 1.333],
+                  [36, 1.365],
+                  [38, 1.383],
+                  [40, 1.391],
+                  [42, 1.392],
+                  [44, 1.391],
+                  [46, 1.392],
+                  [48, 1.397],
+                  [50, 1.403],
+                  [51, 1.405]
                 ]
               }
             }
@@ -1811,17 +1298,12 @@
       "classId": "bellstrikeUmbra",
       "name": "SwordSpecial 1-Hit",
       "breakdownName": "Inner Balance Strike III",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordSpecial"
-      ],
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordSpecial1Hit",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -1887,70 +1369,22 @@
       "displacement": {
         "kind": "rootMotion",
         "metersAtFrame": [
-          [
-            0,
-            0
-          ],
-          [
-            2,
-            0.019
-          ],
-          [
-            4,
-            0.037
-          ],
-          [
-            6,
-            0.06
-          ],
-          [
-            8,
-            0.098
-          ],
-          [
-            10,
-            0.151
-          ],
-          [
-            12,
-            0.205
-          ],
-          [
-            14,
-            0.259
-          ],
-          [
-            16,
-            0.257
-          ],
-          [
-            18,
-            0.226
-          ],
-          [
-            20,
-            0.168
-          ],
-          [
-            22,
-            0.05
-          ],
-          [
-            24,
-            -0.199
-          ],
-          [
-            26,
-            -0.447
-          ],
-          [
-            28,
-            -0.7
-          ],
-          [
-            29.8,
-            -0.902
-          ]
+          [0, 0],
+          [2, 0.019],
+          [4, 0.037],
+          [6, 0.06],
+          [8, 0.098],
+          [10, 0.151],
+          [12, 0.205],
+          [14, 0.259],
+          [16, 0.257],
+          [18, 0.226],
+          [20, 0.168],
+          [22, 0.05],
+          [24, -0.199],
+          [26, -0.447],
+          [28, -0.7],
+          [29.8, -0.902]
         ]
       }
     },
@@ -1959,17 +1393,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword Charge Stage 1, 2-Hit",
       "breakdownName": "Second Track Slash",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordChargeStage12Hit",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -2011,82 +1440,25 @@
         "otherwise": {
           "kind": "rootMotion",
           "metersAtFrame": [
-            [
-              0,
-              0
-            ],
-            [
-              30,
-              0
-            ],
-            [
-              32,
-              0.194
-            ],
-            [
-              34,
-              0.577
-            ],
-            [
-              36,
-              0.952
-            ],
-            [
-              38,
-              1.318
-            ],
-            [
-              40,
-              1.964
-            ],
-            [
-              42,
-              2.759
-            ],
-            [
-              44,
-              3.882
-            ],
-            [
-              46,
-              5.184
-            ],
-            [
-              48,
-              6.208
-            ],
-            [
-              50,
-              6.813
-            ],
-            [
-              52,
-              6.998
-            ],
-            [
-              54,
-              7.093
-            ],
-            [
-              56,
-              7.153
-            ],
-            [
-              58,
-              7.191
-            ],
-            [
-              60,
-              7.22
-            ],
-            [
-              62,
-              7.251
-            ],
-            [
-              62.46,
-              7.257
-            ]
+            [0, 0],
+            [30, 0],
+            [32, 0.194],
+            [34, 0.577],
+            [36, 0.952],
+            [38, 1.318],
+            [40, 1.964],
+            [42, 2.759],
+            [44, 3.882],
+            [46, 5.184],
+            [48, 6.208],
+            [50, 6.813],
+            [52, 6.998],
+            [54, 7.093],
+            [56, 7.153],
+            [58, 7.191],
+            [60, 7.22],
+            [62, 7.251],
+            [62.46, 7.257]
           ],
           "throughTarget": true
         }
@@ -2178,17 +1550,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Sword Charge Stage 1, 5-Hit",
       "breakdownName": "Second Track Slash",
-      "tags": [
-        "weapon:Sword",
-        "attune:swordCharged"
-      ],
+      "tags": ["weapon:Sword", "attune:swordCharged"],
       "skillType": "weapon",
       "weaponOrAttribute": "Sword",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:swordChargeStage15Hit",
-      "receives": [
-        "strategicSwordAdditionalAttack"
-      ],
+      "receives": ["strategicSwordAdditionalAttack"],
       "meterCosts": [
         {
           "meterId": "endurance",
@@ -2230,254 +1597,68 @@
         "otherwise": {
           "kind": "rootMotion",
           "metersAtFrame": [
-            [
-              0,
-              0
-            ],
-            [
-              30,
-              0
-            ],
-            [
-              32,
-              0.194
-            ],
-            [
-              34,
-              0.577
-            ],
-            [
-              36,
-              0.952
-            ],
-            [
-              38,
-              1.318
-            ],
-            [
-              40,
-              1.964
-            ],
-            [
-              42,
-              2.759
-            ],
-            [
-              44,
-              3.882
-            ],
-            [
-              46,
-              5.184
-            ],
-            [
-              48,
-              6.208
-            ],
-            [
-              50,
-              6.813
-            ],
-            [
-              52,
-              6.998
-            ],
-            [
-              54,
-              7.093
-            ],
-            [
-              56,
-              7.153
-            ],
-            [
-              58,
-              7.191
-            ],
-            [
-              60,
-              7.22
-            ],
-            [
-              62,
-              7.251
-            ],
-            [
-              64,
-              7.279
-            ],
-            [
-              66,
-              7.304
-            ],
-            [
-              68,
-              7.328
-            ],
-            [
-              70,
-              7.352
-            ],
-            [
-              72,
-              7.376
-            ],
-            [
-              74,
-              7.401
-            ],
-            [
-              76,
-              7.427
-            ],
-            [
-              78,
-              7.447
-            ],
-            [
-              80,
-              7.466
-            ],
-            [
-              82,
-              7.497
-            ],
-            [
-              84,
-              7.558
-            ],
-            [
-              86,
-              7.66
-            ],
-            [
-              88,
-              7.775
-            ],
-            [
-              90,
-              7.897
-            ],
-            [
-              92,
-              8.023
-            ],
-            [
-              94,
-              8.14
-            ],
-            [
-              96,
-              8.229
-            ],
-            [
-              98,
-              8.279
-            ],
-            [
-              100,
-              8.312
-            ],
-            [
-              102,
-              8.34
-            ],
-            [
-              104,
-              8.363
-            ],
-            [
-              106,
-              8.381
-            ],
-            [
-              108,
-              8.396
-            ],
-            [
-              110,
-              8.41
-            ],
-            [
-              112,
-              8.423
-            ],
-            [
-              114,
-              8.433
-            ],
-            [
-              116,
-              8.442
-            ],
-            [
-              118,
-              8.45
-            ],
-            [
-              120,
-              8.455
-            ],
-            [
-              122,
-              8.458
-            ],
-            [
-              124,
-              8.461
-            ],
-            [
-              126,
-              8.463
-            ],
-            [
-              128,
-              8.465
-            ],
-            [
-              130,
-              8.466
-            ],
-            [
-              134,
-              8.466
-            ],
-            [
-              136,
-              8.465
-            ],
-            [
-              138,
-              8.462
-            ],
-            [
-              140,
-              8.458
-            ],
-            [
-              142,
-              8.454
-            ],
-            [
-              144,
-              8.449
-            ],
-            [
-              146,
-              8.445
-            ],
-            [
-              148,
-              8.441
-            ],
-            [
-              150,
-              8.438
-            ],
-            [
-              152,
-              8.436
-            ]
+            [0, 0],
+            [30, 0],
+            [32, 0.194],
+            [34, 0.577],
+            [36, 0.952],
+            [38, 1.318],
+            [40, 1.964],
+            [42, 2.759],
+            [44, 3.882],
+            [46, 5.184],
+            [48, 6.208],
+            [50, 6.813],
+            [52, 6.998],
+            [54, 7.093],
+            [56, 7.153],
+            [58, 7.191],
+            [60, 7.22],
+            [62, 7.251],
+            [64, 7.279],
+            [66, 7.304],
+            [68, 7.328],
+            [70, 7.352],
+            [72, 7.376],
+            [74, 7.401],
+            [76, 7.427],
+            [78, 7.447],
+            [80, 7.466],
+            [82, 7.497],
+            [84, 7.558],
+            [86, 7.66],
+            [88, 7.775],
+            [90, 7.897],
+            [92, 8.023],
+            [94, 8.14],
+            [96, 8.229],
+            [98, 8.279],
+            [100, 8.312],
+            [102, 8.34],
+            [104, 8.363],
+            [106, 8.381],
+            [108, 8.396],
+            [110, 8.41],
+            [112, 8.423],
+            [114, 8.433],
+            [116, 8.442],
+            [118, 8.45],
+            [120, 8.455],
+            [122, 8.458],
+            [124, 8.461],
+            [126, 8.463],
+            [128, 8.465],
+            [130, 8.466],
+            [134, 8.466],
+            [136, 8.465],
+            [138, 8.462],
+            [140, 8.458],
+            [142, 8.454],
+            [144, 8.449],
+            [146, 8.445],
+            [148, 8.441],
+            [150, 8.438],
+            [152, 8.436]
           ],
           "throughTarget": true
         }
@@ -2576,17 +1757,12 @@
       "id": "bellstrikeSplendor-legioncrusher",
       "classId": "bellstrikeSplendor",
       "name": "Legion Crusher",
-      "tags": [
-        "weapon:Spear",
-        "attune:spearSpecial"
-      ],
+      "tags": ["weapon:Spear", "attune:spearSpecial"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:legionCrusher",
-      "receives": [
-        "namelessSpearAdditionalAttack"
-      ],
+      "receives": ["namelessSpearAdditionalAttack"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -2687,17 +1863,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear - Heavy Attack (Stage 1)",
       "breakdownName": "Spear - Heavy Attack",
-      "tags": [
-        "weapon:Spear",
-        "attack:heavy"
-      ],
+      "tags": ["weapon:Spear", "attack:heavy"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSpearHeavy1",
-      "receives": [
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
       "castFrames": 52.2,
       "triggerable": true,
       "reachMeters": 5,
@@ -2721,17 +1892,12 @@
       "classId": "bellstrikeUmbra",
       "name": "Spear - Heavy Attack (Stage 2)",
       "breakdownName": "Spear - Heavy Attack",
-      "tags": [
-        "weapon:Spear",
-        "attack:heavy"
-      ],
+      "tags": ["weapon:Spear", "attack:heavy"],
       "skillType": "weapon",
       "weaponOrAttribute": "Spear",
       "attributeAttack": "Bellstrike",
       "castTag": "cast:umbraSpearHeavy2",
-      "receives": [
-        "heavenquakerSpearAdditionalAttack"
-      ],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
       "castFrames": 43,
       "triggerable": true,
       "reachMeters": 5,
@@ -2757,9 +1923,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "weapon:none"
-      ],
+      "tags": ["weapon:none"],
       "hits": [
         {
           "id": "hit-mwawo0tg-dqbcoa-1",
@@ -2807,10 +1971,7 @@
       "updatedAt": "2026-11-10T16:29:35.140Z",
       "startLatency": "serverRoundTrip",
       "castTag": "cast:perfectDodge",
-      "triggersBuffs": [
-        "mirageBonus",
-        "disintegration"
-      ],
+      "triggersBuffs": ["mirageBonus", "disintegration"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -2834,9 +1995,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "",
       "attributeAttack": "Bellstrike",
-      "tags": [
-        "weapon:none"
-      ],
+      "tags": ["weapon:none"],
       "hits": [
         {
           "id": "hit-mwawo0tg-srx4q0-4",
@@ -2884,10 +2043,7 @@
       "updatedAt": "2026-11-10T16:29:35.140Z",
       "startLatency": "serverRoundTrip",
       "castTag": "cast:perfectDodgeFull",
-      "triggersBuffs": [
-        "mirageBonus",
-        "disintegration"
-      ],
+      "triggersBuffs": ["mirageBonus", "disintegration"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -2911,9 +2067,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:none"
-      ],
+      "tags": ["weapon:none"],
       "hits": [
         {
           "id": "hit-mwawo0tg-pbtela-7",
@@ -2991,10 +2145,7 @@
       "updatedAt": "2026-11-10T16:29:35.140Z",
       "startLatency": "serverRoundTrip",
       "castTag": "cast:perfectDodge",
-      "triggersBuffs": [
-        "mirageBonus",
-        "disintegration"
-      ],
+      "triggersBuffs": ["mirageBonus", "disintegration"],
       "castConditions": [
         {
           "buffId": "meter:endurance",
@@ -3018,9 +2169,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwax24u8-nob27o-1",
@@ -3073,10 +2222,7 @@
               "stacks": 1
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 136.8,
           "triggers": [
             {
@@ -3103,10 +2249,7 @@
               "stacks": 1
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 136.8,
           "triggers": [
             {
@@ -3141,10 +2284,7 @@
               "condition": null
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 150
         },
         {
@@ -3170,10 +2310,7 @@
               "condition": null
             }
           ],
-          "requiresNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "requiresNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 77.38
         }
       ],
@@ -3186,9 +2323,7 @@
       "breakdownName": "Dragon's Breath",
       "reachMeters": 8,
       "approach": "stationary",
-      "receives": [
-        "volutefitWineboundDamage"
-      ]
+      "receives": ["volutefitWineboundDamage"]
     },
     {
       "id": "mystic-dragon-fire-smolder-2-hits",
@@ -3197,9 +2332,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwax24u9-zh8q2h-4",
@@ -3344,9 +2477,7 @@
       "breakdownName": "Dragon's Breath",
       "reachMeters": 8,
       "approach": "stationary",
-      "receives": [
-        "volutefitWineboundDamage"
-      ]
+      "receives": ["volutefitWineboundDamage"]
     },
     {
       "id": "mystic-fire-breath-1-hit",
@@ -3355,9 +2486,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwax24u9-dewor9-9",
@@ -3410,10 +2539,7 @@
               "stacks": 1
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 136.8,
           "triggers": [
             {
@@ -3441,10 +2567,7 @@
               "stacks": 1
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 136.8,
           "triggers": [
             {
@@ -3480,10 +2603,7 @@
               "condition": null
             }
           ],
-          "unlessNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 150
         },
         {
@@ -3509,10 +2629,7 @@
               "condition": null
             }
           ],
-          "requiresNextStepSkillIds": [
-            "universal-deflect-cancel",
-            "bellstrikeSplendor-energysurge"
-          ],
+          "requiresNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
           "castFramesWhenGated": 77.38
         }
       ],
@@ -3524,9 +2641,7 @@
       "castTag": "cast:dragonSBreath1Hit",
       "reachMeters": 8,
       "approach": "stationary",
-      "receives": [
-        "volutefitWineboundDamage"
-      ]
+      "receives": ["volutefitWineboundDamage"]
     },
     {
       "id": "mystic-fire-breath-2-hit",
@@ -3535,9 +2650,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwax24u9-pktcql-c",
@@ -3683,9 +2796,7 @@
       "castTag": "cast:dragonSBreath2Hits",
       "reachMeters": 8,
       "approach": "stationary",
-      "receives": [
-        "volutefitWineboundDamage"
-      ]
+      "receives": ["volutefitWineboundDamage"]
     },
     {
       "id": "mystic-drunkenpoet-prepull",
@@ -3694,9 +2805,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwax24u9-j1lkj9-h",
@@ -3731,9 +2840,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwaz778i-rzjr4p-1",
@@ -3771,13 +2878,9 @@
       "updatedAt": "2026-11-10T17:40:29.154Z",
       "vitalityCost": 6,
       "castTag": "cast:poet1",
-      "triggersBuffs": [
-        "poetFinalStrikeStack"
-      ],
+      "triggersBuffs": ["poetFinalStrikeStack"],
       "approach": "stationary",
-      "receives": [
-        "volutefitWineboundDamage"
-      ]
+      "receives": ["volutefitWineboundDamage"]
     },
     {
       "id": "mystic-poet-final-hit-cancel",
@@ -3786,9 +2889,7 @@
       "skillType": "mystic",
       "weaponOrAttribute": "",
       "attributeAttack": "",
-      "tags": [
-        "mystic:burst"
-      ],
+      "tags": ["mystic:burst"],
       "hits": [
         {
           "id": "hit-mwaz778i-901s09-5",
@@ -3823,10 +2924,7 @@
       "cancelledBy": "deflectCancel",
       "vitalityCost": 6,
       "castTag": "cast:poetFinalHitCancel",
-      "receives": [
-        "poetFinalStrikeStack",
-        "volutefitWineboundDamage"
-      ],
+      "receives": ["poetFinalStrikeStack", "volutefitWineboundDamage"],
       "approach": "stationary"
     },
     {
@@ -3836,10 +2934,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Twin Blades",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Twin Blades",
-        "attack:heavy"
-      ],
+      "tags": ["weapon:Twin Blades", "attack:heavy"],
       "hits": [
         {
           "id": "hit-mwazf785-bh2o9o-1",
@@ -4006,11 +3101,7 @@
       "skillType": "weapon",
       "weaponOrAttribute": "Twin Blades",
       "attributeAttack": "Bamboocut",
-      "tags": [
-        "weapon:Twin Blades",
-        "role:inebriateEnhanced",
-        "attack:heavy"
-      ],
+      "tags": ["weapon:Twin Blades", "role:inebriateEnhanced", "attack:heavy"],
       "hits": [
         {
           "id": "hit-mwazf786-k4sxx4-d",
