@@ -397,3 +397,40 @@ describe("what lays the two gate buffs", () => {
     expect(fearful.stacks).toBe(1)
   })
 })
+
+describe("direct-hit-only talents and Iron Guards' penetration skip damage-over-time ticks", () => {
+  const tick = () =>
+    makeSkill(CLASS, {
+      name: "Bitter Season tick",
+      castTag: CAST.phalanxSpecial,
+      attributeAttack: "Stonesplit",
+      isDotTick: true,
+    })
+
+  it("Iron Guards keeps its 8% on a tick but pays no penetration", () => {
+    const guarded = engine({ maxPhysAttack: 750 })
+    guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
+    expect(statOf(guarded, tick(), 1, "allDamageBoost")).toBeCloseTo(0.08, 9)
+    expect(statOf(guarded, tick(), 1, "phys.penetration")).toBe(0)
+    expect(statOf(guarded, tick(), 1, "stonesplit.penetration")).toBe(0)
+  })
+
+  it("the class critical damage talent does not reach a tick", () => {
+    const talented = engine({ whiteCritRate: 0.6 })
+    talented.attachStatuses({
+      view: {
+        activeIdsAt: () => [],
+        isActiveAt: () => true,
+        stacksAt: () => 25,
+        conditionStacksAt: () => 25,
+        remainingFramesAt: () => undefined,
+        framesSinceLastEnd: () => undefined,
+        framesSinceStacksBelowThreshold: () => undefined,
+        frameStacksLastReachedThreshold: () => undefined,
+        windowsOf: () => [],
+      },
+      fps: 60,
+    })
+    expect(share(talented, tick(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
+  })
+})
