@@ -1,4 +1,5 @@
 import type { Skill } from "../../engine/skill"
+import { BUFF } from "../skills/buffs/ids"
 import type {
   MechanicEvent,
   MechanicHost,
@@ -16,6 +17,7 @@ interface EnchantDotSpec {
   qiFlat?: number
 }
 
+const DOT_RECEIVES: string[] = [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken]
 const TICK_INTERVAL_SEC = 1
 const FIRST_TICK_LEAD_SEC = 0.5
 
@@ -50,7 +52,12 @@ const COMBUSTION_DURATION_SEC = 5
 const EXPLOSION_LOCKOUT_SEC = 10
 const EXPLOSION_DELAY_FRAMES = 3
 
-function buffDrivenSkill(classId: string, id: string, name: string): Skill {
+function buffDrivenSkill(
+  classId: string,
+  id: string,
+  name: string,
+  receives: string[] = [],
+): Skill {
   return {
     id,
     classId,
@@ -59,6 +66,7 @@ function buffDrivenSkill(classId: string, id: string, name: string): Skill {
     skillType: "mindMethod",
     weaponOrAttribute: "",
     attributeAttack: "",
+    receives,
     hits: [],
     castFrames: 0,
     triggerable: false,
@@ -89,7 +97,7 @@ class EnchantDotChain {
     private readonly spec: EnchantDotSpec,
     setup: MechanicSetup,
   ) {
-    this.skill = buffDrivenSkill(setup.classId, spec.skillId, spec.name)
+    this.skill = buffDrivenSkill(setup.classId, spec.skillId, spec.name, DOT_RECEIVES)
   }
 
   owns(event: MechanicEvent): boolean {
