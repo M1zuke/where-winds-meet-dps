@@ -1,6 +1,7 @@
 import { BREAKTHROUGH_TIER_DEFS } from "../../data/baseStats"
 import type { BreakthroughAttribute, BreakthroughTier } from "./breakthroughTierDef"
 import type { GearLevel } from "../../engine/types"
+import type { LevelRows } from "../../engine/skill"
 
 export type {
   BreakthroughAttribute,
@@ -49,6 +50,32 @@ export function gearLevelForBreakthrough(breakthrough: number): GearLevel {
   const atOrBelow = BREAKTHROUGH_TIERS.filter((tier) => tier.breakthrough <= breakthrough)
   const tier = atOrBelow.length > 0 ? atOrBelow[atOrBelow.length - 1]! : BREAKTHROUGH_TIERS[0]!
   return tier.gearLevel
+}
+
+export interface LevelSelection {
+  artLevel: number
+  mysticTier: number
+}
+
+export function levelSelectionFor(breakthrough: number): LevelSelection {
+  const atOrBelow = BREAKTHROUGH_TIERS.filter((tier) => tier.breakthrough <= breakthrough)
+  const tier = atOrBelow.length > 0 ? atOrBelow[atOrBelow.length - 1]! : BREAKTHROUGH_TIERS[0]!
+  return { artLevel: tier.artLevel, mysticTier: tier.mysticTier }
+}
+
+function levelKeyOf(levelRows: LevelRows, selection: LevelSelection): string {
+  return String(levelRows.scale === "artLevel" ? selection.artLevel : selection.mysticTier)
+}
+
+export function levelRowsCover(levelRows: LevelRows, selection: LevelSelection): boolean {
+  return levelKeyOf(levelRows, selection) in levelRows.rows
+}
+
+export function lowestBreakthroughCovering(levelRows: LevelRows): number | null {
+  const covering = BREAKTHROUGH_TIERS.find((tier) =>
+    levelRowsCover(levelRows, { artLevel: tier.artLevel, mysticTier: tier.mysticTier }),
+  )
+  return covering ? covering.breakthrough : null
 }
 
 export function gearLevelsUpTo(breakthrough: number): GearLevel[] {

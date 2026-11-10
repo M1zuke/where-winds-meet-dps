@@ -10,7 +10,11 @@ import { registerBuiltinBuffs, builtinBuffsForClass } from "../../src/engine/bui
 import { registerDisplayGate, displayGateFor } from "../../src/engine/buffs/displayGates"
 import { prepareMechanics, registerMechanic } from "../../src/engine/mechanics"
 import type { MechanicSetup, TimelineMechanic } from "../../src/engine/mechanics/types"
-import { makeSkill } from "../../src/engine/skill"
+import { makeHit, makeSkill } from "../../src/engine/skill"
+import { artLevelRows } from "../../src/definitions/skills/levelRowsDef"
+import { levelScaled } from "../../src/definitions/skills/skillDef"
+import { skillAtLevel } from "../../src/engine/levelRows"
+import { levelSelectionFor } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
@@ -86,6 +90,19 @@ describe("a class can be wired from outside the engine", () => {
     const skill = makeSkill(PROBE_CLASS, { id: PROBE_SKILL, name: "Probe" })
     expect(buildBehaviors(buildFor(PROBE_CLASS))(skill)).not.toBe(DEFAULT_BEHAVIOR)
     expect(buildBehaviors(buildFor("bellstrikeUmbra"))(skill)).toBe(DEFAULT_BEHAVIOR)
+  })
+
+  it("carries level-scaled rows that the engine resolves without naming the class", () => {
+    const rows = artLevelRows({
+      90: { physMultiplier: 1, attributeMultiplier: 1.5, physFixed: 10, attributeFixed: 5 },
+      100: { physMultiplier: 2, attributeMultiplier: 3, physFixed: 20, attributeFixed: 10 },
+    })
+    const skill = makeSkill(PROBE_CLASS, {
+      id: PROBE_SKILL,
+      hits: [makeHit({ ...levelScaled(rows) })],
+    })
+    expect(skillAtLevel(skill, levelSelectionFor(13)).hits[0].physFixed).toBe(10)
+    expect(skillAtLevel(skill, levelSelectionFor(16)).hits[0].physFixed).toBe(20)
   })
 
   it("registers a Skill Editor display gate", () => {

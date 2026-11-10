@@ -11,6 +11,7 @@ import {
   type SkillHit,
   type HitTrigger,
   type HitVariant,
+  type LevelRows,
   type TriggerKind,
 } from "../../../../engine/skill"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
@@ -22,6 +23,8 @@ import {
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
+import { frozenAtLevel, rowAtLevel } from "../../../../engine/levelRows"
+import { levelSelectionFor } from "../../../../definitions/baseStats/breakthroughs"
 import { inDisplayUnits } from "../../../../definitions/resources/meterDef"
 import {
   appliesForSkill,
@@ -426,24 +429,16 @@ export function SkillsTab({
       return { ...prev, hits }
     })
   }
-  function patchHitVariant(hitIdx: number, variantId: string, patch: Partial<HitVariant>) {
+  const levelSelection = levelSelectionFor(inputs.breakthrough)
+
+  function patchHitField(idx: number, field: HitNumericField, value: number) {
     setDraft((prev) => {
       if (!prev) return prev
-      const hits = prev.hits.map((hit, idx) =>
-        idx === hitIdx
-          ? {
-              ...hit,
-              variants: (hit.variants ?? []).map((variant) =>
-                variant.id === variantId ? { ...variant, ...patch } : variant,
-              ),
-            }
-          : hit,
+      const hits = prev.hits.map((hit, hitIdx) =>
+        hitIdx === idx ? { ...frozenAtLevel(hit, levelSelection), [field]: value } : hit,
       )
       return { ...prev, hits }
     })
-  }
-  function patchHitField(idx: number, field: HitNumericField, value: number) {
-    patchHit(idx, { [field]: value } as Partial<SkillHit>)
   }
   function patchVariantField(
     idx: number,
@@ -451,7 +446,22 @@ export function SkillsTab({
     field: HitNumericField,
     value: number,
   ) {
-    patchHitVariant(idx, variantId, { [field]: value } as Partial<HitVariant>)
+    setDraft((prev) => {
+      if (!prev) return prev
+      const hits = prev.hits.map((hit, hitIdx) =>
+        hitIdx === idx
+          ? {
+              ...hit,
+              variants: (hit.variants ?? []).map((variant) =>
+                variant.id === variantId
+                  ? { ...frozenAtLevel(variant, levelSelection), [field]: value }
+                  : variant,
+              ),
+            }
+          : hit,
+      )
+      return { ...prev, hits }
+    })
   }
   function addHit() {
     setDraft((prev) => {
@@ -566,7 +576,8 @@ export function SkillsTab({
     let critMin = 0
     let critMax = 0
     let affinity = 0
-    for (const hit of draft.hits) {
+    for (const draftHit of draft.hits) {
+      const hit = rowAtLevel(draftHit, levelSelectionFor(inputs.breakthrough))
       const computed = computeSkillPreview(name, engineInputs, {
         ...basePatch,
         physMultiplier: hit.physMultiplier,
@@ -593,7 +604,7 @@ export function SkillsTab({
       return { ...summed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
     if (draft.neverAbrades) return { ...summed, abrasion: 0 }
     return summed
-  }, [draft, engineInputs])
+  }, [draft, engineInputs, inputs.breakthrough])
 
   const opts = (values: string[], keyOf?: (value: string) => string): ComboboxOption[] =>
     values.map((value) => ({
@@ -862,6 +873,19 @@ export function SkillsTab({
     return Array.from(texts)
   }
 
+  function renderLevelBadge(row: { levelRows?: LevelRows }) {
+    if (!row.levelRows) return null
+    const label =
+      row.levelRows.scale === "artLevel"
+        ? `${t("skills.levelScaled.artLevel")} ${levelSelection.artLevel}`
+        : `${t("skills.levelScaled.mysticTier")} ${levelSelection.mysticTier}`
+    return (
+      <span className={styles.levelBadge} title={t("skills.levelScaled.tooltip")}>
+        {label}
+      </span>
+    )
+  }
+
   function renderHitFieldCell(
     row: HitRowData,
     idx: number,
@@ -869,18 +893,19 @@ export function SkillsTab({
     isPercent: boolean,
   ) {
     const InputComponent = isPercent ? PercentInput : NumInput
+    const resolvedHit = rowAtLevel(row.hit, levelSelection)
     if (isNormalTab) {
       return (
         <InputComponent
           className={styles.cellInput}
-          value={row.hit[field]}
+          value={resolvedHit[field]}
           onChange={(value) => patchHitField(idx, field, value)}
         />
       )
     }
     if (row.variant) {
-      const variant = row.variant
-      const changed = variant[field] !== row.hit[field]
+      const variant = rowAtLevel(row.variant, levelSelection)
+      const changed = variant[field] !== resolvedHit[field]
       return (
         <InputComponent
           className={styles.cellInput + (changed ? ` ${styles.changedValue}` : "")}
@@ -889,7 +914,7 @@ export function SkillsTab({
         />
       )
     }
-    const value = row.hit[field]
+    const value = resolvedHit[field]
     const formatted = isPercent ? `${+(value * 100).toFixed(2)}%` : `${+value.toFixed(2)}`
     return <span className={styles.cellReadonly}>{formatted}</span>
   }
@@ -1203,7 +1228,10 @@ export function SkillsTab({
                             key={row.hit.id}
                             className={row.dimmed ? styles.dimmedRow : undefined}
                           >
-                            <td className={styles.hitNo}>{idx + 1}</td>
+                            <td className={styles.hitNo}>
+                              {idx + 1}
+                              {renderLevelBadge(isNormalTab ? row.hit : (row.variant ?? row.hit))}
+                            </td>
                             <td>
                               {isNormalTab ? (
                                 <>
