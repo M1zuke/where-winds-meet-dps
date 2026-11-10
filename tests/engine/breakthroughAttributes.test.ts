@@ -22,13 +22,16 @@ import {
   totalPhysDef,
 } from "../../src/definitions/baseStats"
 import {
+  AGILITY_PER_POINT,
   BODY_PER_POINT,
   DEFENSE_PER_POINT,
+  MOMENTUM_PER_POINT,
+  POWER_PER_POINT,
 } from "../../src/definitions/baseStats/attributeConversion"
 import { BASE_STAT_LEVELS, TALENT_BOARD } from "../../src/data/baseStats"
 import { arsenalHp } from "../../src/engine/panel"
 import { gearHpTotal } from "../../src/engine/gearStats"
-import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
+import { playerLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import type { DisabledTalentNodes, GearPiece, Inputs } from "../../src/engine/types"
@@ -109,7 +112,7 @@ describe("Max HP", () => {
 
   it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, without the average-level percentage", () => {
     const attrs = playerAttributes(18)
-    const baseHp = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.maxHp
+    const baseHp = BASE_STAT_LEVELS[playerLevelForBreakthrough(18)]!.maxHp
     const bonus = averageEnhancementBonus(defaultEnhancementLevels(18))
     const expected =
       baseHp +
@@ -200,9 +203,49 @@ describe("Constitution and Defense lines rolled on gear", () => {
   })
 })
 
+describe("the player level follows the breakthrough", () => {
+  it("is 90, 95, 95 and 100 at breakthrough 13, 14, 15 and 16 and above", () => {
+    expect(
+      [13, 14, 15, 16, 17, 21].map((breakthrough) => playerLevelForBreakthrough(breakthrough)),
+    ).toEqual([90, 95, 95, 100, 100, 100])
+  })
+
+  it("never reads a player level without a base-stat row", () => {
+    for (const breakthrough of SELECTABLE) {
+      expect(BASE_STAT_LEVELS[playerLevelForBreakthrough(breakthrough)]).toBeDefined()
+    }
+  })
+
+  it.each([
+    [13, 90],
+    [14, 95],
+    [15, 95],
+    [16, 100],
+  ])(
+    "builds the base panel of breakthrough %i from the level %i row",
+    (breakthrough, playerLevel) => {
+      const noTalents = closeDisabledTalentNodes(TALENT_BOARD.map((node) => node.id))
+      const base = globalBase(breakthrough, noTalents)
+      const row = BASE_STAT_LEVELS[playerLevel]!
+      expect(base["phys.min"]).toBeCloseTo(
+        row.minPhys +
+          attributeValue(breakthrough, "power") * POWER_PER_POINT.minPhys +
+          attributeValue(breakthrough, "agility") * AGILITY_PER_POINT.minPhys,
+        9,
+      )
+      expect(base["phys.max"]).toBeCloseTo(
+        row.maxPhys +
+          attributeValue(breakthrough, "power") * POWER_PER_POINT.maxPhys +
+          attributeValue(breakthrough, "momentum") * MOMENTUM_PER_POINT.maxPhys,
+        9,
+      )
+    },
+  )
+})
+
 describe("the character-level row's Physical Defense column", () => {
   it("carries Physical Defense 128 at the pinned level", () => {
-    expect(BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.physDef).toBe(128)
+    expect(BASE_STAT_LEVELS[100]!.physDef).toBe(128)
   })
 
   it("reaches totalPhysDef, moving it by exactly the row's own value", () => {
@@ -214,7 +257,7 @@ describe("the character-level row's Physical Defense column", () => {
       ODDITY_BOARD.map((region) => [region.key, region.nodes.map((node) => node.id)]),
     )
     const withoutOddities = totalPhysDef(17, [], disabledPhysDef, zeroEnhancements, released)
-    const row = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!
+    const row = BASE_STAT_LEVELS[playerLevelForBreakthrough(17)]!
     const attrs = playerAttributes(17, disabledPhysDef)
     expect(withoutOddities - attrs.defense * DEFENSE_PER_POINT.physDef).toBeCloseTo(row.physDef, 9)
   })

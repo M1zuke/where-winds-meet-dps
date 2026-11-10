@@ -52,6 +52,12 @@ export function gearLevelForBreakthrough(breakthrough: number): GearLevel {
   return tier.gearLevel
 }
 
+export function playerLevelForBreakthrough(breakthrough: number): number {
+  const atOrBelow = BREAKTHROUGH_TIERS.filter((tier) => tier.breakthrough <= breakthrough)
+  const tier = atOrBelow.length > 0 ? atOrBelow[atOrBelow.length - 1]! : BREAKTHROUGH_TIERS[0]!
+  return tier.playerLevel
+}
+
 export interface LevelSelection {
   artLevel: number
   mysticTier: number

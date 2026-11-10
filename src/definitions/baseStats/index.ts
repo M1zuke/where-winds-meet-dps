@@ -5,7 +5,6 @@ import {
   gearHpTotal,
   gearPhysDefTotal,
 } from "../../engine/gearStats"
-import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../innerWays/registry"
 import { DEFAULT_ARSENAL_SCORES } from "./arsenal"
@@ -31,7 +30,11 @@ import {
 import { resolvedMaxBonus, resolvedScaleMax } from "./classSkillBoostDef"
 import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
 import { RELEASED_ODDITY_BOARD, isOddityNodeClaimed, oddityBoardTotals } from "./oddityBoardGraph"
-import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
+import {
+  breakthroughAttributes,
+  defaultBreakthrough,
+  playerLevelForBreakthrough,
+} from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
   BODY_PER_POINT,
@@ -67,8 +70,6 @@ export {
   type TalentNodeDef,
 } from "./talentNodeDef"
 
-const BASE_LEVEL = APP_PLAYER_LEVEL
-
 interface BaseEntry {
   id: number
   stat: string
@@ -94,9 +95,10 @@ interface BaseAccumulator {
   physDef: number
 }
 
-function readBaseLevel(): BaseAccumulator {
-  const row = BASE_STAT_LEVELS[BASE_LEVEL]
-  if (!row) throw new Error(`No base stat row for level ${BASE_LEVEL}`)
+function readBaseLevel(breakthrough: number): BaseAccumulator {
+  const level = playerLevelForBreakthrough(breakthrough)
+  const row = BASE_STAT_LEVELS[level]
+  if (!row) throw new Error(`No base stat row for level ${level}`)
   return {
     minPhys: row.minPhys,
     maxPhys: row.maxPhys,
@@ -188,7 +190,7 @@ function buildAccumulator(
   breakthrough: number,
   disabled: DisabledTalentNodes | undefined,
 ): BaseAccumulator {
-  const acc = readBaseLevel()
+  const acc = readBaseLevel(breakthrough)
   applyTalentBoard(acc, effectiveDisabledTalentNodes(disabled, breakthrough))
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc

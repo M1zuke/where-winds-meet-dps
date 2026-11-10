@@ -27,8 +27,8 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   every load, so never persist a derived stat.
 - Bumping a base-stat configuration means editing the level row **and** the
   summation that consumes it. Adding a row field alone changes nothing.
-- The base-stat row and the runtime level bonus must read the **same** level
-  constant. Two sources drift silently.
+- The base-stat row is the selected breakthrough's player level. Nothing reads a
+  fixed player level, and every per-level base value reads that same level.
 - A per-point attribute conversion is authored **once**, and every consumer
   imports it. A gear-word delta is derived from the word's roll and that table —
   a pre-multiplied literal is a second copy of the max roll, and goes stale the
