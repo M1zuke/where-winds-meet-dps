@@ -1,0 +1,169 @@
+{
+  "v": 24,
+  "debuffs": [
+    {
+      "id": "debuff-silkbindJade-umbdrone-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[12hit]",
+      "breakdownName": "Umbrella Drone",
+      "activation": "triggered",
+      "durationFrames": 364,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "attributeAttack": "Silkbind",
+        "skillType": "weapon",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "recall": {
+        "tag": "weapon:Umbrella",
+        "exemptSkillIds": [
+          "silkbindJade-hidden-sword-light-1",
+          "silkbindJade-hidden-sword-light-2",
+          "silkbindJade-hidden-sword-light-3",
+          "silkbindJade-hidden-sword-light-4",
+          "silkbindJade-hidden-sword-light-5",
+          "silkbindJade-hidden-sword-heavy-1",
+          "silkbindJade-hidden-sword-heavy-2",
+          "silkbindJade-hidden-sword-heavy-3",
+          "silkbindJade-hidden-sword-heavy-alt"
+        ]
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "receives": ["lingeringBone", "comboExtendMark"]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-20hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[20hit]",
+      "breakdownName": "Umbrella Drone",
+      "activation": "triggered",
+      "durationFrames": 604,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "attributeAttack": "Silkbind",
+        "skillType": "weapon",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "recall": {
+        "tag": "weapon:Umbrella",
+        "exemptSkillIds": [
+          "silkbindJade-hidden-sword-light-1",
+          "silkbindJade-hidden-sword-light-2",
+          "silkbindJade-hidden-sword-light-3",
+          "silkbindJade-hidden-sword-light-4",
+          "silkbindJade-hidden-sword-light-5",
+          "silkbindJade-hidden-sword-heavy-1",
+          "silkbindJade-hidden-sword-heavy-2",
+          "silkbindJade-hidden-sword-heavy-3",
+          "silkbindJade-hidden-sword-heavy-alt"
+        ]
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "receives": ["lingeringBone", "comboExtendMark"]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone-26hit",
+      "classId": "silkbindJade",
+      "name": "UmbDrone[26hit]",
+      "breakdownName": "Umbrella Drone",
+      "activation": "triggered",
+      "durationFrames": 784,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "attributeAttack": "Silkbind",
+        "skillType": "weapon",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "recall": {
+        "tag": "weapon:Umbrella",
+        "exemptSkillIds": []
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "receives": ["lingeringBone", "comboExtendMark"]
+    },
+    {
+      "id": "debuff-silkbindJade-umbdrone",
+      "classId": "silkbindJade",
+      "name": "UmbDrone",
+      "breakdownName": "Umbrella Drone",
+      "activation": "triggered",
+      "durationFrames": 216000,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 33,
+        "physMultiplier": 0.510829,
+        "physFixed": 141.375,
+        "attributeMultiplier": 0.766243,
+        "attributeFixed": 77,
+        "attributeAttack": "Silkbind",
+        "skillType": "weapon",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "recall": null,
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "receives": ["lingeringBone", "comboExtendMark"]
+    },
+    {
+      "id": "df-user-authored-gash",
+      "classId": "silkbindJade",
+      "name": "Gash",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": null,
+      "recall": {
+        "tag": "weapon:Umbrella",
+        "exemptSkillIds": [
+          "silkbindJade-hidden-sword-light-1",
+          "silkbindJade-hidden-sword-light-2",
+          "silkbindJade-hidden-sword-light-3",
+          "silkbindJade-hidden-sword-light-4",
+          "silkbindJade-hidden-sword-light-5",
+          "silkbindJade-hidden-sword-heavy-1",
+          "silkbindJade-hidden-sword-heavy-2",
+          "silkbindJade-hidden-sword-heavy-3",
+          "silkbindJade-hidden-sword-heavy-alt"
+        ]
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    }
+  ]
+}

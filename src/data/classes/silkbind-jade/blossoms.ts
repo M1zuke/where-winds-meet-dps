@@ -1,6 +1,6 @@
 import { defineResource } from "../../../definitions/resources/resourceDef"
 import { SKILL, DEBUFF } from "../../skills/silkbind-jade/ids"
-import { DRONE_RECALL } from "../../skills/silkbind-jade/droneTick"
+import { DRONE_LOCK } from "../../skills/silkbind-jade/droneTick"
 import { WEAPON } from "../../skills/ids"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 
@@ -35,8 +35,9 @@ export const blossomResource = defineResource({
   maxRunSeconds: BLOSSOMS.maxRunSeconds,
   drainPerSecond: BLOSSOMS.drainPerSecond,
   enhancedRunCost: BLOSSOMS.lingeringBoneRunCost,
-  recallTag: DRONE_RECALL.tag,
-  recallExemptSkillIds: DRONE_RECALL.exemptSkillIds,
+  lockTag: DRONE_LOCK.tag,
+  lockExemptSkillIds: DRONE_LOCK.exemptSkillIds,
+  recallSkillId: DRONE_LOCK.recallSkillId,
   endRefund: BLOSSOMS.endRefund,
   refundDelaySeconds: BLOSSOMS.endRefundDelaySeconds,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,

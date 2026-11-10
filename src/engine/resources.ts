@@ -368,11 +368,20 @@ export class CombatResource {
     this.mergeEquivalent()
   }
 
+  isRunning(frame: number): boolean {
+    this.advance(frame)
+    return this.branches.some((branch) => branch.active !== null)
+  }
+
   recalledBy(skill: Skill): boolean {
-    const { recallTag, recallExemptSkillIds, launchSkillId } = this.definition
-    if (!recallTag || skill.isDotTick || skill.id === launchSkillId) return false
-    if (recallExemptSkillIds?.includes(skill.id)) return false
-    return skill.tags?.includes(recallTag) ?? false
+    return this.definition.recallSkillId !== undefined && skill.id === this.definition.recallSkillId
+  }
+
+  locks(skill: Skill): boolean {
+    const { lockTag, lockExemptSkillIds } = this.definition
+    if (!lockTag || skill.isDotTick || this.recalledBy(skill)) return false
+    if (lockExemptSkillIds?.includes(skill.id)) return false
+    return skill.tags?.includes(lockTag) ?? false
   }
 
   finish(frame: number) {

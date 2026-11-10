@@ -1239,7 +1239,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const resolvedStep of resolvedSteps) reachSkill(resolvedStep.skill.id)
 
   const resources = (classDefinition(inputs.classId)?.resources ?? [])
-    .filter((definition) => reachableSkillIds.has(definition.launchSkillId))
+    .filter(
+      (definition) =>
+        reachableSkillIds.has(definition.launchSkillId) ||
+        (definition.recallSkillId !== undefined && reachableSkillIds.has(definition.recallSkillId)),
+    )
     .map(
       (definition) =>
         new CombatResource(definition, inputs.resourceSettings?.[definition.id], {
@@ -1791,6 +1795,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       )
     }
     checkBuffEngineCastConditions(resolvedStep, startFrame)
+    flagSummonLock(resolvedStep, startFrame)
     paidByMeterByStepStart.set(
       startFrame,
       prePull ? new Map<string, number>() : applyMeterCosts(resolvedStep.skill, startFrame),
@@ -1969,9 +1974,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   function recallAtCastStart(skill: Skill, startFrame: number): void {
-    for (const resource of resources)
-      if (resource.recalledBy(skill))
-        resource.recall(Math.min(windowEndFrame(), Math.max(0, startFrame)))
     for (const status of statusById.values()) {
       if (!isDebuffStatus(status) || !status.recall || resourceByDebuff.has(status.id)) continue
       const { tag, exemptSkillIds } = status.recall
@@ -1979,6 +1981,82 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         continue
       ledger.cutWindowsAt(status.id, startFrame, UNOWNED)
     }
+  }
+
+  interface SummonLockSource {
+    debuffId: string
+    running: (frame: number) => boolean
+    locks: (skill: Skill) => boolean
+    recalledBy: (skill: Skill) => boolean
+    recall: (frame: number) => void
+  }
+  const summonLockSources: SummonLockSource[] = [
+    ...resources.map((resource) => ({
+      debuffId: resource.definition.debuffId,
+      running: (frame: number) => resource.isRunning(frame),
+      locks: (skill: Skill) => resource.locks(skill),
+      recalledBy: (skill: Skill) => resource.recalledBy(skill),
+      recall: (frame: number) => resource.recall(frame),
+    })),
+    ...[...statusById.values()].flatMap((status): SummonLockSource[] => {
+      if (!isDebuffStatus(status) || !status.castLock || resourceByDebuff.has(status.id)) return []
+      const { tag, exemptSkillIds, recallSkillId } = status.castLock
+      const recalledBy = (skill: Skill) => recallSkillId !== undefined && skill.id === recallSkillId
+      return [
+        {
+          debuffId: status.id,
+          running: (frame) => ledger.stacksAt(status.id, frame) > 0,
+          locks: (skill) =>
+            !skill.isDotTick &&
+            !recalledBy(skill) &&
+            !exemptSkillIds?.includes(skill.id) &&
+            (skill.tags?.includes(tag) ?? false),
+          recalledBy,
+          recall: (frame) => ledger.cutWindowsAt(status.id, frame, UNOWNED),
+        },
+      ]
+    }),
+  ]
+
+  function summonLockReasons(skill: Skill, startFrame: number): ConditionFailureReason[] {
+    const frame = Math.max(0, startFrame)
+    const reasons: ConditionFailureReason[] = []
+    const reasonFor = (
+      debuffId: string,
+      op: "eq" | "gte",
+      required: number,
+      actual: number,
+    ): ConditionFailureReason => ({
+      kind: "debuff",
+      id: debuffId,
+      name: statusById.get(debuffId)?.name ?? debuffId,
+      op,
+      required,
+      actual,
+    })
+    const recallers = summonLockSources.filter((source) => source.recalledBy(skill))
+    if (recallers.length > 0) {
+      if (!summonLockSources.some((source) => source.running(frame)))
+        reasons.push(reasonFor(recallers[0].debuffId, "gte", 1, 0))
+      return reasons
+    }
+    for (const source of summonLockSources)
+      if (source.locks(skill) && source.running(frame))
+        reasons.push(reasonFor(source.debuffId, "eq", 0, 1))
+    return reasons
+  }
+
+  function flagSummonLock(resolvedStep: ResolvedStep, startFrame: number): void {
+    if (directSwapSkills.has(resolvedStep.skill)) return
+    const reasons = summonLockReasons(resolvedStep.skill, startFrame)
+    if (reasons.length === 0) return
+    const stepId = resolvedStep.step.id
+    recordInvalidStep(stepId, [...(invalidStepReasons[stepId] ?? []), ...reasons])
+    recordTimedWarning(
+      startFrame,
+      (relSec) =>
+        `${resolvedStep.skill.name || resolvedStep.skill.id} at ${relSec.toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
+    )
   }
 
   const firstPrePullStep = resolvedSteps.findIndex((resolvedStep) =>
@@ -2895,6 +2973,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         break
       }
       hitsProcessed++
+      for (const source of summonLockSources) if (source.recalledBy(skill)) source.recall(frame)
       const exactFrame = event.exactFrame ?? frame
       hitEventsInOrder.push({ ...event, exactFrame })
       const ledgerMarkBeforeHit = ledger.mark()

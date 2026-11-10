@@ -82,6 +82,10 @@ export interface DebuffRecallSpec {
   exemptSkillIds?: readonly string[]
 }
 
+export interface DebuffCastLockSpec extends DebuffRecallSpec {
+  recallSkillId?: string
+}
+
 export interface Debuff {
   id: string
   classId: string
@@ -104,6 +108,7 @@ export interface Debuff {
   // A rotation step whose skill carries the tag ends the running window at its
   // own start — the summoned source is recalled — unless its skill is exempt.
   recall?: DebuffRecallSpec | null
+  castLock?: DebuffCastLockSpec | null
   createdAt: string
   updatedAt: string
 }

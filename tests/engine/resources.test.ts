@@ -17,8 +17,9 @@ const definition = defineResource({
   debuffId: "test-projectiles",
   drainPerSecond: 10,
   enhancedRunCost: 5,
-  recallTag: "test-weapon",
-  recallExemptSkillIds: ["test-exempt"],
+  lockTag: "test-weapon",
+  lockExemptSkillIds: ["test-exempt"],
+  recallSkillId: "test-return",
   endRefund: 15,
   refundCooldownSeconds: 5,
   gains: [],
@@ -310,14 +311,25 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(simulation.result.launches[0].reason).toBe("depleted")
   })
 
-  it("is recalled by a tagged cast, but not by an exempt one, the launch or a tick", () => {
+  it("locks on a tagged cast, but not an exempt one, the recall skill or a tick", () => {
     const simulation = resource()
     const tagged = makeSkill("fictional", { id: "test-tagged", tags: ["test-weapon"] })
-    expect(simulation.recalledBy(tagged)).toBe(true)
-    expect(simulation.recalledBy({ ...tagged, id: "test-exempt" })).toBe(false)
-    expect(simulation.recalledBy({ ...tagged, id: "test-launch" })).toBe(false)
-    expect(simulation.recalledBy({ ...tagged, isDotTick: true })).toBe(false)
-    expect(simulation.recalledBy(makeSkill("fictional", { id: "test-untagged" }))).toBe(false)
+    expect(simulation.locks(tagged)).toBe(true)
+    expect(simulation.locks({ ...tagged, id: "test-exempt" })).toBe(false)
+    expect(simulation.locks({ ...tagged, id: "test-return" })).toBe(false)
+    expect(simulation.locks({ ...tagged, isDotTick: true })).toBe(false)
+    expect(simulation.locks(makeSkill("fictional", { id: "test-untagged" }))).toBe(false)
+  })
+
+  it("is recalled only by its recall skill and reports whether it runs", () => {
+    const simulation = resource()
+    expect(simulation.recalledBy(makeSkill("fictional", { id: "test-return" }))).toBe(true)
+    expect(simulation.recalledBy(makeSkill("fictional", { id: "test-tagged" }))).toBe(false)
+    expect(simulation.isRunning(0)).toBe(false)
+    simulation.launch(0)
+    expect(simulation.isRunning(1)).toBe(true)
+    simulation.recall(2)
+    expect(simulation.isRunning(2)).toBe(false)
   })
 
   it("does not refill from stale ticks after recall or a rejected launch", () => {
