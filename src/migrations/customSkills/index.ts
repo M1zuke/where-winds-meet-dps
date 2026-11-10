@@ -112,6 +112,7 @@ import { V108__dragonBreathSlowFormWithoutIntoxicated } from "./V108__dragonBrea
 import { V109__dragonBreathSingleHitFastFrame } from "./V109__dragonBreathSingleHitFastFrame"
 import { V110__dragonBreathSlowFormChosenAtThePress } from "./V110__dragonBreathSlowFormChosenAtThePress"
 import { V111__volutefitReachesWineboundMystics } from "./V111__volutefitReachesWineboundMystics"
+import { V112__bladeVesselRapidSlashSpacing } from "./V112__bladeVesselRapidSlashSpacing"
 
 export type {
   CustomSkillMigration,
@@ -292,6 +293,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V109__dragonBreathSingleHitFastFrame,
   V110__dragonBreathSlowFormChosenAtThePress,
   V111__volutefitReachesWineboundMystics,
+  V112__bladeVesselRapidSlashSpacing,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
