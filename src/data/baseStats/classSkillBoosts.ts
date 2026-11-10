@@ -6,21 +6,88 @@ import {
 const BELLSTRIKE_PENETRATION_PER_POINT = 0.0336
 const PENETRATION_PER_POINT = 0.0672
 
-const BELLSTRIKE_SCALE_MAX = 22 / BELLSTRIKE_PENETRATION_PER_POINT
-const BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH = {
-  18: 23.6 / BELLSTRIKE_PENETRATION_PER_POINT,
-  19: 25.2 / BELLSTRIKE_PENETRATION_PER_POINT,
-  20: 27.6 / BELLSTRIKE_PENETRATION_PER_POINT,
-  21: 29.6 / BELLSTRIKE_PENETRATION_PER_POINT,
+// In-game talent caps as of 2026-11-10.
+const RESOURCE_SCALE_MAX_BY_BREAKTHROUGH = {
+  13: 200,
+  14: 225,
+  15: 280,
+  18: 300,
+  19: 325,
+  20: 365,
+  21: 405,
+}
+const AFFINITY_RATE_UP_BY_BREAKTHROUGH = {
+  13: 0.0304,
+  14: 0.0342,
+  15: 0.04256,
+  18: 0.0456,
+  19: 0.0494,
+  20: 0.05548,
+  21: 0.06156,
+}
+const CRITICAL_RATE_UP_BY_BREAKTHROUGH = {
+  13: 0.0608,
+  14: 0.0684,
+  15: 0.08512,
+  18: 0.0912,
+  19: 0.0988,
+  20: 0.11096,
+  21: 0.12312,
+}
+const PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH = {
+  13: 52.8,
+  14: 59.4,
+  15: 73.92,
+  18: 79.2,
+  19: 85.8,
+  20: 96.36,
+  21: 106.92,
+}
+const PENETRATION_SCALE_BY_BREAKTHROUGH = {
+  13: 0.152,
+  14: 0.18,
+  15: 0.22,
+  18: 0.236,
+  19: 0.252,
+  20: 0.276,
+  21: 0.296,
+}
+const ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH = {
+  13: 0.076,
+  14: 0.09,
+  15: 0.11,
+  18: 0.118,
+  19: 0.126,
+  20: 0.138,
+  21: 0.148,
 }
 
-const SCALE_MAX = 22 / PENETRATION_PER_POINT
-const SCALE_MAX_BY_BREAKTHROUGH = {
-  18: 23.6 / PENETRATION_PER_POINT,
-  19: 25.2 / PENETRATION_PER_POINT,
-  20: 27.6 / PENETRATION_PER_POINT,
-  21: 29.6 / PENETRATION_PER_POINT,
+const PENETRATION_POINTS_BY_BREAKTHROUGH = {
+  13: 15.2,
+  14: 18,
+  15: 22,
+  18: 23.6,
+  19: 25.2,
+  20: 27.6,
+  21: 29.6,
 }
+
+function penetrationScaleMaxByBreakthrough(perPoint: number): Readonly<Record<number, number>> {
+  return Object.fromEntries(
+    Object.entries(PENETRATION_POINTS_BY_BREAKTHROUGH).map(([breakthrough, points]) => [
+      breakthrough,
+      points / perPoint,
+    ]),
+  )
+}
+
+const BELLSTRIKE_SCALE_MAX = 22 / BELLSTRIKE_PENETRATION_PER_POINT
+const BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH = penetrationScaleMaxByBreakthrough(
+  BELLSTRIKE_PENETRATION_PER_POINT,
+)
+
+const SCALE_MAX = 22 / PENETRATION_PER_POINT
+const SCALE_MAX_BY_BREAKTHROUGH = penetrationScaleMaxByBreakthrough(PENETRATION_PER_POINT)
 
 export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoost[]>> = {
   bellstrikeUmbra: defineClassSkillBoosts([
@@ -30,9 +97,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.04256,
       scalesWith: "power",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.0456, 19: 0.0494, 20: 0.05548, 21: 0.06156 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: AFFINITY_RATE_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Physical Attack UP",
@@ -40,9 +106,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.92,
       scalesWith: "power",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Sword Bellstrike Attack Min",
@@ -78,8 +143,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "bellstrike.max",
       scaleMax: BELLSTRIKE_SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      maxBonusByBreakthrough: PENETRATION_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
@@ -88,8 +152,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "bellstrike.max",
       scaleMax: BELLSTRIKE_SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      maxBonusByBreakthrough: ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH,
     },
   ]),
@@ -100,9 +163,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.04256,
       scalesWith: "momentum",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.0456, 19: 0.0494, 20: 0.05548, 21: 0.06156 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: AFFINITY_RATE_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Physical Attack UP",
@@ -110,9 +172,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.92,
       scalesWith: "momentum",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Sword Bellstrike Attack Min",
@@ -148,8 +209,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "bellstrike.max",
       scaleMax: BELLSTRIKE_SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      maxBonusByBreakthrough: PENETRATION_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
@@ -158,8 +218,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "bellstrike.max",
       scaleMax: BELLSTRIKE_SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      maxBonusByBreakthrough: ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: BELLSTRIKE_SCALE_MAX_BY_BREAKTHROUGH,
     },
   ]),
@@ -170,9 +229,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.08512,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.0912, 19: 0.0988, 20: 0.11096, 21: 0.12312 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: CRITICAL_RATE_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Physical Attack UP",
@@ -180,9 +238,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.92,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Mo Blade Stonesplit Attack Min",
@@ -218,8 +275,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "stonesplit.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      maxBonusByBreakthrough: PENETRATION_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
@@ -228,8 +284,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "stonesplit.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      maxBonusByBreakthrough: ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
   ]),
@@ -240,9 +295,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.08512,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.0912, 19: 0.0988, 20: 0.11096, 21: 0.12312 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: CRITICAL_RATE_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Physical Attack UP",
@@ -250,9 +304,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.92,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Umbrella Silkbind Attack Min",
@@ -288,8 +341,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "silkbind.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      maxBonusByBreakthrough: PENETRATION_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
@@ -298,8 +350,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "silkbind.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      maxBonusByBreakthrough: ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
   ]),
@@ -310,9 +361,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.08512,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.0912, 19: 0.0988, 20: 0.11096, 21: 0.12312 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: CRITICAL_RATE_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Physical Attack UP",
@@ -320,9 +370,8 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.92,
       scalesWith: "agility",
       scaleMax: 280,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
-      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
+      maxBonusByBreakthrough: PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH,
+      scaleMaxByBreakthrough: RESOURCE_SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
       skill: "Gauntlets Bamboocut Attack Min",
@@ -358,8 +407,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "bamboocut.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      maxBonusByBreakthrough: PENETRATION_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
     {
@@ -368,8 +416,7 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "bamboocut.min",
       scaleMax: SCALE_MAX,
-      // In-game talent caps as of 2026-10-15.
-      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      maxBonusByBreakthrough: ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH,
       scaleMaxByBreakthrough: SCALE_MAX_BY_BREAKTHROUGH,
     },
   ]),
