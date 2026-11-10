@@ -103,7 +103,7 @@ export const smolder = defineDebuff({
   name: "Smolder",
   breakdownName: "Smolder",
   activation: "triggered",
-  durationFrames: 240,
+  durationFrames: 234,
   effects: [],
   dot: {
     tickIntervalFrames: 30,

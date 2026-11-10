@@ -138,8 +138,8 @@ describe("Dragon Fire (Smolder) → Smolder in the simulator", () => {
 describe("Smolder duration", () => {
   const darkFire = builtinDebuff(CLASS, DARK_FIRE_ID)
 
-  it("has a 4 s base window, and every Smolder hit extends it 4 s", () => {
-    expect(darkFire.durationFrames).toBe(240)
+  it("has a 3.9 s first window, and every Smolder hit extends it 4 s", () => {
+    expect(darkFire.durationFrames).toBe(234)
     for (const skillId of [ONE_HIT, TWO_HITS]) {
       const skill = skillOf(skillId)
       for (const hit of skill.hits) {
