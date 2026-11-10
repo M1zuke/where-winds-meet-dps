@@ -122,7 +122,8 @@ the skill could ever land.
 
 A hit may instead (or in addition) gate on rotation structure rather than
 ledger state, with `requiresNextStepSkillIds`: it occurs only when the
-rotation step immediately following this cast names one of the listed
+rotation step immediately following this cast — a free direct weapon swap
+inserted ahead of it is skipped — names one of the listed
 skills — a cast whose own animation keeps running, and so keeps landing
 hits, only because nothing before that next input interrupted it. Unlike an ordinary condition this is never true for the rotation's own last
 step, and it is meaningless on a `castSkill`-generated cast, which has no
@@ -1057,8 +1058,9 @@ a refactor.
   class definition; keep resource names and values out of the engine.
 - Gate resource-controlled ticks before their damage or buff triggers. A depleted
   launch must not revive from later refunds. Each new launch starts its own cadence.
-- Distribute declared whole-skill resource gains over authored hits; credit only
-  executed damaging hits, and keep repeat-limited bonuses independent. A gain
+- Distribute declared whole-skill resource gains over a skill's authored damaging
+  hits, or over `hitsPerCast` when summoned skills carry part of the cast; credit
+  only executed damaging hits, and keep repeat-limited bonuses independent. A gain
   limits its repeats with a cooldown that only a gain whose every gate passed
   arms.
 - Decide a pulse's conditional additional impacts once, on the status as it stands
