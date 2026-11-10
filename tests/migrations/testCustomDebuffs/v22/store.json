@@ -1,0 +1,200 @@
+{
+  "v": 22,
+  "debuffs": [
+    {
+      "id": "debuff-bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleeding",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "firstTickOffsetFrames": 30,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.066,
+        "physFixed": 0,
+        "attributeMultiplier": 0.099,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "qiRate": 0.2,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [
+          2,
+          2.5,
+          3,
+          4,
+          5
+        ]
+      },
+      "maxStacks": 5,
+      "stackScaling": "perStack",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 0
+      },
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-03T00:00:00.000Z",
+      "tags": [
+        "role:bleedTick"
+      ],
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+        "soulShaken"
+      ]
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-bitter-season-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.02,
+        "physFixed": 0,
+        "attributeMultiplier": 0,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z",
+      "receives": [
+        "bellstrikeUmbraBleedingDamage",
+        "soulShaken"
+      ]
+    },
+    {
+      "id": "df-user-authored-gash",
+      "classId": "bellstrikeUmbra",
+      "name": "Gash",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": null,
+      "maxStacks": 3,
+      "stackScaling": "flat",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 1,
+        "retainParam": "swordHorizon",
+        "retainMinTier": 6,
+        "retainParamStacks": 2
+      },
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-mystic-smolder",
+      "classId": "bellstrikeUmbra",
+      "name": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 234,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.235818,
+        "physFixed": 37.6455,
+        "attributeMultiplier": 0.353727,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "qiRate": 0.6,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T17:04:54.256Z",
+      "updatedAt": "2026-11-10T17:04:54.256Z",
+      "breakdownName": "Smolder",
+      "receives": [
+        "bellstrikeUmbraBleedingDamage",
+        "soulShaken"
+      ]
+    },
+    {
+      "id": "debuff-mystic-combustion",
+      "classId": "bellstrikeUmbra",
+      "name": "Combustion",
+      "activation": "triggered",
+      "durationFrames": 481,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.295506,
+        "physFixed": 46.75,
+        "attributeMultiplier": 0.443259,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "qiRate": 0.6,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T17:04:54.256Z",
+      "updatedAt": "2026-11-10T17:04:54.256Z",
+      "tags": [
+        "role:combustion"
+      ],
+      "receives": [
+        "bellstrikeUmbraBleedingDamage",
+        "soulShaken"
+      ]
+    },
+    {
+      "id": "debuff-bamboocutDraught-drunkslay",
+      "classId": "bamboocutDraught",
+      "name": "Drunkslay",
+      "activation": "triggered",
+      "durationFrames": 1200,
+      "effects": [],
+      "dot": null,
+      "echo": {
+        "share": 0.2,
+        "breakdownName": "Drunkslay State",
+        "skillType": "mindMethod",
+        "releaseAdjustment": {
+          "factor": 1.2,
+          "requiresStatuses": [
+            "debuff-bamboocutDraught-wildstride",
+            "debuff-bamboocutDraught-strayhunt"
+          ]
+        }
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    }
+  ]
+}
