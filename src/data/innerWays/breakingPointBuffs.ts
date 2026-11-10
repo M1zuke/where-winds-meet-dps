@@ -28,7 +28,7 @@ export function disintegrationBrokenTargetBuffDef(): BuffModule {
     damageGrantTiming: "preScore",
     stackOnDamagePhase: "exhausted",
     summary:
-      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks, one per hit on a target with no Qi left",
+      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks, one per hit on a target with no Qi left; ends the Perfect Dodge stacks when it is granted",
     effects: (ctx) =>
       ctx.self.stacks > 0
         ? [
@@ -49,7 +49,7 @@ export function disintegrationBuffDef(): BuffModule {
     maxStacks: 5,
     rateLimit: { count: 1, window: 15 },
     summary:
-      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks; a Perfect Dodge grants 5 stacks once per 15s at the Perfect Dodge tier, separate from the stacks a Qi-broken target gives",
+      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks; a Perfect Dodge grants 5 stacks once per 15s at the Perfect Dodge tier, a Qi-broken target's stacks end when it is granted, and its own end when the target gives one",
     stacks: (ctx) =>
       ctx.build.paramTier(PARAM.breakingPoint) >=
       (perfectDodgeTier ??= requireInnerWayNodeTier(
