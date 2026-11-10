@@ -8,6 +8,7 @@ import {
   V117__jadeTrajectoryHitsReach,
   healSkill,
 } from "../../src/migrations/customSkills/V117__jadeTrajectoryHitsReach"
+import { throughJadeAuditHops } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV116File from "./testCustomSkills/v116/store.json"
@@ -51,7 +52,7 @@ describe("custom-skills v116 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = throughJadeAuditHops(healSkill(clone(skillIn(STORE, id))))
     const builtin = builtinOf(id)
     expect([...(healed.receives ?? [])].sort()).toEqual([...(builtin.receives ?? [])].sort())
     const timing = (skill: Skill) =>

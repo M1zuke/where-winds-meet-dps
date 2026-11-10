@@ -3,13 +3,16 @@ import { healSkill as healJadeTrajectoryHitsReach } from "../../src/migrations/c
 import { healSkill as healJadeLaunchBrokenByHigherPriority } from "../../src/migrations/customSkills/V118__jadeLaunchBrokenByHigherPriority"
 import { healSkill as healUmbrellaDualTwoBullets } from "../../src/migrations/customSkills/V119__umbrellaDualTwoBullets"
 import { healSkill as healApricotHeavenRiseSplitAndTiming } from "../../src/migrations/customSkills/V120__apricotHeavenRiseSplitAndTiming"
+import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migrations/customSkills/V121__jadeSpringThunderAndComboReach"
 import type { Skill } from "../../src/engine/skill"
 
 export const throughJadeAuditHops = (skill: unknown): Skill =>
-  healApricotHeavenRiseSplitAndTiming(
-    healUmbrellaDualTwoBullets(
-      healJadeLaunchBrokenByHigherPriority(
-        healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+  healJadeSpringThunderAndComboReach(
+    healApricotHeavenRiseSplitAndTiming(
+      healUmbrellaDualTwoBullets(
+        healJadeLaunchBrokenByHigherPriority(
+          healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+        ),
       ),
     ),
   ) as Skill

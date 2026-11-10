@@ -114,6 +114,7 @@ import { healSkill as healJadeTrajectoryHitsReach } from "../../src/migrations/c
 import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
 import { healSkill as healUmbrellaDualTwoBullets } from "../../src/migrations/customSkills/V119__umbrellaDualTwoBullets"
 import { healSkill as healApricotHeavenRiseSplitAndTiming } from "../../src/migrations/customSkills/V120__apricotHeavenRiseSplitAndTiming"
+import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migrations/customSkills/V121__jadeSpringThunderAndComboReach"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -252,6 +253,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [118, healJadeLaunchBrokenByHigherPriority],
   [119, healUmbrellaDualTwoBullets],
   [120, healApricotHeavenRiseSplitAndTiming],
+  [121, healJadeSpringThunderAndComboReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
