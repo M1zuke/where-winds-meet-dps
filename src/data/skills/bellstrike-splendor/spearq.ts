@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -13,6 +13,7 @@ import {
   endlessGaleCostReductionEndTrigger,
 } from "./buffs/endlessGaleCostReductionGrant"
 import { qiankunsLockQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -58,10 +59,7 @@ export const spearq = defineSkill({
     hit(1, {
       // In-game values as of 2026-09-24: the collider frame.
       frame: 17.65,
-      physMultiplier: 0.57317,
-      attributeMultiplier: 0.859755,
-      physFixed: 160,
-      attributeFixed: 87,
+      ...levelScaled(LEVEL_ROWS.spearqHit1),
       triggers: [qiankunsLockQiImbalanceMarkerGrant],
     }),
   ],

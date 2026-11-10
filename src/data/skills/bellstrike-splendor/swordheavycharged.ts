@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -22,6 +22,7 @@ import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordHeavyCharged = defineSkill({
   id: SKILL.swordHeavyCharged,
@@ -58,10 +59,7 @@ export const swordHeavyCharged = defineSkill({
     hit(0, {
       frame: 96.74,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 3.2664,
-      attributeMultiplier: 4.8996,
-      physFixed: 904,
-      attributeFixed: 493,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0),
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -72,10 +70,7 @@ export const swordHeavyCharged = defineSkill({
           id: "hv-swordheavycharged-hit-0-multi-wave-window",
           label: "Multi-Wave Window",
           conditions: THREE_WAVE_RELEASE_CONDITIONS,
-          physMultiplier: 1.30656,
-          attributeMultiplier: 1.95984,
-          physFixed: 361.6,
-          attributeFixed: 197.2,
+          ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
           // Cast length to the earliest next input for a full ≥84.6 f hold to
           // the level-2 threshold plus the three-wave release's own cast
           // length (in-game values as of 2026-10-15).
@@ -88,20 +83,14 @@ export const swordHeavyCharged = defineSkill({
     hit(1, {
       frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       conditions: THREE_WAVE_RELEASE_CONDITIONS,
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 129.9,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.829184,
-      attributeMultiplier: 2.743776,
-      physFixed: 506.24,
-      attributeFixed: 276.08,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit2),
       conditions: THREE_WAVE_RELEASE_CONDITIONS,
       triggers: [energySurgeCooldownCut],
     }),

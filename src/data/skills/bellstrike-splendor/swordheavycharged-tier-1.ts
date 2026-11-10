@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -10,6 +10,7 @@ import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 import { WUSHUANG_STANCE_ABSENT } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_TIER_1_PROJECTILE } from "./vagrantSwordBolts"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: released at the earliest first-tier hold
 // (45.6 f); the single bolt launches at 57.74 f.
@@ -42,10 +43,7 @@ export const swordHeavyChargedTier1 = defineSkill({
   hits: [
     hit(0, {
       frame: 57.74,
-      physMultiplier: 1.51032,
-      attributeMultiplier: 2.26548,
-      physFixed: 419,
-      attributeFixed: 228,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedTier1Hit0),
       projectile: VAGRANT_SWORD_TIER_1_PROJECTILE,
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,

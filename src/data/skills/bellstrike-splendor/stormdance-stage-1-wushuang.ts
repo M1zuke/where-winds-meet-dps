@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, PROP, CAST, WEAPON, ATTACK } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -10,6 +10,7 @@ import {
   STORM_DANCE_FREEZE,
   STORM_DANCE_STAGE_1_SPIN_HIT,
 } from "./stormdance-stage-1"
+import { LEVEL_ROWS } from "./levelRows"
 
 const WUSHUANG_ACTIVE = { buffId: BUFF.wushuangStance, op: "gte" as const, stacks: 1 }
 
@@ -90,18 +91,12 @@ export const stormDanceStage1Wushuang = defineSkill({
     ...STORM_DANCE_STAGE_1_WUSHUANG_SPIN_HITS,
     hit(WUSHUANG_SPIN_FRAMES.length, {
       frame: 72,
-      physMultiplier: 0.20033,
-      attributeMultiplier: 0.300495,
-      physFixed: 55.5,
-      attributeFixed: 30.2,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage1Hit8),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
     hit(WUSHUANG_SPIN_FRAMES.length + 1, {
       frame: 103,
-      physMultiplier: 0.40066,
-      attributeMultiplier: 0.60099,
-      physFixed: 111,
-      attributeFixed: 60.4,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage1Hit9),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
   ],

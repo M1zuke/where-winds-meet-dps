@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { shadowStepDashWindowConsume } from "./buffs/shadowStepDashWindow"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06: castable while Shadow Step's window holds;
 // needs 10 Endurance, spends 15 at the cast's own start.
@@ -31,10 +32,7 @@ export const swordSpecialDash = defineSkill({
   hits: [
     hit(0, {
       frame: 28,
-      physMultiplier: 0.868016,
-      attributeMultiplier: 1.302024,
-      physFixed: 240.8,
-      attributeFixed: 131.2,
+      ...levelScaled(LEVEL_ROWS.swordspecialDashHit0),
       triggers: [shadowStepDashWindowConsume],
     }),
   ],

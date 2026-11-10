@@ -1,22 +1,17 @@
 import type { Displacement } from "../../../engine/skill"
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const TWELVE_POINT_FIVE_PERCENT_OF_ROW = {
-  physMultiplier: 0.26903,
-  attributeMultiplier: 0.403545,
-  physFixed: 74.5,
-  attributeFixed: 40.625,
+  ...levelScaled(LEVEL_ROWS.swordLightAttackHit0),
 }
 
 const FIFTEEN_PERCENT_OF_ROW = {
-  physMultiplier: 0.322836,
-  attributeMultiplier: 0.484254,
-  physFixed: 89.4,
-  attributeFixed: 48.75,
+  ...levelScaled(LEVEL_ROWS.swordLightAttackHit2),
 }
 
 const LIGHT_ATTACK_DISPLACEMENT: Displacement = {
@@ -54,17 +49,11 @@ export const swordLightAttack = defineSkill({
     hit(3, { frame: 75, ...FIFTEEN_PERCENT_OF_ROW }),
     hit(4, {
       frame: 87,
-      physMultiplier: 0.161418,
-      attributeMultiplier: 0.242127,
-      physFixed: 44.7,
-      attributeFixed: 24.375,
+      ...levelScaled(LEVEL_ROWS.swordLightAttackHit4),
     }),
     hit(5, {
       frame: 112,
-      physMultiplier: 0.645672,
-      attributeMultiplier: 0.968508,
-      physFixed: 178.8,
-      attributeFixed: 97.5,
+      ...levelScaled(LEVEL_ROWS.swordLightAttackHit5),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

@@ -1,5 +1,5 @@
 import type { MeterDrain } from "../../../engine/skill"
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -20,6 +20,7 @@ import {
 } from "./buffs/vagrantSwordEndurance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
+import { LEVEL_ROWS } from "./levelRows"
 
 // A hold whose drain would empty before the level-2 threshold never reaches
 // a second wave at all — it releases onto the single-bolt form instead.
@@ -69,10 +70,7 @@ export const swordHeavyCharged2Hit = defineSkill({
     hit(0, {
       frame: 90.66,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.30656,
-      attributeMultiplier: 1.95984,
-      physFixed: 361.6,
-      attributeFixed: 197.2,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -82,10 +80,7 @@ export const swordHeavyCharged2Hit = defineSkill({
     hit(1, {
       frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
