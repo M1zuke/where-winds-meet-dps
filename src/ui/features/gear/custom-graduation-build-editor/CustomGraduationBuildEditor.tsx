@@ -4,7 +4,7 @@ import { gearWordPoolForLine, gearWordRelayedToLevel } from "../../../../data/st
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { classDefinition, weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import type { GraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
-import { attunementLabel, attunementLabelKey, attunementsFor } from "../../../../engine/attunements"
+import { attunementsFor } from "../../../../engine/attunements"
 import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
 import { newCustomGraduationBuildId } from "../../../../engine/customGraduationBuild"
 import { GEAR_SET_OPTIONS } from "../../../../engine/setBonuses"
@@ -17,7 +17,7 @@ import {
   loadCustomGraduationBuilds,
   saveCustomGraduationBuild,
 } from "../../../../storage"
-import { rotationKey, setKey, statLineKey } from "../../../../i18n/contentKeys"
+import { attunementKey, rotationKey, setKey, statLineKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { TextInput } from "../../../components/text-input/TextInput"
@@ -117,7 +117,7 @@ export function CustomGraduationBuildEditor({
       { value: "", label: t("common.none") },
       ...attunementsFor(slot, classId).map((option) => ({
         value: option.id,
-        label: t(attunementLabelKey(option, classId), attunementLabel(option, classId)),
+        label: t(attunementKey(option.id), option.label),
       })),
     ]
   }

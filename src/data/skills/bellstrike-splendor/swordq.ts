@@ -13,7 +13,7 @@ export const swordq = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SwordQ",
   breakdownName: "Daunting Strike",
-  tags: [WEAPON.sword, ATTUNE.swordQ, PROP.isMartialSkillQ],
+  tags: [WEAPON.sword, ATTUNE.namelessSwordQ, PROP.isMartialSkillQ],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",

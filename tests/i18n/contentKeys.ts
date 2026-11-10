@@ -60,8 +60,6 @@ export function collectContentKeys(): Record<string, string> {
   for (const option of ATTUNEMENT_OPTIONS) {
     add(attunementKey(option.id), option.label)
     add(attunementHintKey(option.id), option.hint)
-    for (const [classId, label] of Object.entries(option.labelByClass ?? {}))
-      add(attunementKey(option.id, classId), label)
   }
   for (const set of SET_DEFS) add(setKey(set.id), set.name)
   for (const [setId, text] of Object.entries(SET_FOUR_PIECE_TEXTS)) {

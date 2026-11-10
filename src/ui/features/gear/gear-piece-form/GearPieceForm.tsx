@@ -21,7 +21,6 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { selectableGearLevels } from "../shared/selectableGearLevels"
 import { rebasePiece } from "../shared/rebasePiece"
 import {
-  attunementLabelKey,
   attunementMax,
   attunementMin,
   attunementsFor,
@@ -30,7 +29,12 @@ import {
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { attunementHintKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
+import {
+  attunementHintKey,
+  attunementKey,
+  rarityKey,
+  statLineKey,
+} from "../../../../i18n/contentKeys"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
@@ -182,7 +186,7 @@ export function GearPieceForm({
       { value: "", label: t("common.none") },
       ...attunementCatalog.map((option) => ({
         value: option.id,
-        label: t(attunementLabelKey(option, inputs.classId), option.label),
+        label: t(attunementKey(option.id), option.label),
       })),
     ],
     [attunementCatalog, inputs.classId, t],

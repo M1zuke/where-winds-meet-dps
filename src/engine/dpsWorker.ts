@@ -25,7 +25,8 @@ import {
   reattunementDrawables,
   reattunementPityThreshold,
 } from "./reattunement"
-import { attunementMax, attunementMin, attunementsFor, attunementLabelKey } from "./attunements"
+import { attunementMax, attunementMin, attunementsFor } from "./attunements"
+import { attunementKey } from "../i18n/contentKeys"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty, type FullPotentialDps } from "./fullPotential"
 import { withCustomContent } from "./customContent"
@@ -475,7 +476,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     return {
       optionId: opt.id,
       label: opt.label,
-      labelKey: attunementLabelKey(opt, inputs.classId),
+      labelKey: attunementKey(opt.id),
       min,
       max,
       deltaDpsAtMax: dpsAtMax - equipDps,

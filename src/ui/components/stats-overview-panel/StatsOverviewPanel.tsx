@@ -10,10 +10,11 @@ import {
   totalPlayerAttributes,
 } from "../../../definitions/baseStats"
 import { foodPhysAttackBeforeMultiplier } from "../../../data/consumables/foods"
-import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
+import { getAttunement } from "../../../engine/attunements"
 import { effectiveRates, getSchool } from "../../../engine/panel"
 import { applySetBonuses, setPhysDefBonus } from "../../../engine/setBonuses"
 import { resolveEnginePath } from "../../../engine/statPaths"
+import { attunementKey } from "../../../i18n/contentKeys"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
 import { finalHitOutcomeRates } from "./finalHitOutcomeRates"
@@ -220,7 +221,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((attunementId) => {
     const option = getAttunement(attunementId)
     return row(
-      option ? t(attunementLabelKey(option, null), attunementLabel(option, null)) : attunementId,
+      option ? t(attunementKey(option.id), option.label) : attunementId,
       withSets.classSpecificAttunement[attunementId] ?? 0,
       true,
     )

@@ -83,10 +83,8 @@ export function setFourPieceFullKey(setId: string): string {
   return `content.setFourPieceFull.${setId}`
 }
 
-export function attunementKey(attunementId: string, classId?: string | null): string {
-  return classId
-    ? `content.attunement.${attunementId}.${classId}`
-    : `content.attunement.${attunementId}`
+export function attunementKey(attunementId: string): string {
+  return `content.attunement.${attunementId}`
 }
 
 export function attunementHintKey(attunementId: string): string {

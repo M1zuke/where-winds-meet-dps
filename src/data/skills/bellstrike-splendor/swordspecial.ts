@@ -16,7 +16,7 @@ export const swordSpecial = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SwordSpecial",
   breakdownName: "Shadow Step",
-  tags: [WEAPON.sword, ATTUNE.swordSpecial],
+  tags: [WEAPON.sword, ATTUNE.namelessSwordSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",

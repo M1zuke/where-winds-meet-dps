@@ -1,10 +1,10 @@
 import type { AttunementOption } from "../../engine/attunements"
 import { GENERAL_SLOTS } from "./attunementSlots"
 import { BAMBOOCUT_DRAUGHT_ATTUNEMENTS } from "./bamboocut-draught/attunements"
+import { BELLSTRIKE_SPLENDOR_ATTUNEMENTS } from "./bellstrike-splendor/attunements"
 import { BELLSTRIKE_UMBRA_ATTUNEMENTS } from "./bellstrike-umbra/attunements"
 import { SILKBIND_JADE_ATTUNEMENTS } from "./silkbind-jade/attunements"
 import { STONESPLIT_STRENGTH_ATTUNEMENTS } from "./stonesplit-strength/attunements"
-import { WEAPON_ART_ATTUNEMENTS } from "./weaponArtAttunements"
 
 // Gear-level ladder, penetration lines (in-game, 2026-09-07). The ladder holds
 // the percentage number; the app stores a fraction, so every value is ÷100.
@@ -46,7 +46,7 @@ const EVERY_CLASS_OPTIONS = [
 
 export const ATTUNEMENT_OPTIONS = [
   ...EVERY_CLASS_OPTIONS,
-  ...WEAPON_ART_ATTUNEMENTS,
+  ...BELLSTRIKE_SPLENDOR_ATTUNEMENTS,
   ...BELLSTRIKE_UMBRA_ATTUNEMENTS,
   ...STONESPLIT_STRENGTH_ATTUNEMENTS,
   ...SILKBIND_JADE_ATTUNEMENTS,
