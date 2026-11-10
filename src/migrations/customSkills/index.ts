@@ -109,6 +109,7 @@ import { V105__swordMorphConversionAtTheRelease } from "./V105__swordMorphConver
 import { V106__umbraSpearTapHeavyQuickestRelease } from "./V106__umbraSpearTapHeavyQuickestRelease"
 import { V107__evasiveChargeRefundFromRankOne } from "./V107__evasiveChargeRefundFromRankOne"
 import { V108__dragonBreathSlowFormWithoutIntoxicated } from "./V108__dragonBreathSlowFormWithoutIntoxicated"
+import { V109__dragonBreathSingleHitFastFrame } from "./V109__dragonBreathSingleHitFastFrame"
 
 export type {
   CustomSkillMigration,
@@ -286,6 +287,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V106__umbraSpearTapHeavyQuickestRelease,
   V107__evasiveChargeRefundFromRankOne,
   V108__dragonBreathSlowFormWithoutIntoxicated,
+  V109__dragonBreathSingleHitFastFrame,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

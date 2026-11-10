@@ -31,7 +31,7 @@ export const fireBreath1Hit = defineSkill({
   // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
-      frame: 40,
+      frame: 36,
       physMultiplier: 1.360884,
       attributeMultiplier: 2.041327,
       physFixed: 215.2962,

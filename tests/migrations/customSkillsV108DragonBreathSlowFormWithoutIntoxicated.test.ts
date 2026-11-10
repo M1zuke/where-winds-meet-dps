@@ -8,6 +8,7 @@ import {
   V108__dragonBreathSlowFormWithoutIntoxicated,
   healSkill,
 } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
+import { healSkill as healSingleHitFrame } from "../../src/migrations/customSkills/V109__dragonBreathSingleHitFastFrame"
 import { builtinSkill } from "../builtins"
 import type { Skill } from "../../src/engine/skill"
 import storeV107File from "./testCustomSkills/v107/store.json"
@@ -43,7 +44,7 @@ describe("custom-skills v107 fixture", () => {
 describe("healSkill", () => {
   it("lands every untouched copy on the built-in hits", () => {
     for (const id of [...BREATH_IDS, POET_ID]) {
-      const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+      const healed = healSingleHitFrame(healSkill(clone(skillIn(STORE, id)))) as Skill
       expect(withoutHitIds(healed), id).toEqual(withoutHitIds(builtinSkill("bellstrikeUmbra", id)))
     }
   })

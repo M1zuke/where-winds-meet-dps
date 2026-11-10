@@ -241,8 +241,8 @@
     }
   },
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": {
-    "dps": 76970.82388512176,
-    "totalDamage": 2315538.951877413,
+    "dps": 76957.8818865143,
+    "totalDamage": 2315149.613419305,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71185.4659712099,
       "Divinecraft - Fire": 30885.27069204104,
@@ -253,7 +253,7 @@
       "SwordHeavyCharged": 1534721.1365452947,
       "Soaring": 72351.43386059583,
       "Dragon's Breath 1 Hit": 13009.72803079793,
-      "Combustion (DoT)": 53495.46694634235,
+      "Combustion (DoT)": 53106.128488234746,
       "SpearQ": 6135.973012559949
     }
   },
