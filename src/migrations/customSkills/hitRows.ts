@@ -69,3 +69,36 @@ export function swapSkillHits(
     return swaps ? { ...skill, hits: swapHits(skill.hits, swaps) } : skill
   })
 }
+
+// Every hit and every hit variant still carrying one of the swaps' old rows
+// takes its new row; nothing else in the skill moves.
+export function swapMatchingRows(
+  skill: unknown,
+  idPrefix: string,
+  swaps: readonly RowSwap[],
+): unknown {
+  if (
+    !isRecord(skill) ||
+    typeof skill.id !== "string" ||
+    !skill.id.startsWith(idPrefix) ||
+    !Array.isArray(skill.hits)
+  )
+    return skill
+  const swapRow = (row: RowLike): RowLike => {
+    const swap = swaps.find((candidate) => matchesRow(row, candidate.from))
+    return swap ? withRow(row, swap.to) : row
+  }
+  const hits = skill.hits.map((hit: unknown) => {
+    if (!isRecord(hit)) return hit
+    const swapped = swapRow(hit)
+    return Array.isArray(hit.variants)
+      ? {
+          ...swapped,
+          variants: hit.variants.map((variant: unknown) =>
+            isRecord(variant) ? swapRow(variant) : variant,
+          ),
+        }
+      : swapped
+  })
+  return { ...skill, hits }
+}

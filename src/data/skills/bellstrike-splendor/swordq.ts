@@ -36,8 +36,8 @@ export const swordq = defineSkill({
       // In-game values as of 2026-10-15: the flying sword launches at 17.58 f.
       frame: 17.58,
       projectile: DAUNTING_STRIKE_PROJECTILE,
-      physMultiplier: 1.0253,
-      attributeMultiplier: 1.538,
+      physMultiplier: 1.025314,
+      attributeMultiplier: 1.537971,
       physFixed: 283.6,
       attributeFixed: 154.6,
       triggers: [mountainsMightQiImbalanceMarkerGrant],

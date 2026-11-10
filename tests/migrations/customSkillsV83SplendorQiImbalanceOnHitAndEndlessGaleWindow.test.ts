@@ -10,11 +10,15 @@ import {
 } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
+import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV26File from "./testCustomSkills/v26/store.json"
 import storeV82File from "./testCustomSkills/v82/store.json"
+
+const healSplendorCoefficientsExact = (skill: unknown): unknown =>
+  healSplendorQuickCastCoefficientsExact(healSplendorWaveCoefficientsExact(skill))
 
 const CLASS = "bellstrikeSplendor"
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
@@ -70,7 +74,9 @@ describe("custom-skills v82 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healFractionalFrameTiming(healSkill(clone(skillIn(STORE, id)))) as Skill
+    const healed = healSplendorCoefficientsExact(
+      healFractionalFrameTiming(healSkill(clone(skillIn(STORE, id)))),
+    ) as Skill
     const builtin = builtinOf(id)
     expect(healed.hits).toEqual(builtin.hits)
     if (HITS_ONLY_IDS.includes(id)) return
@@ -80,7 +86,7 @@ describe("healSkill", () => {
   })
 
   it("lands the untouched Energy Surge copy on the built-in", () => {
-    const healed = healSplendorWaveCoefficientsExact(
+    const healed = healSplendorCoefficientsExact(
       healFractionalFrameTiming(healSkill(clone(seededEnergySurge()))),
     ) as Skill
     expect(healed.hits).toEqual(builtinOf(SEEDED_ENERGY_SURGE_ID).hits)
@@ -115,9 +121,11 @@ describe("V83__splendorQiImbalanceOnHitAndEndlessGaleWindow — called directly"
     const after = V83__splendorQiImbalanceOnHitAndEndlessGaleWindow.migrate(clone(STORE))
     expect(after.v).toBe(83)
     for (const id of HEALED_IDS)
-      expect((healFractionalFrameTiming(skillIn(after, id)) as Skill).hits, id).toEqual(
-        builtinOf(id).hits,
-      )
+      expect(
+        (healSplendorCoefficientsExact(healFractionalFrameTiming(skillIn(after, id))) as Skill)
+          .hits,
+        id,
+      ).toEqual(builtinOf(id).hits)
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
       expect(skillIn(after, skill.id)).toEqual(skill)
