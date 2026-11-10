@@ -22,6 +22,7 @@ import {
   builtinDebuffsForClass,
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
+import { attunementsForClass } from "../../../../engine/attunements"
 import { getSchool } from "../../../../engine/panel"
 import { frozenAtLevel, rowAtLevel } from "../../../../engine/levelRows"
 import { levelSelectionFor } from "../../../../definitions/baseStats/breakthroughs"
@@ -76,32 +77,12 @@ const WEAPONS = [
 const SKILL_TYPES = ["weapon", "mindMethod", "mystic", "sustain", "Heavenwork"]
 const MYSTIC_CATEGORIES = ["control", "burst", "area-debuff", "area-damage", "area"]
 const ATTRIBUTES = ["", "Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"]
-const ATTUNEMENTS = [
-  "bleed",
-  "fanCharged",
-  "fanQ",
-  "fanSpecial",
-  "moBladeCharge",
-  "phalanxbaneCharged",
-  "phalanxbaneQ",
-  "ropeDartCharged",
-  "ropeDartQ",
-  "ropeDartSpecial",
-  "snowpartingCharged",
-  "snowpartingQ",
-  "snowpartingVariedCombo",
-  "spearCharged",
-  "spearMartial",
-  "spearQ",
-  "spearSpecial",
-  "swordCharged",
-  "swordQ",
-  "swordSpecial",
-  "umbFrequentProjectile",
-  "umbLightHeavyVariedCombo",
-  "umbQ",
-  "umbrellaQ",
-]
+function attuneFlagsFor(classId: string): string[] {
+  const flags = attunementsForClass(classId).flatMap((option) =>
+    option.affectsTag ? [option.affectsTag.slice("attune:".length)] : [],
+  )
+  return [...new Set(flags)]
+}
 
 type HitNumericField = "physMultiplier" | "physFixed" | "attributeMultiplier" | "attributeFixed"
 
@@ -823,10 +804,11 @@ export function SkillsTab({
     })
   }
 
+  const classAttuneFlags = attuneFlagsFor(draft?.classId ?? classId)
   const attuneFlagOptions = opts(
-    currentAttuneFlag && !ATTUNEMENTS.includes(currentAttuneFlag)
-      ? ["", ...ATTUNEMENTS, currentAttuneFlag]
-      : ["", ...ATTUNEMENTS],
+    currentAttuneFlag && !classAttuneFlags.includes(currentAttuneFlag)
+      ? ["", ...classAttuneFlags, currentAttuneFlag]
+      : ["", ...classAttuneFlags],
   )
   const mysticFlagOptions = opts(
     currentMysticFlag && !MYSTIC_CATEGORIES.includes(currentMysticFlag)

@@ -52,7 +52,7 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
           innerWayOptions.push({
             value: currentId,
             label: t(innerWayKey(currentId), innerWayName(currentId)),
-            group: t("overview.mindMethods.noLongerAvailable"),
+            group: t("common.noLongerAvailable"),
           })
         }
 

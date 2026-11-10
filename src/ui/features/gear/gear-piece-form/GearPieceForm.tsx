@@ -19,6 +19,7 @@ import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { selectableGearLevels } from "../shared/selectableGearLevels"
+import { attunementComboboxOptions } from "../shared/attunementComboboxOptions"
 import { rebasePiece } from "../shared/rebasePiece"
 import {
   attunementMax,
@@ -29,12 +30,7 @@ import {
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
-import {
-  attunementHintKey,
-  attunementKey,
-  rarityKey,
-  statLineKey,
-} from "../../../../i18n/contentKeys"
+import { attunementHintKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
@@ -181,15 +177,9 @@ export function GearPieceForm({
     () => attunementsFor(piece.slot, inputs.classId),
     [piece.slot, inputs.classId],
   )
-  const attunementOptions: ComboboxOption[] = useMemo(
-    () => [
-      { value: "", label: t("common.none") },
-      ...attunementCatalog.map((option) => ({
-        value: option.id,
-        label: t(attunementKey(option.id), option.label),
-      })),
-    ],
-    [attunementCatalog, inputs.classId, t],
+  const attunementOptions = useMemo(
+    () => attunementComboboxOptions(t, attunementCatalog, piece.attunement),
+    [attunementCatalog, piece.attunement, t],
   )
 
   const weaponSide = isWeaponSlot(piece.slot)
@@ -464,7 +454,7 @@ export function GearPieceForm({
             </span>
             <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("common.amount")}</span>
             <Combobox
-              value={selected?.id ?? ""}
+              value={piece.attunement}
               options={attunementOptions}
               className={markClassName("attunement", "name")}
               onChange={(value) => {
