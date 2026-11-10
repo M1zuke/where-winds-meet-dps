@@ -99,6 +99,7 @@ import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrat
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { healSkill as healUmbraRootMotion } from "../../src/migrations/customSkills/V104__umbraRootMotion"
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
+import { healSkill as healUmbraSpearTapHeavy } from "../../src/migrations/customSkills/V106__umbraSpearTapHeavyQuickestRelease"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -211,6 +212,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [103, healSplendorRootMotion],
   [104, healUmbraRootMotion],
   [105, healSwordMorphConversion],
+  [106, healUmbraSpearTapHeavy],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

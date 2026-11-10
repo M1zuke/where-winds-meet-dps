@@ -3,7 +3,8 @@ import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06: the tap, which starts 18 f after the press.
+// In-game values as of 2026-11-10: the tap on the quickest release, 3.6 f after
+// the press; a press held to 0.3 s becomes the charge instead.
 export const spearHeavy1 = defineSkill({
   id: SKILL.spearHeavy1,
   classId: "bellstrikeUmbra",
@@ -15,12 +16,12 @@ export const spearHeavy1 = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.umbraSpearHeavy1,
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
-  castFrames: 66,
+  castFrames: 52.2,
   triggerable: true,
   reachMeters: 5,
   hits: [
     hit(0, {
-      frame: 43,
+      frame: 29.53,
       physMultiplier: 0.838872,
       attributeMultiplier: 1.258308,
       physFixed: 232.2,
@@ -28,5 +29,5 @@ export const spearHeavy1 = defineSkill({
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-11-10T00:00:00.000Z",
 })

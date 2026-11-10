@@ -106,6 +106,7 @@ import { V102__prepullVagrantSwordBoltTiming } from "./V102__prepullVagrantSword
 import { V103__splendorRootMotion } from "./V103__splendorRootMotion"
 import { V104__umbraRootMotion } from "./V104__umbraRootMotion"
 import { V105__swordMorphConversionAtTheRelease } from "./V105__swordMorphConversionAtTheRelease"
+import { V106__umbraSpearTapHeavyQuickestRelease } from "./V106__umbraSpearTapHeavyQuickestRelease"
 
 export type {
   CustomSkillMigration,
@@ -280,6 +281,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V103__splendorRootMotion,
   V104__umbraRootMotion,
   V105__swordMorphConversionAtTheRelease,
+  V106__umbraSpearTapHeavyQuickestRelease,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
