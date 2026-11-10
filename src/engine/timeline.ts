@@ -98,6 +98,8 @@ import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, isMysticHit, type HitOutcome, type RolledHit } from "./formula"
 import { EXTENSION_STREAM_OFFSET, mechanicSubstream, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
+import { breakthroughFloor, debuffAtLevel, skillAtLevel } from "./levelRows"
+import { levelSelectionFor } from "../definitions/baseStats/breakthroughs"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import {
@@ -272,7 +274,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const skillsMap = new Map<string, Skill>()
   for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
   for (const s of inputs.customSkills ?? []) skillsMap.set(s.id, s)
-  const skills = [...skillsMap.values()]
+  const levelSelection = levelSelectionFor(inputs.breakthrough)
+  const skills = [...skillsMap.values()].map((skill) => skillAtLevel(skill, levelSelection))
   const buffParams = paramsFromInputs(inputs)
   const buffsMap = new Map<string, Buff>()
   for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
@@ -289,7 +292,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const debuffsMap = new Map<string, Debuff>()
   for (const d of builtinDebuffsForClass(inputs.classId)) debuffsMap.set(d.id, d)
   for (const d of inputs.customDebuffs ?? []) debuffsMap.set(d.id, d)
-  const debuffs = [...debuffsMap.values()]
+  const debuffs = [...debuffsMap.values()].map((debuff) => debuffAtLevel(debuff, levelSelection))
   const skillsById = new Map(skills.map((s) => [s.id, s] as const))
   const statusById = new Map<string, Buff | Debuff>()
   for (const b of buffs) statusById.set(b.id, b)
@@ -1783,10 +1786,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       (condition) =>
         !hasBuffEngineSource(condition) && !readsLateMeter(condition) && !holdsHere(condition),
     )
-    if (failedCastConditions.length > 0) {
-      const reasons = failedCastConditions.map((condition) =>
+    const breakthroughFloorForStep = breakthroughFloor(resolvedStep.skill, inputs.breakthrough)
+    if (failedCastConditions.length > 0 || breakthroughFloorForStep !== null) {
+      const reasons: ConditionFailureReason[] = failedCastConditions.map((condition) =>
         describeConditionFailure(condition, startFrame),
       )
+      if (breakthroughFloorForStep !== null) {
+        reasons.push({
+          kind: "breakthrough",
+          id: resolvedStep.skill.id,
+          name: resolvedStep.skill.name || resolvedStep.skill.id,
+          required: breakthroughFloorForStep,
+          actual: inputs.breakthrough,
+        })
+      }
       recordInvalidStep(resolvedStep.step.id, reasons)
       recordTimedWarning(
         startFrame,
@@ -3554,6 +3567,8 @@ function englishConditionFailure(reason: ConditionFailureReason): string {
   switch (reason.kind) {
     case "anyOf":
       return `(${reason.reasons.map(englishConditionFailure).join(" or ")})`
+    case "breakthrough":
+      return `needs breakthrough ${reason.required}+ (breakthrough ${reason.actual})`
     case "weapon":
       return `needs the ${reason.name} drawn (${reason.actualName || "nothing"} drawn)`
     case "param": {

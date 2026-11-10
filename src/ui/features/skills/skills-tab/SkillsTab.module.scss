@@ -412,6 +412,13 @@ input.cellInput.changedValue {
 .cellReadonly {
   color: var(--color-text-dim);
 }
+.levelBadge {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-text-faint);
+  font-size: 0.72em;
+  white-space: nowrap;
+}
 .cellSub {
   margin-left: 4px;
   color: var(--color-text-faint);

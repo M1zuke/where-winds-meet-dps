@@ -78,7 +78,47 @@ export type ConditionFailureReason =
       actualOn: boolean
       actualTier: number
     }
+  | { kind: "breakthrough"; id: string; name: string; required: number; actual: number }
   | { kind: "anyOf"; reasons: ConditionFailureReason[] }
+
+export interface CoefficientRow {
+  physMultiplier: number
+  attributeMultiplier: number
+  physFixed: number
+  attributeFixed: number
+}
+
+export type LevelScale = "artLevel" | "mysticTier"
+
+export interface LevelRows {
+  scale: LevelScale
+  rows: Readonly<Record<string, CoefficientRow>>
+}
+
+const COEFFICIENT_FIELDS = [
+  "physMultiplier",
+  "attributeMultiplier",
+  "physFixed",
+  "attributeFixed",
+] as const
+
+export function isLevelRows(value: unknown): value is LevelRows {
+  if (!value || typeof value !== "object") return false
+  const candidate = value as Record<string, unknown>
+  if (candidate.scale !== "artLevel" && candidate.scale !== "mysticTier") return false
+  const rows = candidate.rows
+  if (!rows || typeof rows !== "object" || Array.isArray(rows)) return false
+  const entries = Object.entries(rows)
+  if (entries.length === 0) return false
+  return entries.every(([key, row]) => {
+    if (!/^[1-9]\d*$/.test(key)) return false
+    if (!row || typeof row !== "object") return false
+    const fields = row as Record<string, unknown>
+    return COEFFICIENT_FIELDS.every(
+      (field) => typeof fields[field] === "number" && Number.isFinite(fields[field] as number),
+    )
+  })
+}
 
 export interface HitVariant {
   id: string
@@ -88,6 +128,7 @@ export interface HitVariant {
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  levelRows?: LevelRows
   castFrames?: number
   // docs/TIMELINE.md § "Hit variants" — replaces the hit's own `frame` where
   // this variant is the active one.
@@ -144,6 +185,7 @@ export interface SkillHit {
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  levelRows?: LevelRows
   extraCritDamage: number
   variants?: HitVariant[]
   conditions?: TriggerCondition[]
@@ -539,6 +581,7 @@ export function isHitVariant(x: unknown): x is HitVariant {
   for (const k of ["physMultiplier", "attributeMultiplier", "physFixed", "attributeFixed"]) {
     if (typeof v[k] !== "number" || !Number.isFinite(v[k] as number)) return false
   }
+  if (v.levelRows !== undefined && !isLevelRows(v.levelRows)) return false
   if (v.castFrames !== undefined) {
     if (typeof v.castFrames !== "number" || !Number.isFinite(v.castFrames)) return false
   }
@@ -576,6 +619,7 @@ export function isSkillHit(x: unknown): x is SkillHit {
   ]) {
     if (typeof h[k] !== "number" || !Number.isFinite(h[k] as number)) return false
   }
+  if (h.levelRows !== undefined && !isLevelRows(h.levelRows)) return false
   if (!Array.isArray(h.triggers)) return false
   for (const t of h.triggers) {
     if (!isHitTrigger(t)) return false

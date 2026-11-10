@@ -55,6 +55,13 @@ on the 60 fps grid. Rules:
   rotation: a built-in rotation's values are fixed and cannot be changed by the
   user, only a custom rotation's can be edited, and the engine reads nothing
   else for any of them.
+- **A row whose values depend on the martial-art level or the mystic tier
+  carries one row per level a breakthrough selects** (`levelRows`); its own four
+  fields equal its highest row. The engine resolves every skill and debuff to
+  the selected breakthrough once, before the run; no reader reads a
+  level-scaled row's own fields directly.
+- **A Skill Editor edit of a level-scaled row fixes it at the value shown**: the
+  edited row loses its level rows; its neighbours keep theirs.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 - **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
   a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage
@@ -168,6 +175,10 @@ comes from, read off the registry that actually produces it — an inner way's
 own `buffParam`, a set's own `buffParam`, a script id — never a per-param
 lookup table; a param tied to none of those falls back to its own humanized
 id.
+
+A step whose skill has a level-scaled row with no row for the selected
+breakthrough is flagged, naming the lowest breakthrough that has one; that row
+keeps its own fields.
 
 ## Identity and tags
 
