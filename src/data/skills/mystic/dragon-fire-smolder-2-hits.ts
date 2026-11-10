@@ -3,12 +3,26 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
-import { OPENS_INTOXICATED, slowFormVariant } from "../dragonBreathSlowForm"
+import {
+  SLOW_FORM_BONUS_FRAME,
+  SLOW_FORM_FIRST_HIT_FRAME,
+  SLOW_FORM_FULL_CAST_FRAMES,
+  SLOW_FORM_SECOND_HIT_FRAME,
+  slowFormOpensIntoxicated,
+  slowFormVariant,
+} from "../dragonBreathSlowForm"
 
 const ROW = {
   physMultiplier: 1.283899,
   attributeMultiplier: 1.925849,
   physFixed: 204.9587,
+  attributeFixed: 0,
+}
+
+const BONUS_ROW = {
+  physMultiplier: 1.41491,
+  attributeMultiplier: 2.122364,
+  physFixed: 225.8728,
   attributeFixed: 0,
 }
 
@@ -39,8 +53,16 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.925849,
       physFixed: 204.9587,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 }), OPENS_INTOXICATED],
-      variants: [slowFormVariant(SKILL.dragonFireSmolder2Hits, ROW, 150)],
+      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
+      variants: [
+        slowFormVariant(
+          SKILL.dragonFireSmolder2Hits,
+          0,
+          ROW,
+          SLOW_FORM_FIRST_HIT_FRAME,
+          SLOW_FORM_FULL_CAST_FRAMES,
+        ),
+      ],
     }),
     hit(1, {
       frame: 102,
@@ -49,15 +71,17 @@ export const dragonFireSmolder2Hits = defineSkill({
       physFixed: 204.9587,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
+      variants: [slowFormVariant(SKILL.dragonFireSmolder2Hits, 1, ROW, SLOW_FORM_SECOND_HIT_FRAME)],
     }),
     hit(2, {
       frame: 108,
-      physMultiplier: 1.41491,
-      attributeMultiplier: 2.122364,
-      physFixed: 225.8728,
-      attributeFixed: 0,
+      ...BONUS_ROW,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
+      variants: [
+        slowFormVariant(SKILL.dragonFireSmolder2Hits, 2, BONUS_ROW, SLOW_FORM_BONUS_FRAME),
+      ],
     }),
+    slowFormOpensIntoxicated(3),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

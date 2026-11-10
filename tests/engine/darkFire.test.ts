@@ -68,15 +68,16 @@ describe("Dragon Fire (Smolder) skills", () => {
     const one = skillOf(ONE_HIT)
     const two = skillOf(TWO_HITS)
 
+    const unconditionalHits = (s: typeof one) => s.hits.filter((h) => !h.conditions)
     const sum = (s: typeof one, field: "physMultiplier" | "attributeMultiplier" | "physFixed") =>
-      s.hits.reduce((a, h) => a + h[field], 0)
+      unconditionalHits(s).reduce((a, h) => a + h[field], 0)
 
-    expect(one.hits.length).toBe(1)
+    expect(unconditionalHits(one).length).toBe(1)
     expect(sum(one, "physMultiplier")).toBeCloseTo(1.283899, 10)
     expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925849, 10)
     expect(sum(one, "physFixed")).toBeCloseTo(204.9587, 10)
 
-    expect(two.hits.length).toBe(3)
+    expect(unconditionalHits(two).length).toBe(3)
     expect(sum(two, "physMultiplier")).toBeCloseTo(3.982708, 10)
     expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974062, 10)
     expect(sum(two, "physFixed")).toBeCloseTo(635.7902, 10)
@@ -142,7 +143,7 @@ describe("Smolder duration", () => {
     expect(darkFire.durationFrames).toBe(234)
     for (const skillId of [ONE_HIT, TWO_HITS]) {
       const skill = skillOf(skillId)
-      for (const hit of skill.hits) {
+      for (const hit of skill.hits.filter((candidate) => candidate.physMultiplier > 0)) {
         const t = hit.triggers.find((tr) => tr.targetId === DARK_FIRE_ID)
         expect(t).toBeTruthy()
         expect(t!.extendFrames).toBe(240)

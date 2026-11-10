@@ -13,7 +13,7 @@ import type { EngineRunOptions } from "../../src/engine/types"
 type BreakFrames = readonly (readonly [startFrame: number, endFrame: number])[]
 
 const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
-  "builtin-bellstrikeUmbra-36-bbs": [[1606, 2206]],
+  "builtin-bellstrikeUmbra-36-bbs": [[1596, 2196]],
   "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1702, 2302]],
   "builtin-bellstrikeUmbra-38-bbs": [[1637, 2237]],
   "builtin-bellstrikeUmbra-nox-1m-dh": [[1624, 2224]],
@@ -26,7 +26,7 @@ const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
     [3126, 3726],
   ],
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": [[1045, 1645]],
-  "builtin-bellstrikeSplendor-kaezuma-42vs-1db": [[1120, 1720]],
+  "builtin-bellstrikeSplendor-kaezuma-42vs-1db": [[1117, 1717]],
   "builtin-silkbindJade-20-dh-video-60s": [[1707, 2307]],
   "builtin-silkbindJade-30s-dummy-max": [[1673, 2273]],
   "builtin-silkbindJade-standardized-1-7": [[1859, 2459]],

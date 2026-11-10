@@ -3,7 +3,13 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
-import { OPENS_INTOXICATED, SLOW_FORM_HIT_FRAME, slowFormVariant } from "../dragonBreathSlowForm"
+import {
+  QUICK_FORM_HIGHER_PRIORITY_BREAK_FRAME,
+  SLOW_FORM_FIRST_HIT_FRAME,
+  quickFormFollowUpHit,
+  slowFormBreakMarkers,
+  slowFormVariant,
+} from "../dragonBreathSlowForm"
 
 const ROW = {
   physMultiplier: 1.283899,
@@ -11,6 +17,15 @@ const ROW = {
   physFixed: 204.9587,
   attributeFixed: 0,
 }
+
+const BONUS_ROW = {
+  physMultiplier: 1.41491,
+  attributeMultiplier: 2.122364,
+  physFixed: 225.8728,
+  attributeFixed: 0,
+}
+
+const SMOLDER_EXTENSION = [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })]
 
 export const dragonFireSmolder1Hit = defineSkill({
   id: SKILL.dragonFireSmolder1Hit,
@@ -22,10 +37,10 @@ export const dragonFireSmolder1Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonSBreathSmolder1Hit,
-  // Hit frame: in-game animation, 2026-09-09. castFrames is not margin-derived — it stays
-  // 40 only because the hit landing at 36 keeps it legal; do not "correct" it to match the
-  // margin the other cut forms carry.
-  castFrames: 40,
+  // In-game values as of 2026-11-10: the cast a higher-priority follow-up breaks, one frame
+  // after the first hit's own animation frame. Any other follow-up waits for the full
+  // animation, so the later hits land too.
+  castFrames: QUICK_FORM_HIGHER_PRIORITY_BREAK_FRAME,
   triggerable: true,
   // In-game values as of 2026-10-18.
   vitalityCost: 20,
@@ -40,9 +55,12 @@ export const dragonFireSmolder1Hit = defineSkill({
       attributeMultiplier: 1.925849,
       physFixed: 204.9587,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 }), OPENS_INTOXICATED],
-      variants: [slowFormVariant(SKILL.dragonFireSmolder1Hit, ROW, SLOW_FORM_HIT_FRAME + 4)],
+      triggers: SMOLDER_EXTENSION,
+      variants: [slowFormVariant(SKILL.dragonFireSmolder1Hit, 0, ROW, SLOW_FORM_FIRST_HIT_FRAME)],
     }),
+    quickFormFollowUpHit(1, 102, ROW, SMOLDER_EXTENSION),
+    quickFormFollowUpHit(2, 108, BONUS_ROW, SMOLDER_EXTENSION),
+    ...slowFormBreakMarkers(3),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

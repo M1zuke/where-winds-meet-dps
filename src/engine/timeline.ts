@@ -29,8 +29,10 @@ import {
   isAnyOfCondition,
   isParamCondition,
   isPrePullSkill,
+  hasNextStepGate,
   hitConditionsHold,
   hitDealsDamage,
+  hitLandsByNextStep,
   OP_SYMBOL,
   resolvedHitFrame,
   selectHitVariant,
@@ -669,9 +671,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const occurringHits = skill.hits.filter(
       (skillHit) =>
         hitConditionsHold(skillHit, holds) &&
-        (!skillHit.requiresNextStepSkillIds ||
-          (nextStepSkillId !== undefined &&
-            skillHit.requiresNextStepSkillIds.includes(nextStepSkillId))),
+        hitLandsByNextStep(skillHit, nextStepSkillId, inputs.classId),
     )
     const variantCastFrames = activeVariantCastFrames(occurringHits, holds)
     if (variantCastFrames !== null) return variantCastFrames
@@ -1863,11 +1863,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       prePull ? preferredDistanceMeters : cast.distanceBeforeCast,
     )
     const nextStepSkillId = resolvedSteps[stepIndex + 1]?.skill.id
-    const hitLandsByNextStep = (hit: SkillHit): boolean =>
-      !hit.requiresNextStepSkillIds ||
-      (nextStepSkillId !== undefined && hit.requiresNextStepSkillIds.includes(nextStepSkillId))
     const occurringHits = castResolution.skill.hits.filter(
-      (hit) => hitConditionsHold(hit, holdsHere) && hitLandsByNextStep(hit),
+      (hit) =>
+        hitConditionsHold(hit, holdsHere) &&
+        hitLandsByNextStep(hit, nextStepSkillId, inputs.classId),
     )
     const midCastExtraFrames = prePull
       ? 0
@@ -1881,7 +1880,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           const maxFrame =
             occurringHits.length > 0 ? Math.max(...occurringHits.map(castHitFrame)) : -1
           const gatedCastFrames = occurringHits.find(
-            (hit) => hit.requiresNextStepSkillIds && hit.castFramesWhenGated !== undefined,
+            (hit) => hasNextStepGate(hit) && hit.castFramesWhenGated !== undefined,
           )?.castFramesWhenGated
           return (
             (activeVariantCastFrames(occurringHits, holdsHere) ??

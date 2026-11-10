@@ -38,6 +38,7 @@ interface HitSpec {
   variants?: HitVariant[]
   conditions?: SkillHit["conditions"]
   requiresNextStepSkillIds?: SkillHit["requiresNextStepSkillIds"]
+  unlessNextStepSkillIds?: SkillHit["unlessNextStepSkillIds"]
   castFramesWhenGated?: SkillHit["castFramesWhenGated"]
   qiRate?: SkillHit["qiRate"]
   qiFlat?: SkillHit["qiFlat"]
@@ -63,6 +64,7 @@ export function hit(index: number, spec: HitSpec): SkillHit {
     ...(spec.requiresNextStepSkillIds
       ? { requiresNextStepSkillIds: spec.requiresNextStepSkillIds }
       : {}),
+    ...(spec.unlessNextStepSkillIds ? { unlessNextStepSkillIds: spec.unlessNextStepSkillIds } : {}),
     ...(spec.castFramesWhenGated !== undefined
       ? { castFramesWhenGated: spec.castFramesWhenGated }
       : {}),

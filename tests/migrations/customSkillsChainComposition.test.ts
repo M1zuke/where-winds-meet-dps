@@ -103,6 +103,7 @@ import { healSkill as healUmbraSpearTapHeavy } from "../../src/migrations/custom
 import { healSkill as healEvasiveChargeRefundFromRankOne } from "../../src/migrations/customSkills/V107__evasiveChargeRefundFromRankOne"
 import { healSkill as healDragonBreathSlowForm } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
 import { healSkill as healDragonBreathSingleHitFastFrame } from "../../src/migrations/customSkills/V109__dragonBreathSingleHitFastFrame"
+import { healSkill as healDragonBreathSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -122,6 +123,10 @@ function healDrunkenHazeExplosion(skill: unknown): unknown {
     ...skill,
     hits: addFinalStrikeExplosionTrigger(id, addDrunkenHazeExplosionHits(id, hits)),
   }
+}
+
+function underCurrentId(heal: (skill: unknown) => unknown): (skill: unknown) => unknown {
+  return (skill) => heal({ ...(skill as Skill), id: migrateMysticId((skill as Skill).id) })
 }
 
 const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
@@ -217,8 +222,9 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [105, healSwordMorphConversion],
   [106, healUmbraSpearTapHeavy],
   [107, healEvasiveChargeRefundFromRankOne],
-  [108, healDragonBreathSlowForm],
+  [108, underCurrentId(healDragonBreathSlowForm)],
   [109, healDragonBreathSingleHitFastFrame],
+  [110, underCurrentId(healDragonBreathSlowFormChosenAtThePress)],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
