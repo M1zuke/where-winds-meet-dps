@@ -5,15 +5,18 @@ import { healSkill as healUmbrellaDualTwoBullets } from "../../src/migrations/cu
 import { healSkill as healApricotHeavenRiseSplitAndTiming } from "../../src/migrations/customSkills/V120__apricotHeavenRiseSplitAndTiming"
 import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migrations/customSkills/V121__jadeSpringThunderAndComboReach"
 import { healSkill as healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "../../src/migrations/customSkills/V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
+import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/migrations/customSkills/V123__gourdTossPursuitCutOncePerSecond"
 import type { Skill } from "../../src/engine/skill"
 
 export const throughJadeAuditHops = (skill: unknown): Skill =>
-  healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(
-    healJadeSpringThunderAndComboReach(
-      healApricotHeavenRiseSplitAndTiming(
-        healUmbrellaDualTwoBullets(
-          healJadeLaunchBrokenByHigherPriority(
-            healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+  healGourdTossPursuitCutOncePerSecond(
+    healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(
+      healJadeSpringThunderAndComboReach(
+        healApricotHeavenRiseSplitAndTiming(
+          healUmbrellaDualTwoBullets(
+            healJadeLaunchBrokenByHigherPriority(
+              healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+            ),
           ),
         ),
       ),
@@ -24,3 +27,8 @@ export const withoutLaunchFollowUpGate = (skill: Skill): Skill["hits"] =>
   skill.id.startsWith("silkbindJade-umbdronelaunch")
     ? skill.hits.filter((hit) => hit.castFramesWhenGated === undefined)
     : skill.hits
+
+export const throughLateJadeAuditHops = (skill: unknown): Skill =>
+  healGourdTossPursuitCutOncePerSecond(
+    healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(skill),
+  ) as Skill

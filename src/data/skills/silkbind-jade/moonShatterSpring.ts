@@ -28,13 +28,14 @@ export const FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS: TriggerCondition[] = [
 
 export const STARTLING_SPRING_STACK = applyBuff({ target: BUFF.pursuitChargedBoost })
 
-// In-game values as of 2026-10-15: Gourd Toss rank 6 — inside the window a
-// Peak's Springless Silence hit opens, each strike cuts 1 s off the Special's
-// recharge.
+// In-game values as of 2026-11-10: Gourd Toss rank 6 — inside the window a
+// Peak's Springless Silence hit opens, a strike cuts 1 s off the Special's
+// recharge, at most once per second.
 export const PURSUIT_RECHARGE_CUT = meterDelta({
   target: peaksSpringlessSilenceChargesMeter.id,
   stacks: UNITS_PER_SECOND_OF_RECHARGE,
   conditions: [{ buffId: BUFF.gourdTossPursuitCutWindow, op: "gte", stacks: 1 }],
+  cooldownFrames: 60,
   requiresParam: PARAM.gourdToss,
   requiresMinTier: 6,
 })

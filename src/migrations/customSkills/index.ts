@@ -123,6 +123,7 @@ import { V119__umbrellaDualTwoBullets } from "./V119__umbrellaDualTwoBullets"
 import { V120__apricotHeavenRiseSplitAndTiming } from "./V120__apricotHeavenRiseSplitAndTiming"
 import { V121__jadeSpringThunderAndComboReach } from "./V121__jadeSpringThunderAndComboReach"
 import { V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "./V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
+import { V123__gourdTossPursuitCutOncePerSecond } from "./V123__gourdTossPursuitCutOncePerSecond"
 
 export type {
   CustomSkillMigration,
@@ -314,6 +315,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V120__apricotHeavenRiseSplitAndTiming,
   V121__jadeSpringThunderAndComboReach,
   V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame,
+  V123__gourdTossPursuitCutOncePerSecond,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
