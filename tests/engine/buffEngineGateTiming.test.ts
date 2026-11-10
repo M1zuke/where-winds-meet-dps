@@ -6,7 +6,7 @@ import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { catalogBuffDefs } from "../../src/engine/buffs/data"
 import { applyBuff } from "../../src/engine/effects/effect"
 import { BUFF } from "../../src/data/skills/buffs/ids"
-import { disintegrationBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
+import { disintegrationBrokenTargetBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
 import {
   springThunder,
   thunderousBloomBuffDef,
@@ -265,7 +265,7 @@ describe("a damage-over-time tick", () => {
 
 describe("the authored timing of the on-damage grants", () => {
   it("is declared on every grant whose timing is known", () => {
-    expect(disintegrationBuffDef().damageGrantTiming).toBe("preScore")
+    expect(disintegrationBrokenTargetBuffDef().damageGrantTiming).toBe("preScore")
     expect(springThunder.damageGrantTiming).toBe("postQi")
     expect(thunderousBloomBuffDef.damageGrantTiming).toBe("preScore")
     const declared = new Map(catalogBuffDefs().map((module) => [module.id, module]))

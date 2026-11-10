@@ -16,10 +16,10 @@ import { breakingPoint } from "./breakingPoint"
 // rather than named.
 let perfectDodgeTier: number | undefined
 
-export function disintegrationBuffDef(): BuffModule {
+export function disintegrationBrokenTargetBuffDef(): BuffModule {
   return defineBuff({
-    id: BUFF.disintegration,
-    name: "Disintegration",
+    id: BUFF.disintegrationBrokenTarget,
+    name: "Disintegration (Qi-broken target)",
     requires: { param: PARAM.breakingPoint },
     affectsAll: true,
     duration: 5,
@@ -27,9 +27,29 @@ export function disintegrationBuffDef(): BuffModule {
     stackOnDamage: true,
     damageGrantTiming: "preScore",
     stackOnDamagePhase: "exhausted",
+    summary:
+      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks, one per hit on a target with no Qi left",
+    effects: (ctx) =>
+      ctx.self.stacks > 0
+        ? [
+            stat("phys.penetration", 0.05 * ctx.self.stacks),
+            stat("critDamageBoost", 0.05 * ctx.self.stacks),
+          ]
+        : [],
+  })
+}
+
+export function disintegrationBuffDef(): BuffModule {
+  return defineBuff({
+    id: BUFF.disintegration,
+    name: "Disintegration (Perfect Dodge)",
+    requires: { param: PARAM.breakingPoint },
+    affectsAll: true,
+    duration: 5,
+    maxStacks: 5,
     rateLimit: { count: 1, window: 15 },
     summary:
-      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks; a Perfect Dodge grants 5 stacks once per 15s at the Perfect Dodge tier",
+      "phys.penetration +5/stack, critDamageBoost +5%/stack, up to 5 stacks; a Perfect Dodge grants 5 stacks once per 15s at the Perfect Dodge tier, separate from the stacks a Qi-broken target gives",
     stacks: (ctx) =>
       ctx.build.paramTier(PARAM.breakingPoint) >=
       (perfectDodgeTier ??= requireInnerWayNodeTier(
