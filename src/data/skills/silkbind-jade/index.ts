@@ -27,6 +27,7 @@ import { umblightcharge12 } from "./umblightcharge-12"
 import { umblightchargeLift } from "./umblightcharge-lift"
 import { apricotHeavenNormal } from "./apricot-heaven-normal"
 import { apricotHeavenEnhanced } from "./apricot-heaven-enhanced"
+import { apricotHeavenRise } from "./apricot-heaven-rise"
 import { glowAndFlowStage1 } from "./glow-and-flow-stage-1"
 import { glowAndFlowStage2 } from "./glow-and-flow-stage-2"
 import { bambooBreeze } from "./bamboo-breeze"
@@ -82,6 +83,7 @@ export const SKILLS: Skill[] = [
   umblightchargeLift,
   apricotHeavenNormal,
   apricotHeavenEnhanced,
+  apricotHeavenRise,
   glowAndFlowStage1,
   glowAndFlowStage2,
   bambooBreeze,

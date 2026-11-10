@@ -101,8 +101,8 @@ export const blossomResource = defineResource({
       name: "Apricot Heaven gain",
       // In-game values as of 2026-10-06: +5 per hit, 2 hits per cast.
       defaultAmount: 10,
-      skillIds: [SKILL.apricotHeavenNormal, SKILL.apricotHeavenEnhanced],
-      divideAcrossSkillHits: true,
+      skillIds: [SKILL.apricotHeavenNormal, SKILL.apricotHeavenEnhanced, SKILL.apricotHeavenRise],
+      hitsPerCast: 2,
     },
     {
       id: "bambooBreezeHit",

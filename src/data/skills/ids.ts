@@ -245,6 +245,7 @@ export const CAST = {
   umbLightCharge12: "cast:umbLightCharge12",
   apricotHeavenNormal: "cast:apricotHeavenNormal",
   apricotHeavenEnhanced: "cast:apricotHeavenEnhanced",
+  apricotHeavenRise: "cast:apricotHeavenRise",
   umbLightChargeLift: "cast:umbLightChargeLift",
   umbQ: "cast:umbQ",
   umbQPrepull: "cast:umbQPrepull",
