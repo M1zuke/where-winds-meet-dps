@@ -243,6 +243,13 @@ export class QiBar implements QiSource {
     return snapshotReader(broken, broken ? 0 : this.fractionOf(this.valueAt(frame)))
   }
 
+  spendableAt(frame: number, kind: QiHitKind): number {
+    if (this.isBrokenAtFrame(frame)) return 0
+    const lastBreak = this.breaks[this.breaks.length - 1]
+    if (kind === "direct" && lastBreak && frame < lastBreak.immuneUntilFrame) return 0
+    return this.valueAt(frame)
+  }
+
   damageLog(): QiDamageLog {
     return this.log
   }

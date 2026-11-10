@@ -59,8 +59,8 @@ on the 60 fps grid. Rules:
 - **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
   a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage
   kernel — docs/CALCULATION.md § "Qi damage". Absent means rate 1, flat 0, the
-  in-game default. **An echo release deals no Qi**, whatever its own debuff's
-  rate: it is a banked payout, not a fresh damage event.
+  in-game default. **An echo release deals Qi only from its own `qiShare`**,
+  never from a rate: it is a banked payout, not a fresh damage event.
 
 ### Hit variants
 
@@ -441,6 +441,11 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   release-time adjustment: a factor applied once to the released total, read
   against the target's state at the release frame rather than at banking
   time.
+- **An echo may also bank Qi** (`qiShare`): each fed event banks `qiShare` of
+  the Qi it deals, capped by the Qi the bar still holds before that event and
+  zero while the event deals none. The release lands the banked Qi on the bar
+  as a tick-kind hit, under the same release-time adjustment, and a Qi release
+  is not gated by the rotation window.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
 - **A status may carry a `description`**: one line of display text the cast
