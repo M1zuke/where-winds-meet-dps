@@ -27,9 +27,9 @@ const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
   ],
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": [[1045, 1645]],
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": [[1117, 1717]],
-  "builtin-silkbindJade-20-dh-video-60s": [[1639, 2239]],
-  "builtin-silkbindJade-30s-dummy-max": [[1673, 2273]],
-  "builtin-silkbindJade-standardized-1-7": [[1663, 2263]],
+  "builtin-silkbindJade-20-dh-video-60s": [[1747, 2347]],
+  "builtin-silkbindJade-30s-dummy-max": [[1709, 2309]],
+  "builtin-silkbindJade-standardized-1-7": [[1771, 2371]],
   "builtin-silkbindJade-t5": [[2084, 2684]],
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": [
     [1397, 1997],

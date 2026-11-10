@@ -79,7 +79,12 @@ describe("resource refund on exhausted-target projectile hits", () => {
     )
     const skill = makeSkill("fictional", {
       id: "fictional-combo",
-      hits: [makeHit(), makeHit(), makeHit()],
+      hits: [
+        makeHit(),
+        makeHit({ physMultiplier: 1 }),
+        makeHit({ physMultiplier: 1 }),
+        makeHit({ physMultiplier: 1 }),
+      ],
     })
     simulation.hit(skill, 0)
     expect(amount(simulation)).toBe(12)
