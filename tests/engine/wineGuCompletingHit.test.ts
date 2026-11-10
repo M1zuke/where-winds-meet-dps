@@ -10,7 +10,12 @@ function soberSorrowHitDamages(): { frame: number; damage: number }[] {
   const result = runEngine({
     ...defaultInputs,
     classId: CLASS,
-    mindMethods: [{ name: "Wolfchaser's Art", stacks: "tier 6" }],
+    mindMethods: [
+      { name: "Sword Horizon", stacks: "tier 6" },
+      { name: "Wolfchaser's Art", stacks: "tier 6" },
+      { name: "Insightful Strike", stacks: "tier 6" },
+      { name: "Morale Chant", stacks: "tier 6" },
+    ],
     activeCustomRotation: testRotation(CLASS, {
       name: "wine-gu",
       steps: [makeStep({ skillId: builtinSkill(CLASS, "bellstrikeUmbra-spearq").id })],
