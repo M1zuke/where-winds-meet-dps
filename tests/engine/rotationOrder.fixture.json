@@ -1,14 +1,14 @@
 {
   "builtin-bellstrikeUmbra-36-bbs": {
-    "dps": 75606.27247635831,
-    "totalDamage": 4536376.3485814985,
+    "dps": 75606.28124849171,
+    "totalDamage": 4536376.874909502,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30392.919654204376,
       "Divinecraft - Fire": 115642.8793743954,
       "Bleeding (DoT)": 360518.4144493344,
-      "Dragon's Breath: Smolder 1 Hit": 38067.88541279183,
-      "Smolder (DoT)": 501151.9722531405,
-      "Flute Ripple (DoT)": 88703.39696114087,
+      "Dragon's Breath: Smolder 1 Hit": 38067.887844303856,
+      "Smolder (DoT)": 501152.48190101335,
+      "Flute Ripple (DoT)": 88703.41120977027,
       "Divinecraft - Fire Explosion": 13437.158797955939,
       "SpearQ": 160486.95464478765,
       "SwordSpecial 3-Hit": 120358.87184855457,
@@ -26,15 +26,15 @@
     }
   },
   "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": {
-    "dps": 78819.02556245636,
-    "totalDamage": 4729141.5337473815,
+    "dps": 78819.03471635112,
+    "totalDamage": 4729142.082981067,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30227.31339405844,
       "Divinecraft - Fire": 116173.33206315858,
       "Bleeding (DoT)": 355004.9228507873,
-      "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
-      "Smolder (DoT)": 503093.72681655065,
-      "Flute Ripple (DoT)": 196111.76589844516,
+      "Dragon's Breath: Smolder 2 Hits": 38067.887844303856,
+      "Smolder (DoT)": 503094.23844173434,
+      "Flute Ripple (DoT)": 196111.79751413918,
       "Divinecraft - Fire Explosion": 13440.02345709586,
       "SpearQ 5-Hit Cancel": 93370.99412872465,
       "SwordSpecial 3-Hit": 122630.60915403531,
@@ -49,19 +49,19 @@
       "Sword Martial QQQ": 44738.5749599097,
       "Sword Charge Stage 1, 2-Hit": 31533.230923167757,
       "Sword R Charge - Follow Up 1-Hit[cancel]": 13670.97912874114,
-      "Flute of the Tides Cancel": 21984.6616919884
+      "Flute of the Tides Cancel": 21984.665253290364
     }
   },
   "builtin-bellstrikeUmbra-38-bbs": {
-    "dps": 81916.79293051016,
-    "totalDamage": 4915007.57583061,
+    "dps": 81916.80207150737,
+    "totalDamage": 4915008.124290442,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30227.31339405844,
       "Divinecraft - Fire": 115884.26744945042,
       "Bleeding (DoT)": 341487.18123313587,
-      "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
-      "Smolder (DoT)": 502227.8137413144,
-      "Flute Ripple (DoT)": 196939.29394205828,
+      "Dragon's Breath: Smolder 2 Hits": 38067.887844303856,
+      "Smolder (DoT)": 502228.32448306266,
+      "Flute Ripple (DoT)": 196939.32569180382,
       "Divinecraft - Fire Explosion": 13526.677692081379,
       "SpearQ 5-Hit Cancel": 19852.473060669025,
       "SwordSpecial 3-Hit": 122076.33650547887,
@@ -78,19 +78,19 @@
       "SpearQ": 97197.36880126625,
       "Sword Charge Stage 1, 3-Hit": 42074.22211586611,
       "Sword R Charge - Follow Up 1-Hit[cancel]": 13032.327819222874,
-      "Flute of the Tides Cancel": 21888.51907735987
+      "Flute of the Tides Cancel": 21888.522614194757
     }
   },
   "builtin-bellstrikeUmbra-nox-1m-dh": {
-    "dps": 75781.1735301455,
-    "totalDamage": 4546870.41180873,
+    "dps": 75781.18220229159,
+    "totalDamage": 4546870.932137495,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 66110.43862067585,
       "Divinecraft - Fire": 115332.91891535834,
       "Bleeding (DoT)": 332150.8238375777,
-      "Dragon's Breath: Smolder 2 Hits": 38137.586612466126,
-      "Smolder (DoT)": 495897.3884426443,
-      "Flute Ripple (DoT)": 88710.64754737394,
+      "Dragon's Breath: Smolder 2 Hits": 38137.58902625715,
+      "Smolder (DoT)": 495897.89273847674,
+      "Flute Ripple (DoT)": 88710.66179723048,
       "Divinecraft - Fire Explosion": 13424.907516345951,
       "SpearQ": 125944.88679283735,
       "SwordSpecial 3-Hit": 120358.87184855457,
@@ -104,18 +104,18 @@
       "Sword Martial QQ": 136454.74623239378,
       "Sword Martial QQQ": 45511.494458065536,
       "Sword R Charge - Follow Up 1-Hit[cancel]": 4327.336650398329,
-      "Dragon Head - Plus": 175244.58413688472
+      "Dragon Head - Plus": 175244.58350617965
     }
   },
   "builtin-bellstrikeUmbra-nox-30s-dh": {
-    "dps": 68720.89770407735,
-    "totalDamage": 2061626.9311223202,
+    "dps": 68720.90574311161,
+    "totalDamage": 2061627.1722933485,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 12015.01018599085,
       "Divinecraft - Fire": 55059.82130031035,
       "Bleeding (DoT)": 143378.6810345525,
-      "Dragon's Breath: Smolder 2 Hits": 36751.73551076451,
-      "Smolder (DoT)": 235401.00948645527,
+      "Dragon's Breath: Smolder 2 Hits": 36751.73794229099,
+      "Smolder (DoT)": 235401.2488566616,
       "Divinecraft - Fire Explosion": 6288.380350755138,
       "SpearQ": 58526.992847063884,
       "SwordSpecial 3-Hit": 46048.23165221394,
@@ -129,12 +129,12 @@
       "Sword Martial Q": 8505.124375070156,
       "Sword Martial QQ": 34020.497500280624,
       "Sword Martial QQQ": 11141.790692694169,
-      "Dragon Head - Plus": 175244.58413688472
+      "Dragon Head - Plus": 175244.58350617965
     }
   },
   "builtin-stonesplitStrength-tilla-dummy-rotation": {
-    "dps": 53657.882635403446,
-    "totalDamage": 3219472.958124207,
+    "dps": 53657.8831352121,
+    "totalDamage": 3219472.988112726,
     "damageBySkill": {
       "SnowpartingSlide Prepull[Hit]": 12711.722784600805,
       "Divinecraft - Fire": 78034.09164896802,
@@ -142,7 +142,7 @@
       "AnxiSoldierHeng": 395288.01698712155,
       "SnowpartingCharged[Forgetfulness]": 292448.2124953819,
       "Divinecraft - Fire Explosion": 11769.167073663997,
-      "Flute Ripple (DoT)": 199754.64944430845,
+      "Flute Ripple (DoT)": 199754.67238848703,
       "SnowpartingSpecial": 155630.59609674173,
       "SnowpartingQ-Stab": 101962.87787255557,
       "AnxiSoldierHeng (Stab)": 62820.440107182716,
@@ -150,29 +150,29 @@
       "AnxiSoldierMoSweep": 52669.435562800005,
       "SnowpartingDual": 50519.101078363936,
       "Yi River": 59611.16889075458,
-      "Soaring": 190238.9535591832,
+      "Soaring": 190238.96683586464,
       "SnowpartingCharged": 195618.14367556287,
-      "Toad[Cancel]": 48241.137591982035,
+      "Toad[Cancel]": 48241.136616619784,
       "SnowpartingSlide": 36300.77301732612,
-      "Toad Poison (DoT)": 41518.21183924793,
-      "Flute of the Tides Cancel": 22882.365516700906
+      "Toad Poison (DoT)": 41518.20400784172,
+      "Flute of the Tides Cancel": 22882.368091127617
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch": {
-    "dps": 71390.60863186233,
-    "totalDamage": 4283436.51791174,
+    "dps": 71390.60873027933,
+    "totalDamage": 4283436.52381676,
     "damageBySkill": {
       "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77533.63610501599,
       "Divinecraft - Fire Explosion": 11767.015338624,
       "SnowpartingQ-Stab": 98479.76486394893,
-      "Flute Ripple (DoT)": 201989.72357829873,
+      "Flute Ripple (DoT)": 201989.74638206826,
       "AnxiSoldierHeng (Stab)": 61617.86636611986,
-      "Toad[Cancel]": 95779.83874874652,
+      "Toad[Cancel]": 95779.83681272822,
       "AnxiSoldierMoDown": 152440.16229267843,
       "AnxiSoldierMoJump": 273106.86382449797,
       "PhalanxCharged-S3[InnerPassion]": 2610080.792786489,
-      "Toad Poison (DoT)": 90487.20786990492,
+      "Toad Poison (DoT)": 90487.19079444962,
       "Yi River": 55248.051434580324,
       "PhalanxQ": 63228.007103766126,
       "AnxiSoldierMoSweep": 32922.7828328,
@@ -180,19 +180,19 @@
       "SnowpartingVC": 142841.93505240334,
       "AnxiSoldierHeng": 58155.1301022402,
       "SnowpartingSlide": 34712.8190697111,
-      "Flute of the Tides Cancel": 17862.757484575093,
+      "Flute of the Tides Cancel": 17862.759597299748,
       "SnowpartingCharged[Forgetfulness]": 35742.267533548526
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch-no-toad": {
-    "dps": 73385.77251282275,
-    "totalDamage": 4403146.350769365,
+    "dps": 73385.77292809762,
+    "totalDamage": 4403146.375685858,
     "damageBySkill": {
       "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77342.28935669601,
       "Divinecraft - Fire Explosion": 11459.836612223999,
       "SnowpartingQ-Stab": 98479.76486394893,
-      "Flute Ripple (DoT)": 201989.72357829873,
+      "Flute Ripple (DoT)": 201989.74638206826,
       "AnxiSoldierHeng (Stab)": 61617.86636611986,
       "AnxiSoldierMoDown": 161522.8537901024,
       "AnxiSoldierMoJump": 291143.23803605966,
@@ -205,29 +205,29 @@
       "PhalanxQ": 63228.007103766126,
       "AnxiSoldierMoSweep": 31025.528132230967,
       "SnowpartingSlide": 33415.08806909892,
-      "Flute of the Tides Cancel": 17862.757484575093
+      "Flute of the Tides Cancel": 17862.759597299748
     }
   },
   "builtin-bellstrikeSplendor-60s-78-waves-2-flute-1-frog": {
-    "dps": 68700.02471812075,
-    "totalDamage": 4146046.491738587,
+    "dps": 68700.02502901937,
+    "totalDamage": 4146046.5105013186,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 61519.05374554145,
       "SwordQ": 37225.56485749376,
       "EnergySurge": 719984.2713742848,
       "Divinecraft - Fire Explosion": 9497.00241301883,
-      "Flute Ripple (DoT)": 156977.85860287567,
+      "Flute Ripple (DoT)": 156977.88263963288,
       "SwordHeavyCharged": 2946285.7620015466,
       "SpearQ": 14570.406824702677,
-      "Toad[Cancel]": 36593.918693093234,
-      "Toad Poison (DoT)": 32731.56161115642,
-      "Flute of the Tides Full": 59476.43239180572
+      "Toad[Cancel]": 36593.91794753548,
+      "Toad Poison (DoT)": 32731.55538402403,
+      "Flute of the Tides Full": 59476.434090468945
     }
   },
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": {
-    "dps": 76023.72375286563,
-    "totalDamage": 2323791.822712593,
+    "dps": 76023.72416616649,
+    "totalDamage": 2323791.8353458224,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 31874.59567689405,
@@ -235,31 +235,31 @@
       "SwordQ": 25295.796780721703,
       "EnergySurge": 426211.0312996977,
       "Divinecraft - Fire Explosion": 4766.262204477545,
-      "Flute Ripple (DoT)": 81686.02857193536,
+      "Flute Ripple (DoT)": 81686.04120516455,
       "SwordHeavyCharged": 1595767.7278704313,
       "SwordHeavyCharged 2 Hit": 80532.15106501436
     }
   },
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": {
-    "dps": 76708.86225638946,
-    "totalDamage": 2305101.3108045035,
+    "dps": 76708.86477291954,
+    "totalDamage": 2305101.3864262323,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 30885.27069204104,
       "SwordQ": 12125.152365491676,
       "EnergySurge": 437302.7126299487,
       "Divinecraft - Fire Explosion": 4741.444627751625,
-      "Flute Ripple (DoT)": 79580.2407337767,
+      "Flute Ripple (DoT)": 79580.25301532488,
       "SwordHeavyCharged": 1524678.8529723093,
-      "Soaring": 72351.43386059583,
-      "Dragon's Breath 1 Hit": 13009.72803079793,
-      "Combustion (DoT)": 53106.128488234746,
+      "Soaring": 72351.4392893659,
+      "Dragon's Breath 1 Hit": 13009.729881272975,
+      "Combustion (DoT)": 53106.18454916993,
       "SpearQ": 6135.68718048571
     }
   },
   "builtin-silkbindJade-20-dh-video-60s": {
-    "dps": 53675.27089213738,
-    "totalDamage": 3209781.199349815,
+    "dps": 53675.27210152055,
+    "totalDamage": 3209781.271670929,
     "damageBySkill": {
       "UmbQ": 403474.26738030085,
       "Divinecraft - Fire": 63821.29553745923,
@@ -273,44 +273,44 @@
       "FanHeavyPursuit 3-Hit": 122320.47414525709,
       "Yi River": 39824.56819382601,
       "FanQ": 9735.51736521002,
-      "Dragon's Breath: Smolder 2 Hits": 36536.93652719319,
-      "Smolder (DoT)": 65428.5805398449,
-      "Dragon Head - Plus": 208606.65607984058,
-      "Soaring": 65131.097168052926
+      "Dragon's Breath: Smolder 2 Hits": 36536.939146928,
+      "Smolder (DoT)": 65428.6461488587,
+      "Dragon Head - Plus": 208606.6553156554,
+      "Soaring": 65131.10202460436
     }
   },
   "builtin-silkbindJade-30s-dummy-max": {
-    "dps": 51852.57690202014,
-    "totalDamage": 1555577.3070606042,
+    "dps": 51852.57940379511,
+    "totalDamage": 1555577.3821138535,
     "damageBySkill": {
       "UmbQ": 214736.87994112194,
       "Divinecraft - Fire": 32260.066454526575,
-      "Flute Ripple (DoT)": 66205.45049043125,
+      "Flute Ripple (DoT)": 66205.46067221973,
       "UmbDroneLaunch": 18822.0879192917,
       "Divinecraft - Fire Explosion": 4819.866011248004,
       "UmbDrone (DoT)": 655496.026534186,
       "FanLightCharged": 80432.22648567779,
-      "Soaring": 64822.68889608681,
-      "Toad[Cancel]": 35157.53810748477,
+      "Soaring": 64822.69372126335,
+      "Toad[Cancel]": 35157.53744332675,
       "Yi River": 15308.293118091264,
       "FanQCancel": 22740.372658457054,
-      "Dragon's Breath 2 Hits": 38712.52446262857,
-      "Toad Poison (DoT)": 29739.417675432505,
-      "Combustion (DoT)": 90744.52266703763,
+      "Dragon's Breath 2 Hits": 38712.528988464655,
+      "Toad Poison (DoT)": 29739.412061125942,
+      "Combustion (DoT)": 90744.6181831427,
       "Umb HeavyLight (Heavy Share)": 6500.617298895409,
       "Umb HeavyLight": 13646.082078615345,
       "FanSpecial": 13079.404734677377,
-      "Poet1": 18763.908725159505,
-      "Poet2": 31630.59156765345,
-      "Poet3": 31630.59156765345,
-      "Poet4": 31630.59156765345,
-      "Poet Final Hit[Cancel]": 30564.706853499734,
-      "Poet Final Hit[Cancel] (Explosion)": 8132.8512450927
+      "Poet1": 18763.905275329507,
+      "Poet2": 31630.583178391124,
+      "Poet3": 31630.583178391124,
+      "Poet4": 31630.583178391124,
+      "Poet Final Hit[Cancel]": 30564.7049207631,
+      "Poet Final Hit[Cancel] (Explosion)": 8132.8480782542
     }
   },
   "builtin-silkbindJade-standardized-1-7": {
-    "dps": 59111.199070326824,
-    "totalDamage": 3839272.3796177274,
+    "dps": 59111.199007851304,
+    "totalDamage": 3839272.3755599423,
     "damageBySkill": {
       "UmbQ Prepull": 34705.80328003881,
       "Divinecraft - Fire": 70982.13172420248,
@@ -321,11 +321,11 @@
       "UmbDroneLaunch[20hit]": 43466.6732401345,
       "UmbDrone[20hit] (DoT)": 1983504.8967895035,
       "FanLightCharged": 497192.8763082746,
-      "Soaring": 208299.32224507324,
-      "Toad[Cancel]": 121724.65406397337,
+      "Soaring": 208299.33780137514,
+      "Toad[Cancel]": 121724.6516468696,
       "Yi River": 48821.77419141441,
       "FanQ": 41836.79642553869,
-      "Toad Poison (DoT)": 91012.92348285089,
+      "Toad Poison (DoT)": 91012.90628586683,
       "FanHeavyPursuit 3-Hit": 54034.158009913415,
       "UmbDroneLaunch[12hit]": 6500.617298895409,
       "FanSpecial": 13371.573120411049,
@@ -334,8 +334,8 @@
     }
   },
   "builtin-silkbindJade-t5": {
-    "dps": 48382.01905355152,
-    "totalDamage": 3275462.6899254383,
+    "dps": 48382.01905512732,
+    "totalDamage": 3275462.69003212,
     "damageBySkill": {
       "UmbQ Prepull": 34705.80328003881,
       "Divinecraft - Fire": 73870.4508054553,
@@ -346,17 +346,17 @@
       "FanSpecial": 56351.507868034394,
       "UmbDrone[20hit] (DoT)": 1144683.582356168,
       "Yi River": 48647.68442888874,
-      "Soaring": 286486.881428238,
-      "Toad[Cancel]": 149444.99908152095,
+      "Soaring": 286486.90293854947,
+      "Toad[Cancel]": 149444.99605725514,
       "FanQCancel": 41836.79642553869,
       "FanHeavyPursuit 3-Hit": 115349.1202476171,
       "UmbQ": 140021.79400894063,
-      "Toad Poison (DoT)": 97300.28913179251
+      "Toad Poison (DoT)": 97300.27075242806
     }
   },
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": {
-    "dps": 80090.01417597142,
-    "totalDamage": 4780039.012735894,
+    "dps": 80090.01463147835,
+    "totalDamage": 4780039.039922066,
     "damageBySkill": {
       "Gauntlet Q Prepull": 8708.346554457275,
       "Twinblade Special": 34506.23015654416,
@@ -364,7 +364,7 @@
       "Twinblade Q [1-hit cancel]": 7906.163350046103,
       "Castlink": 197293.69537167207,
       "Divinecraft - Fire Explosion": 11099.957107986549,
-      "Flute Ripple (DoT)": 167147.87930730922,
+      "Flute Ripple (DoT)": 167147.90422502256,
       "Falcon's Pursuit": 128584.98364944434,
       "Gauntlet Special - Tipsylay": 73456.77537200987,
       "Gauntlet Special - Primepick Follow-up [1-hit cancel]": 50244.3222397222,
@@ -375,7 +375,7 @@
       "Twinblade Special - Inebriate": 1158693.7485085544,
       "Drunkslay State": 827020.185360906,
       "Gauntlet Q": 98578.1524236356,
-      "Flute of the Tides Cancel": 15211.060964044158
+      "Flute of the Tides Cancel": 15211.063232503586
     }
   }
 }

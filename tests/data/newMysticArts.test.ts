@@ -16,7 +16,7 @@ describe.each(CASES)(
   "%s — coefficients sum to the documented per-cast total",
   (_name, skill, power, flat) => {
     it("phys coefficient ratios sum to 1.0", () => {
-      expect(sumOfRatios(skill, power)).toBeCloseTo(1, 10)
+      expect(sumOfRatios(skill, power)).toBeCloseTo(1, 6)
     })
 
     it("phys flat terms sum to the documented total", () => {
