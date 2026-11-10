@@ -25,6 +25,7 @@ import { V20__jadeDroneDirectHitFlight } from "./V20__jadeDroneDirectHitFlight"
 import { V21__bleedDetonationWithoutRetainedStacks } from "./V21__bleedDetonationWithoutRetainedStacks"
 import { V22__smolderFirstWindowLength } from "./V22__smolderFirstWindowLength"
 import { V23__drunkslayBanksQiDamage } from "./V23__drunkslayBanksQiDamage"
+import { V24__volutefitReachesWineboundTicks } from "./V24__volutefitReachesWineboundTicks"
 
 export type {
   CustomDebuffMigration,
@@ -68,6 +69,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V21__bleedDetonationWithoutRetainedStacks,
   V22__smolderFirstWindowLength,
   V23__drunkslayBanksQiDamage,
+  V24__volutefitReachesWineboundTicks,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

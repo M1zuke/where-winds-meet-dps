@@ -1,6 +1,7 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 import { SKILL } from "./ids"
 import { BUFF } from "../buffs/ids"
 import { poetMiddleStrikeHits } from "./poetStrikeHits"
@@ -16,6 +17,7 @@ export const poet2 = defineSkill({
   castTag: CAST.poet2,
   castFrames: 33,
   triggerable: true,
+  receives: WINEBOUND_MYSTIC_RECEIVES,
   // In-game values as of 2026-10-18.
   vitalityCost: 6,
   // In-game values as of 2026-09-28: every other mystic art is a stationary

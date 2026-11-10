@@ -4,6 +4,7 @@ import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { BUFF } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { DEBUFF } from "./ids"
+import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 
 export const toadPoison = defineDebuff({
   id: DEBUFF.toadPoison,
@@ -94,7 +95,7 @@ export const combustion = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",
   tags: [ROLE.combustion],
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken, ...WINEBOUND_MYSTIC_RECEIVES],
 })
 
 export const smolder = defineDebuff({
@@ -129,7 +130,7 @@ export const smolder = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken, ...WINEBOUND_MYSTIC_RECEIVES],
 })
 
 export const fluteRipple = defineDebuff({

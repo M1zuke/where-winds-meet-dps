@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 import { SKILL, DEBUFF } from "./ids"
 
 export const fireBreath1HitPrepull = defineSkill({
@@ -15,6 +16,7 @@ export const fireBreath1HitPrepull = defineSkill({
   castTag: CAST.dragonSBreath1HitPrepull,
   castFrames: 0,
   triggerable: true,
+  receives: WINEBOUND_MYSTIC_RECEIVES,
   // In-game values as of 2026-10-18.
   vitalityCost: 20,
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.

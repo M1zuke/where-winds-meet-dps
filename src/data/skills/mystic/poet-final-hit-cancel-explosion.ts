@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 import { SKILL, DEBUFF } from "./ids"
 
 // In-game as of 2026-09-24: the Drunken Aura this strike leaves explodes on a
@@ -21,6 +22,7 @@ export const poetFinalHitCancelExplosion = defineSkill({
   cancelledBy: "deflectCancel",
   castFrames: 0,
   triggerable: true,
+  receives: WINEBOUND_MYSTIC_RECEIVES,
   // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
