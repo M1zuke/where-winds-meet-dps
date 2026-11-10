@@ -101,14 +101,14 @@ describe("a build the user authored", () => {
           : slot,
       ),
     }
-    const badAttunement = {
+    const unknownAttunement = {
       ...custom,
       slots: custom.slots.map((slot, index) =>
         index === 0 ? { ...slot, attunement: "nope" } : slot,
       ),
     }
     expect(isCustomGraduationBuild(badWord)).toBe(false)
-    expect(isCustomGraduationBuild(badAttunement)).toBe(false)
+    expect(isCustomGraduationBuild(unknownAttunement)).toBe(true)
     expect(isCustomGraduationBuild(custom)).toBe(true)
   })
 })

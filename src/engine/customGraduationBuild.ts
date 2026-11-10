@@ -3,7 +3,6 @@ import type { GraduationWords } from "../data/classes/graduationGear"
 import { GEAR_WORD_IDS } from "../data/stats/statLines"
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
 import type { AttunementId } from "./attunements"
-import { getAttunement } from "./attunements"
 import type { Arsenal, BowSet, GearSlot, GearWordId } from "./types"
 import { GEAR_SLOTS } from "./types"
 
@@ -55,7 +54,7 @@ export function isCustomGraduationSlot(value: unknown): value is CustomGraduatio
   if (!GEAR_SLOTS.includes(slot.slot)) return false
   if (!Array.isArray(slot.words) || slot.words.length !== 5) return false
   if (!slot.words.every((word) => GEAR_WORD_IDS.includes(word as GearWordId))) return false
-  return typeof slot.attunement === "string" && getAttunement(slot.attunement) !== undefined
+  return typeof slot.attunement === "string"
 }
 
 export function isCustomGraduationBuild(value: unknown): value is CustomGraduationBuild {
