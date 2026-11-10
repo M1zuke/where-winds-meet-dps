@@ -24,7 +24,7 @@ import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migratio
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
-import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
+import { throughJadeAuditHops } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -107,7 +107,7 @@ const throughHopsBeforeV95 = (skill: unknown): Skill =>
   ) as Skill
 
 const throughLaterHops = (skill: unknown): Skill =>
-  healUmbHeavylightFromThePress(healFractionalFrameTiming(throughHopsBeforeV95(skill))) as Skill
+  throughJadeAuditHops(healFractionalFrameTiming(throughHopsBeforeV95(skill)))
 
 describe("custom-skills v27 fixture", () => {
   it("is v27 and still stores the pre-V28 shape for every healed skill", () => {

@@ -68,6 +68,7 @@ export const CAST = {
   fanLight: "cast:fanLight",
   fanLightChain: "cast:fanLightChain",
   umbrellaDash: "cast:umbrellaDash",
+  umbrellaDashBullet: "cast:umbrellaDashBullet",
   fanQ: "cast:fanQ",
   fanQCancel: "cast:fanQCancel",
   fanQPrepull: "cast:fanQPrepull",

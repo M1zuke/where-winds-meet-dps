@@ -117,6 +117,7 @@ import { V113__splendorWaveCoefficientsExact } from "./V113__splendorWaveCoeffic
 import { V114__splendorQuickCastCoefficientsExact } from "./V114__splendorQuickCastCoefficientsExact"
 import { V115__throatPierceDeflectGrant } from "./V115__throatPierceDeflectGrant"
 import { V116__umbHeavylightFromThePress } from "./V116__umbHeavylightFromThePress"
+import { V117__jadeTrajectoryHitsReach } from "./V117__jadeTrajectoryHitsReach"
 
 export type {
   CustomSkillMigration,
@@ -302,6 +303,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V114__splendorQuickCastCoefficientsExact,
   V115__throatPierceDeflectGrant,
   V116__umbHeavylightFromThePress,
+  V117__jadeTrajectoryHitsReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

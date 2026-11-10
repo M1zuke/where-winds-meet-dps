@@ -743608,7 +743608,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 84,
+        "count": 85,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -743693,9 +743693,10 @@
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull",
           "silkbindJade-umbrella-dash",
+          "silkbindJade-umbrella-dash-bullet",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "2b3ff1f7dfd8044dbf1f5007ca4498920ed0b65be1c9d9d6a3d6c8c20b57f8a6"
+        "digest": "fb84eed0719651be0a50ca54ea9e81995592d6e70342b5c362b3bd49e72c3f25"
       },
       "debuffs": {
         "count": 13,

@@ -1,0 +1,279 @@
+{
+  "v": 116,
+  "skills": [
+    {
+      "id": "silkbindJade-fanlightcharged",
+      "classId": "silkbindJade",
+      "name": "FanLightCharged",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 97.8,
+      "receives": [
+        "windWall",
+        "pursuitChargedBoost",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "nonPlayerBaseDamage145",
+        "inkwellFanAdditionalAttack"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 71.4,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-dual",
+      "classId": "silkbindJade",
+      "name": "Fan (Dual-Weapon Skill)",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 51,
+      "receives": ["windWall", "inkwellFanAdditionalAttack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 7,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 36,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-light",
+      "classId": "silkbindJade",
+      "name": "Fan - Light Attack",
+      "tags": ["weapon:Fan", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 37,
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "inkwellFanAdditionalAttack"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 28,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-light-chain",
+      "classId": "silkbindJade",
+      "name": "Fan - Light Attack (4-stage)",
+      "tags": ["weapon:Fan", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 150,
+      "receives": [
+        "windWall",
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "inkwellFanAdditionalAttack"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 28,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 55,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 75,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 103,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbrella-dash",
+      "classId": "silkbindJade",
+      "name": "Umbrella - Dash",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 88,
+      "receives": ["windWall", "trajectorySkill", "combo", "vernalUmbrellaAdditionalAttack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 17,
+          "physMultiplier": 0.439065,
+          "attributeMultiplier": 0.658598,
+          "physFixed": 122,
+          "attributeFixed": 66.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 51,
+          "physMultiplier": 0.439065,
+          "attributeMultiplier": 0.658598,
+          "physFixed": 122,
+          "attributeFixed": 66.5,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 51,
+          "physMultiplier": 0.304656,
+          "attributeMultiplier": 0.456984,
+          "physFixed": 84.4,
+          "attributeFixed": 46,
+          "extraCritDamage": 1,
+          "triggers": [],
+          "projectile": {
+            "speedMetersPerSecond": 30,
+            "maxTravelFrames": 120
+          }
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-dash",
+      "classId": "silkbindJade",
+      "name": "Fan - Dash",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 63,
+      "receives": ["windWall", "inkwellFanAdditionalAttack"],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 13,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-fan-slash",
+      "classId": "silkbindJade",
+      "name": "Fan slash",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "castFrames": 37,
+      "receives": [
+        "thunderousBloom",
+        "springThunder",
+        "mistwillowHeavyBuff",
+        "mistwillowBuff",
+        "inkwellFanAdditionalAttack"
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 28,
+          "physMultiplier": 0.408064,
+          "attributeMultiplier": 0.612096,
+          "physFixed": 113,
+          "attributeFixed": 61.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    }
+  ]
+}

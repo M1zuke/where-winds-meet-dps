@@ -258,8 +258,8 @@
     }
   },
   "builtin-silkbindJade-20-dh-video-60s": {
-    "dps": 56114.62347231981,
-    "totalDamage": 3260259.623741781,
+    "dps": 56238.16835889436,
+    "totalDamage": 3267437.5816517626,
     "damageBySkill": {
       "UmbQ": 403474.26738030085,
       "Divinecraft - Fire": 62882.795842120824,
@@ -268,7 +268,7 @@
       "Divinecraft - Fire Explosion": 9964.190123761608,
       "UmbDroneLaunch": 31865.249594188546,
       "UmbDrone (DoT)": 1532940.9822908167,
-      "FanLightCharged": 489687.2515431445,
+      "FanLightCharged": 496865.20945312636,
       "FanQCancel": 33389.59960838281,
       "FanHeavyPursuit 3-Hit": 122320.47414525709,
       "Yi River": 39824.56819382601,
@@ -280,8 +280,8 @@
     }
   },
   "builtin-silkbindJade-30s-dummy-max": {
-    "dps": 51490.635388593124,
-    "totalDamage": 1544719.0616577938,
+    "dps": 51529.079013178045,
+    "totalDamage": 1545872.3703953414,
     "damageBySkill": {
       "UmbQ": 214736.87994112194,
       "Divinecraft - Fire": 32168.002780122577,
@@ -289,7 +289,7 @@
       "UmbDroneLaunch": 18822.0879192917,
       "Divinecraft - Fire Explosion": 4819.866011248004,
       "UmbDrone (DoT)": 649502.3868206127,
-      "FanLightCharged": 78808.59559977494,
+      "FanLightCharged": 79961.90433732253,
       "Soaring": 64822.68889608681,
       "Toad[Cancel]": 35157.53810748477,
       "Yi River": 15308.293118091264,
@@ -309,8 +309,8 @@
     }
   },
   "builtin-silkbindJade-standardized-1-7": {
-    "dps": 59028.264389644966,
-    "totalDamage": 3863399.904302263,
+    "dps": 59136.962973639835,
+    "totalDamage": 3870514.2266247272,
     "damageBySkill": {
       "UmbQ Prepull": 34705.80328003881,
       "Divinecraft - Fire": 70982.13172420248,
@@ -320,7 +320,7 @@
       "Divinecraft - Fire Explosion": 11728.331400817608,
       "UmbDroneLaunch[20hit]": 43466.6732401345,
       "UmbDrone[20hit] (DoT)": 1999125.8202930035,
-      "FanLightCharged": 490078.5539858107,
+      "FanLightCharged": 497192.8763082746,
       "Soaring": 208299.32224507324,
       "Toad[Cancel]": 121724.65406397337,
       "Yi River": 48821.77419141441,

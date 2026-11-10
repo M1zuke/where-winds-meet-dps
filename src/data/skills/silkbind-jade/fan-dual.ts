@@ -22,7 +22,7 @@ export const fanDual = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanDual,
-  receives: [BUFF.windWall, ...INKWELL_FAN_RECEIVES],
+  receives: [BUFF.windWall, BUFF.trajectorySkill, ...INKWELL_FAN_RECEIVES],
   triggersBuffs: [],
   isWeaponSwap: true,
   castFrames: 51,
