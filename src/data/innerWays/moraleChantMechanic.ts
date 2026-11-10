@@ -6,9 +6,10 @@ import {
   MORALE_MAX_STACKS,
   MORALE_PEN_PER_STACK,
   MORALE_STACK_THRESHOLD,
+  MoraleStacks,
+  YI_RIVER_DELAY_SEC,
   YI_RIVER_INTERVAL_SEC,
   moraleDmgPerStack,
-  moraleStacksAtTime,
 } from "../../engine/buffs/morale"
 import type { MechanicHost, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
 import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
@@ -21,18 +22,14 @@ import { PARAM } from "../skills/buffs/ids"
 import { moraleChant } from "./moraleChant"
 
 interface State {
+  stacks: MoraleStacks
   yiRiver: Skill | null
-  nextYiRiverSec: number | null
+  nextYiRiverSec: number
 }
-
-const YI_RIVER_SEARCH_LIMIT_SEC = 3600
 
 // In-game rule as of 2026-09-24: the doubling needs a controlled target, and
 // a training stake is never one.
-function stacksAt(_setup: MechanicSetup, timeSec: number): [number, boolean] {
-  const controlled = false
-  return [moraleStacksAtTime(timeSec, controlled), controlled]
-}
+const CONTROLLED_TARGET = false
 
 function effectsFor(stacks: number, controlled: boolean) {
   return [
@@ -58,11 +55,10 @@ function yiRiverSkill(classId: string): Skill {
   }
 }
 
-function scheduleYiRiver(state: State, host: MechanicHost, setup: MechanicSetup): void {
-  if (!state.yiRiver || state.nextYiRiverSec === null) return
+function scheduleYiRiver(host: MechanicHost, setup: MechanicSetup, state: State, hitSec: number) {
   host.scheduleExtra({
-    frame: Math.round(state.nextYiRiverSec * setup.fps),
-    skill: state.yiRiver,
+    frame: Math.round((hitSec + YI_RIVER_DELAY_SEC) * setup.fps),
+    skill: state.yiRiver!,
     art: {
       name: "Yi River",
       physMultiplier: 1,
@@ -92,38 +88,32 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
         INNER_WAY_NODE.yiRiver,
       )
       return {
+        stacks: new MoraleStacks(),
         yiRiver: hasYiRiver ? yiRiverSkill(setup.classId) : null,
-        nextYiRiverSec: null,
+        nextYiRiverSec: -Infinity,
       }
     },
 
-    contributeAt(_state, frame, _skill, setup) {
-      const [stacks, controlled] = stacksAt(setup, frame / setup.fps)
+    beforeEvent(state, event) {
+      if (event.direct) state.stacks.gainFromDirectHit(event.timeSec)
+    },
+
+    observeEvent(state, event, setup, host) {
+      if (!state.yiRiver || !event.direct) return
+      if (state.stacks.stacksAt(event.timeSec) < MORALE_STACK_THRESHOLD) return
+      if (event.timeSec < state.nextYiRiverSec) return
+      state.nextYiRiverSec = event.timeSec + YI_RIVER_INTERVAL_SEC
+      scheduleYiRiver(host, setup, state, event.timeSec)
+    },
+
+    contributeAt(state, frame, _skill, setup) {
+      const stacks = state.stacks.stacksAt(frame / setup.fps)
       if (stacks <= 0) return null
-      return { effects: effectsFor(stacks, controlled) }
+      return { effects: effectsFor(stacks, CONTROLLED_TARGET) }
     },
 
-    start(state, host, setup) {
-      if (!state.yiRiver) return
-      let first = 0
-      while (
-        first < YI_RIVER_SEARCH_LIMIT_SEC &&
-        stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD
-      )
-        first += 0.5
-      if (first >= YI_RIVER_SEARCH_LIMIT_SEC) return
-      state.nextYiRiverSec = first
-      scheduleYiRiver(state, host, setup)
-    },
-
-    afterExtraEvent(state, event, host, setup) {
-      if (event.skill !== state.yiRiver || state.nextYiRiverSec === null) return
-      state.nextYiRiverSec += YI_RIVER_INTERVAL_SEC
-      scheduleYiRiver(state, host, setup)
-    },
-
-    display(_state, timeSec, _prePull, setup) {
-      const [stacks, controlled] = stacksAt(setup, timeSec)
+    display(state, timeSec) {
+      const stacks = state.stacks.stacksAt(timeSec)
       if (stacks <= 0) return []
       return [
         {
@@ -131,7 +121,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           name: "Morale Chant",
           stacks,
           maxStacks: MORALE_MAX_STACKS,
-          effects: effectsFor(stacks, controlled),
+          effects: effectsFor(stacks, CONTROLLED_TARGET),
         },
       ]
     },
