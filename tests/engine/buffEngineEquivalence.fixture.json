@@ -90,7 +90,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "95e4a6eca1db8d2a18a84d81363485fe1c86efc489b73f117be51c6284c4608d"
+        "digest": "49939f6b1229aa9fb4b00add6eb2141facfcc3016202de99c2e454e2fe0adba1"
       },
       "debuffs": {
         "count": 9,
@@ -739386,7 +739386,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "8d098a7445bdd6b43741332d3dd0a6e8f72b2038ec4ab56ed6cc6e7b2a3646f6"
+        "digest": "d0cfb9074f94ad9026654aeb9fbccf2eeb401e83f54891c28d31b9cac9c177b1"
       },
       "debuffs": {
         "count": 7,
@@ -739674,6 +739674,38 @@
           "maxStacks": "[fn]",
           "effects": "[fn]",
           "summary": "per stack: physPen +3 / critDmg +3% on the applying skills, +2 / +2% elsewhere"
+        },
+        {
+          "id": "throatPierceDeflectGrant",
+          "name": "Throat-Pierce (Deflect)",
+          "classBuff": false,
+          "requires": {
+            "param": "throatPierced",
+            "minTier": 6
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 20,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 0.1,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "applyBuff",
+              "id": "throatPierced",
+              "stacks": 5
+            }
+          ],
+          "summary": null
         },
         {
           "id": "disintegrationBrokenTarget",
@@ -741436,7 +741468,7 @@
       ]
     },
     "dynamic": {
-      "digest": "d9ed1678d5ab5cf043d074aa03c9e3e95cd4d9c4373f2464e37bc83fb2d98f45"
+      "digest": "b01811717b3ffe7226a10a7e4d2949262fae6d20940e5976e1d4091de5997500"
     }
   },
   "bellstrikeSplendor": {
@@ -741510,7 +741542,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "d8b820b956678130bd74b6d088f4bacda1588797efee70b22976615e94952152"
+        "digest": "47a8ecfaa0bf89eaef7141a44421481f4584681f2876f67293c2a47eead1cca8"
       },
       "debuffs": {
         "count": 7,
@@ -743662,7 +743694,7 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "adc967a7229cac15e5637deb5b3ff1f2db17d377debcfb505a3e8915351430b7"
+        "digest": "bcbfb05e29e8c5eb5ca27d0c689eef5b5805ebe1d34d27b27f1ddb9f970a4f9e"
       },
       "debuffs": {
         "count": 13,
@@ -745879,7 +745911,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "47734b7f9e297fb323e24d91099c86bbfa9d25e7f9e36da4f7259bc04d5663ff"
+        "digest": "7ef39b674b60829738907155f58c899c1ba2998a417a4885866aed05861189b6"
       },
       "debuffs": {
         "count": 10,

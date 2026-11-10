@@ -434,3 +434,48 @@ describe("direct-hit-only talents and Iron Guards' penetration skip damage-over-
     expect(share(talented, tick(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
   })
 })
+
+describe("Throat-Pierced from a successful Deflect", () => {
+  const bystander = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+  const deflectAt = (target: BuffEngine, time: number) =>
+    target.processSkillCast(CAST.deflect, time, { castTime: 0.25 }, false, [
+      BUFF.cleftpeakDeflectGrant,
+      BUFF.throatPierceDeflectGrant,
+    ])
+
+  it("lays all five stacks at tier 6, paying 2 points and 2% on every direct hit", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(5)
+    expect(statOf(pierced, bystander(), 1, "phys.penetration")).toBeCloseTo(0.1, 9)
+    expect(statOf(pierced, bystander(), 1, "critDamageBoost")).toBeCloseTo(0.1, 9)
+  })
+
+  it("lasts 15 s", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 14)).toBe(true)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
+  })
+
+  it("lays nothing below tier 6", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 5 })
+    deflectAt(pierced, 0)
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(0)
+  })
+
+  it("lays nothing without the inner way slotted", () => {
+    const unslotted = engine()
+    deflectAt(unslotted, 0)
+    expect(unslotted.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(0)
+  })
+
+  it("waits out a 20 s cooldown between two Deflects", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    deflectAt(pierced, 10)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
+    deflectAt(pierced, 20)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 30)).toBe(true)
+  })
+})

@@ -2,6 +2,7 @@ import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_LADDER } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { throatPierced } from "./throatPierceBuffs/throatPierced"
+import { throatPierceDeflectGrant } from "./throatPierceBuffs/throatPierceDeflectGrant"
 
 export const throatPierce = defineInnerWay({
   id: INNER_WAY_ID.throatPierce,
@@ -13,5 +14,5 @@ export const throatPierce = defineInnerWay({
     2: { ladder: INNER_WAY_LADDER.attributeAttackFourStar },
     5: { panelStats: { "primaryAttr.penetration": 0.06 } },
   },
-  buffDefs: [throatPierced],
+  buffDefs: [throatPierced, throatPierceDeflectGrant],
 })
