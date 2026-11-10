@@ -209,30 +209,30 @@
     }
   },
   "builtin-bellstrikeSplendor-60s-78-waves-2-flute-1-frog": {
-    "dps": 68700.03240888793,
-    "totalDamage": 4146046.9558763867,
+    "dps": 68700.02471812075,
+    "totalDamage": 4146046.491738587,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 61519.05374554145,
-      "SwordQ": 37225.34940435673,
+      "SwordQ": 37225.56485749376,
       "EnergySurge": 719984.2713742848,
       "Divinecraft - Fire Explosion": 9497.00241301883,
       "Flute Ripple (DoT)": 156977.85860287567,
       "SwordHeavyCharged": 2946285.7620015466,
-      "SpearQ": 14571.086415638896,
+      "SpearQ": 14570.406824702677,
       "Toad[Cancel]": 36593.918693093234,
       "Toad Poison (DoT)": 32731.56161115642,
       "Flute of the Tides Full": 59476.43239180572
     }
   },
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": {
-    "dps": 76023.72884156553,
-    "totalDamage": 2323791.9782571867,
+    "dps": 76023.72375286563,
+    "totalDamage": 2323791.822712593,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 31874.59567689405,
-      "SpearQ": 6473.872680868516,
-      "SwordQ": 25295.649664796256,
+      "SpearQ": 6473.570020349316,
+      "SwordQ": 25295.796780721703,
       "EnergySurge": 426211.0312996977,
       "Divinecraft - Fire Explosion": 4766.262204477545,
       "Flute Ripple (DoT)": 81686.02857193536,
@@ -241,12 +241,12 @@
     }
   },
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": {
-    "dps": 76708.86943334344,
-    "totalDamage": 2305101.5264719706,
+    "dps": 76708.86225638946,
+    "totalDamage": 2305101.3108045035,
     "damageBySkill": {
       "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 30885.27069204104,
-      "SwordQ": 12125.082200884328,
+      "SwordQ": 12125.152365491676,
       "EnergySurge": 437302.7126299487,
       "Divinecraft - Fire Explosion": 4741.444627751625,
       "Flute Ripple (DoT)": 79580.2407337767,
@@ -254,7 +254,7 @@
       "Soaring": 72351.43386059583,
       "Dragon's Breath 1 Hit": 13009.72803079793,
       "Combustion (DoT)": 53106.128488234746,
-      "SpearQ": 6135.973012559949
+      "SpearQ": 6135.68718048571
     }
   },
   "builtin-silkbindJade-20-dh-video-60s": {

@@ -40,16 +40,16 @@ export const swordq2nd = defineSkill({
   hits: [
     hit(0, {
       frame: 7,
-      physMultiplier: 0.768985,
-      attributeMultiplier: 1.153478,
+      physMultiplier: 0.7689855,
+      attributeMultiplier: 1.15347825,
       physFixed: 212.7,
       attributeFixed: 115.95,
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(1, {
       frame: 48,
-      physMultiplier: 0.768985,
-      attributeMultiplier: 1.153478,
+      physMultiplier: 0.7689855,
+      attributeMultiplier: 1.15347825,
       physFixed: 212.7,
       attributeFixed: 115.95,
       triggers: [mountainsMightQiImbalanceMarkerGrant],

@@ -29,13 +29,17 @@ import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrat
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
+import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV26File from "./testCustomSkills/v26/store.json"
 
+const healSplendorCoefficientsExact = (skill: unknown): unknown =>
+  healSplendorQuickCastCoefficientsExact(healSplendorWaveCoefficientsExact(skill))
+
 const healLatestSplendorHops = (skill: unknown): unknown =>
-  healSplendorWaveCoefficientsExact(
+  healSplendorCoefficientsExact(
     healSwordMorphConversion(
       healSplendorRootMotion(
         healPrepullVagrantSwordBoltTiming(healTargetDistanceReachAndDisplacement(skill)),
