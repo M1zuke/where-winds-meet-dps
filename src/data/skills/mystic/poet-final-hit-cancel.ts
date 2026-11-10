@@ -4,6 +4,7 @@ import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import { BUFF } from "../buffs/ids"
+import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 
 export const poetFinalHitCancel = defineSkill({
   id: SKILL.poetFinalHitCancel,
@@ -23,7 +24,7 @@ export const poetFinalHitCancel = defineSkill({
   // cast, and this one carries no engagement-range field to read — reach is
   // an assumption (the class's own default melee reach).
   approach: "stationary",
-  receives: [BUFF.poetFinalStrikeStack],
+  receives: [BUFF.poetFinalStrikeStack, ...WINEBOUND_MYSTIC_RECEIVES],
   // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
