@@ -7,10 +7,15 @@ import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
-function contributions(innerWayId: string, breakthrough: number, stacks = "tier 6") {
+function contributions(
+  innerWayId: string,
+  breakthrough: number,
+  stacks = "tier 6",
+  classId = "bellstrikeUmbra",
+) {
   return getMindMethodContributions({
     ...defaultInputs,
-    classId: "bellstrikeUmbra",
+    classId,
     breakthrough,
     mindMethods: [
       { name: innerWayId, stacks },
@@ -72,17 +77,18 @@ describe("inner-way breakthrough ladders", () => {
   })
 
   it("a ladder line is absent below the tier that unlocks it", () => {
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 1").affinityRate ?? 0).toBe(0)
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2").affinityRate).toBeCloseTo(
-      INNER_WAY_LADDERS.affinityRateFourStar[17].affinityRate!,
-      10,
-    )
+    expect(
+      contributions(INNER_WAY_ID.battleAnthem, 17, "tier 1", "bellstrikeSplendor").affinityRate ??
+        0,
+    ).toBe(0)
+    expect(
+      contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2", "bellstrikeSplendor").affinityRate,
+    ).toBeCloseTo(INNER_WAY_LADDERS.affinityRateFourStar[17].affinityRate!, 10)
   })
 
   it("Gourd Toss carries the rank-2+ four-star Precision ladder, like its siblings", () => {
-    expect(contributions(INNER_WAY_ID.gourdToss, 17, "tier 6").precision).toBeCloseTo(
-      INNER_WAY_LADDERS.precisionFourStar[17].precision!,
-      10,
-    )
+    expect(
+      contributions(INNER_WAY_ID.gourdToss, 17, "tier 6", "silkbindJade").precision,
+    ).toBeCloseTo(INNER_WAY_LADDERS.precisionFourStar[17].precision!, 10)
   })
 })

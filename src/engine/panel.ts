@@ -8,7 +8,12 @@ import {
   foodPhysAttackAfterMultiplier,
   foodPhysAttackBeforeMultiplier,
 } from "../data/consumables/foods"
-import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
+import {
+  henZhiActiveForInputs,
+  innerWayDefinition,
+  innerWayScalar,
+  slotInnerWayId,
+} from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
 import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { SET_BY_ID } from "../definitions/sets/registry"
@@ -68,6 +73,22 @@ export function getSchool(classId: string): ClassDefinition {
 // Returns inner-way IDS; the UI renders them through `innerWayName`.
 export function allowedInnerWaysForClass(classId: string): string[] {
   return [...(classDefinition(classId)?.innerWays ?? [])]
+}
+
+export function withScoredInnerWays(inputs: Inputs): Inputs {
+  const allowed = new Set(allowedInnerWaysForClass(inputs.classId))
+  if (allowed.size === 0) return inputs
+  const isHeldButNotOffered = (slot: Inputs["mindMethods"][number]): boolean => {
+    const innerWayId = slotInnerWayId(slot)
+    return !!innerWayId && !!innerWayDefinition(innerWayId) && !allowed.has(innerWayId)
+  }
+  if (!inputs.mindMethods.some(isHeldButNotOffered)) return inputs
+  return {
+    ...inputs,
+    mindMethods: inputs.mindMethods.map((slot) =>
+      isHeldButNotOffered(slot) ? { name: "", stacks: "" } : slot,
+    ) as Inputs["mindMethods"],
+  }
 }
 
 export function resistanceForBreakthrough(bt: number): number {
@@ -257,7 +278,7 @@ export function buildContext(
   const henZhiActive = henZhiActiveForInputs(inputs)
   const effectiveDefense = target.defense * (henZhiActive ? HEN_ZHI_DEFENSE_MULTIPLIER : 1)
 
-  const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
+  const chargeBonus = innerWayScalar(withScoredInnerWays(inputs).mindMethods, "chargeBonus")
 
   // Dummy mode drops what the target brings on its own, not what the player
   // puts on it: a training dummy has no baseline vulnerability, but it still
@@ -278,7 +299,7 @@ export function buildContext(
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
-    innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
+    innerWayScalar(withScoredInnerWays(inputs).mindMethods, "generalDamageBoost") +
     (fourPieceSet ? (SET_BY_ID[fourPieceSet]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.divinecraft === "poison" ? 0.01 : 0) +

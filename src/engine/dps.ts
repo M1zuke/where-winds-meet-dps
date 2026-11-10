@@ -3,6 +3,7 @@ import { simulateTimeline } from "./timeline"
 import { activeRotationForInputs } from "./activeRotation"
 import { rememberedPass } from "./passMemo"
 import { withDerivedStats } from "./derivedInputs"
+import { withScoredInnerWays } from "./panel"
 import { applySetBonuses } from "./setBonuses"
 import { graduationQiSourceInputs } from "./graduation"
 import type { QiDamageLog } from "./qiBar"
@@ -20,7 +21,7 @@ export function graduationQiDamageLog(inputs: Inputs): QiDamageLog | null {
 
 export function runEngine(inputs: Inputs, options?: EngineRunOptions): Result {
   return rememberedPass(inputs, options, () =>
-    computePass(inputs, withResolvedQiSource(inputs, options)),
+    computePass(withScoredInnerWays(inputs), withResolvedQiSource(inputs, options)),
   )
 }
 

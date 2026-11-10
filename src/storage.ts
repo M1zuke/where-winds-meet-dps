@@ -30,7 +30,7 @@ import {
   isValidServerProcessingMs,
 } from "./engine/pingFps"
 import { repairGraduationBuildId } from "./engine/graduation"
-import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
+import { defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
 import { resolveResourceSettings } from "./definitions/resources/resourceDef"
 import { SET_BY_ID } from "./definitions/sets/registry"
@@ -493,23 +493,19 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // A slot used to be identified by its display name. It now carries a stable
   // `id`, healed here from whatever the profile stored.
   //
-  // A slot naming an inner way this build has no definition for is kept as
-  // stored — it resolves to no definition, so it reaches no panel stat and no
-  // mechanic. A slot naming one this build knows but the class may not hold is
-  // cleared instead: that one would be scored, and scoring a build the class
-  // cannot have is the invisible wrong number the allowlist exists to stop.
+  // A slot naming an inner way this build has no definition for, or one the
+  // class is not offered, is kept as stored: the engine scores a slot the class
+  // is not offered as empty, and the picker lists it as no longer available.
   if (Array.isArray(next.mindMethods)) {
-    const allowed = new Set(allowedInnerWaysForClass(next.classId))
     const seen = new Set<string>()
     next.mindMethods = next.mindMethods.map((slot) => {
       if (!slot) return slot
       const innerWayId = slot.name || slot.id ? resolveInnerWayId(slot.id ?? slot.name) : ""
       const known = !!innerWayId && !!innerWayIdForName(innerWayName(innerWayId))
-      const disallowed = !!innerWayId && allowed.size > 0 && !allowed.has(innerWayId)
       const duplicate = !!innerWayId && seen.has(innerWayId)
       if (!innerWayId) return { ...slot, id: undefined, name: "", stacks: "" }
       if (!known) return { ...slot, id: innerWayId, stacks: slot.stacks || "tier 6" }
-      if (disallowed || duplicate) return { id: undefined, name: "", stacks: "" }
+      if (duplicate) return { id: undefined, name: "", stacks: "" }
       seen.add(innerWayId)
       return {
         ...slot,

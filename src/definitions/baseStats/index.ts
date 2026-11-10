@@ -1,4 +1,4 @@
-import { arsenalAttack, arsenalHp, getSchool } from "../../engine/panel"
+import { arsenalAttack, arsenalHp, getSchool, withScoredInnerWays } from "../../engine/panel"
 import {
   formlessWordTotals,
   gearAttributeTotals,
@@ -600,7 +600,7 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
   const out: Record<string, number> = {}
   const school = getSchool(inputs.classId)
   const primaryKey = PRIMARY_ATTACK_KEY[school.primaryAttribute as AttributeKey]
-  inputs.mindMethods.forEach((slot) => {
+  withScoredInnerWays(inputs).mindMethods.forEach((slot) => {
     const innerWayId = slotInnerWayId(slot)
     if (!innerWayId) return
     const def = innerWayDefinition(innerWayId)
