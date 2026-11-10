@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // The heavy attack available while Unfading Flower's umbrella floats.
 // Vernal Umbrella never reaches this row's own charged branch (it needs
@@ -26,10 +27,7 @@ export const hiddenSwordHeavy1 = defineSkill({
   hits: [
     hit(0, {
       frame: 24,
-      physMultiplier: 0.304656,
-      attributeMultiplier: 0.456984,
-      physFixed: 84.4,
-      attributeFixed: 46.0,
+      ...levelScaled(LEVEL_ROWS.umblightchargeLiftHit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

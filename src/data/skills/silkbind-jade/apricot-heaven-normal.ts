@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // The umbrella's second charged-Heavy form: fly up with an AoE rise, then
 // fall. Released the moment the air charge opens, before the 1.5 s
@@ -45,10 +46,7 @@ export const apricotHeavenNormal = defineSkill({
       // the air charge opens, 72 f after the hold decision; the fall's collider
       // is 27.15 f into the release.
       frame: 113.55,
-      physMultiplier: 1.565095,
-      attributeMultiplier: 2.347643,
-      physFixed: 433.0,
-      attributeFixed: 236.0,
+      ...levelScaled(LEVEL_ROWS.apricotHeavenNormalHit1),
     }),
     hit(2, {
       // In-game values as of 2026-11-10: -5 more 1.6 s after the hold

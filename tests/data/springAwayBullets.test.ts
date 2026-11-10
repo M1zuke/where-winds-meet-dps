@@ -21,8 +21,8 @@ const BULLET_PROJECTILE = {
 }
 
 const BULLET_ROW = {
-  physMultiplier: 0.286244,
-  attributeMultiplier: 0.429367,
+  physMultiplier: 0.2862444,
+  attributeMultiplier: 0.4293666,
   physFixed: 79.16,
   attributeFixed: 43.16,
   extraCritDamage: 1,

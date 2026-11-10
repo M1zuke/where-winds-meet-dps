@@ -1,14 +1,12 @@
+import { levelScaled } from "../../../definitions/skills/skillDef"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 import { ATTACK, ATTUNE, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06 (level 100).
 export const SPRING_AWAY_BULLET = {
-  physMultiplier: 0.286244,
-  attributeMultiplier: 0.429367,
-  physFixed: 79.16,
-  attributeFixed: 43.16,
+  ...levelScaled(LEVEL_ROWS.umblightchargeHit0),
   extraCritDamage: 1,
 }
 

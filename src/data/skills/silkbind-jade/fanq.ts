@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -8,6 +8,7 @@ import {
   chargeCost,
   emeraldBarrierChargesMeter,
 } from "../../classes/silkbind-jade/chargeMeters"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const fanq = defineSkill({
   id: SKILL.fanq,
@@ -41,10 +42,7 @@ export const fanq = defineSkill({
     hit(0, {
       // In-game values as of 2026-09-24.
       frame: 9,
-      physMultiplier: 0.9271,
-      attributeMultiplier: 1.3907,
-      physFixed: 257,
-      attributeFixed: 140,
+      ...levelScaled(LEVEL_ROWS.fanqHit0),
       extraCritDamage: 0,
     }),
   ],

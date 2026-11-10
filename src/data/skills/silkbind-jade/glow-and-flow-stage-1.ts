@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 import { enduranceCost } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Inkwell Fan's heavy-attack charged skill, released below the 0.63 s
 // threshold — the earliest release of the stage-1 dash
@@ -36,17 +37,11 @@ export const glowAndFlowStage1 = defineSkill({
       // window they land in from the release — authored at that window's
       // start, both landing together.
       frame: 18,
-      physMultiplier: 0.612395,
-      attributeMultiplier: 0.918593,
-      physFixed: 169.5,
-      attributeFixed: 92.25,
+      ...levelScaled(LEVEL_ROWS.glowAndFlowStage1Hit0),
     }),
     hit(1, {
       frame: 18,
-      physMultiplier: 0.612395,
-      attributeMultiplier: 0.918593,
-      physFixed: 169.5,
-      attributeFixed: 92.25,
+      ...levelScaled(LEVEL_ROWS.glowAndFlowStage1Hit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

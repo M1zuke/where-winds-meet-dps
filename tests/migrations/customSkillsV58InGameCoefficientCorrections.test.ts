@@ -11,6 +11,7 @@ import {
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { withoutLaunchFollowUpGate } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV57File from "./testCustomSkills/v57/store.json"
 
@@ -26,7 +27,7 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!)
 
 describe("custom-skills v57 fixture", () => {
   it("is v57 and still stores the superseded drone rows", () => {

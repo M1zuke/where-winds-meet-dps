@@ -1,14 +1,12 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const ROW_SHARE = {
-  physMultiplier: 0.31677,
-  attributeMultiplier: 0.475155,
-  physFixed: 88,
-  attributeFixed: 48,
+  ...levelScaled(LEVEL_ROWS.umbrellaDualHit0),
   extraCritDamage: 1,
 }
 

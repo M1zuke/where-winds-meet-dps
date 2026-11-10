@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const umbqPrepull = defineSkill({
   id: SKILL.umbqPrepull,
@@ -48,10 +49,7 @@ export const umbqPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 2.3397,
-      attributeMultiplier: 3.5095,
-      physFixed: 648,
-      attributeFixed: 353,
+      ...levelScaled(LEVEL_ROWS.umbqHit0),
       extraCritDamage: 1,
     }),
   ],

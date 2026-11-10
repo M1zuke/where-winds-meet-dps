@@ -1,14 +1,12 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const STRIKE = {
-  physMultiplier: 0.54132,
-  attributeMultiplier: 0.81198,
-  physFixed: 150,
-  attributeFixed: 82,
+  ...levelScaled(LEVEL_ROWS.fanDualHit0),
 }
 
 // In-game values as of 2026-10-06: each strike is a melee hit and a

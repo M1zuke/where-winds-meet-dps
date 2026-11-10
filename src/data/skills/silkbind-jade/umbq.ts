@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -10,6 +10,7 @@ import {
   chargeCost,
   springSorrowChargesMeter,
 } from "../../classes/silkbind-jade/chargeMeters"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: 50 m/s with no ramp, a 1 m collision box,
 // lives 5 s.
@@ -80,10 +81,7 @@ export const umbq = defineSkill({
     hit(0, {
       frame: 59.8,
       projectile: SPRING_SORROW_PROJECTILE,
-      physMultiplier: 2.3397,
-      attributeMultiplier: 3.5095,
-      physFixed: 648,
-      attributeFixed: 353,
+      ...levelScaled(LEVEL_ROWS.umbqHit0),
       extraCritDamage: 1,
       triggers: [COMBO_RECHARGE_CUT],
       variants: [
@@ -91,10 +89,7 @@ export const umbq = defineSkill({
           id: "hv-umbq-hit-0-fast-clip",
           label: "Blossom Barrage 3+",
           conditions: [{ param: PARAM.blossomBarrage, minTier: 3 }],
-          physMultiplier: 2.3397,
-          attributeMultiplier: 3.5095,
-          physFixed: 648,
-          attributeFixed: 353,
+          ...levelScaled(LEVEL_ROWS.umbqHit0),
           frame: 46.08,
           castFrames: 67.31,
         },

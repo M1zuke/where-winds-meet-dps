@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // The un-combo-linked heavy form. In-game values as of 2026-09-24.
 export const hiddenSwordHeavyAlt = defineSkill({
@@ -24,10 +25,7 @@ export const hiddenSwordHeavyAlt = defineSkill({
       // In-game values as of 2026-11-10: the collider lands 14.15 f into the
       // cast.
       frame: 14.15,
-      physMultiplier: 0.913968,
-      attributeMultiplier: 1.370952,
-      physFixed: 253.2,
-      attributeFixed: 138.0,
+      ...levelScaled(LEVEL_ROWS.hiddenSwordHeavyAltHit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

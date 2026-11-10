@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Umb HeavyLight's opening hit is the heavy attack's own first stage (no
 // attunement), triggered alongside Colorful Phoenix's own share so the
@@ -31,10 +32,7 @@ export const umbHeavylightHeavyShare = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.539718,
-      attributeMultiplier: 0.809577,
-      physFixed: 149.4,
-      attributeFixed: 81.4,
+      ...levelScaled(LEVEL_ROWS.umbdronelaunchHit0),
       extraCritDamage: 0,
     }),
   ],
