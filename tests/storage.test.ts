@@ -1963,10 +1963,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     expect(getMindMethodContributions(loaded)).toEqual({})
   })
 
-  // The one thing hydration still takes off a profile, and why: this build has a
-  // definition for it, so leaving it slotted would score a build the class
-  // cannot hold.
-  it("clears a slotted inner way the class may not hold", () => {
+  it("keeps a slotted inner way the class is not offered, and the engine scores it as nothing", () => {
     const notForThisClass = allowedInnerWaysForClass("stonesplitStrength").find(
       (innerWayId) => !allowedInnerWaysForClass("bellstrikeUmbra").includes(innerWayId),
     )!
@@ -1994,11 +1991,9 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
       }),
     )
 
-    expect(loadProfiles().profiles[0].inputs.mindMethods[0]).toEqual({
-      id: undefined,
-      name: "",
-      stacks: "",
-    })
+    const kept = loadProfiles().profiles[0].inputs
+    expect(kept.mindMethods[0]).toMatchObject({ id: notForThisClass, stacks: "tier 6" })
+    expect(getMindMethodContributions(kept)).toEqual({})
   })
 
   it("the default build's own class id is a member of CLASS_IDS, so the degrade is a no-op on it", () => {

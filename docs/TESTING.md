@@ -138,7 +138,7 @@ profile.
 6. **Assert by kind of change**: a renamed field arrived at its new home _and_ the
    old key is gone; a renamed id **exists** among the built-ins (an unknown id is
    skipped silently and only shows up as quietly lower damage); a narrowed
-   allowlist cleared the illegal value and left a legal neighbour alone; a changed
+   allowlist kept the stored value, scored it as nothing and left a legal neighbour alone; a changed
    unit converted the number rather than merely being present.
 7. **Never delete an old fixture.** Each is the input its step's test reads, and
    the composition test walks every one of them to the latest version.
