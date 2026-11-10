@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V83__splendorQiImbalanceOnHitAndEndlessGaleWindow"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
+import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -79,7 +80,9 @@ describe("healSkill", () => {
   })
 
   it("lands the untouched Energy Surge copy on the built-in", () => {
-    const healed = healFractionalFrameTiming(healSkill(clone(seededEnergySurge()))) as Skill
+    const healed = healSplendorWaveCoefficientsExact(
+      healFractionalFrameTiming(healSkill(clone(seededEnergySurge()))),
+    ) as Skill
     expect(healed.hits).toEqual(builtinOf(SEEDED_ENERGY_SURGE_ID).hits)
   })
 

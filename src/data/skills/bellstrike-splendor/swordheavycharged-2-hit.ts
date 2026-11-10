@@ -69,8 +69,8 @@ export const swordHeavyCharged2Hit = defineSkill({
     hit(0, {
       frame: 90.66,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.3066,
-      attributeMultiplier: 1.9598,
+      physMultiplier: 1.30656,
+      attributeMultiplier: 1.95984,
       physFixed: 361.6,
       attributeFixed: 197.2,
       triggers: [
@@ -82,8 +82,8 @@ export const swordHeavyCharged2Hit = defineSkill({
     hit(1, {
       frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.5679,
-      attributeMultiplier: 2.3518,
+      physMultiplier: 1.567872,
+      attributeMultiplier: 2.351808,
       physFixed: 433.92,
       attributeFixed: 236.64,
       triggers: [energySurgeCooldownCut],

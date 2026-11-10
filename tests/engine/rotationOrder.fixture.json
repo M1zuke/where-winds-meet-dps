@@ -209,16 +209,16 @@
     }
   },
   "builtin-bellstrikeSplendor-60s-78-waves-2-flute-1-frog": {
-    "dps": 68700.74558884563,
-    "totalDamage": 4146089.996286834,
+    "dps": 68700.03240888793,
+    "totalDamage": 4146046.9558763867,
     "damageBySkill": {
-      "SwordHeavyCharged[Prepull]": 71185.4659712099,
+      "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 61519.05374554145,
       "SwordQ": 37225.34940435673,
-      "EnergySurge": 719992.5933468571,
+      "EnergySurge": 719984.2713742848,
       "Divinecraft - Fire Explosion": 9497.00241301883,
       "Flute Ripple (DoT)": 156977.85860287567,
-      "SwordHeavyCharged": 2946319.673691281,
+      "SwordHeavyCharged": 2946285.7620015466,
       "SpearQ": 14571.086415638896,
       "Toad[Cancel]": 36593.918693093234,
       "Toad Poison (DoT)": 32731.56161115642,
@@ -226,31 +226,31 @@
     }
   },
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": {
-    "dps": 76024.55443294371,
-    "totalDamage": 2323817.213833646,
+    "dps": 76023.72884156553,
+    "totalDamage": 2323791.9782571867,
     "damageBySkill": {
-      "SwordHeavyCharged[Prepull]": 71185.4659712099,
+      "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 31874.59567689405,
       "SpearQ": 6473.872680868516,
       "SwordQ": 25295.649664796256,
-      "EnergySurge": 426216.0944030653,
+      "EnergySurge": 426211.0312996977,
       "Divinecraft - Fire Explosion": 4766.262204477545,
       "Flute Ripple (DoT)": 81686.02857193536,
-      "SwordHeavyCharged": 1595785.9379181413,
-      "SwordHeavyCharged 2 Hit": 80533.30674225706
+      "SwordHeavyCharged": 1595767.7278704313,
+      "SwordHeavyCharged 2 Hit": 80532.15106501436
     }
   },
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": {
-    "dps": 76709.64452173236,
-    "totalDamage": 2305124.8178780577,
+    "dps": 76708.86943334344,
+    "totalDamage": 2305101.5264719706,
     "damageBySkill": {
-      "SwordHeavyCharged[Prepull]": 71185.4659712099,
+      "SwordHeavyCharged[Prepull]": 71184.65922307117,
       "Divinecraft - Fire": 30885.27069204104,
       "SwordQ": 12125.082200884328,
-      "EnergySurge": 437307.709256159,
+      "EnergySurge": 437302.7126299487,
       "Divinecraft - Fire Explosion": 4741.444627751625,
       "Flute Ripple (DoT)": 79580.2407337767,
-      "SwordHeavyCharged": 1524696.3410040473,
+      "SwordHeavyCharged": 1524678.8529723093,
       "Soaring": 72351.43386059583,
       "Dragon's Breath 1 Hit": 13009.72803079793,
       "Combustion (DoT)": 53106.128488234746,
