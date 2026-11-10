@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const snowpartingqStab = defineSkill({
   id: SKILL.snowpartingqStab,
@@ -28,17 +29,11 @@ export const snowpartingqStab = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.85296,
-      attributeMultiplier: 1.27944,
-      physFixed: 236,
-      attributeFixed: 128.8,
+      ...levelScaled(LEVEL_ROWS.snowpartingqStabHit0),
     }),
     hit(1, {
       frame: 48,
-      physMultiplier: 1.27944,
-      attributeMultiplier: 1.91916,
-      physFixed: 354,
-      attributeFixed: 193.2,
+      ...levelScaled(LEVEL_ROWS.snowpartingqStabHit1),
       triggers: [
         castSkill({
           target: SKILL.anxisoldierhengStab,

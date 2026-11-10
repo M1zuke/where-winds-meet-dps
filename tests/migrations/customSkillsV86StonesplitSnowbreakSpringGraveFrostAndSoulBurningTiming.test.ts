@@ -11,9 +11,14 @@ import {
 import { healSkill as healStonesplitFractionalFrameTiming } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
 import { healSkill as healBurningHeartChargeStageGates } from "../../src/migrations/customSkills/V99__burningHeartChargeStageGates"
 import { healSkill as healBurningHeartLowStageReleaseTiming } from "../../src/migrations/customSkills/V100__burningHeartLowStageReleaseTiming"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
+import { healSkill as healLevelRows } from "../../src/migrations/customSkills/V129__strengthLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV85File from "./testCustomSkills/v85/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV85File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const USER_AUTHORED_ID = "sk-user-authored-snowparting-slide"
@@ -46,9 +51,13 @@ const CHECKED_FIELDS = [
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
 const healedThroughLaterSteps = (skill: unknown): Skill =>
-  healBurningHeartLowStageReleaseTiming(
-    healBurningHeartChargeStageGates(healStonesplitFractionalFrameTiming(skill)),
-  ) as Skill
+  withoutLevelRows(
+    healLevelRows(
+      healBurningHeartLowStageReleaseTiming(
+        healBurningHeartChargeStageGates(healStonesplitFractionalFrameTiming(skill)),
+      ),
+    ) as Skill,
+  )
 
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!

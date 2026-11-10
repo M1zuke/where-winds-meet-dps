@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -9,6 +9,7 @@ import {
   BURNING_HEART_INNER_PASSION_STAGE_2_COST,
   BURNING_HEART_INNER_PASSION_STAGE_2_DRAIN,
 } from "./buffs/burningHeartCharge"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06: the minimum hold at 1.5x charge speed. The
 // soldier frame is the threshold itself, an assumption.
@@ -61,17 +62,11 @@ export const phalanxchargedS2Innerpassion = defineSkill({
     }),
     hit(1, {
       frame: 96,
-      physMultiplier: 0.88272,
-      attributeMultiplier: 1.32408,
-      physFixed: 244.2,
-      attributeFixed: 133.2,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS2Hit1),
     }),
     hit(2, {
       frame: 105,
-      physMultiplier: 2.05968,
-      attributeMultiplier: 3.08952,
-      physFixed: 569.8,
-      attributeFixed: 310.8,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS2Hit2),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

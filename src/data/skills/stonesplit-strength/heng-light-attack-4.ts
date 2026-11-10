@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const hengLightAttack4 = defineSkill({
@@ -24,17 +25,11 @@ export const hengLightAttack4 = defineSkill({
   hits: [
     hit(0, {
       frame: 11,
-      physMultiplier: 0.292547,
-      attributeMultiplier: 0.43882,
-      physFixed: 81,
-      attributeFixed: 44.16,
+      ...levelScaled(LEVEL_ROWS.hengLightAttack4Hit0),
     }),
     hit(1, {
       frame: 38,
-      physMultiplier: 0.560715,
-      attributeMultiplier: 0.841072,
-      physFixed: 155.25,
-      attributeFixed: 84.64,
+      ...levelScaled(LEVEL_ROWS.hengLightAttack4Hit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

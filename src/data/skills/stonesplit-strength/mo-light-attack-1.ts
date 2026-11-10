@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const moLightAttack1 = defineSkill({
@@ -28,10 +29,7 @@ export const moLightAttack1 = defineSkill({
   hits: [
     hit(0, {
       frame: 17,
-      physMultiplier: 0.763704,
-      attributeMultiplier: 1.145556,
-      physFixed: 211.2,
-      attributeFixed: 115.2,
+      ...levelScaled(LEVEL_ROWS.moLightAttack1Hit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

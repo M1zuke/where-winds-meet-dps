@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const snowpartingdual = defineSkill({
   id: SKILL.snowpartingdual,
@@ -40,10 +41,7 @@ export const snowpartingdual = defineSkill({
     }),
     hit(1, {
       frame: 30,
-      physMultiplier: 0.64861,
-      attributeMultiplier: 0.972915,
-      physFixed: 180,
-      attributeFixed: 98,
+      ...levelScaled(LEVEL_ROWS.snowpartingdualHit1),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

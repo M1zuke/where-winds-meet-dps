@@ -8,9 +8,13 @@ import {
   V96__stonesplitFractionalFrameTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V96__stonesplitFractionalFrameTiming"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV95File from "./testCustomSkills/v95/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV95File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const EDITED_ID = "stonesplitStrength-phalanxq-supreme"

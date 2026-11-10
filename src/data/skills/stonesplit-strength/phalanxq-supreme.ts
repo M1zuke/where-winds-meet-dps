@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: Supreme is offered once Soul Burning has run
 // 179.76 f, so that hold is the earliest lead. The strike lands 14.36 f and the
@@ -26,10 +27,7 @@ export const phalanxqSupreme = defineSkill({
   hits: [
     hit(0, {
       frame: 194.12,
-      physMultiplier: 3.5256,
-      attributeMultiplier: 5.2884,
-      physFixed: 975,
-      attributeFixed: 532,
+      ...levelScaled(LEVEL_ROWS.phalanxqSupremeHit0),
       triggers: [
         castSkill({
           target: SKILL.anxisoldiermosweepSupreme,

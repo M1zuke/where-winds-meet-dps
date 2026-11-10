@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const moDash = defineSkill({
@@ -25,10 +26,7 @@ export const moDash = defineSkill({
   hits: [
     hit(0, {
       frame: 24,
-      physMultiplier: 1.01266,
-      attributeMultiplier: 1.51899,
-      physFixed: 281,
-      attributeFixed: 153,
+      ...levelScaled(LEVEL_ROWS.moDashHit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

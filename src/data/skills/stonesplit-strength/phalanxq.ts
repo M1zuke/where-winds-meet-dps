@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Soul Burning, then Total Annihilation after a 7 f lead (authored, not a game
 // value). In-game animation as of 2026-10-15: the strike lands 18.65 f and the
@@ -26,10 +27,7 @@ export const phalanxq = defineSkill({
   hits: [
     hit(0, {
       frame: 25.65,
-      physMultiplier: 1.8948,
-      attributeMultiplier: 2.8422,
-      physFixed: 525,
-      attributeFixed: 286,
+      ...levelScaled(LEVEL_ROWS.phalanxqHit0),
       triggers: [
         castSkill({
           target: SKILL.anxisoldiermosweep,

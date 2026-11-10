@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -8,12 +8,10 @@ import {
   bladeMomentumMeter,
   bladeMomentumRequires,
 } from "../../classes/stonesplit-strength/bladeMomentumMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 const SHARE_HIT = {
-  physMultiplier: 0.377968,
-  attributeMultiplier: 0.566952,
-  physFixed: 104.6,
-  attributeFixed: 57,
+  ...levelScaled(LEVEL_ROWS.snowpartingspecialHit0),
 }
 
 // In-game values as of 2026-10-15.
@@ -52,10 +50,7 @@ export const snowpartingspecial = defineSkill({
     ),
     hit(SHARE_HIT_FRAMES.length, {
       frame: FINAL_HIT_FRAME,
-      physMultiplier: 0.755936,
-      attributeMultiplier: 1.133904,
-      physFixed: 209.2,
-      attributeFixed: 114,
+      ...levelScaled(LEVEL_ROWS.snowpartingspecialHit8),
       triggers: [dreadApplication],
     }),
   ],
