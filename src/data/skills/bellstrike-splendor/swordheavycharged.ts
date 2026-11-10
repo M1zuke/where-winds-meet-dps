@@ -72,8 +72,8 @@ export const swordHeavyCharged = defineSkill({
           id: "hv-swordheavycharged-hit-0-multi-wave-window",
           label: "Multi-Wave Window",
           conditions: THREE_WAVE_RELEASE_CONDITIONS,
-          physMultiplier: 1.3066,
-          attributeMultiplier: 1.9598,
+          physMultiplier: 1.30656,
+          attributeMultiplier: 1.95984,
           physFixed: 361.6,
           attributeFixed: 197.2,
           // Cast length to the earliest next input for a full ≥84.6 f hold to
@@ -88,8 +88,8 @@ export const swordHeavyCharged = defineSkill({
     hit(1, {
       frame: 100.62,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.5679,
-      attributeMultiplier: 2.3518,
+      physMultiplier: 1.567872,
+      attributeMultiplier: 2.351808,
       physFixed: 433.92,
       attributeFixed: 236.64,
       conditions: THREE_WAVE_RELEASE_CONDITIONS,
@@ -98,8 +98,8 @@ export const swordHeavyCharged = defineSkill({
     hit(2, {
       frame: 129.9,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.8292,
-      attributeMultiplier: 2.7438,
+      physMultiplier: 1.829184,
+      attributeMultiplier: 2.743776,
       physFixed: 506.24,
       attributeFixed: 276.08,
       conditions: THREE_WAVE_RELEASE_CONDITIONS,

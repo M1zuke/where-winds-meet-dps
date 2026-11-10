@@ -17,13 +17,16 @@ import { healSkill as healFractionalFrameTiming } from "../../src/migrations/cus
 import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrations/customSkills/V102__prepullVagrantSwordBoltTiming"
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
+import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV64File from "./testCustomSkills/v64/store.json"
 
 const healLatestSplendorHops = (skill: unknown): unknown =>
-  healSwordMorphConversion(healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill)))
+  healSplendorWaveCoefficientsExact(
+    healSwordMorphConversion(healSplendorRootMotion(healPrepullVagrantSwordBoltTiming(skill))),
+  )
 
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
 const STORE = storeV64File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
