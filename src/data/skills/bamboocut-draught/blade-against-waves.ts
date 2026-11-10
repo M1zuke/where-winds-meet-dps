@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import {
@@ -10,6 +10,7 @@ import {
   MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   RIVEN_TWINBLADES_RECEIVES,
 } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06. Castable within 1.1 s of Realmplay with
 // Binge Points above 49.99; the second slash is two colliders of 0.736078
@@ -49,24 +50,15 @@ export const bladeAgainstWaves = defineSkill({
   hits: [
     hit(0, {
       frame: 11,
-      physMultiplier: 0.315462,
-      attributeMultiplier: 0.473193,
-      physFixed: 87.6,
-      attributeFixed: 47.7,
+      ...levelScaled(LEVEL_ROWS.bladeAgainstWavesHit0),
     }),
     hit(1, {
       frame: 38,
-      physMultiplier: 0.736078,
-      attributeMultiplier: 1.104117,
-      physFixed: 204.4,
-      attributeFixed: 111.3,
+      ...levelScaled(LEVEL_ROWS.bladeAgainstWavesHit1),
     }),
     hit(2, {
       frame: 38,
-      physMultiplier: 0.736078,
-      attributeMultiplier: 1.104117,
-      physFixed: 204.4,
-      attributeFixed: 111.3,
+      ...levelScaled(LEVEL_ROWS.bladeAgainstWavesHit1),
     }),
     empoweredLightAttackSpent(3),
   ],

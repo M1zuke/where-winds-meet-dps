@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff, releaseEcho } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
@@ -6,12 +6,10 @@ import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
+import { LEVEL_ROWS } from "./levelRows"
 
 const strike = {
-  physMultiplier: 0.329365,
-  attributeMultiplier: 0.4940475,
-  physFixed: 91.5,
-  attributeFixed: 50,
+  ...levelScaled(LEVEL_ROWS.herosBloodHit1),
 }
 
 const MARKS_DRUNKSLAY: TriggerCondition[] = [

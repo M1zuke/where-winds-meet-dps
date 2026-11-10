@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import type { Displacement } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const GAUNTLETS_DASH_DISPLACEMENT: Displacement = {
   kind: "byDistance",
@@ -16,10 +17,7 @@ export const GAUNTLETS_DASH_DISPLACEMENT: Displacement = {
 export const gauntletsDashHit = (frame: number) =>
   hit(0, {
     frame,
-    physMultiplier: 0.34392,
-    attributeMultiplier: 0.51588,
-    physFixed: 96,
-    attributeFixed: 52,
+    ...levelScaled(LEVEL_ROWS.bloombreakHit0),
   })
 
 // In-game values as of 2026-10-06. The sprint attack outside Tipsy; the

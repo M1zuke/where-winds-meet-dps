@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Skyspeak unlocks it, but it is castable only once per Deepdaze entry, while
 // Deepdaze and Enhance Special Skill both hold. In-game values as of
@@ -18,26 +19,17 @@ const UNLOCKED: TriggerCondition[] = [
 const aerialSlash = (index: number, frame: number) =>
   hit(index, {
     frame,
-    physMultiplier: 0.3399,
-    attributeMultiplier: 0.50985,
-    physFixed: 94,
-    attributeFixed: 51.25,
+    ...levelScaled(LEVEL_ROWS.herosBloodInebriateHit2),
     conditions: UNLOCKED,
   })
 
 const launch = {
-  physMultiplier: 2.0394,
-  attributeMultiplier: 3.0591,
-  physFixed: 564,
-  attributeFixed: 307.5,
+  ...levelScaled(LEVEL_ROWS.herosBloodInebriateHit1),
   conditions: UNLOCKED,
 }
 
 const dashHalf = {
-  physMultiplier: 1.0197,
-  attributeMultiplier: 1.52955,
-  physFixed: 282,
-  attributeFixed: 153.75,
+  ...levelScaled(LEVEL_ROWS.herosBloodInebriateHit10),
   conditions: UNLOCKED,
 }
 

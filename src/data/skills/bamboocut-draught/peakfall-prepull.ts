@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { BUFF } from "../buffs/ids"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const peakfallPrepull = defineSkill({
   id: SKILL.peakfallPrepull,
@@ -32,10 +33,7 @@ export const peakfallPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.91934,
-      attributeMultiplier: 1.37901,
-      physFixed: 255,
-      attributeFixed: 139,
+      ...levelScaled(LEVEL_ROWS.peakfallHit0),
       triggers: [
         applyBuff({ target: STATUS.consecutivePunches, stacks: 1 }),
         applyBuff({ target: STATUS.peakfallCooldown, stacks: 1 }),

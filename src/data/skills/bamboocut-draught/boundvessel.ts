@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
@@ -12,6 +12,7 @@ import {
 import { SKYSPEAK_TIER_4_CONDITION } from "./skyspeak-tier-4"
 import { skillBingePointAccumulationTriggersWhen } from "./buffs/skillBingePointAccumulation"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
 
@@ -23,17 +24,13 @@ export const BOUNDVESSEL_CAST_CONDITIONS: TriggerCondition[] = [
 const rapidSlash = (index: number, frame: number) =>
   hit(index, {
     frame,
-    physMultiplier: 0.158668,
-    attributeMultiplier: 0.238001,
-    physFixed: 43.953,
-    attributeFixed: 23.933,
+    ...levelScaled(LEVEL_ROWS.boundvesselHit2),
     conditions: INEBRIATE,
   })
 
-// Coefficients at skill level 100 (in-game damage tooltip, 2026-09-04): the
-// press splits its 0.60053 / 167 / 91 total into two hits of 0.5 each; rapid
-// slash 1.7436 / 483 / 263 at 0.091 per hit; the two finishing slashes split
-// 0.2 and 0.4 of 0.5772 / 161 / 87; attribute side × 1.5. The hold is 11
+// In-game damage tooltip, 2026-09-04: the press splits its total into two
+// hits of 0.5 each; rapid slash lands at 0.091 per hit; the two finishing
+// slashes split their total 0.2 and 0.4; attribute side × 1.5. The hold is 11
 // slashes, spread evenly across the loop window (in-game values as of
 // 2026-10-06). The completed hold grants Cloudvault (in-game skill text,
 // 2026-09-04); cast length and the finishing hit frames to the full hold's own
@@ -43,18 +40,12 @@ const rapidSlash = (index: number, frame: number) =>
 export const boundvesselHits = [
   hit(0, {
     frame: 24,
-    physMultiplier: 0.300265,
-    attributeMultiplier: 0.4503975,
-    physFixed: 83.5,
-    attributeFixed: 45.5,
+    ...levelScaled(LEVEL_ROWS.boundvesselHit0),
     conditions: INEBRIATE,
   }),
   hit(14, {
     frame: 24,
-    physMultiplier: 0.300265,
-    attributeMultiplier: 0.4503975,
-    physFixed: 83.5,
-    attributeFixed: 45.5,
+    ...levelScaled(LEVEL_ROWS.boundvesselHit0),
     conditions: INEBRIATE,
   }),
   rapidSlash(1, 47),
@@ -70,10 +61,7 @@ export const boundvesselHits = [
   rapidSlash(11, 135),
   hit(12, {
     frame: 144,
-    physMultiplier: 0.11544,
-    attributeMultiplier: 0.17316,
-    physFixed: 32.2,
-    attributeFixed: 17.4,
+    ...levelScaled(LEVEL_ROWS.boundvesselHit13),
     conditions: INEBRIATE,
   }),
   hit(15, {
@@ -87,10 +75,7 @@ export const boundvesselHits = [
   }),
   hit(13, {
     frame: 161,
-    physMultiplier: 0.23088,
-    attributeMultiplier: 0.34632,
-    physFixed: 64.4,
-    attributeFixed: 34.8,
+    ...levelScaled(LEVEL_ROWS.boundvesselHit15),
     conditions: INEBRIATE,
     triggers: [applyBuff({ target: STATUS.cloudvault, stacks: 1 })],
   }),

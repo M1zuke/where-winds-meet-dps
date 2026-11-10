@@ -1,15 +1,13 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const strike = (index: number, frame: number) =>
   hit(index, {
     frame,
-    physMultiplier: 0.36646,
-    attributeMultiplier: 0.54969,
-    physFixed: 102,
-    attributeFixed: 55.5,
+    ...levelScaled(LEVEL_ROWS.twinbladesDualHit0),
   })
 
 // In-game values as of 2026-10-06. The two hit frames are placed at thirds of

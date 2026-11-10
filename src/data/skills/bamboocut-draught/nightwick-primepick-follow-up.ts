@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -6,6 +6,7 @@ import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
 import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightwick-stance"
+import { LEVEL_ROWS } from "./levelRows"
 
 // On a PvE target the follow-up out of Tipsylay is always Nightwick -
 // Primepick's single hit — the 3-hit Tri-strike form needs the arena-only
@@ -15,10 +16,7 @@ import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightw
 export const primepickFollowUpHits = [
   hit(0, {
     frame: 20,
-    physMultiplier: 0.64565,
-    attributeMultiplier: 0.968475,
-    physFixed: 180,
-    attributeFixed: 98,
+    ...levelScaled(LEVEL_ROWS.nightwickPrimepickFollowUpHit0),
     triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
   }),
   hit(1, {

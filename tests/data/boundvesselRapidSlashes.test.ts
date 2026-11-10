@@ -22,8 +22,8 @@ describe("Boundvessel's rapid slashes", () => {
   it("all carry the same per-slash row, gated on Binge Points", () => {
     for (const slash of slashes) {
       expect(slash).toMatchObject({
-        physMultiplier: 0.158668,
-        attributeMultiplier: 0.238001,
+        physMultiplier: 0.1586676,
+        attributeMultiplier: 0.2380014,
         physFixed: 43.953,
         attributeFixed: 23.933,
       })
