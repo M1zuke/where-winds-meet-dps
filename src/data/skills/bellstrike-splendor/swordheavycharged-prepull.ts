@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -24,6 +24,7 @@ import {
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: the release lands the three waves 6.06, 16.02 and
 // 45.30 f later, each flying as a projectile.
@@ -59,10 +60,7 @@ export const swordHeavyChargedPrepull = defineSkill({
     hit(0, {
       frame: 12.14,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 3.2664,
-      attributeMultiplier: 4.8996,
-      physFixed: 904,
-      attributeFixed: 493,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0),
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -73,10 +71,7 @@ export const swordHeavyChargedPrepull = defineSkill({
           id: "hv-swordheavycharged-prepull-hit-0-sword-morph",
           label: "Sword Morph",
           conditions: [SWORD_MORPH_EQUIPPED],
-          physMultiplier: 1.30656,
-          attributeMultiplier: 1.95984,
-          physFixed: 361.6,
-          attributeFixed: 197.2,
+          ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
           castFrames: 51,
           frame: 6.06,
           displacement: THREE_WAVE_FROM_CAST_START_MOTION,
@@ -86,20 +81,14 @@ export const swordHeavyChargedPrepull = defineSkill({
     hit(1, {
       frame: 16.02,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       conditions: [SWORD_MORPH_EQUIPPED],
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 45.3,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.829184,
-      attributeMultiplier: 2.743776,
-      physFixed: 506.24,
-      attributeFixed: 276.08,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit2),
       conditions: [SWORD_MORPH_EQUIPPED],
       triggers: [energySurgeCooldownCut],
     }),

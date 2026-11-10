@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -25,6 +25,7 @@ import { WUSHUANG_STANCE_ACTIVE, wushuangStanceConsume } from "./buffs/wushuangS
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: under Wushuang Stance every press charges at
 // ×1.5, so the level-2 threshold is reached after 48 f of real hold, not 72 f.
@@ -61,10 +62,7 @@ export const swordHeavyChargedWushuang = defineSkill({
     hit(0, {
       frame: 68.49,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 3.2664,
-      attributeMultiplier: 4.8996,
-      physFixed: 904,
-      attributeFixed: 493,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0),
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -75,10 +73,7 @@ export const swordHeavyChargedWushuang = defineSkill({
           id: "hv-swordheavycharged-wushuang-hit-0-sword-morph",
           label: "Sword Morph",
           conditions: [SWORD_MORPH_EQUIPPED],
-          physMultiplier: 1.30656,
-          attributeMultiplier: 1.95984,
-          physFixed: 361.6,
-          attributeFixed: 197.2,
+          ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
           castFrames: 111.4,
           frame: 66.46,
           displacement: VAGRANT_SWORD_WUSHUANG_THREE_WAVE_MOTION,
@@ -88,20 +83,14 @@ export const swordHeavyChargedWushuang = defineSkill({
     hit(1, {
       frame: 76.42,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       conditions: [SWORD_MORPH_EQUIPPED],
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 105.7,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.829184,
-      attributeMultiplier: 2.743776,
-      physFixed: 506.24,
-      attributeFixed: 276.08,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit2),
       conditions: [SWORD_MORPH_EQUIPPED],
       triggers: [energySurgeCooldownCut],
     }),

@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -9,6 +9,7 @@ import { multiWaveWindowGrantFromCastStart } from "./buffs/multiWaveWindowGrant"
 import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
 import { SHADOW_STEP_PROJECTILE } from "./flyingSwordProjectiles"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordSpecial = defineSkill({
   id: SKILL.swordSpecial,
@@ -42,10 +43,7 @@ export const swordSpecial = defineSkill({
       // In-game values as of 2026-10-15: the bolt launches at 17.06 f.
       frame: 17.06,
       projectile: SHADOW_STEP_PROJECTILE,
-      physMultiplier: 1.76747,
-      attributeMultiplier: 2.651205,
-      physFixed: 490,
-      attributeFixed: 267,
+      ...levelScaled(LEVEL_ROWS.swordspecialHit0),
       triggers: [energySurgeCooldownCut],
     }),
     hit(1, {

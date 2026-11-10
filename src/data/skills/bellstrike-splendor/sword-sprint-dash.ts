@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06: the dash input while sprinting; the sprint
 // itself is not simulated.
@@ -26,17 +27,11 @@ export const swordSprintDash = defineSkill({
   hits: [
     hit(0, {
       frame: 8,
-      physMultiplier: 0.173364,
-      attributeMultiplier: 0.260046,
-      physFixed: 48.2,
-      attributeFixed: 26.2,
+      ...levelScaled(LEVEL_ROWS.swordSprintDashHit0),
     }),
     hit(1, {
       frame: 26,
-      physMultiplier: 0.693456,
-      attributeMultiplier: 1.040184,
-      physFixed: 192.8,
-      attributeFixed: 104.8,
+      ...levelScaled(LEVEL_ROWS.swordSprintDashHit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

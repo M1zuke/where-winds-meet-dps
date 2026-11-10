@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -6,6 +6,7 @@ import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 import { endlessGaleAtStartGrant } from "./buffs/endlessGaleCostReductionGrant"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 const legionCrusherWushuangStanceGrant = applyBuff({ target: BUFF.wushuangStance })
 
@@ -44,10 +45,7 @@ export const legionCrusher = defineSkill({
     hit(1, {
       // In-game values as of 2026-09-24: the collider's own frame.
       frame: 20,
-      physMultiplier: 0.91971,
-      attributeMultiplier: 1.379565,
-      physFixed: 255,
-      attributeFixed: 139,
+      ...levelScaled(LEVEL_ROWS.legioncrusherHit1),
       triggers: [legionCrusherWushuangStanceGrant],
     }),
   ],

@@ -14,11 +14,12 @@ import { swordq3rd } from "../../src/data/skills/bellstrike-splendor/swordq-3rd"
 import { spearq } from "../../src/data/skills/bellstrike-splendor/spearq"
 import { legionCrusher } from "../../src/data/skills/bellstrike-splendor/legioncrusher"
 import type { Skill } from "../../src/engine/skill"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import storeV113File from "./testCustomSkills/v113/store.json"
 
 const STORE = storeV113File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const USER_AUTHORED_ID = "sk-user-authored-vagrant-sword"
-const HEALED_SKILLS = [swordq, swordq2nd, swordq3rd, spearq]
+const HEALED_SKILLS = [swordq, swordq2nd, swordq3rd, spearq].map(withoutLevelRows)
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>

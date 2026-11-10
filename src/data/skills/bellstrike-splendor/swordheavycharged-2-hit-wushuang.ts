@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -22,6 +22,7 @@ import { WUSHUANG_STANCE_ACTIVE, wushuangStanceConsume } from "./buffs/wushuangS
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: the Deflect-cancelled second wave of the
 // Wushuang Stance three-wave release, ended right after the wave that follows
@@ -57,10 +58,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
     hit(0, {
       frame: 66.46,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.30656,
-      attributeMultiplier: 1.95984,
-      physFixed: 361.6,
-      attributeFixed: 197.2,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -70,10 +68,7 @@ export const swordHeavyCharged2HitWushuang = defineSkill({
     hit(1, {
       frame: 76.42,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {

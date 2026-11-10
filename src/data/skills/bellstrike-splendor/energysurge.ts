@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -15,6 +15,7 @@ import { SWORD_MORPH_ENDURANCE_SPEND } from "./buffs/vagrantSwordEndurance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { VAGRANT_SWORD_WAVE_PROJECTILE } from "./vagrantSwordBolts"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const energySurge = defineSkill({
   id: SKILL.energySurge,
@@ -52,28 +53,19 @@ export const energySurge = defineSkill({
     hit(0, {
       frame: 6.06,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.30656,
-      attributeMultiplier: 1.95984,
-      physFixed: 361.6,
-      attributeFixed: 197.2,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit0MultiWaveWindow),
       triggers: [BATTLE_ANTHEM_ENDURANCE_GAIN, energySurgeCooldownCut],
     }),
     hit(1, {
       frame: 16.02,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.567872,
-      attributeMultiplier: 2.351808,
-      physFixed: 433.92,
-      attributeFixed: 236.64,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit1),
       triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 45.3,
       projectile: VAGRANT_SWORD_WAVE_PROJECTILE,
-      physMultiplier: 1.829184,
-      attributeMultiplier: 2.743776,
-      physFixed: 506.24,
-      attributeFixed: 276.08,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedHit2),
       triggers: [energySurgeCooldownCut],
     }),
     hit(3, {

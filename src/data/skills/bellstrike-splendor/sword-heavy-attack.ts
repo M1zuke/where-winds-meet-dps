@@ -1,22 +1,17 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { SWORD_HEAVY_ATTACK_MOTION } from "./rootMotion"
+import { LEVEL_ROWS } from "./levelRows"
 
 const TWENTY_PERCENT_OF_ROW = {
-  physMultiplier: 0.479274,
-  attributeMultiplier: 0.718911,
-  physFixed: 132.6,
-  attributeFixed: 72.2,
+  ...levelScaled(LEVEL_ROWS.swordHeavyAttackHit0),
 }
 
 const FIFTEEN_PERCENT_OF_ROW = {
-  physMultiplier: 0.3594555,
-  attributeMultiplier: 0.53918325,
-  physFixed: 99.45,
-  attributeFixed: 54.15,
+  ...levelScaled(LEVEL_ROWS.swordHeavyAttackHit1),
 }
 
 // In-game values as of 2026-10-06: three taps in a row, five hits; the first
@@ -43,10 +38,7 @@ export const swordHeavyAttack = defineSkill({
     hit(3, { frame: 115, ...TWENTY_PERCENT_OF_ROW }),
     hit(4, {
       frame: 150,
-      physMultiplier: 0.718911,
-      attributeMultiplier: 1.0783665,
-      physFixed: 198.9,
-      attributeFixed: 108.3,
+      ...levelScaled(LEVEL_ROWS.swordHeavyAttackHit4),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

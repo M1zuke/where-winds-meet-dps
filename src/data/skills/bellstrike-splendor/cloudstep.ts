@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: the dash input while sprinting; the sprint
 // itself is not simulated.
@@ -26,10 +27,7 @@ export const cloudstep = defineSkill({
   hits: [
     hit(0, {
       frame: 25,
-      physMultiplier: 0.591504,
-      attributeMultiplier: 0.887256,
-      physFixed: 164.4,
-      attributeFixed: 89.4,
+      ...levelScaled(LEVEL_ROWS.cloudstepHit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

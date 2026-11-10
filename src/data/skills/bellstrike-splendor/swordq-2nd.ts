@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -6,6 +6,7 @@ import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 import { energySurgeCutHit } from "./energySurgeCut"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: granted 0.01 s after the cast starts, 6 s,
 // unlocking Relentless Chase's second strike in the Q slot.
@@ -40,18 +41,12 @@ export const swordq2nd = defineSkill({
   hits: [
     hit(0, {
       frame: 7,
-      physMultiplier: 0.7689855,
-      attributeMultiplier: 1.15347825,
-      physFixed: 212.7,
-      attributeFixed: 115.95,
+      ...levelScaled(LEVEL_ROWS.swordq2ndHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(1, {
       frame: 48,
-      physMultiplier: 0.7689855,
-      attributeMultiplier: 1.15347825,
-      physFixed: 212.7,
-      attributeFixed: 115.95,
+      ...levelScaled(LEVEL_ROWS.swordq2ndHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     energySurgeCutHit(2, 49, 50),
