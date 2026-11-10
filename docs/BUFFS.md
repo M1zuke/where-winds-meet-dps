@@ -80,7 +80,8 @@ the kernel joins them.
 | class-specific attunement | an `attune:` tag    | **multiplicatively**             |
 
 ⚠️ **The attunement channel is multiplicative and the other two are additive.**
-They are not interchangeable; never fold one into the other.
+They are not interchangeable; never fold one into the other. The channel is one
+factor, `1 + Σ rolls`, summed over every `attune:` tag the entity carries.
 
 Wiring a new one is data, not code: give the entities the tag, and give the
 attunement option the tag it affects. No engine file learns a tag's name.

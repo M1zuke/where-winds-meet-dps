@@ -60,6 +60,9 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   attunement, heirloom, enhancement, analysis, retune or re-attune.
 - A set id the build does not recognise counts toward nothing and is kept as
   stored.
+- An attunement counts only on a piece whose gear level the attunement's ladder
+  defines. On any other level the stored attunement and its value are kept as
+  stored and count toward nothing.
 
 ## White vs yellow rates
 
