@@ -18,9 +18,10 @@ const IN_GAME_HITS: Record<string, number> = {
   "Nightwick - Tipsylay": 3,
   "Nightwick - Primepick": 3,
   "Hero's Blood": 8,
-  // The cancel form's own strike (in-game values as of 2026-09-24) was not
-  // yet modelled when this log was captured, so its own hit count reads one
-  // higher than the captured log.
+  // The logged run booked 10 Flute hits: five ripple pulses from each of its
+  // two casts, and neither cast reached the strike at frame 78 (in-game values
+  // as of 2026-11-10). The 11 comes from the full cast, whose added strike at
+  // frame 78 lands in this run.
   "Flute Chanting a Thousand Waves": 11,
 }
 
