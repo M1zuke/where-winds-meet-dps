@@ -1,10 +1,10 @@
 {
   "builtin-bellstrikeUmbra-36-bbs": {
-    "dps": 75092.8389512613,
-    "totalDamage": 4505570.337075679,
+    "dps": 75549.19371754146,
+    "totalDamage": 4532951.623052488,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30421.934001161604,
-      "Divinecraft - Fire": 89730.93460026724,
+      "Divinecraft - Fire": 117112.22057707341,
       "Bleeding (DoT)": 356589.7123115369,
       "Dragon's Breath: Smolder 1 Hit": 11087.273591710536,
       "Smolder (DoT)": 506630.40069774276,
@@ -26,11 +26,11 @@
     }
   },
   "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": {
-    "dps": 78608.24448443127,
-    "totalDamage": 4716494.669065876,
+    "dps": 79052.55511597081,
+    "totalDamage": 4743153.306958249,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30421.934001161604,
-      "Divinecraft - Fire": 89697.35265866997,
+      "Divinecraft - Fire": 116355.99055103924,
       "Bleeding (DoT)": 355137.0466222165,
       "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
       "Smolder (DoT)": 503724.9430833621,
@@ -53,11 +53,11 @@
     }
   },
   "builtin-bellstrikeUmbra-38-bbs": {
-    "dps": 81797.72935802884,
-    "totalDamage": 4907863.76148173,
+    "dps": 82241.97700235843,
+    "totalDamage": 4934518.620141505,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 30421.934001161604,
-      "Divinecraft - Fire": 89413.92930600274,
+      "Divinecraft - Fire": 116068.78796577203,
       "Bleeding (DoT)": 341866.0402161529,
       "Dragon's Breath: Smolder 2 Hits": 38067.88541279183,
       "Smolder (DoT)": 502864.8088566926,
@@ -82,11 +82,11 @@
     }
   },
   "builtin-bellstrikeUmbra-nox-1m-dh": {
-    "dps": 75969.40942142019,
-    "totalDamage": 4558164.565285211,
+    "dps": 76413.4886844701,
+    "totalDamage": 4584809.321068206,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 66139.45296763309,
-      "Divinecraft - Fire": 89109.78829574845,
+      "Divinecraft - Fire": 115754.54407873777,
       "Bleeding (DoT)": 350815.95646460337,
       "Dragon's Breath: Smolder 2 Hits": 38297.82246891274,
       "Smolder (DoT)": 496925.3825308068,
@@ -108,11 +108,11 @@
     }
   },
   "builtin-bellstrikeUmbra-nox-30s-dh": {
-    "dps": 68808.32422767501,
-    "totalDamage": 2064249.7268302501,
+    "dps": 69219.73535710745,
+    "totalDamage": 2076592.0607132236,
     "damageBySkill": {
       "Sword Charge Stage 1, 4-Hit": 12044.024532948082,
-      "Divinecraft - Fire": 42888.498678401884,
+      "Divinecraft - Fire": 55230.832561376614,
       "Bleeding (DoT)": 150329.56107757773,
       "Dragon's Breath: Smolder 2 Hits": 36751.73551076451,
       "Smolder (DoT)": 236512.8210929183,

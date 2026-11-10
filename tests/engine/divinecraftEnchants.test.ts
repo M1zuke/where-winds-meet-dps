@@ -254,3 +254,18 @@ describe("Divinecraft: Fire — Solid Foundation", () => {
     expect(eventsNamed(withPoison.timeline, EXPLOSION_NAME)).toHaveLength(0)
   })
 })
+
+describe("Divinecraft: damage-over-time ticks reach the talents that key on hit type", () => {
+  it.each([
+    ["fire burn", () => fireEvents([0, 1, 2])],
+    ["poison", () => poisonEvents([0, 1, 2])],
+  ])("lists the affinity-damage talent and Soul-Shaken on every %s tick", (_name, events) => {
+    const ticks = events()
+    expect(ticks.length).toBeGreaterThan(0)
+    for (const tick of ticks) {
+      expect(tick.skill.receives).toEqual(
+        expect.arrayContaining(["bellstrikeUmbraBleedingDamage", "soulShaken"]),
+      )
+    }
+  })
+})
