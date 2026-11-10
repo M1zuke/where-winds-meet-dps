@@ -1,0 +1,159 @@
+{
+  "v": 115,
+  "skills": [
+    {
+      "id": "silkbindJade-umb-heavylight",
+      "classId": "silkbindJade",
+      "name": "Umb HeavyLight",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "castFrames": 78,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "silkbindJade-umb-heavylight-heavyshare",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 56,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umb-heavylight-heavyshare",
+      "classId": "silkbindJade",
+      "name": "Umb HeavyLight (Heavy Share)",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "castFrames": 0,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "UmbQ",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "castFrames": 87.5,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 59.8,
+          "physMultiplier": 2.3397,
+          "attributeMultiplier": 3.5095,
+          "physFixed": 648,
+          "attributeFixed": 353,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-phoenix",
+      "classId": "silkbindJade",
+      "name": "Phoenix copy",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "castFrames": 78,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "silkbindJade-umb-heavylight-heavyshare",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 56,
+          "physMultiplier": 0.38293200000000005,
+          "attributeMultiplier": 0.5743980000000001,
+          "physFixed": 106.26,
+          "attributeFixed": 57.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    }
+  ]
+}

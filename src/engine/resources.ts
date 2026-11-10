@@ -3,7 +3,7 @@ import {
   type ResourceDef,
   type ResourceSettings,
 } from "../definitions/resources/resourceDef"
-import type { Skill } from "./skill"
+import { hitDealsDamage, type Skill } from "./skill"
 
 export interface ResourceSample {
   timeSec: number
@@ -268,7 +268,9 @@ export class CombatResource {
         continue
       const live = rule.requiresBuff ? this.context.buffLive(rule.requiresBuff, frame - 1) : true
       if (live === false) continue
-      const divisor = rule.divideAcrossSkillHits ? Math.max(1, skill.hits.length) : 1
+      const divisor = rule.divideAcrossSkillHits
+        ? Math.max(1, skill.hits.filter(hitDealsDamage).length)
+        : 1
       this.creditRule(rule, (this.settings.gains[rule.id] ?? 0) / divisor, live, frame)
     }
     this.mergeEquivalent()

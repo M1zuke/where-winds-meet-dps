@@ -109,6 +109,7 @@ import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrati
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { healSkill as healThroatPierceDeflectGrant } from "../../src/migrations/customSkills/V115__throatPierceDeflectGrant"
+import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -242,6 +243,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [113, healSplendorWaveCoefficientsExact],
   [114, healSplendorQuickCastCoefficientsExact],
   [115, healThroatPierceDeflectGrant],
+  [116, healUmbHeavylightFromThePress],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
