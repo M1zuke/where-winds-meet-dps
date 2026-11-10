@@ -55,7 +55,7 @@ function atBreakthrough(breakthrough: number): Inputs {
 
 describe("breakthrough drives the player's base attributes", () => {
   it("reads a different attribute row for every measured tier", () => {
-    const rows = [14, 15, 16, 17].map((breakthrough) => playerAttributes(breakthrough).power)
+    const rows = [13, 14, 15, 16, 17].map((breakthrough) => playerAttributes(breakthrough).power)
     expect(new Set(rows).size).toBe(rows.length)
   })
 
@@ -246,10 +246,16 @@ describe("tiers with no measured attribute row", () => {
     }
   })
 
-  it("clamps a tier below the measured range up to the lowest measured tier", () => {
-    for (const breakthrough of [12, 13]) {
-      expect(breakthroughAttributes(breakthrough)).toEqual(breakthroughAttributes(14))
+  it("reads breakthrough 13 from its own row", () => {
+    expect(attributeValue(13, "precisionRate")).toBe(0.115)
+    for (const stat of ["power", "agility", "momentum", "body", "defense"]) {
+      expect(attributeValue(13, stat)).toBe(104)
     }
+    expect(breakthroughAttributes(13)).not.toEqual(breakthroughAttributes(14))
+  })
+
+  it("clamps a tier below the measured range up to the lowest measured tier", () => {
+    expect(breakthroughAttributes(12)).toEqual(breakthroughAttributes(13))
   })
 
   it("reports every tier from 18 up from its own row, not the highest measured one below it", () => {
