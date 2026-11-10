@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import { BUFF } from "../buffs/ids"
 
@@ -34,13 +35,10 @@ export const fluteOfTheTidesCancel = defineSkill({
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.fluteRipple })],
     }),
-    // In-game values as of 2026-10-15, level 76: the first melodic strike lands before the cancel.
+    // The first melodic strike lands before the cancel.
     hit(1, {
       frame: 78,
-      physMultiplier: 1.483296,
-      attributeMultiplier: 2.224945,
-      physFixed: 330.4793,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fluteStrike),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

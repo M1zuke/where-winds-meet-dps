@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import { BUFF } from "../buffs/ids"
 
@@ -25,22 +26,15 @@ export const fluteOfTheTidesFull = defineSkill({
   reachMeters: 40,
   approach: "stationary",
   triggersBuffs: [BUFF.fluteArrival],
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 78,
-      physMultiplier: 1.483296,
-      attributeMultiplier: 2.224945,
-      physFixed: 330.4793,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fluteStrike),
       triggers: [applyDebuff({ target: DEBUFF.fluteRipple })],
     }),
     hit(1, {
       frame: 192,
-      physMultiplier: 3.955457,
-      attributeMultiplier: 5.933186,
-      physFixed: 881.2783,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fluteFinisher),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

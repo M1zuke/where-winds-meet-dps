@@ -11,13 +11,14 @@ import {
 import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
 import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { atMysticLevelBeforeCap } from "./mysticLevelBeforeCap"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV21File from "./testCustomSkills/v21/store.json"
 
 const CLASS = "bellstrikeUmbra"
 
 const builtinSkillsForClass = (classId: string): Skill[] =>
-  currentBuiltinSkillsForClass(classId).map(atMysticLevelBeforeCap)
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows).map(atMysticLevelBeforeCap)
 const DRAGON_HEAD_PLUS = "mystic-dragon-head-plus"
 const STORE = storeV21File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 

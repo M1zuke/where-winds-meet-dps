@@ -1,9 +1,10 @@
-import { defineDebuff } from "../../../definitions/skills/skillDef"
+import { defineDebuff, levelScaled } from "../../../definitions/skills/skillDef"
 import type { Debuff } from "../../../engine/debuff"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { BUFF } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { DEBUFF } from "./ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
 
 export const toadPoison = defineDebuff({
@@ -16,11 +17,7 @@ export const toadPoison = defineDebuff({
   tags: [ROLE.toadVenom],
   dot: {
     tickIntervalFrames: 300,
-    physMultiplier: 1.622006,
-    physFixed: 254.7984,
-    // In-game values as of 2026-10-15.
-    attributeMultiplier: 2.433009,
-    attributeFixed: 0,
+    ...levelScaled(LEVEL_ROWS.toadPoisonDot),
     attributeAttack: "",
     // In-game hit type as of 2026-09-24: a direct hit, not a DoT tick.
     skillType: "mystic",
@@ -46,11 +43,7 @@ export const toadPoisonFury = defineDebuff({
   tags: [ROLE.toadVenom],
   dot: {
     tickIntervalFrames: 300,
-    // In-game values as of 2026-10-15 (level 176).
-    physMultiplier: 1.530217,
-    physFixed: 242.4702,
-    attributeMultiplier: 2.295325,
-    attributeFixed: 0,
+    ...levelScaled(LEVEL_ROWS.toadPoisonFuryDot),
     attributeAttack: "",
     skillType: "mystic",
     directHit: true,
@@ -77,11 +70,7 @@ export const combustion = defineDebuff({
     // In-game cadence as of 2026-09-10: ticks on application.
     firstTickOffsetFrames: 0,
     reschedulesPerTick: true,
-    physMultiplier: 0.295506,
-    physFixed: 46.75,
-    // In-game values as of 2026-10-15.
-    attributeMultiplier: 0.443259,
-    attributeFixed: 0,
+    ...levelScaled(LEVEL_ROWS.combustionDot),
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
@@ -112,11 +101,7 @@ export const smolder = defineDebuff({
     // second.
     firstTickOffsetFrames: 0,
     reschedulesPerTick: true,
-    physMultiplier: 0.235818,
-    physFixed: 37.6455,
-    // In-game values as of 2026-10-15.
-    attributeMultiplier: 0.353727,
-    attributeFixed: 0,
+    ...levelScaled(LEVEL_ROWS.smolderDot),
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
@@ -146,11 +131,7 @@ export const fluteRipple = defineDebuff({
     // Pulses on its own schedule rather than re-arming a tick timer — in-game
     // tick counts as of 2026-09-10.
     reschedulesPerTick: false,
-    // In-game values as of 2026-10-15, level 76.
-    physMultiplier: 1.483296,
-    physFixed: 330.4793,
-    attributeMultiplier: 2.224945,
-    attributeFixed: 0,
+    ...levelScaled(LEVEL_ROWS.fluteStrike),
     attributeAttack: "",
     // In-game hit type as of 2026-09-24: a direct hit, not a DoT tick.
     skillType: "mystic",

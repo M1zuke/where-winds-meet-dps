@@ -3803,10 +3803,11 @@
     "digest": "0edd9b77673807a2b780d72026e82fac1a94350a067b1be742341aff13da89cb"
   },
   "defaults:umbra": {
-    "dps": 12359.43,
-    "totalDamage": 741566.08,
+    "dps": 12233.47,
+    "totalDamage": 734007.95,
     "rotationDuration": 60,
     "warnings": [
+      "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 14+ (breakthrough 13).",
       "SwordSpecial 3-Hit at 4.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Zenith Sword [cancel] at 5.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 3-Hit at 9.77s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
@@ -3888,7 +3889,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 76594.29,
+        "expectedDamage": 69716.82,
         "castCount": 0
       },
       {
@@ -4016,7 +4017,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 7575.77,
+        "expectedDamage": 6895.11,
         "castCount": 1
       }
     ],
@@ -4025,6 +4026,6 @@
       "buffWindows": 126,
       "casts": 97
     },
-    "digest": "3b56d56198bfb407337ecc6ab7014c91279a1f3d0bf5a869438521f112370dc9"
+    "digest": "d27a6699e357e530e8c81f9c3dacb8054f54b19b46d23db82a60573700d72f5c"
   }
 }

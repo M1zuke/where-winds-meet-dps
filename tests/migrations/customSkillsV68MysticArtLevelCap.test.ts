@@ -14,6 +14,7 @@ import { healSkill as healDragonBreathSingleHitFastFrame } from "../../src/migra
 import { healSkill as healDragonBreathSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
 import { healSkill as healDragonHeadCastLength } from "../../src/migrations/customSkills/V124__dragonHeadCastLength"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV67File from "./testCustomSkills/v67/store.json"
 
@@ -33,7 +34,7 @@ const seededMysticIds = (): string[] =>
     .map((skill) => skill.id)
 
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("bellstrikeUmbra").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("bellstrikeUmbra").find((skill) => skill.id === id)!)
 
 describe("custom-skills v67 fixture", () => {
   it("is v67 and stores every mystic art at the level-71 row", () => {
