@@ -1,13 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest"
-import { importProfile, loadCustomSkills } from "../../src/storage"
+import { describe, expect, it } from "vitest"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V16__mergeVernalUmbrellaAttunements } from "../../src/migrations/V16__mergeVernalUmbrellaAttunements"
 import type { StoredProfile } from "../../src/engine/types"
-import { makeSkill } from "../../src/engine/skill"
 import legacyProfileFile from "./testProfiles/v15/silkbindJade.json"
 
-const CUSTOM_SKILLS_KEY = "wwm.customSkills"
-const CUSTOM_SKILLS_VERSION = 3
 const MERGED = "umbFrequentProjectile"
 
 type LegacyFile = { v: number; profile: StoredProfile }
@@ -93,51 +89,5 @@ describe("V16__mergeVernalUmbrellaAttunements — registered in the chain", () =
     expect(result.applied).toEqual(["V16__mergeVernalUmbrellaAttunements"])
     expect(result.blob.v).toBe(16)
     expect(attunementsOf(result.blob).slice(0, 2)).toEqual([MERGED, MERGED])
-  })
-})
-
-describe("hydrateInputs backstop — a bare import never walks the chain", () => {
-  beforeEach(() => localStorage.clear())
-
-  it("still merges the retired ids", () => {
-    const bare = withAttunements(clone(LEGACY.profile), ["umbSpecial", "umbCharged"])
-    const imported = importProfile(JSON.stringify(bare))
-    expect(imported.inputs.inventory.map((piece) => piece.attunement).slice(0, 2)).toEqual([
-      MERGED,
-      MERGED,
-    ])
-  })
-})
-
-describe("custom skills backstop — the store heals through its hydrator", () => {
-  beforeEach(() => localStorage.clear())
-
-  function saveCustomSkill(tags: string[]): void {
-    const skill = makeSkill("silkbindJade", { id: "custom-drone-copy", name: "Drone Copy", tags })
-    localStorage.setItem(
-      CUSTOM_SKILLS_KEY,
-      JSON.stringify({ v: CUSTOM_SKILLS_VERSION, skills: [skill] }),
-    )
-  }
-
-  it("renames a stored attune:umbSpecial so it cannot mask the merged tag", () => {
-    saveCustomSkill(["weapon:Umbrella", "attack:light", "attune:umbSpecial"])
-    const tags = loadCustomSkills()[0].tags ?? []
-    expect(tags).toContain("attune:umbFrequentProjectile")
-    expect(tags).not.toContain("attune:umbSpecial")
-  })
-
-  it("renames attune:umbCharged and dedupes against an already-merged tag", () => {
-    saveCustomSkill(["attune:umbCharged", "attune:umbFrequentProjectile"])
-    const tags = loadCustomSkills()[0].tags ?? []
-    expect(tags.filter((tag) => tag === "attune:umbFrequentProjectile")).toHaveLength(1)
-    expect(tags).not.toContain("attune:umbCharged")
-  })
-
-  it("leaves every other attune tag alone", () => {
-    saveCustomSkill(["attune:fanSpecial", "attune:umbQ"])
-    const tags = loadCustomSkills()[0].tags ?? []
-    expect(tags).toContain("attune:fanSpecial")
-    expect(tags).toContain("attune:umbQ")
   })
 })

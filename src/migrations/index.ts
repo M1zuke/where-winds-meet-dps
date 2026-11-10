@@ -41,7 +41,6 @@ export {
 export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
 export { migrateGearWordId } from "./V12__gearWordIds"
 export { migrateCurrentGearWordLabel } from "./V13__gearWordCurrentLabels"
-export { migrateAttunementId, migrateAttuneTag } from "./V16__mergeVernalUmbrellaAttunements"
 export {
   migrateCleftpeakBuffId,
   migrateCleftpeakSetId,

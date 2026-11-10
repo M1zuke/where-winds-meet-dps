@@ -125,8 +125,6 @@ import {
   migrateCurrentGearWordLabel,
   migrateFormlessWordId,
   migrateSetId,
-  migrateAttunementId,
-  migrateAttuneTag,
   migrateCleftpeakBuffId,
   migrateRiverFlowBuffId,
   migrateCleftpeakSetId,
@@ -476,7 +474,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       ...(rest as unknown as typeof piece),
       ...(words !== undefined ? { words: words as typeof piece.words } : {}),
       relayed: typeof p.relayed === "boolean" ? p.relayed : false,
-      attunement: typeof p.attunement === "string" ? migrateAttunementId(p.attunement) : "",
+      attunement: typeof p.attunement === "string" ? p.attunement : "",
       attunementValue: typeof p.attunementValue === "number" ? p.attunementValue : 0,
       ...(set ? { set } : {}),
       ...(isNew ? { isNew: true } : {}),
@@ -1147,7 +1145,7 @@ function builtinCancelledByFor(id: string): Skill["cancelledBy"] | undefined {
 }
 
 function healSkillTags(id: string, tags: string[]): string[] {
-  const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
+  const renamed = tags.map(migrateCleftpeakTag)
   const healed = new Set(renamed)
   const hasOwnAttuneTag = renamed.some((tag) => tag.startsWith("attune:"))
   for (const tag of builtinTagsFor(id)) {
