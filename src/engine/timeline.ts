@@ -1336,6 +1336,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     let artBonuses: Partial<Record<ArtBonusField, number>> = {}
     let echoFeeds: readonly EchoFeed[] = []
+    const mechanicContributions = mechanics.map(({ mechanic, state, setup }) =>
+      mechanic.id === variant.withoutMechanicId
+        ? undefined
+        : mechanic.contributeAt?.(state, frame, skill, setup),
+    )
+    const maxPhysAttackOf = (list: readonly BuffStatEffect[]): number =>
+      list.reduce((sum, effect) => (effect.statKey === "phys.max" ? sum + effect.amount : sum), 0)
     if (buffEngine && skill) {
       const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
       const site = buffEngine.calculateDamageEffects(
@@ -1344,6 +1351,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         scoped,
         damageSoFar,
         statusesView,
+        maxPhysAttackOf(effects) +
+          mechanicContributions.reduce(
+            (sum, contribution) => sum + maxPhysAttackOf(contribution?.effects ?? []),
+            0,
+          ),
       )
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
@@ -1377,9 +1389,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (override?.forceGuaranteedAffinity) sig += "~forcedAffinity"
     let contextPatch: ContextPatch = {}
     if (variant.withoutMechanicId) sig += `~without:${variant.withoutMechanicId}`
-    for (const { mechanic, state, setup } of mechanics) {
+    for (const [mechanicIndex, { mechanic }] of mechanics.entries()) {
       if (mechanic.id === variant.withoutMechanicId) continue
-      const contribution = mechanic.contributeAt?.(state, frame, skill, setup)
+      const contribution = mechanicContributions[mechanicIndex]
       if (!contribution) continue
       for (const effect of contribution.effects ?? []) effects.push(effect)
       if (contribution.context) contextPatch = { ...contextPatch, ...contribution.context }

@@ -16,6 +16,7 @@ export const ironGuards = defineClassBuff({
   id: BUFF.ironGuards,
   name: "Iron Guards",
   affectsAll: true,
+  readsLiveMaxPhysAttack: true,
   duration: (ctx) => (hasSteadfastDevotion(ctx.build.paramTier) ? 40 : 30),
   cooldown: (ctx) => (hasSteadfastDevotion(ctx.build.paramTier) ? 1 : 20),
   summary:

@@ -10,6 +10,7 @@ export const bellstrikeUmbraBleedPen = defineClassBuff({
   id: BUFF.bellstrikeUmbraBleedPen,
   name: "Bleed penetration Enhancement",
   alwaysActive: true,
+  readsLiveMaxPhysAttack: true,
   duration: 9999,
   summary: "physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
   effects: (ctx) => {
