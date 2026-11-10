@@ -3,7 +3,7 @@ import { projectileTravelFrames, type Skill } from "./skill"
 import type { StatusWindow } from "./ledger"
 import type { computeSkillDamage, FormulaContext, RolledHit } from "./formula"
 import type { ArtBonusField } from "./effects/effect"
-import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+import { attuneTagsOf, mysticCategoryOf } from "./buffs/tags"
 import { FPS } from "./timeline"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
@@ -94,7 +94,7 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
       base.attributeAttack) as DebuffDotSpec["attributeAttack"],
     weaponOrAttribute: tickSkill.weaponOrAttribute || null,
     mysticCategory: mysticCategoryOf(tickSkill) || null,
-    attuneTag: attuneTagOf(tickSkill) || null,
+    attuneTags: attuneTagsOf(tickSkill),
   }
 }
 
@@ -161,7 +161,7 @@ function tickArt(
     guaranteedCrit: forceCrit ? 1 : undefined,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
-    attuneTag: dot.attuneTag || undefined,
+    attuneTags: dot.attuneTags?.length ? dot.attuneTags : undefined,
   } as ArtRow
 }
 

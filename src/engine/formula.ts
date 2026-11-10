@@ -59,7 +59,7 @@ type ArtRow = {
   attributeAttack?: string
   specialTag?: string
   elevatedAttributeMultiplier?: boolean
-  attuneTag?: string
+  attuneTags?: readonly string[]
   guaranteedCrit?: number
   guaranteedNormal?: number
   abrasionAvoidRate?: number
@@ -537,7 +537,10 @@ export function computeSkillDamage(
   // (folded into `scopedDamageBoost` above) — but multiplicative here rather
   // than additive inside `damageBoostTotal`. Do not merge the two: they are
   // different numbers.
-  const attuneBoost = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
+  const attuneBoost = (art.attuneTags ?? []).reduce(
+    (sum, tag) => sum + (ctx.attuneBoostByTag?.[tag] ?? 0),
+    0,
+  )
 
   const correction = numberOrZero(art.correction) || 1
 
