@@ -112,6 +112,7 @@ import { healSkill as healThroatPierceDeflectGrant } from "../../src/migrations/
 import { healSkill as healJadeLaunchBrokenByHigherPriority } from "../../src/migrations/customSkills/V118__jadeLaunchBrokenByHigherPriority"
 import { healSkill as healJadeTrajectoryHitsReach } from "../../src/migrations/customSkills/V117__jadeTrajectoryHitsReach"
 import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
+import { healSkill as healUmbrellaDualTwoBullets } from "../../src/migrations/customSkills/V119__umbrellaDualTwoBullets"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -248,6 +249,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [116, healUmbHeavylightFromThePress],
   [117, healJadeTrajectoryHitsReach],
   [118, healJadeLaunchBrokenByHigherPriority],
+  [119, healUmbrellaDualTwoBullets],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

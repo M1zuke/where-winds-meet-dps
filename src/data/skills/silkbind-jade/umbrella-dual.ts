@@ -12,9 +12,16 @@ const ROW_SHARE = {
   extraCritDamage: 1,
 }
 
-// In-game values as of 2026-10-06: per-hit values are half of the row. Only
-// one of the melee hit and the first volley counts per target; the second
-// volley's two bullets both count. Frames are the launch frames.
+// In-game values as of 2026-11-10: two bullets, launched 20.18 and 26.18 f into
+// the cast, each carrying half of the row; at maximum distance the melee hit
+// that shares the first bullet's half does not reach. Each bullet starts at
+// 20 m/s, gains 90 m/s² up to 50 m/s and lives 2 s.
+const BULLET_PROJECTILE = {
+  speedMetersPerSecond: 50,
+  acceleration: { initialSpeedMetersPerSecond: 20, metersPerSecondSquared: 90 },
+  maxTravelFrames: 120,
+}
+
 export const umbrellaDual = defineSkill({
   id: SKILL.umbrellaDual,
   classId: "silkbindJade",
@@ -27,19 +34,12 @@ export const umbrellaDual = defineSkill({
   receives: [BUFF.windWall, BUFF.trajectorySkill, ...VERNAL_UMBRELLA_RECEIVES],
   triggersBuffs: [],
   isWeaponSwap: true,
-  castFrames: 46,
+  castFrames: 46.36,
   triggerable: true,
   hits: [
-    hit(0, { frame: 12, ...ROW_SHARE }),
-    hit(1, {
-      frame: 18,
-      physMultiplier: ROW_SHARE.physMultiplier * 2,
-      attributeMultiplier: ROW_SHARE.attributeMultiplier * 2,
-      physFixed: ROW_SHARE.physFixed * 2,
-      attributeFixed: ROW_SHARE.attributeFixed * 2,
-      extraCritDamage: 1,
-    }),
+    hit(0, { frame: 20.18, projectile: BULLET_PROJECTILE, ...ROW_SHARE }),
+    hit(1, { frame: 26.18, projectile: BULLET_PROJECTILE, ...ROW_SHARE }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-11-10T00:00:00.000Z",
 })
