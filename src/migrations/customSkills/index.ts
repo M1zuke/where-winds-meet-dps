@@ -124,6 +124,7 @@ import { V120__apricotHeavenRiseSplitAndTiming } from "./V120__apricotHeavenRise
 import { V121__jadeSpringThunderAndComboReach } from "./V121__jadeSpringThunderAndComboReach"
 import { V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "./V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
 import { V123__gourdTossPursuitCutOncePerSecond } from "./V123__gourdTossPursuitCutOncePerSecond"
+import { V124__dragonHeadCastLength } from "./V124__dragonHeadCastLength"
 
 export type {
   CustomSkillMigration,
@@ -316,6 +317,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V121__jadeSpringThunderAndComboReach,
   V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame,
   V123__gourdTossPursuitCutOncePerSecond,
+  V124__dragonHeadCastLength,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
