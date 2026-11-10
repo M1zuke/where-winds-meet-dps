@@ -30,7 +30,6 @@ export const BUFF = {
   endlessGaleAtStartAffinityBoost: "endlessGaleAtStartAffinityBoost",
   endlessGaleCostReductionEnd: "endlessGaleCostReductionEnd",
   battleAnthemChargeCostIncrease: "battleAnthemChargeCostIncrease",
-  evasiveChargeDodgeCostReduction: "evasiveChargeDodgeCostReduction",
   energySurgeGrant: "energySurgeGrant",
   burningHeartIPConsume: "burningHeartIPConsume",
   burningHeartLowStageConsume: "burningHeartLowStageConsume",

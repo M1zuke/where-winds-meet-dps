@@ -203,7 +203,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "River Flow",
       "Empowered River Flow",
       "Spear Special Cooldown",
-      "Evasive Charge — Dodge Cost Reduction",
       "Mirage — Endurance Cost Reduction",
       "Ghostly Steps - Umbra",
     ])
