@@ -12,8 +12,11 @@ import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migratio
 import { healSkill as healJadeStartlingSpringStacksAndFlurryEnduranceTiming } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
 import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
-import { throughJadeAuditHops, withoutLaunchFollowUpGate } from "./jadeAuditHops"
-import { healSkill as healForsakenFameEndurance } from "../../src/migrations/customSkills/V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
+import {
+  throughJadeAuditHops,
+  throughLateJadeAuditHops,
+  withoutLaunchFollowUpGate,
+} from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV83File from "./testCustomSkills/v83/store.json"
@@ -140,7 +143,7 @@ describe("V84__jadeHitLandingsGrantsAndClipTimings — called directly", () => {
     for (const id of HEALED_IDS)
       expect(
         (
-          healForsakenFameEndurance(
+          throughLateJadeAuditHops(
             healFractionalFrameTiming(
               healJadeSpringSorrowChargesAndComboRechargeCut(
                 healJadeStartlingSpringStacksAndFlurryEnduranceTiming(
