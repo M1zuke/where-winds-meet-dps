@@ -20,11 +20,11 @@ const RAPID_SLASH = {
 // Riven Twinblades' Heavy Attack and its held Charged Skill outside Tipsy
 // (in-game values as of 2026-09-24, level 100). The press lands at 22 f; the
 // hold drains Endurance from 12 f later (0.2 s), 15/s for up to 1.6 s
-// (3 per 0.2 s); the finishing two-hit slash plays into the
-// drain's own end, its two hits 15 f and 37 f into that slash. The rapid-slash
-// loop's own per-hit cycle length is not known; seven hits (0.143 =
-// 1/7 of the total) at the same 8-frame cadence the sibling Boundvessel hold
-// already uses is the best-supported reading.
+// (3 per 0.2 s). The rapid-slash loop is a 27.96 f pass whose two slashes
+// land 10.0 f and 24.2 f into it, so over the 96 f hold the seven slashes
+// alternate 14.2 and 13.8 f apart from 44 f (in-game values as of 2026-11-10).
+// The finishing two-hit slash plays into the drain's own end, its two hits
+// 15 f and 37 f into that slash.
 export const bladeVessel = defineSkill({
   id: SKILL.bladeVessel,
   classId: "bamboocutDraught",
@@ -58,13 +58,13 @@ export const bladeVessel = defineSkill({
       physFixed: 100,
       attributeFixed: 54,
     }),
-    hit(1, { frame: 42, ...RAPID_SLASH }),
-    hit(2, { frame: 50, ...RAPID_SLASH }),
-    hit(3, { frame: 58, ...RAPID_SLASH }),
-    hit(4, { frame: 66, ...RAPID_SLASH }),
-    hit(5, { frame: 74, ...RAPID_SLASH }),
-    hit(6, { frame: 82, ...RAPID_SLASH }),
-    hit(7, { frame: 90, ...RAPID_SLASH }),
+    hit(1, { frame: 44, ...RAPID_SLASH }),
+    hit(2, { frame: 58, ...RAPID_SLASH }),
+    hit(3, { frame: 72, ...RAPID_SLASH }),
+    hit(4, { frame: 86, ...RAPID_SLASH }),
+    hit(5, { frame: 100, ...RAPID_SLASH }),
+    hit(6, { frame: 114, ...RAPID_SLASH }),
+    hit(7, { frame: 128, ...RAPID_SLASH }),
     hit(8, {
       frame: 145,
       physMultiplier: 0.23088,

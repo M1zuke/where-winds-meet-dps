@@ -8,6 +8,7 @@ import {
   V91__draughtNightwickStanceAndVariedComboOverrides,
   healSkill,
 } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
+import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrations/customSkills/V112__bladeVesselRapidSlashSpacing"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV90File from "./testCustomSkills/v90/store.json"
@@ -45,7 +46,9 @@ describe("custom-skills v90 fixture", () => {
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in's gates and hits", (id) => {
     const healed = healSkill(clone(skillIn(STORE, id))) as Skill
-    expect(gatedFieldsOf(healed)).toEqual(gatedFieldsOf(builtinOf(id)))
+    expect(gatedFieldsOf(healBladeVesselRapidSlashSpacing(healed) as Skill)).toEqual(
+      gatedFieldsOf(builtinOf(id)),
+    )
   })
 
   it("leaves a follow-up copy that already carries a gate alone", () => {
@@ -89,7 +92,10 @@ describe("V91__draughtNightwickStanceAndVariedComboOverrides — called directly
     const after = V91__draughtNightwickStanceAndVariedComboOverrides.migrate(clone(STORE))
     expect(after.v).toBe(91)
     for (const id of HEALED_IDS)
-      expect(gatedFieldsOf(skillIn(after, id)), id).toEqual(gatedFieldsOf(builtinOf(id)))
+      expect(
+        gatedFieldsOf(healBladeVesselRapidSlashSpacing(skillIn(after, id)) as Skill),
+        id,
+      ).toEqual(gatedFieldsOf(builtinOf(id)))
     expect(skillIn(after, UNTOUCHED_ID)).toEqual(skillIn(STORE, UNTOUCHED_ID))
   })
 
