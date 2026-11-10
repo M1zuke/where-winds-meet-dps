@@ -153,6 +153,7 @@ import {
 import { resolveAverageFps, resolvePingMs, resolveServerProcessingMs } from "./pingFps"
 
 export const FPS = 60
+const CRIT_QI_DAMAGE_DELAY_FRAMES = Math.round(0.1 * FPS)
 const ENGINE_READ_LEAD_SEC = 1e-9
 // Frames: a grant stamped this close past a frame boundary (1e-6 s lead offsets,
 // float noise) still lands on that boundary's frame.
@@ -190,6 +191,7 @@ interface ConditionReader {
 
 type Ctx = ReturnType<typeof buildContext>
 type EchoFeed = DamageEffectsResult["echoFeeds"][number]
+type CritQiDamage = DamageEffectsResult["critQiDamage"][number]
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
@@ -1319,6 +1321,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     conditionalFinalCrit: ConditionalFinalCrit | null
     artBonuses: Partial<Record<ArtBonusField, number>>
     echoFeeds: readonly EchoFeed[]
+    critQiDamage: readonly CritQiDamage[]
     qiBonuses: QiHitBonuses
   } {
     const sigParts: string[] = []
@@ -1343,6 +1346,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     let artBonuses: Partial<Record<ArtBonusField, number>> = {}
     let echoFeeds: readonly EchoFeed[] = []
+    let critQiDamage: readonly CritQiDamage[] = []
     const mechanicContributions = mechanics.map(({ mechanic, state, setup }) =>
       mechanic.id === variant.withoutMechanicId
         ? undefined
@@ -1379,6 +1383,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       conditionalFinalCrit = site.conditionalFinalCrit
       artBonuses = site.artBonuses
       echoFeeds = site.echoFeeds
+      critQiDamage = site.critQiDamage
       for (const [field, amount] of Object.entries(artBonuses)) sig += `~${field}:${amount}`
       if (damageFactor !== 1) sig += `~x${damageFactor}`
       if (conditionalFinalCrit)
@@ -1457,6 +1462,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       conditionalFinalCrit,
       artBonuses,
       echoFeeds,
+      critQiDamage,
       qiBonuses,
     }
   }
@@ -2118,6 +2124,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damageMultiplier: () => {},
       echo: () => {},
       finalCritAtLeast: () => {},
+      critQiDamage: () => {},
     }
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const onHitEffectCount = extraEffects.length
@@ -2571,6 +2578,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     rolled: RolledHit | undefined
     st: ReturnType<typeof resolveState>
     affinityChanceWithout: Readonly<Record<string, number>>
+    critChance: number
   }
 
   const observers = mechanics.filter(({ mechanic }) => mechanic.observeEvent !== undefined)
@@ -2629,6 +2637,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           damageMultiplier: () => {},
           echo: () => {},
           finalCritAtLeast: () => {},
+          critQiDamage: () => {},
         }
         const phase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
         for (const effect of behavior.claimStatEffects(hitInput, phase))
@@ -2670,6 +2679,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         },
         echo: () => {},
         finalCritAtLeast: () => {},
+        critQiDamage: () => {},
       }
       for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
       for (const [field, amount] of Object.entries(st.artBonuses)) {
@@ -2678,11 +2688,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
       if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
-      const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
+      const { expectedDamage, rolled, critOutcomeChance } = computeSkillDamage(art, st.ctx, 1, rng)
       return {
         damage: rolled?.damage ?? expectedDamage,
         rolled,
         st,
+        critChance: critOutcomeChance,
         affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
           const without = resolveState(
             frame,
@@ -2733,6 +2744,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         damage,
         rolled: tick.rolled,
         st,
+        critChance: 0,
         affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
           const without = resolveState(
             entry.frame,
@@ -2782,6 +2794,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         damage: rolled?.damage ?? expectedDamage,
         rolled,
         st,
+        critChance: 0,
         affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
           const without = resolveState(
             mechEvent.frame,
@@ -2885,6 +2898,23 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     bankEchoQi(frame, qi, kind, echoFeeds)
     qiBar.apply(frame, qi, kind)
     commitOpenedQiBreaks()
+  }
+
+  const scheduleCritQiDamage = (frame: number, scored: ScoredEvent): void => {
+    const gateFraction = qiGate.fractionAt(frame / FPS)
+    const amount = scored.st.critQiDamage.reduce(
+      (sum, entry) => (gateFraction < entry.belowQiFraction ? sum + entry.amount : sum),
+      0,
+    )
+    if (amount <= 0) return
+    const critShare = scored.rolled ? (scored.rolled.outcome === "crit" ? 1 : 0) : scored.critChance
+    if (critShare <= 0) return
+    const landingFrame = frame + CRIT_QI_DAMAGE_DELAY_FRAMES
+    enqueue({
+      kind: "meter",
+      frame: landingFrame,
+      run: () => applyQi(landingFrame, amount * critShare, "direct"),
+    })
   }
 
   const recordQiEdgeDependence = (
@@ -3052,6 +3082,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             "direct",
             st.echoFeeds,
           )
+          scheduleCritQiDamage(frame, scored)
           buffEngine?.processDamageHitPostQi(engineTimeSec, skill, event.generated)
         }
         if (landsInFight) {

@@ -24,6 +24,7 @@ export type Effect =
   | { kind: "setStatus"; id: string; stacks?: number; permanent?: boolean; durationFrames?: number }
   | { kind: "echo"; debuffId: string }
   | { kind: "finalCritAtLeast"; threshold: number; bonusBelowThreshold: number }
+  | { kind: "critQiDamage"; amount: number; belowQiFraction: number }
 
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
@@ -53,6 +54,13 @@ export function finalCritAtLeast(
   bonusBelowThreshold: number,
 ): Extract<Effect, { kind: "finalCritAtLeast" }> {
   return { kind: "finalCritAtLeast", threshold, bonusBelowThreshold }
+}
+
+export function critQiDamage(
+  amount: number,
+  belowQiFraction: number,
+): Extract<Effect, { kind: "critQiDamage" }> {
+  return { kind: "critQiDamage", amount, belowQiFraction }
 }
 
 export function applyBuff(

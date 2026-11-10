@@ -152,6 +152,7 @@ interface SkillResult {
   cells: Record<string, number>
   rolled?: RolledHit
   affinityOutcomeChance: number
+  critOutcomeChance: number
 }
 
 export function computeSkillDamage(
@@ -595,6 +596,7 @@ export function computeSkillDamage(
     expectedDamage,
     rolled: rng ? rollHit(rng) : undefined,
     affinityOutcomeChance: guaranteedNormal || guaranteedCrit ? 0 : affinityChance,
+    critOutcomeChance: guaranteedNormal ? 0 : guaranteedCrit ? 1 : critChance,
     cells: {
       X: critDamageBoost,
       Y: affinityDamageBoost,
