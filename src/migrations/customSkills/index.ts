@@ -119,6 +119,7 @@ import { V115__throatPierceDeflectGrant } from "./V115__throatPierceDeflectGrant
 import { V116__umbHeavylightFromThePress } from "./V116__umbHeavylightFromThePress"
 import { V117__jadeTrajectoryHitsReach } from "./V117__jadeTrajectoryHitsReach"
 import { V118__jadeLaunchBrokenByHigherPriority } from "./V118__jadeLaunchBrokenByHigherPriority"
+import { V119__umbrellaDualTwoBullets } from "./V119__umbrellaDualTwoBullets"
 
 export type {
   CustomSkillMigration,
@@ -306,6 +307,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V116__umbHeavylightFromThePress,
   V117__jadeTrajectoryHitsReach,
   V118__jadeLaunchBrokenByHigherPriority,
+  V119__umbrellaDualTwoBullets,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
