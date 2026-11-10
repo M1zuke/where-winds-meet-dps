@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
@@ -17,7 +18,7 @@ export const hiddenSwordHeavy1 = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.hiddenSwordHeavy1,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.thunderousBloom, BUFF.springThunder, ...VERNAL_UMBRELLA_RECEIVES],
   castFrames: 37,
   triggerable: true,
   // In-game values as of 2026-09-28: 3 m approach reach.

@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
@@ -15,7 +16,7 @@ export const bambooBreeze = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.bambooBreeze,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.thunderousBloom, BUFF.springThunder, ...VERNAL_UMBRELLA_RECEIVES],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 62,
   triggerable: true,

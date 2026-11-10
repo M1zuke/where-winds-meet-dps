@@ -16,7 +16,14 @@ export const umbrellaDashBullet = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbrellaDashBullet,
-  receives: [BUFF.windWall, BUFF.trajectorySkill, BUFF.combo, ...VERNAL_UMBRELLA_RECEIVES],
+  receives: [
+    BUFF.windWall,
+    BUFF.trajectorySkill,
+    BUFF.combo,
+    BUFF.thunderousBloom,
+    BUFF.springThunder,
+    ...VERNAL_UMBRELLA_RECEIVES,
+  ],
   castFrames: 0,
   triggerable: true,
   hits: [
