@@ -172,11 +172,36 @@ const JADE_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
   105: 500,
 }
 
+// Bamboocut - Draught armour re-attunement pool, in-game 2026-11-10. Fully
+// modelled; the weights are the same at every gear level.
+const DRAUGHT_LINE_WEIGHTS = {
+  driftcleaveDeepdaze: 150,
+  gauntletsSpecial: 80,
+  gauntletsMartialArt: 100,
+  twinbladesLightAttack: 70,
+  twinbladesMartialArt: 100,
+}
+const DRAUGHT_WEIGHTS: ClassWeights = {
+  86: DRAUGHT_LINE_WEIGHTS,
+  91: DRAUGHT_LINE_WEIGHTS,
+  96: DRAUGHT_LINE_WEIGHTS,
+  100: DRAUGHT_LINE_WEIGHTS,
+  105: DRAUGHT_LINE_WEIGHTS,
+}
+const DRAUGHT_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
+  86: 500,
+  91: 500,
+  96: 500,
+  100: 500,
+  105: 500,
+}
+
 const CLASS_POOLS: Readonly<Record<string, Readonly<Record<GearLevel, ReattunementPool>>>> = {
   bellstrikeSplendor: classPool(SPLENDOR_WEIGHTS, SPLENDOR_TOTAL_WEIGHT),
   bellstrikeUmbra: classPool(UMBRA_WEIGHTS, UMBRA_TOTAL_WEIGHT),
   stonesplitStrength: classPool(STRENGTH_WEIGHTS, STRENGTH_TOTAL_WEIGHT),
   silkbindJade: classPool(JADE_WEIGHTS, JADE_TOTAL_WEIGHT),
+  bamboocutDraught: classPool(DRAUGHT_WEIGHTS, DRAUGHT_TOTAL_WEIGHT),
 }
 
 interface PenShape {

@@ -2,12 +2,14 @@ import { describe, expect, it } from "vitest"
 import { reattunementPool } from "../../src/data/stats/gearReattunementWeights"
 import { reattunementExactMaxChance } from "../../src/engine/reattunement"
 import { GEAR_LEVELS } from "../../src/engine/types"
+import { BAMBOOCUT_DRAUGHT_ATTUNEMENTS } from "../../src/data/classes/bamboocut-draught/attunements"
 
 const REGISTERED_CLASSES = [
   "bellstrikeSplendor",
   "bellstrikeUmbra",
   "stonesplitStrength",
   "silkbindJade",
+  "bamboocutDraught",
 ] as const
 
 describe("reattunementPool — armour (class) pools", () => {
@@ -33,6 +35,24 @@ describe("reattunementPool — armour (class) pools", () => {
       expect(helm).toEqual(armor)
       expect(helm).toEqual(greaves)
       expect(helm).toEqual(bracer)
+    }
+  })
+
+  it("offers every Draught attunement line at the same weights on every level, covering the whole pool", () => {
+    for (const level of GEAR_LEVELS) {
+      const pool = reattunementPool("bamboocutDraught", "helm", level)!
+      expect(pool.totalWeight).toBe(500)
+      expect(Object.fromEntries(pool.lines.map((line) => [line.optionId, line.weight]))).toEqual({
+        driftcleaveDeepdaze: 150,
+        gauntletsSpecial: 80,
+        gauntletsMartialArt: 100,
+        twinbladesLightAttack: 70,
+        twinbladesMartialArt: 100,
+      })
+      expect(pool.lines.map((line) => line.optionId).sort()).toEqual(
+        BAMBOOCUT_DRAUGHT_ATTUNEMENTS.map((option) => option.id).sort(),
+      )
+      expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(pool.totalWeight)
     }
   })
 
