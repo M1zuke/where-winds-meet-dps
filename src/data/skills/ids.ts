@@ -53,6 +53,7 @@ export const CAST = {
   glowAndFlowStage1: "cast:glowAndFlowStage1",
   glowAndFlowStage2: "cast:glowAndFlowStage2",
   bambooBreeze: "cast:bambooBreeze",
+  returnOfSpring: "cast:returnOfSpring",
   hiddenSwordLight1: "cast:hiddenSwordLight1",
   hiddenSwordLight2: "cast:hiddenSwordLight2",
   hiddenSwordLight3: "cast:hiddenSwordLight3",

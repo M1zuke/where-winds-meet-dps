@@ -386,6 +386,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   running window at its own start, ticks included, unless its skill is exempt
   or a DoT tick. The cut lands at the step's own start, ahead of the step's own
   hits, so every read from then on sees the window gone.
+- **A debuff whose source is a summon that only a recall skill ends declares
+  `castLock`** (a tag, the exempt skill ids and the recall skill id): a step
+  whose skill carries the tag is flagged illegal while the window runs, and the
+  recall skill's own hit cuts the window at its frame, ticks included.
 - **A buff with no stat effects is legitimate.** A pure state marker that a hit
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
@@ -1062,9 +1066,11 @@ a refactor.
   additional impact does not enhance that pulse.
 - Charge an enhanced pulse's resource cost once, at the pulse, and only for a pulse
   the required status enhanced; never as a continuous drain while that status is up.
-- Recall a running launch at the cast start of any skill carrying the resource's
-  recall tag, unless that skill is the launch itself, a DoT tick or listed as
-  exempt.
+- A running launch ends only by depletion, its lifetime or the resource's own
+  recall skill, whose hit ends it at that hit's frame. A skill carrying the
+  resource's lock tag, unless it is a DoT tick, listed as exempt or the recall
+  skill, is flagged illegal when it starts while the launch runs — and so is
+  the recall skill when none runs; the flag changes nothing in the simulation.
 - Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
   must not grant a hit refund. Clamp balances and use the encounter's phase clock.
 - Declare passive regeneration as a flat per-second rate on the resource, netted

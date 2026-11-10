@@ -4,8 +4,9 @@ import { BUFF } from "../buffs/ids"
 import type { DebuffDotSpec } from "../../../engine/debuff"
 
 // In-game values as of 2026-09-24.
-export const DRONE_RECALL = {
+export const DRONE_LOCK = {
   tag: WEAPON.umbrella,
+  recallSkillId: SKILL.returnOfSpring,
   exemptSkillIds: [
     SKILL.hiddenSwordLight1,
     SKILL.hiddenSwordLight2,

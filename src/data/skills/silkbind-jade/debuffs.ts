@@ -4,7 +4,7 @@ import type { Debuff } from "../../../engine/debuff"
 import { DEBUFF } from "./ids"
 import {
   DRONE_LINGERING_BONE_ADDITIONAL_TICKS,
-  DRONE_RECALL,
+  DRONE_LOCK,
   droneDotSpec,
   droneWindowFrames,
 } from "./droneTick"
@@ -22,7 +22,7 @@ export const umbdrone12Hit = defineDebuff({
   durationFrames: droneWindowFrames(12),
   effects: [],
   dot: droneDotSpec(false),
-  recall: DRONE_RECALL,
+  castLock: DRONE_LOCK,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -40,7 +40,7 @@ export const umbdrone16Hit = defineDebuff({
   durationFrames: droneWindowFrames(16),
   effects: [],
   dot: droneDotSpec(false),
-  recall: DRONE_RECALL,
+  castLock: DRONE_LOCK,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -58,7 +58,7 @@ export const umbdrone20Hit = defineDebuff({
   durationFrames: droneWindowFrames(20),
   effects: [],
   dot: droneDotSpec(false),
-  recall: DRONE_RECALL,
+  castLock: DRONE_LOCK,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -76,7 +76,7 @@ export const umbdrone23Hit = defineDebuff({
   durationFrames: droneWindowFrames(23),
   effects: [],
   dot: droneDotSpec(false),
-  recall: DRONE_RECALL,
+  castLock: DRONE_LOCK,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -94,7 +94,7 @@ export const umbdrone26Hit = defineDebuff({
   durationFrames: droneWindowFrames(26),
   effects: [],
   dot: droneDotSpec(false),
-  recall: DRONE_RECALL,
+  castLock: DRONE_LOCK,
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -139,7 +139,7 @@ export const umbdrone = defineDebuff({
   id: DEBUFF.umbdrone,
   name: "UmbDrone",
   durationFrames: 3600 * 60,
-  recall: null,
+  castLock: null,
   dot: { ...umbdrone20Hit.dot, additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS },
 })
 

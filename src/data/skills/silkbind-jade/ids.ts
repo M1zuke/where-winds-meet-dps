@@ -20,6 +20,7 @@ export const SKILL = {
   hiddenSwordHeavy2: "silkbindJade-hidden-sword-heavy-2",
   hiddenSwordHeavy3: "silkbindJade-hidden-sword-heavy-3",
   hiddenSwordHeavyAlt: "silkbindJade-hidden-sword-heavy-alt",
+  returnOfSpring: "silkbindJade-return-of-spring",
   umbHeavylight: "silkbindJade-umb-heavylight",
   umbHeavylightHeavyShare: "silkbindJade-umb-heavylight-heavyshare",
   umbdrone12Hit: "silkbindJade-umbdrone-12hit",

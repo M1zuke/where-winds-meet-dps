@@ -21,8 +21,9 @@ const resource = defineResource({
   debuffId: "fictional-projectiles",
   drainPerSecond: 10,
   enhancedRunCost: 5,
-  recallTag: "fictional-weapon",
-  recallExemptSkillIds: ["fictional-exempt"],
+  lockTag: "fictional-weapon",
+  lockExemptSkillIds: ["fictional-exempt"],
+  recallSkillId: "fictional-return",
   endRefund: 15,
   refundCooldownSeconds: 5,
   gains: [],
@@ -134,15 +135,33 @@ describe("resource-driven timeline", () => {
     const result = runWithMark((time) => time >= 1.2 && time < 3)
     expect(dotTimes(result)).toEqual([1, 2, 2.5, 3, 4, 5])
   })
-  it("recalls on a cast carrying the recall tag, but not on an exempt one", () => {
+  it("flags a cast carrying the lock tag while the launch runs and leaves the run alone", () => {
     const tagged = { ...filler, id: "fictional-tagged", tags: ["fictional-weapon"] }
     const exempt = { ...tagged, id: "fictional-exempt" }
-    const recalled = run(0, [launch, filler, tagged, filler], 100, debuff, [tagged])
-    expect(recalled.resources![0].launches[0].reason).toBe("recalled")
-    expect(dotTimes(recalled)).toEqual([1])
+    const locked = run(0, [launch, filler, tagged, filler], 100, debuff, [tagged])
+    expect(locked.resources![0].launches[0].reason).toBe("fightEnd")
+    expect(locked.invalidStepIds).toHaveLength(1)
+    expect(locked.warnings.join(" ")).toContain("would be illegal in the game")
     vi.restoreAllMocks()
-    const kept = run(0, [launch, filler, exempt, filler], 100, debuff, [exempt])
-    expect(kept.resources![0].launches[0].reason).toBe("fightEnd")
+    const allowed = run(0, [launch, filler, exempt, filler], 100, debuff, [exempt])
+    expect(allowed.invalidStepIds ?? []).toEqual([])
+    expect(allowed.resources![0].launches[0].reason).toBe("fightEnd")
+  })
+  it("ends the launch at the recall skill's own hit and flags the recall skill when nothing runs", () => {
+    const recall = makeSkill(classId, {
+      id: "fictional-return",
+      name: "Return",
+      tags: ["fictional-weapon"],
+      castFrames: 60,
+      hits: [makeHit({ frame: 9 })],
+    })
+    const recalled = run(0, [launch, filler, recall, filler], 100, debuff, [recall])
+    expect(recalled.resources![0].launches[0].reason).toBe("recalled")
+    expect(recalled.resources![0].launches[0].endSec).toBeCloseTo((60 + 60 + 9) / 60)
+    expect(recalled.invalidStepIds ?? []).toEqual([])
+    vi.restoreAllMocks()
+    const idle = run(0, [tick, filler, recall, filler], 100, debuff, [recall])
+    expect(idle.invalidStepIds).toHaveLength(1)
   })
   it("turns exhausted-hit refunds into additional actual damage ticks", () => {
     const dry = run(0)
