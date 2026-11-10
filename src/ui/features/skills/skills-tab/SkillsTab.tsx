@@ -33,6 +33,7 @@ import {
   type AppliesRow,
   type ReceivesRow,
 } from "../../../../engine/buffs/catalog"
+import { attuneTagsOf } from "../../../../engine/buffs/tags"
 import { catalogBuffDefs } from "../../../../engine/buffs/data"
 import type { BuffModule } from "../../../../engine/buffs/buffModule"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
@@ -82,6 +83,18 @@ function attuneFlagsFor(classId: string): string[] {
     option.affectsTag ? [option.affectsTag.slice("attune:".length)] : [],
   )
   return [...new Set(flags)]
+}
+
+const ATTUNE_PREFIX = "attune:"
+
+function withAttuneFlags(tags: readonly string[], flags: readonly string[]): string[] {
+  const attuneTags = [...new Set(flags)].map((flag) => `${ATTUNE_PREFIX}${flag}`)
+  const firstAttuneIndex = tags.findIndex((tag) => tag.startsWith(ATTUNE_PREFIX))
+  if (firstAttuneIndex === -1) return [...tags, ...attuneTags]
+  return tags.flatMap((tag, index) => {
+    if (index === firstAttuneIndex) return attuneTags
+    return tag.startsWith(ATTUNE_PREFIX) ? [] : [tag]
+  })
 }
 
 type HitNumericField = "physMultiplier" | "physFixed" | "attributeMultiplier" | "attributeFixed"
@@ -784,17 +797,14 @@ export function SkillsTab({
     (tag) => tag.startsWith("weapon:") || tag.startsWith("prop:") || tag.startsWith("attack:"),
   )
 
-  const currentAttuneFlag =
-    (draft?.tags ?? []).find((tag) => tag.startsWith("attune:"))?.slice("attune:".length) ?? ""
+  const currentAttuneFlags = attuneTagsOf({ tags: draft?.tags }).map((tag) =>
+    tag.slice(ATTUNE_PREFIX.length),
+  )
   const currentMysticFlag =
     (draft?.tags ?? []).find((tag) => tag.startsWith("mystic:"))?.slice("mystic:".length) ?? ""
 
-  function setAttuneFlag(attune: string) {
-    setDraft((prev) => {
-      if (!prev) return prev
-      const rest = (prev.tags ?? []).filter((tag) => !tag.startsWith("attune:"))
-      return { ...prev, tags: attune ? [...rest, `attune:${attune}`] : rest }
-    })
+  function setAttuneFlags(flags: string[]) {
+    setDraft((prev) => (prev ? { ...prev, tags: withAttuneFlags(prev.tags ?? [], flags) } : prev))
   }
   function setMysticFlag(category: string) {
     setDraft((prev) => {
@@ -805,11 +815,12 @@ export function SkillsTab({
   }
 
   const classAttuneFlags = attuneFlagsFor(draft?.classId ?? classId)
-  const attuneFlagOptions = opts(
-    currentAttuneFlag && !classAttuneFlags.includes(currentAttuneFlag)
-      ? ["", ...classAttuneFlags, currentAttuneFlag]
-      : ["", ...classAttuneFlags],
-  )
+  const attuneFlagOptionsFor = (flag: string) =>
+    opts(
+      flag && !classAttuneFlags.includes(flag)
+        ? ["", ...classAttuneFlags, flag]
+        : ["", ...classAttuneFlags],
+    )
   const mysticFlagOptions = opts(
     currentMysticFlag && !MYSTIC_CATEGORIES.includes(currentMysticFlag)
       ? ["", ...MYSTIC_CATEGORIES, currentMysticFlag]
@@ -1102,11 +1113,27 @@ export function SkillsTab({
                     />
                   </PropRow>
                   <PropRow label={t("common.attunement")} help={t("skills.feedsGearBoostHint")}>
+                    {currentAttuneFlags.map((flag, index) => (
+                      <Combobox
+                        key={flag}
+                        className={styles.fieldCombobox}
+                        value={flag}
+                        options={attuneFlagOptionsFor(flag)}
+                        onChange={(value) =>
+                          setAttuneFlags(
+                            currentAttuneFlags.flatMap((current, position) =>
+                              position === index ? (value ? [value] : []) : [current],
+                            ),
+                          )
+                        }
+                      />
+                    ))}
                     <Combobox
+                      key={`add-${currentAttuneFlags.length}`}
                       className={styles.fieldCombobox}
-                      value={currentAttuneFlag}
-                      options={attuneFlagOptions}
-                      onChange={setAttuneFlag}
+                      value=""
+                      options={attuneFlagOptionsFor("")}
+                      onChange={(value) => value && setAttuneFlags([...currentAttuneFlags, value])}
                     />
                   </PropRow>
                   <PropRow
