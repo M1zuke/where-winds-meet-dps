@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import { SWORDQ_FOLLOW_UP_2_HIT_CANCEL_MOTION } from "./rootMotion"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordqFollowUp2HitCancel = defineSkill({
   id: SKILL.swordqFollowUp2HitCancel,
@@ -28,18 +29,12 @@ export const swordqFollowUp2HitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 5,
-      physMultiplier: 0.544068,
-      attributeMultiplier: 0.816102,
-      physFixed: 150.6,
-      attributeFixed: 82,
+      ...levelScaled(LEVEL_ROWS.swordqHit0),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(1, {
       frame: 23,
-      physMultiplier: 0.408051,
-      attributeMultiplier: 0.6120765,
-      physFixed: 112.95,
-      attributeFixed: 61.5,
+      ...levelScaled(LEVEL_ROWS.swordqfollowupHit1),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
   ],

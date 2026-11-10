@@ -654,6 +654,7 @@ describe("timeline — an edited copy of a built-in skill overrides the built-in
     edited.hits[hitIndex] = {
       ...edited.hits[hitIndex],
       physMultiplier: edited.hits[hitIndex].physMultiplier + 10,
+      levelRows: undefined,
     }
 
     const withoutEdit: Inputs = { ...umbraInputs, classId, activeCustomRotation: rotation }

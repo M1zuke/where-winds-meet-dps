@@ -1,9 +1,10 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 import { DRIFTING_THRUST_LEVEL_0_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const spearheavy1Hit = defineSkill({
   id: SKILL.spearheavy1Hit,
@@ -32,10 +33,7 @@ export const spearheavy1Hit = defineSkill({
     // Coefficients: in-game values, 2026-09-10.
     hit(0, {
       frame: 43,
-      physMultiplier: 1.250878,
-      attributeMultiplier: 1.876317,
-      physFixed: 346,
-      attributeFixed: 188.6,
+      ...levelScaled(LEVEL_ROWS.spearheavyHit15),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

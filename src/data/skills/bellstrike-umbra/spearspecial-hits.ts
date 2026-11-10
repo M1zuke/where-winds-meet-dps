@@ -1,4 +1,4 @@
-import { hit } from "../../../definitions/skills/skillDef"
+import { hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff, applyDot, castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
@@ -10,6 +10,7 @@ import {
 } from "../../innerWays/wolfchasersArtGates"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import type { SkillHit } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 
 const SPRING_SURGE_OR_HIGHER = { buffId: SPRING_SURGE_BUFF_ID, op: "gte" as const, stacks: 1 }
 const RIVER_FLOW_CONDITION = { buffId: BUFF.potentRiverFlow, op: "gte" as const, stacks: 1 }
@@ -70,10 +71,7 @@ export const SPEARSPECIAL_HITS: SkillHit[] = [
   }),
   hit(1, {
     frame: 16,
-    physMultiplier: 0.6848704,
-    attributeMultiplier: 1.0273056,
-    physFixed: 189.76,
-    attributeFixed: 103.36,
+    ...levelScaled(LEVEL_ROWS.spearspecial1HitCancelHit1),
     triggers: payloadTriggers(),
     // River Flow before Spring Surge: `selectHitVariant` takes the first
     // variant whose conditions are met, and both are true once River Flow
@@ -84,49 +82,34 @@ export const SPEARSPECIAL_HITS: SkillHit[] = [
         id: "hv-spearspecial-hit-1-river-flow",
         label: "River Flow",
         conditions: [RIVER_FLOW_CONDITION],
-        physMultiplier: 1.0273056,
-        attributeMultiplier: 1.5409584,
-        physFixed: 284.64,
-        attributeFixed: 155.04,
+        ...levelScaled(LEVEL_ROWS.spearspecial1HitCancelHit1RiverFlow),
         frame: 18,
       },
       {
         id: "hv-spearspecial-hit-1-spring-surge",
         label: "Spring Surge",
         conditions: [SPRING_SURGE_OR_HIGHER],
-        physMultiplier: 0.856088,
-        attributeMultiplier: 1.284132,
-        physFixed: 237.2,
-        attributeFixed: 129.2,
+        ...levelScaled(LEVEL_ROWS.spearspecial1HitCancelHit1SpringSurge),
         frame: 18,
       },
     ],
   }),
   hit(2, {
     frame: 58,
-    physMultiplier: 1.0273056,
-    attributeMultiplier: 1.5409584,
-    physFixed: 284.64,
-    attributeFixed: 155.04,
+    ...levelScaled(LEVEL_ROWS.spearspecial1HitCancelHit1RiverFlow),
     triggers: payloadTriggers(),
     variants: [
       {
         id: "hv-spearspecial-hit-2-river-flow",
         label: "River Flow",
         conditions: [RIVER_FLOW_CONDITION],
-        physMultiplier: 1.5409584,
-        attributeMultiplier: 2.3114376,
-        physFixed: 426.96,
-        attributeFixed: 232.56,
+        ...levelScaled(LEVEL_ROWS.spearspecialHit2RiverFlow),
       },
       {
         id: "hv-spearspecial-hit-2-spring-surge",
         label: "Spring Surge",
         conditions: [SPRING_SURGE_OR_HIGHER],
-        physMultiplier: 1.284132,
-        attributeMultiplier: 1.926198,
-        physFixed: 355.8,
-        attributeFixed: 193.8,
+        ...levelScaled(LEVEL_ROWS.spearspecialHit2SpringSurge),
       },
     ],
   }),

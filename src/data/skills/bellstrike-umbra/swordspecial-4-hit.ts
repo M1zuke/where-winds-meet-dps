@@ -1,4 +1,4 @@
-import { defineSkill } from "../../../definitions/skills/skillDef"
+import { defineSkill, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { PARAM } from "../buffs/ids"
@@ -7,6 +7,7 @@ import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import { SWORDSPECIAL_4_HIT_MOTION } from "./rootMotion"
 import { INNER_BALANCE_STRIKE_III_COST, INNER_BALANCE_STRIKE_III_REQUIRES } from "./buffs/enduranceGates"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-09-24: the Special attunement reaches hits 1–3
 // only — the 4th hit is `swordspecial-4-hit-final.ts`'s own skill.
@@ -37,10 +38,7 @@ export const swordspecial4Hit = defineSkill({
           id: "hv-swordspecial-4-hit-hit-0-sword-horizon",
           label: "Sword Horizon",
           conditions: [{ param: PARAM.swordHorizon }],
-          physMultiplier: SWORDSPECIAL_HITS[0]!.physMultiplier,
-          attributeMultiplier: SWORDSPECIAL_HITS[0]!.attributeMultiplier,
-          physFixed: SWORDSPECIAL_HITS[0]!.physFixed,
-          attributeFixed: SWORDSPECIAL_HITS[0]!.attributeFixed,
+          ...levelScaled(LEVEL_ROWS.swordspecial3HitHit0),
           castFrames: 76.96,
         },
       ],

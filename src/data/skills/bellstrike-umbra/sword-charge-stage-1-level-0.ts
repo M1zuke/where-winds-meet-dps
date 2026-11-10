@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORD_CHARGE_STAGE_1_LEVEL_0_DISPLACEMENT } from "./rootMotion"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // A release past the 0.2 s tap window but short of stage 1's own 0.3 s
 // threshold plays the charge's own level-0 release — its own tap animation,
@@ -28,10 +29,7 @@ export const swordChargeStage1Level0 = defineSkill({
   hits: [
     hit(0, {
       frame: 37,
-      physMultiplier: 0.479274,
-      attributeMultiplier: 0.718911,
-      physFixed: 132.6,
-      attributeFixed: 72.2,
+      ...levelScaled(LEVEL_ROWS.swordChargeStage1Level0Hit0),
     }),
   ],
   createdAt: "2026-09-28T00:00:00.000Z",
