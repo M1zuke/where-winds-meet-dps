@@ -242,7 +242,7 @@ describe("bitterSeasonTuningAtTier", () => {
   it("is total for tier 0 (base values everywhere)", () => {
     const tuning = bitterSeasonTuningAtTier(0)
     expect(tuning.procChance).toBe(0.1)
-    expect(tuning.defenseReductionPerStack).toBe(0.006)
+    expect(tuning.defenseReductionPerStack).toBe(0.01)
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
