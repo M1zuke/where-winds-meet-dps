@@ -7,7 +7,7 @@ import { writeFixture } from "../writeFixture"
 
 const LOCALES_DIR = join(import.meta.dirname, "..", "..", "src", "i18n", "locales")
 const ENGLISH_PATH = join(LOCALES_DIR, "en.json")
-const KOREAN_PATH = join(LOCALES_DIR, "ko.json")
+const TRANSLATED_PATHS = [join(LOCALES_DIR, "ko.json"), join(LOCALES_DIR, "zh.json")]
 const REGENERATE = process.env.UPDATE_I18N_CATALOGUE === "1"
 
 function read(path: string): Record<string, string> {
@@ -52,16 +52,18 @@ function rebuiltEnglish(): Record<string, string> {
 
 if (REGENERATE) {
   const english = rebuiltEnglish()
-  const committedKorean = read(KOREAN_PATH)
-  const korean: Record<string, string> = {}
-  for (const key of Object.keys(english)) korean[key] = committedKorean[key] ?? ""
   await writeFixture(ENGLISH_PATH, english)
-  await writeFixture(KOREAN_PATH, sorted(korean))
+  for (const path of TRANSLATED_PATHS) {
+    const committed = read(path)
+    const translated: Record<string, string> = {}
+    for (const key of Object.keys(english)) translated[key] = committed[key] ?? ""
+    await writeFixture(path, sorted(translated))
+  }
 }
 
 describe("translation catalogue", () => {
   const english = read(ENGLISH_PATH)
-  const korean = read(KOREAN_PATH)
+  const translatedCatalogues = TRANSLATED_PATHS.map(read)
   const keys = usedKeys()
 
   it("carries English for every key the app renders", () => {
@@ -82,11 +84,12 @@ describe("translation catalogue", () => {
   })
 
   it("gives every locale the same key set", () => {
-    expect(Object.keys(korean)).toEqual(Object.keys(english))
+    for (const catalogue of translatedCatalogues)
+      expect(Object.keys(catalogue)).toEqual(Object.keys(english))
   })
 
   it("keeps its keys sorted so a translated diff stays readable", () => {
-    for (const catalogue of [english, korean])
+    for (const catalogue of [english, ...translatedCatalogues])
       expect(Object.keys(catalogue)).toEqual([...Object.keys(catalogue)].sort())
   })
 

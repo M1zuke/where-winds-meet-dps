@@ -178,7 +178,10 @@ identifier instead.
 
 The app is **English-only**. There is **no Chinese in `src/` or `tests/`** — not
 in identifiers, object keys, comparison literals, enum values, data JSON,
-fixtures, or comments. Every domain term uses its official English form
+fixtures, or comments. The exceptions are the locale catalogues under
+`src/i18n/locales/`, where the translated text is the deliverable, and each
+locale's own name in `LOCALE_LABELS` in `src/i18n/translations.ts`. Every domain
+term uses its official English form
 (attributes `Bellstrike`/`Stonesplit`/`Silkbind`/`Bamboocut`, weapons
 `Sword`/`Modao`/…, skill types
 `weapon`/`mindMethod`/`mystic`/`sustain`/`settlement`/`weaponMystic`, tiers
@@ -187,14 +190,19 @@ fixtures, or comments. Every domain term uses its official English form
 Grep guard — must return nothing:
 
 ```
-grep -rlIP '[\x{4e00}-\x{9fff}]' src tests
+grep -rlIP '[\x{4e00}-\x{9fff}]' --exclude-dir=locales --exclude=translations.ts src tests
 ```
 
 Use `-P`, not `-E`: `grep -E` doesn't understand `\x{…}` and silently reports
 false positives. Keep `-I`: the guard is about source text, and a binary asset
 under `src/` will otherwise trip it on bytes that happen to fall in the range.
+Both excludes match by name: no other folder under `src/` or `tests/` may be
+named `locales`, and no other file `translations.ts`. Chinese anywhere in
+`translations.ts` outside `LOCALE_LABELS` is a defect the guard no longer
+catches.
 
-**The only sanctioned Chinese** is dev-only reference material outside `src/`:
+**Outside the catalogues, the only sanctioned Chinese** is dev-only reference
+material outside `src/`:
 the workbook in `excels/`, its extractions in `reference/workbook/`, the
 official ZH↔EN pairs in `reference/locale/zhToEnOfficial.json`, and the four CN
 source citations in `docs/CALCULATION.md` § "Sources of truth". None is
@@ -203,8 +211,7 @@ imported by the app or the tests.
 The UI renders **keys**, not English: a locale is a catalogue under
 `src/i18n/locales/` keyed by path and a member of the `Locale` union in
 `src/i18n/translations.ts` — nothing else branches on it. `en.json` is the
-English catalogue and the fallback every locale falls through to. There is still
-**no `zh` locale**.
+English catalogue and the fallback every locale falls through to.
 
 → Naming a new domain term: **docs/CLASSES.md** § "Naming a new domain term".
 → Translatable text, and what makes a string reachable: **docs/I18N.md**.
