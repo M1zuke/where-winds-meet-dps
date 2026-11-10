@@ -1,6 +1,7 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
 import { stat } from "../../../../engine/effects/effect"
+import { affinityDamageTalentBonus } from "./affinityDamageTalent"
 import { meterMaxParamKey, meterStatusId } from "../../../../definitions/resources/meterDef"
 import { enduranceMeter } from "../../../resources/enduranceMeter"
 
@@ -20,11 +21,11 @@ export const belowSixtyEndurance = defineClassBuff({
   reachesDotTicks: false,
   alwaysActive: true,
   duration: 9999,
-  summary: "affinityDmg +18%, except while Endless Gale already grants it",
+  summary: "affinityDmg as Endless Gale, except while Endless Gale already grants it",
   effects: (ctx) =>
     ctx.status.isActive(BUFF.endlessGale) ||
     ctx.status.isActive(BUFF.endlessGaleAtStart) ||
     ctx.status.stacks(ENDURANCE_STATUS_ID) >= 0.6 * ctx.build.paramValue(ENDURANCE_MAX_PARAM)
       ? []
-      : [stat("affinityDamageBoost", 0.18)],
+      : [stat("affinityDamageBoost", affinityDamageTalentBonus(ctx.build.whiteAffinityRate))],
 })

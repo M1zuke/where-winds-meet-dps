@@ -1,6 +1,7 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
 import { stat } from "../../../../engine/effects/effect"
+import { affinityDamageTalentBonus } from "./affinityDamageTalent"
 
 // The Martial Talent's Affinity DMG Bonus applies while Endless Gale is up.
 // The direct-affinity half is Mountain's Might's, and lives on that inner way
@@ -20,12 +21,14 @@ export const endlessGale = defineClassBuff({
   reachesDotTicks: false,
   alwaysActive: true,
   duration: 9999,
-  summary: "affinityDmg +18%",
+  summary: "affinityDmg +0.6% per full 1% Affinity Rate, cap 18%",
   effects: (ctx) =>
-    ctx.status.isActive(BUFF.endlessGale) ? [stat("affinityDamageBoost", 0.18)] : [],
+    ctx.status.isActive(BUFF.endlessGale)
+      ? [stat("affinityDamageBoost", affinityDamageTalentBonus(ctx.build.whiteAffinityRate))]
+      : [],
 })
 
-// The +18% does not stack with itself.
+// The bonus does not stack with itself.
 export const endlessGaleAtStart = defineClassBuff({
   id: BUFF.endlessGaleAtStartAffinityBoost,
   name: "Endless Gale (from the cast's start)",
@@ -33,9 +36,9 @@ export const endlessGaleAtStart = defineClassBuff({
   reachesDotTicks: false,
   alwaysActive: true,
   duration: 9999,
-  summary: "affinityDmg +18%, except while the cast-end copy already grants it",
+  summary: "affinityDmg as Endless Gale, except while the cast-end copy already grants it",
   effects: (ctx) =>
     ctx.status.isActive(BUFF.endlessGale) || !ctx.status.isActive(BUFF.endlessGaleAtStart)
       ? []
-      : [stat("affinityDamageBoost", 0.18)],
+      : [stat("affinityDamageBoost", affinityDamageTalentBonus(ctx.build.whiteAffinityRate))],
 })

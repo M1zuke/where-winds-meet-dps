@@ -743299,7 +743299,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%"
+          "summary": "affinityDmg +0.6% per full 1% Affinity Rate, cap 18%"
         },
         {
           "id": "endlessGaleAtStartAffinityBoost",
@@ -743322,7 +743322,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%, except while the cast-end copy already grants it"
+          "summary": "affinityDmg as Endless Gale, except while the cast-end copy already grants it"
         },
         {
           "id": "swordSlashDamageBoost",
@@ -743490,7 +743490,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%, except while Endless Gale already grants it"
+          "summary": "affinityDmg as Endless Gale, except while Endless Gale already grants it"
         },
         {
           "id": "namelessSwordAdditionalAttack",

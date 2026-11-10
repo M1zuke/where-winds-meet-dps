@@ -66,6 +66,7 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
   params.minPhysAttack = inputs.phys.min
   params.maxPhysAttack = inputs.phys.max
   params.whiteCritRate = inputs.critRate
+  params.whiteAffinityRate = inputs.affinityRate
   params.breakthrough = inputs.breakthrough
   params.distanceMeters =
     activeRotationForInputs(inputs)?.preferredDistanceMeters ?? DEFAULT_PREFERRED_DISTANCE_METERS

@@ -114,6 +114,7 @@ describe("paramsFromInputs — build derivation", () => {
         param === "minPhysAttack" ||
         param === "maxPhysAttack" ||
         param === "whiteCritRate" ||
+        param === "whiteAffinityRate" ||
         param === "targetMaxHp" ||
         param === "breakthrough" ||
         param === "distanceMeters" ||
