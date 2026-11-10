@@ -1,21 +1,19 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
 import { NIGHTWICK_STANCE_CAST_CONDITIONS, nightwickStanceSpent } from "./nightwick-stance"
+import { LEVEL_ROWS } from "./levelRows"
 
 const pursuit = (index: number, frame: number) =>
   hit(index, {
     frame,
-    physMultiplier: 0.57198,
-    attributeMultiplier: 0.85797,
-    physFixed: 158.25,
-    attributeFixed: 86.25,
+    ...levelScaled(LEVEL_ROWS.nightwickGrounddriftHit0),
   })
 
-// In-game level-100 row (2.28792 / 633 / 345, 2026-09-04) at the tooltip's
+// In-game values as of 2026-09-04 at the tooltip's
 // 0.25 per hit, one hit per collider. Attribute side × 1.5. Cast
 // length: in-game animation, 2026-09-05. Hit frames and the Binge Points grant:
 // in-game values as of 2026-10-15.

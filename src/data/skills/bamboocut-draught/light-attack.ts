@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -12,21 +12,13 @@ import {
   lightAttackMarkTriggers,
   lightAttackStageFiveSecondColliderTriggers,
 } from "./buffs/lightAttackMarks"
+import type { LevelRows } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 
-const stage = (
-  index: number,
-  frame: number,
-  physMultiplier: number,
-  physFixed: number,
-  attributeFixed: number,
-  closesChain = false,
-) =>
+const stage = (index: number, frame: number, levelRows: LevelRows, closesChain = false) =>
   hit(index, {
     frame,
-    physMultiplier,
-    attributeMultiplier: physMultiplier * 1.5,
-    physFixed,
-    attributeFixed,
+    ...levelScaled(levelRows),
     triggers: closesChain
       ? [...lightAttackMarkTriggers(true), castSkill({ target: SKILL.falconsPursuit })]
       : lightAttackMarkTriggers(),
@@ -58,28 +50,22 @@ export const lightAttack = defineSkill({
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    stage(0, 17, 0.35636, 100, 54),
-    stage(1, 37, 0.156852, 44, 23.6),
+    stage(0, 17, LEVEL_ROWS.lightAttackHit0),
+    stage(1, 37, LEVEL_ROWS.lightAttackHit1),
     hit(2, {
       frame: 47,
-      physMultiplier: 0.235278,
-      attributeMultiplier: 0.352917,
-      physFixed: 66,
-      attributeFixed: 35.4,
+      ...levelScaled(LEVEL_ROWS.lightAttackHit2),
       triggers: [],
     }),
-    stage(3, 71, 0.25294, 71, 39),
-    stage(4, 87, 0.31826, 89, 48),
-    stage(5, 113, 0.186944, 52, 28.4),
+    stage(3, 71, LEVEL_ROWS.lightAttackHit3),
+    stage(4, 87, LEVEL_ROWS.lightAttackHit4),
+    stage(5, 113, LEVEL_ROWS.lightAttackHit5),
     hit(6, {
       frame: 126,
-      physMultiplier: 0.280416,
-      attributeMultiplier: 0.420624,
-      physFixed: 78,
-      attributeFixed: 42.6,
+      ...levelScaled(LEVEL_ROWS.lightAttackHit6),
       triggers: lightAttackStageFiveSecondColliderTriggers,
     }),
-    stage(7, 147, 0.8202, 228, 124, true),
+    stage(7, 147, LEVEL_ROWS.lightAttackHit7, true),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

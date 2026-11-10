@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const gauntletsDual = defineSkill({
@@ -21,17 +22,11 @@ export const gauntletsDual = defineSkill({
   hits: [
     hit(0, {
       frame: 17,
-      physMultiplier: 0.30864,
-      attributeMultiplier: 0.46296,
-      physFixed: 85.6,
-      attributeFixed: 46.8,
+      ...levelScaled(LEVEL_ROWS.gauntletsDualHit0),
     }),
     hit(1, {
       frame: 40,
-      physMultiplier: 0.46296,
-      attributeMultiplier: 0.69444,
-      physFixed: 128.4,
-      attributeFixed: 70.2,
+      ...levelScaled(LEVEL_ROWS.gauntletsDualHit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

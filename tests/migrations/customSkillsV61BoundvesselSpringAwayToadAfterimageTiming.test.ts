@@ -10,9 +10,13 @@ import {
 } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { healSkill as healDraughtGrantTimingAndAbrasionTalent } from "../../src/migrations/customSkills/V87__draughtGrantTimingAndAbrasionTalent"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV60File from "./testCustomSkills/v60/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const TOAD_ID = "mystic-toad-cancel"
 const BOUNDVESSEL_ID = "bamboocutDraught-boundvessel"

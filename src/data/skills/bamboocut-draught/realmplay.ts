@@ -1,12 +1,13 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
-// The airborne follow-up of Reveldrift. Coefficients: the in-game level-100
-// row (0.804 / 223 / 122, 2026-09-04) splits into two hits of 0.5 each;
+// The airborne follow-up of Reveldrift. Coefficients: the in-game
+// row (2026-09-04) splits into two hits of 0.5 each;
 // attribute side × 1.5. Cast length and hit frame: in-game animation,
 // 2026-09-05.
 export const realmplay = defineSkill({
@@ -29,18 +30,12 @@ export const realmplay = defineSkill({
   hits: [
     hit(0, {
       frame: 10,
-      physMultiplier: 0.402,
-      attributeMultiplier: 0.603,
-      physFixed: 111.5,
-      attributeFixed: 61,
+      ...levelScaled(LEVEL_ROWS.realmplayHit0),
       triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
     }),
     hit(1, {
       frame: 10,
-      physMultiplier: 0.402,
-      attributeMultiplier: 0.603,
-      physFixed: 111.5,
-      attributeFixed: 61,
+      ...levelScaled(LEVEL_ROWS.realmplayHit0),
       triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
     }),
     hit(2, {

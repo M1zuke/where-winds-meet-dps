@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { nightwickStanceOpened } from "./nightwick-stance"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-09-16.
 const REQUIRES_BINGE_100 = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
@@ -37,10 +38,7 @@ export const nightwickPrimepick = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.9444,
-      attributeMultiplier: 1.4166,
-      physFixed: 262,
-      attributeFixed: 143,
+      ...levelScaled(LEVEL_ROWS.nightwickPrimepickHit0),
       conditions: REQUIRES_BINGE_100,
     }),
     hit(1, {

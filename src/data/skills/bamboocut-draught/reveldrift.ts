@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
 import {
@@ -9,23 +9,18 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const reveldriftHits = [
   hit(0, {
     frame: 20,
-    physMultiplier: 0.2640125,
-    attributeMultiplier: 0.39601875,
-    physFixed: 73.25,
-    attributeFixed: 40,
+    ...levelScaled(LEVEL_ROWS.reveldriftHit0),
     triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
   }),
   hit(1, {
     frame: 24,
-    physMultiplier: 0.2640125,
-    attributeMultiplier: 0.39601875,
-    physFixed: 73.25,
-    attributeFixed: 40,
+    ...levelScaled(LEVEL_ROWS.reveldriftHit0),
   }),
 ]
 
