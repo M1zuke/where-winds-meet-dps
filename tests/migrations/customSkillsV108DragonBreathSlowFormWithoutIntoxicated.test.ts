@@ -10,7 +10,11 @@ import {
 } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
 import { healSkill as healSingleHitFrame } from "../../src/migrations/customSkills/V109__dragonBreathSingleHitFastFrame"
 import { healSkill as healSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
-import { builtinSkill } from "../builtins"
+import { builtinSkill as currentBuiltinSkill } from "../builtins"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
+
+const builtinSkill = (classId: string, id: string) =>
+  withoutLevelRows(currentBuiltinSkill(classId, id))
 import type { Skill } from "../../src/engine/skill"
 import storeV107File from "./testCustomSkills/v107/store.json"
 

@@ -1,4 +1,10 @@
-import type { HitVariant, SkillHit, TriggerCondition } from "../../engine/skill"
+import type {
+  CoefficientRow,
+  HitVariant,
+  LevelRows,
+  SkillHit,
+  TriggerCondition,
+} from "../../engine/skill"
 import { hit } from "../../definitions/skills/skillDef"
 import { applyDebuff } from "../../definitions/skills/triggers"
 import { DEBUFF } from "./mystic/ids"
@@ -33,13 +39,6 @@ export const NOT_INTOXICATED: TriggerCondition = {
 }
 export const INTOXICATED: TriggerCondition = { buffId: DEBUFF.intoxicated, op: "gte", stacks: 1 }
 
-interface CoefficientRow {
-  physMultiplier: number
-  attributeMultiplier: number
-  physFixed: number
-  attributeFixed: number
-}
-
 const NO_DAMAGE: CoefficientRow = {
   physMultiplier: 0,
   attributeMultiplier: 0,
@@ -50,7 +49,7 @@ const NO_DAMAGE: CoefficientRow = {
 export function slowFormVariant(
   skillId: string,
   hitIndex: number,
-  row: CoefficientRow,
+  row: CoefficientRow & { levelRows?: LevelRows },
   frame: number,
   castFrames?: number,
 ): HitVariant {
@@ -62,6 +61,7 @@ export function slowFormVariant(
     attributeMultiplier: row.attributeMultiplier,
     physFixed: row.physFixed,
     attributeFixed: row.attributeFixed,
+    ...(row.levelRows ? { levelRows: row.levelRows } : {}),
     frame,
     ...(castFrames === undefined ? {} : { castFrames }),
   }
@@ -102,7 +102,7 @@ export function slowFormBreakMarkers(firstIndex: number): SkillHit[] {
 export function quickFormFollowUpHit(
   index: number,
   frame: number,
-  row: CoefficientRow,
+  row: CoefficientRow & { levelRows?: LevelRows },
   triggers: SkillHit["triggers"],
 ): SkillHit {
   return hit(index, {

@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC, PROP, ROLE } from "../ids"
 import { BUFF } from "../buffs/ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL } from "./ids"
 
 // In-game values as of 2026-11-10: the hit lands 281.52 frames into the cast,
@@ -29,10 +30,7 @@ export const dragonHeadPlus = defineSkill({
     hit(0, {
       frame: 281.52,
       // In-game values as of 2026-10-15.
-      physMultiplier: 12.597266,
-      attributeMultiplier: 18.895899,
-      physFixed: 1999.4721,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.dragonHeadPlus),
     }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",

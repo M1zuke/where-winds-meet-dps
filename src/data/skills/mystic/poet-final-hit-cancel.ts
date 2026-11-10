@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff, castSkill } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import { BUFF } from "../buffs/ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
@@ -25,14 +26,10 @@ export const poetFinalHitCancel = defineSkill({
   // an assumption (the class's own default melee reach).
   approach: "stationary",
   receives: [BUFF.poetFinalStrikeStack, ...WINEBOUND_MYSTIC_RECEIVES],
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.705588,
-      attributeMultiplier: 2.558382,
-      physFixed: 268.184,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.poetFinalHit),
       triggers: [
         applyDebuff({
           target: DEBUFF.combustion,

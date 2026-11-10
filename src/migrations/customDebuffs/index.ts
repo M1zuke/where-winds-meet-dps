@@ -27,6 +27,7 @@ import { V22__smolderFirstWindowLength } from "./V22__smolderFirstWindowLength"
 import { V23__drunkslayBanksQiDamage } from "./V23__drunkslayBanksQiDamage"
 import { V24__volutefitReachesWineboundTicks } from "./V24__volutefitReachesWineboundTicks"
 import { V25__droneRecallBecomesCastLock } from "./V25__droneRecallBecomesCastLock"
+import { V26__mysticDotLevelRows } from "./V26__mysticDotLevelRows"
 
 export type {
   CustomDebuffMigration,
@@ -72,6 +73,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V23__drunkslayBanksQiDamage,
   V24__volutefitReachesWineboundTicks,
   V25__droneRecallBecomesCastLock,
+  V26__mysticDotLevelRows,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store
