@@ -10,6 +10,7 @@ export interface BuildView {
   // The live value only for a module declaring `readsLiveMaxPhysAttack`.
   maxPhysAttack: number
   whiteCritRate: number
+  whiteAffinityRate: number
   breakthrough: number
   param(id: string): boolean
   paramTier(id: string): number

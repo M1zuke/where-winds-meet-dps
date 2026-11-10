@@ -16,7 +16,12 @@ const CLASS = "bellstrikeSplendor"
 const ENDURANCE_STATUS_ID = "meter:endurance"
 const ENDURANCE_MAX_PARAM = "meterMax:endurance"
 
-const enduranceEffectsWith = (opts: { active?: string[]; stacks?: number; max?: number }) => {
+const enduranceEffectsWith = (opts: {
+  active?: string[]
+  stacks?: number
+  max?: number
+  affinity?: number
+}) => {
   const effects = belowSixtyEndurance.effects
   if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
   return effects({
@@ -24,7 +29,10 @@ const enduranceEffectsWith = (opts: { active?: string[]; stacks?: number; max?: 
       isActive: (id: string) => (opts.active ?? []).includes(id),
       stacks: (id: string) => (id === ENDURANCE_STATUS_ID ? (opts.stacks ?? 0) : 0),
     },
-    build: { paramValue: (id: string) => (id === ENDURANCE_MAX_PARAM ? (opts.max ?? 80) : 0) },
+    build: {
+      paramValue: (id: string) => (id === ENDURANCE_MAX_PARAM ? (opts.max ?? 80) : 0),
+      whiteAffinityRate: opts.affinity ?? 0.3,
+    },
   } as never)
 }
 
@@ -47,13 +55,36 @@ describe("the Nameless Spear Affinity DMG talent pays out once", () => {
     const effects = endlessGale.effects
     if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
     expect(
-      effects({ status: { isActive: (id: string) => id === BUFF.endlessGale } } as never),
+      effects({
+        status: { isActive: (id: string) => id === BUFF.endlessGale },
+        build: { whiteAffinityRate: 0.3 },
+      } as never),
     ).toEqual(enduranceEffectsWith({ stacks: 40, max: 80 }))
+  })
+
+  it("scales with each whole percent of Affinity Rate", () => {
+    const bonusAt = (affinity: number) =>
+      enduranceEffectsWith({ stacks: 40, max: 80, affinity })[0]?.amount
+    expect(bonusAt(0.213)).toBeCloseTo(21 * 0.006, 10)
+    expect(bonusAt(0.2199)).toBeCloseTo(21 * 0.006, 10)
+    expect(bonusAt(0.164 * 1.3)).toBeCloseTo(21 * 0.006, 10)
+    expect(bonusAt(0.005)).toBe(0)
+  })
+
+  it("stops at 18% from 30% Affinity Rate", () => {
+    expect(enduranceEffectsWith({ stacks: 40, max: 80, affinity: 0.3 })[0]?.amount).toBeCloseTo(
+      0.18,
+      10,
+    )
+    expect(enduranceEffectsWith({ stacks: 40, max: 80, affinity: 0.6 })[0]?.amount).toBeCloseTo(
+      0.18,
+      10,
+    )
   })
 
   it("adds up to one bonus across the window closing and the low-Endurance condition taking over", () => {
     const engine = buffEngineWith(
-      { classId: CLASS, [ENDURANCE_MAX_PARAM]: 80 },
+      { classId: CLASS, [ENDURANCE_MAX_PARAM]: 80, whiteAffinityRate: 0.3 },
       buffDefsForClass(CLASS),
     )
     const windowEndFrame = 300 // The gate's own 5s window, at 60fps.
