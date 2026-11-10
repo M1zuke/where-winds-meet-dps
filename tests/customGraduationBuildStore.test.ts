@@ -14,6 +14,8 @@ import {
 import type { CustomGraduationBuild } from "../src/engine/customGraduationBuild"
 import { classDefinition } from "../src/definitions/classes/registry"
 import { GEAR_SLOTS } from "../src/engine/types"
+import { computeGearContribution } from "../src/engine/gearStats"
+import { defaultInputs } from "../src/engine/defaults"
 
 const CLASS = "bellstrikeUmbra"
 const OTHER_CLASS = "stonesplitStrength"
@@ -94,18 +96,6 @@ describe("the custom graduation build store", () => {
     localStorage.setItem("wwm.customGraduationBuilds", JSON.stringify({ ...raw, v: raw.v + 1 }))
     expect(loadCustomGraduationBuilds()).toEqual([])
   })
-
-  it("drops a stored build whose stat lines this build cannot resolve", () => {
-    const mine = buildFrom(CLASS, "Mine")
-    const broken = {
-      ...mine,
-      slots: mine.slots.map((slot, index) =>
-        index === 0 ? { ...slot, words: ["nope", ...slot.words.slice(1)] } : slot,
-      ),
-    }
-    localStorage.setItem("wwm.customGraduationBuilds", JSON.stringify({ v: 1, builds: [broken] }))
-    expect(loadCustomGraduationBuilds()).toEqual([])
-  })
 })
 
 describe("a stored build holding a shared weapon-art attunement id", () => {
@@ -178,5 +168,66 @@ describe("a stored build naming an attunement id this build no longer knows", ()
   it("survives an import into the same class", () => {
     const text = exportCustomGraduationBuild(storedWithUnknownAttunement())
     expect(importCustomGraduationBuild(text, CLASS).slots[0].attunement).toBe("retiredLine")
+  })
+})
+
+describe("a stored build naming a stat-line word this build no longer knows", () => {
+  beforeEach(() => localStorage.clear())
+  afterEach(() => localStorage.clear())
+
+  function storedWithUnknownWord(): CustomGraduationBuild {
+    const build = buildFrom(CLASS, "Mine")
+    return {
+      ...build,
+      slots: build.slots.map((slot, index) =>
+        index === 0
+          ? {
+              ...slot,
+              words: [
+                "retiredWord",
+                ...slot.words.slice(1),
+              ] as unknown as CustomGraduationBuild["slots"][number]["words"],
+            }
+          : slot,
+      ),
+    }
+  }
+
+  it("keeps the whole build and the stored word", () => {
+    const stored = storedWithUnknownWord()
+    localStorage.setItem("wwm.customGraduationBuilds", JSON.stringify({ v: 1, builds: [stored] }))
+    const loaded = loadCustomGraduationBuilds()
+    expect(loaded).toHaveLength(1)
+    expect(loaded[0].slots).toEqual(stored.slots)
+  })
+
+  it("keeps the word on the piece and scores it as nothing", () => {
+    const piece = graduationBuildFromCustom(storedWithUnknownWord()).gear[0]
+    expect(piece.words[0].word).toBe("retiredWord")
+    expect(piece.words[0].value).toBe(0)
+    expect(piece.words[1].value).toBeGreaterThan(0)
+    const withUnknown = computeGearContribution(piece, { ...defaultInputs, classId: CLASS })
+    const withoutIt = computeGearContribution(
+      { ...piece, words: [{ ...piece.words[0], word: "" }, ...piece.words.slice(1)] as never },
+      { ...defaultInputs, classId: CLASS },
+    )
+    expect(withUnknown).toEqual(withoutIt)
+  })
+
+  it("survives an import into the same class", () => {
+    const text = exportCustomGraduationBuild(storedWithUnknownWord())
+    expect(importCustomGraduationBuild(text, CLASS).slots[0].words[0]).toBe("retiredWord")
+  })
+
+  it("still drops a build whose word is not text", () => {
+    const stored = storedWithUnknownWord()
+    const broken = {
+      ...stored,
+      slots: stored.slots.map((slot, index) =>
+        index === 0 ? { ...slot, words: [1, 2, 3, 4, 5] } : slot,
+      ),
+    }
+    localStorage.setItem("wwm.customGraduationBuilds", JSON.stringify({ v: 1, builds: [broken] }))
+    expect(loadCustomGraduationBuilds()).toEqual([])
   })
 })

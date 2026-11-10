@@ -1,7 +1,7 @@
 import { getAttunement } from "../../../../engine/attunements"
 import type { GearPiece } from "../../../../engine/types"
 import { isWeaponSlot } from "../../../../engine/types"
-import { statLineLabel } from "../../../../data/stats/statLines"
+import { isUnknownGearWord, statLineLabel } from "../../../../data/stats/statLines"
 import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import {
   attunementKey,
@@ -73,7 +73,11 @@ export function BuildPieceCard({
             <span className={previewStyles.affixName}>
               {t(statLineKey(word.word), statLineLabel(word.word))}
             </span>
-            <span className={previewStyles.affixValue}>{formatGearValue(word.value)}</span>
+            <span className={previewStyles.affixValue}>
+              {isUnknownGearWord(word.word)
+                ? t("common.noLongerAvailable")
+                : formatGearValue(word.value)}
+            </span>
             <span />
           </div>
         ))}

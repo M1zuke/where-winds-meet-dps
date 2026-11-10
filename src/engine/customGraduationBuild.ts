@@ -1,9 +1,8 @@
 import { createGraduationGearPiece } from "../data/classes/graduationGear"
 import type { GraduationWords } from "../data/classes/graduationGear"
-import { GEAR_WORD_IDS } from "../data/stats/statLines"
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
 import type { AttunementId } from "./attunements"
-import type { Arsenal, BowSet, GearSlot, GearWordId } from "./types"
+import type { Arsenal, BowSet, GearSlot } from "./types"
 import { GEAR_SLOTS } from "./types"
 
 export interface CustomGraduationSlot {
@@ -53,7 +52,7 @@ export function isCustomGraduationSlot(value: unknown): value is CustomGraduatio
   const slot = value as CustomGraduationSlot
   if (!GEAR_SLOTS.includes(slot.slot)) return false
   if (!Array.isArray(slot.words) || slot.words.length !== 5) return false
-  if (!slot.words.every((word) => GEAR_WORD_IDS.includes(word as GearWordId))) return false
+  if (!slot.words.every((word) => typeof word === "string")) return false
   return typeof slot.attunement === "string"
 }
 

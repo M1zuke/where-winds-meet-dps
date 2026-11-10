@@ -91,7 +91,7 @@ describe("a build the user authored", () => {
     })
   })
 
-  it("is refused when a stat line or an attunement is one this build cannot resolve", () => {
+  it("is accepted when a stat line or an attunement is one this build cannot resolve", () => {
     const custom = customFrom(CLASS)
     const badWord = {
       ...custom,
@@ -107,9 +107,20 @@ describe("a build the user authored", () => {
         index === 0 ? { ...slot, attunement: "nope" } : slot,
       ),
     }
-    expect(isCustomGraduationBuild(badWord)).toBe(false)
+    expect(isCustomGraduationBuild(badWord)).toBe(true)
     expect(isCustomGraduationBuild(unknownAttunement)).toBe(true)
     expect(isCustomGraduationBuild(custom)).toBe(true)
+  })
+
+  it("is refused when a stat line is not text", () => {
+    const custom = customFrom(CLASS)
+    const notText = {
+      ...custom,
+      slots: custom.slots.map((slot, index) =>
+        index === 0 ? { ...slot, words: [1, 2, 3, 4, 5] as unknown as typeof slot.words } : slot,
+      ),
+    }
+    expect(isCustomGraduationBuild(notText)).toBe(false)
   })
 })
 
