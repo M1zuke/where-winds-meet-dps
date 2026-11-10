@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 71558.23,
-    "totalDamage": 4293493.58,
+    "dps": 71560.32,
+    "totalDamage": 4293619.23,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -69,7 +69,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106047.71,
+        "expectedDamage": 106173.36,
         "castCount": 4
       },
       {
@@ -174,11 +174,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "c84f1841225f25a950037c223ad55dd8298afaa1551a3ec614eaff9398d4bd7c"
+    "digest": "f744dde63479dae5432800883638f41c859be39282801254f37cb2bdd3ca3d4a"
   },
   "anchor:noAttunement": {
-    "dps": 64266.81,
-    "totalDamage": 3856008.68,
+    "dps": 64268.91,
+    "totalDamage": 3856134.33,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -246,7 +246,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107711.41,
+        "expectedDamage": 107837.05,
         "castCount": 4
       },
       {
@@ -351,11 +351,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "0340599a4b84c82dc89c026ca2a1d13bfefcf5150efe6643e836aeaf08c9aea1"
+    "digest": "d9e02ee3017cad7a548cb8f137c8c08703b9c173f4817ae53a2daca685bfe557"
   },
   "anchor:dummyOff": {
-    "dps": 76600.4,
-    "totalDamage": 4596023.89,
+    "dps": 76602.49,
+    "totalDamage": 4596149.53,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -423,7 +423,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 118785.05,
+        "expectedDamage": 118910.7,
         "castCount": 4
       },
       {
@@ -528,11 +528,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "be29bd3662e74a619818e52f75eea3bad4d2980ac73c9d10f31bad021ec2f958"
+    "digest": "1c9c4c5ec713d1fafd83158568b148d2a3dd19783105a5d56ecc39f3d1c1cdb9"
   },
   "anchor:breakthrough17": {
-    "dps": 72792.5,
-    "totalDamage": 4367550.09,
+    "dps": 72794.63,
+    "totalDamage": 4367677.9,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -600,7 +600,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107870.8,
+        "expectedDamage": 107998.61,
         "castCount": 4
       },
       {
@@ -705,11 +705,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "cc9504caa91e62eb53813b9285052ab8a10d872dc325998850c6516aaad2c711"
+    "digest": "2227459207f6f1f71aadbe6a04b01819af603bb1fa2e85db1b498f2dd97d8d1d"
   },
   "anchor:healerBuff": {
-    "dps": 74927.36,
-    "totalDamage": 4495641.36,
+    "dps": 74929.45,
+    "totalDamage": 4495767,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -777,7 +777,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 113997.4,
+        "expectedDamage": 114123.05,
         "castCount": 4
       },
       {
@@ -882,11 +882,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "6491550b3322f599ac79173526139b8c74fadd95e044e4b1ef0ffb98fff70482"
+    "digest": "c2c9fdf7fe872727cfb403748dadcacb6327609aa716c9a036a8bb6b150f6a7a"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 71977.35,
-    "totalDamage": 4318641,
+    "dps": 71979.44,
+    "totalDamage": 4318766.65,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -954,7 +954,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106485.89,
+        "expectedDamage": 106611.53,
         "castCount": 4
       },
       {
@@ -1059,11 +1059,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "a23f844f7befb16fe2ec4dbc4cc965dc1e5d59530e83294d983b544c8978bd11"
+    "digest": "27b172f812bcee4f74c15218a87fb2f9236ddcccee3a3d9a0aeab067b824884d"
   },
   "anchor:voidrotScript": {
-    "dps": 72911.4,
-    "totalDamage": 4374684.27,
+    "dps": 72913.5,
+    "totalDamage": 4374809.92,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1131,7 +1131,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107176.74,
+        "expectedDamage": 107302.38,
         "castCount": 4
       },
       {
@@ -1236,11 +1236,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "aa0d0fd1d646e19673f11b6f972566d01e0e346bab9e380022cff07ab0f68ff2"
+    "digest": "52addc99711d4de48edd5872351f8eac298e99f59e2da1ed4e7fd1696efdf76b"
   },
   "anchor:breakExtension": {
-    "dps": 72935.37,
-    "totalDamage": 4376121.96,
+    "dps": 72937.46,
+    "totalDamage": 4376247.6,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1308,7 +1308,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 108820.54,
+        "expectedDamage": 108946.18,
         "castCount": 4
       },
       {
@@ -1413,11 +1413,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "8b712f73351137ba3ad4362c8615ba00cea069748d920b3d8103827129413bb3"
+    "digest": "6a873e12e35969dfc24901ed4658d7db72d7750061c690a89848e1d61164fd1c"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41796.56,
-    "totalDamage": 2507793.45,
+    "dps": 41798.58,
+    "totalDamage": 2507915.05,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1488,7 +1488,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 101984.13,
+        "expectedDamage": 102105.72,
         "castCount": 4
       },
       {
@@ -1593,11 +1593,11 @@
       "buffWindows": 143,
       "casts": 90
     },
-    "digest": "efbf345e4e5405d278424fca6bfffef4ebb04455a516107269ff07f7c0258455"
+    "digest": "8d6e5ac0399cb372d9fd6acd664aeaf9c037728ded89200c0ff8496a07ea5c87"
   },
   "anchor:noSwordHorizon": {
-    "dps": 36591.58,
-    "totalDamage": 2195494.72,
+    "dps": 36593.61,
+    "totalDamage": 2195616.31,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 5.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1691,7 +1691,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100429.69,
+        "expectedDamage": 100551.29,
         "castCount": 4
       },
       {
@@ -1796,11 +1796,11 @@
       "buffWindows": 122,
       "casts": 90
     },
-    "digest": "102c0e0feda0f1edd655d9047822ba722f7600756fb8058c6f046827e9513811"
+    "digest": "093fbdc136a9c1f21807d0917855a546c0353548888ff79a275d2f91b7f2a27e"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 63019.28,
-    "totalDamage": 3781156.59,
+    "dps": 63021.2,
+    "totalDamage": 3781271.8,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1868,7 +1868,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98203.86,
+        "expectedDamage": 98319.07,
         "castCount": 4
       },
       {
@@ -1973,11 +1973,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "561163396053638cc4c1366bea2a998402a92677f580f8561e99d1b905ac7e2e"
+    "digest": "c911d3cec578dcc5cc0f4b2f7515f4fa1ee77443c8c9efcdb768891fa2c35c48"
   },
   "anchor:noMoraleChant": {
-    "dps": 65556.68,
-    "totalDamage": 3933400.55,
+    "dps": 65558.69,
+    "totalDamage": 3933521.35,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2045,7 +2045,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98981.42,
+        "expectedDamage": 99102.23,
         "castCount": 4
       },
       {
@@ -2142,7 +2142,7 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "f0cc2cc9259b446dc67487fe6317ca6ae335cf6e2a0abfba1965fc78ce28cda2"
+    "digest": "accaff66d1b9cc9e69870132991435ce43a6962311fff85026d42dd7185d3823"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 41018.55,
@@ -2926,8 +2926,8 @@
     "digest": "d5d5f908865e5904d368356a7c50aa654bac1c6818c19107c35054a384058f9b"
   },
   "anchor:noSet": {
-    "dps": 64226.66,
-    "totalDamage": 3853599.7,
+    "dps": 64228.56,
+    "totalDamage": 3853713.57,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2995,7 +2995,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97556.5,
+        "expectedDamage": 97670.37,
         "castCount": 4
       },
       {
@@ -3100,11 +3100,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "0c7d4f0178ca891f5b3b8bfb16828876e37d76e9b927ca414429b57d30361019"
+    "digest": "d5155c64e8467d8d444aba9429d138683339bbb52e33264763c758dea47aed7a"
   },
   "anchor:set-Jadeware": {
-    "dps": 70919.15,
-    "totalDamage": 4255149.21,
+    "dps": 70921.08,
+    "totalDamage": 4255264.63,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3172,7 +3172,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97368.9,
+        "expectedDamage": 97484.33,
         "castCount": 4
       },
       {
@@ -3277,11 +3277,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "6b211e652f2e38b35d7cd59e694635913e1cd0734d3c455b8d9a84fbb0374612"
+    "digest": "16391a7419ad69f0ec1238e74264732f76be6850698d3c4e50c129d2bc1bdd2e"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64814.07,
-    "totalDamage": 3888843.93,
+    "dps": 64815.99,
+    "totalDamage": 3888959.23,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3349,7 +3349,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98015.15,
+        "expectedDamage": 98130.44,
         "castCount": 4
       },
       {
@@ -3454,11 +3454,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "353d0581442707088d678632ac5f4a992e45d51950eaa96c9fdc462ab82601dd"
+    "digest": "fc7d91141b2bf801d0c692bc4af1be422665ff8b10812e535df013a603a35cb1"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65641.02,
-    "totalDamage": 3938461.43,
+    "dps": 65642.98,
+    "totalDamage": 3938578.66,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3526,7 +3526,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99654.98,
+        "expectedDamage": 99772.21,
         "castCount": 4
       },
       {
@@ -3631,11 +3631,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "a7a283d7fa3816b0f910b3f5adeeffdc1bf356be35f8b3e11c1bcd8285ea8c5a"
+    "digest": "dfc45f62c1b517fab570637db79c5d0d4a5042efa92d5d239cabbdc35e4aca2b"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66189.84,
-    "totalDamage": 3971390.39,
+    "dps": 66191.75,
+    "totalDamage": 3971504.9,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3703,7 +3703,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100459.4,
+        "expectedDamage": 100573.91,
         "castCount": 4
       },
       {
@@ -3808,7 +3808,7 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "7047c5968f5c8eb6a874b6a7409c87e053c5bb259ee3de5204b7828ef56d2887"
+    "digest": "e65b549f303a5ed26408dc3053848f201a6c61fbae0ee2a803a287495df9b4ea"
   },
   "defaults:umbra": {
     "dps": 12359.43,

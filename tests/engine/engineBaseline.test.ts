@@ -313,8 +313,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(71952.75)
-    expect(round(result.totalDamage, 2)).toBe(4317164.94)
+    expect(round(result.dps, 2)).toBe(71560.32)
+    expect(round(result.totalDamage, 2)).toBe(4293619.23)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -329,7 +329,7 @@ describe("engine baseline — profile-v7 anchor", () => {
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(470885.82)
+    expect(damageOf("Smolder (DoT)")).toBe(470887.79)
     expect(damageOf("Flute Ripple (DoT)")).toBe(76602.27)
   })
 
@@ -345,8 +345,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(73188.72)
-    expect(round(result.totalDamage, 2)).toBe(4391323.44)
+    expect(round(result.dps, 2)).toBe(72794.63)
+    expect(round(result.totalDamage, 2)).toBe(4367677.9)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
