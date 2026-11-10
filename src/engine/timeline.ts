@@ -1880,7 +1880,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       preferredDistanceMeters,
       prePull ? preferredDistanceMeters : cast.distanceBeforeCast,
     )
-    const nextStepSkillId = resolvedSteps[stepIndex + 1]?.skill.id
+    const nextStepSkillId = resolvedSteps
+      .slice(stepIndex + 1)
+      .find((followingStep) => !directSwapSkills.has(followingStep.skill))?.skill.id
     const occurringHits = castResolution.skill.hits.filter(
       (hit) =>
         hitConditionsHold(hit, holdsHere) &&
@@ -2985,7 +2987,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       const scoreInput = prepareHit(event)
       const launchResource = resourceByLaunch.get(skill.id)
-      const launchShare = launchResource && inFight(frame) ? launchResource.launch(frame) : 1
+      const launchesResource =
+        launchResource !== undefined &&
+        hit.triggers.some(
+          (trigger) =>
+            trigger.kind === "applyDebuff" &&
+            trigger.targetId === launchResource.definition.debuffId,
+        )
+      const launchShare = launchesResource && inFight(frame) ? launchResource.launch(frame) : 1
       const engineTimeSec = frame / FPS + scoreInput.engineOffsetSec
       if (launchShare > 0) {
         if (hitDealsDamage(hit)) {

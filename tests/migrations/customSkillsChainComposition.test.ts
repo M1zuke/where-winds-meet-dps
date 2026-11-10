@@ -109,6 +109,7 @@ import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrati
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { healSkill as healThroatPierceDeflectGrant } from "../../src/migrations/customSkills/V115__throatPierceDeflectGrant"
+import { healSkill as healJadeLaunchBrokenByHigherPriority } from "../../src/migrations/customSkills/V118__jadeLaunchBrokenByHigherPriority"
 import { healSkill as healJadeTrajectoryHitsReach } from "../../src/migrations/customSkills/V117__jadeTrajectoryHitsReach"
 import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
@@ -246,6 +247,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [115, healThroatPierceDeflectGrant],
   [116, healUmbHeavylightFromThePress],
   [117, healJadeTrajectoryHitsReach],
+  [118, healJadeLaunchBrokenByHigherPriority],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

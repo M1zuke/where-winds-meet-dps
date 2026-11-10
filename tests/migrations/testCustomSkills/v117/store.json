@@ -1,0 +1,261 @@
+{
+  "v": 117,
+  "skills": [
+    {
+      "id": "silkbindJade-umbdronelaunch",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-12hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[12hit]",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-12hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-16hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[16hit]",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-16hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-20hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[20hit]",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-20hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-23hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[23hit]",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-23hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbdronelaunch-26hit",
+      "classId": "silkbindJade",
+      "name": "UmbDroneLaunch[26hit]",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-26hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "UmbQ",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 87.5,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "x",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-launch",
+      "classId": "silkbindJade",
+      "name": "Launch copy",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 65.58,
+      "createdAt": "2026-08-17T00:00:00.000Z",
+      "updatedAt": "2026-10-05T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 35.78,
+          "physMultiplier": 0.539718,
+          "attributeMultiplier": 0.809577,
+          "physFixed": 149.4,
+          "attributeFixed": 81.4,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-silkbindJade-umbdrone-20hit",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
