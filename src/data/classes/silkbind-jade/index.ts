@@ -46,6 +46,7 @@ export const silkbindJade = defineClass({
   classSpecificAttunements: [
     "umbQ",
     "umbCharged",
+    "umbSpecial",
     "umbFrequentProjectile",
     "umbLightHeavyVariedCombo",
     "fanQ",

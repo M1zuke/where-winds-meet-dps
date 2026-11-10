@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { reattunementPool } from "../../src/data/stats/gearReattunementWeights"
+import { attunementsFor } from "../../src/engine/attunements"
 import { reattunementExactMaxChance } from "../../src/engine/reattunement"
 import { GEAR_LEVELS } from "../../src/engine/types"
 import { BAMBOOCUT_DRAUGHT_ATTUNEMENTS } from "../../src/data/classes/bamboocut-draught/attunements"
@@ -145,5 +146,72 @@ describe("reattunementPool — Splendor", () => {
       namelessSpearCharged: 100,
       spearSpecial: 70,
     })
+  })
+})
+
+describe("reattunementPool — Jade", () => {
+  const weights = (level: (typeof GEAR_LEVELS)[number]) =>
+    Object.fromEntries(
+      reattunementPool("silkbindJade", "helm", level)!.lines.map((line) => [
+        line.optionId,
+        line.weight,
+      ]),
+    )
+
+  it("weights the umbrella and fan lines per gear level", () => {
+    expect(weights(86)).toEqual({
+      fanCharged: 100,
+      fanSpecial: 100,
+      umbQ: 100,
+      umbCharged: 100,
+      umbSpecial: 100,
+    })
+    expect(weights(91)).toEqual({
+      fanCharged: 50,
+      fanSpecial: 100,
+      umbQ: 80,
+      umbCharged: 120,
+      umbSpecial: 150,
+    })
+    expect(weights(96)).toEqual({
+      fanCharged: 50,
+      fanSpecial: 100,
+      umbQ: 100,
+      umbFrequentProjectile: 151,
+      umbLightHeavyVariedCombo: 100,
+    })
+    for (const level of [100, 105] as const) {
+      expect(weights(level)).toEqual({
+        fanCharged: 50,
+        fanSpecial: 100,
+        umbQ: 100,
+        umbFrequentProjectile: 150,
+        umbLightHeavyVariedCombo: 100,
+      })
+    }
+  })
+
+  it("covers the whole pool at every gear level", () => {
+    for (const level of GEAR_LEVELS) {
+      const pool = reattunementPool("silkbindJade", "helm", level)!
+      expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(pool.totalWeight)
+    }
+  })
+})
+
+describe("reattunementPool — every class's armour pool", () => {
+  it("lists exactly the armour attunements the class rolls at that gear level", () => {
+    for (const classId of REGISTERED_CLASSES) {
+      for (const level of GEAR_LEVELS) {
+        const rolled = attunementsFor("helm", classId, level)
+          .filter((option) => option.classIds !== null)
+          .map((option) => option.id)
+          .sort()
+        const pooled = reattunementPool(classId, "helm", level)!
+          .lines.map((line) => line.optionId)
+          .sort()
+        expect(pooled, `${classId} ${level}`).toEqual(rolled)
+      }
+    }
   })
 })

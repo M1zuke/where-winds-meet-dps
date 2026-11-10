@@ -68,6 +68,7 @@ export const SPRING_AWAY_TAGS = [
   WEAPON.umbrella,
   ATTACK.light,
   ATTUNE.umbFrequentProjectile,
+  ATTUNE.umbCharged,
   ROLE.umbLightCharge,
 ]
 
