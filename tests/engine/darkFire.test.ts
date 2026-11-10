@@ -211,8 +211,9 @@ describe("Zenith detonation extends Smolder", () => {
     const detonation = skillOf(UMBRA_SKILL.bleedDetonation)
     const smolder = skillOf(TWO_HITS)
     const filler = skillOf(SKILL.soaring)
+    const poet = skillOf(SKILL.drunkenpoetPrepull)
     const ticksFor = (detonations: number) => {
-      const steps = [makeStep({ skillId: smolder.id })]
+      const steps = [makeStep({ skillId: poet.id }), makeStep({ skillId: smolder.id })]
       for (let i = 0; i < detonations; i++) steps.push(makeStep({ skillId: detonation.id }))
       for (let i = 0; i < 20; i++) steps.push(makeStep({ skillId: filler.id }))
       const inputs: Inputs = {

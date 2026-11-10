@@ -3,6 +3,14 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { OPENS_INTOXICATED, slowFormVariant } from "../dragonBreathSlowForm"
+
+const ROW = {
+  physMultiplier: 1.283899,
+  attributeMultiplier: 1.925849,
+  physFixed: 204.9587,
+  attributeFixed: 0,
+}
 
 export const dragonFireSmolder2Hits = defineSkill({
   id: SKILL.dragonFireSmolder2Hits,
@@ -31,7 +39,8 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.925849,
       physFixed: 204.9587,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
+      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 }), OPENS_INTOXICATED],
+      variants: [slowFormVariant(SKILL.dragonFireSmolder2Hits, ROW, 150)],
     }),
     hit(1, {
       frame: 102,

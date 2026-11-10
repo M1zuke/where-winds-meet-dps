@@ -90,21 +90,22 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "6c8c4766ff7edaa8847cc7a5ba1ae09eeaa20e4443824b2e782dcffcb81b55fb"
+        "digest": "5ed7bab69c99cfbfcbe430aa23d02402bdf84287f1a21d3423a81a2c488b540c"
       },
       "debuffs": {
-        "count": 8,
+        "count": 9,
         "ids": [
           "debuff-bellstrikeUmbra-bitter-season-tick",
           "debuff-bellstrikeUmbra-bleed-tick",
           "debuff-bellstrikeUmbra-defense-down",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-intoxicated",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "0ed130a3d5e8e85b8e2916c6780dc63cf5f9c85630b0c036b644709fbfcd62c7"
+        "digest": "9e98486070b8ac031d02ad44178864a2bef4cfb8a651cf970589ea11308f56c6"
       },
       "buffs": [
         {
@@ -739385,19 +739386,20 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "aece5afb4afbc4bc587daf22739fce827fbff4f72fd4f1f59be9c3a41b2903f0"
+        "digest": "fcd4616a42453e908667efac1d81002a4bb6acf5ccbdff75bc3cb062c0c448b2"
       },
       "debuffs": {
-        "count": 6,
+        "count": 7,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-intoxicated",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury",
           "debuff-stonesplitStrength-bitter-season-tick"
         ],
-        "digest": "aed5b64ecc896c7475c4b58c52b1b982904b683e7e049be232296ae74f2b05cf"
+        "digest": "e4bb2cc46c46703c8b9091b91d123f2651eb9d435c65087bb6139efe994e940a"
       },
       "buffs": [
         {
@@ -741508,19 +741510,20 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "ca852d673d237073a568f84caf9cf9639c2a893ca7cb139a05d9a05deac416d1"
+        "digest": "221aeff188c5432c14bcc71fad3c477a940f730fd4300b33f107a849cf60a27c"
       },
       "debuffs": {
-        "count": 6,
+        "count": 7,
         "ids": [
           "debuff-bellstrikeSplendor-bitter-season-tick",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-intoxicated",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "5ec1d8cdfbeb0a89a72f14fad3a56d8114a62d7c619ec1df1dcae58878f5aa23"
+        "digest": "171b47e2676a1277b39559ac91d1f6e5326e75b4b21dded3b9f71137d29f8c87"
       },
       "buffs": [
         {
@@ -743659,13 +743662,14 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "5f7ddeaee72dee73d849901b7785732f1bcb720366b293023b9e4cb4d6881088"
+        "digest": "6bfd55570bd2111095e888b43cfd2ed10fe43e70872042d3dd122017f5604152"
       },
       "debuffs": {
-        "count": 12,
+        "count": 13,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-intoxicated",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury",
@@ -743677,7 +743681,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "e4e216b81b89bb12e92138fbea77db465eda174c4fc516e1f796f8bb3a2d2dc8"
+        "digest": "ae9fa4c14e88e3e091b9a148e97d3d4653c19cc8a6cd8e2ca7a9dda864ac07ed"
       },
       "buffs": [
         {
@@ -745875,10 +745879,10 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "93bb480302b5133af8dea5f785141f8450d0798654cacfad395e52afb1c9ca6d"
+        "digest": "972ba754b98e6582fd299c82d2344ceb48f9bd187fcca1f0bdef055eb913b60c"
       },
       "debuffs": {
-        "count": 9,
+        "count": 10,
         "ids": [
           "debuff-bamboocutDraught-bitter-season-tick",
           "debuff-bamboocutDraught-drunkslay",
@@ -745886,11 +745890,12 @@
           "debuff-bamboocutDraught-wildstride",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-intoxicated",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "46324b052c4a7ba69b943a6c2a500631469fcb455d3a0122051cd207a8ed9824"
+        "digest": "c4bdcb4a9f791804497a85912e8d30f9efbfe853db412165d1ae10783c7edea4"
       },
       "buffs": [
         {

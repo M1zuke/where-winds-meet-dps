@@ -3,6 +3,14 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { OPENS_INTOXICATED, SLOW_FORM_HIT_FRAME, slowFormVariant } from "../dragonBreathSlowForm"
+
+const ROW = {
+  physMultiplier: 1.360884,
+  attributeMultiplier: 2.041327,
+  physFixed: 215.2962,
+  attributeFixed: 0,
+}
 
 export const fireBreath1Hit = defineSkill({
   id: SKILL.fireBreath1Hit,
@@ -28,7 +36,8 @@ export const fireBreath1Hit = defineSkill({
       attributeMultiplier: 2.041327,
       physFixed: 215.2962,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
+      triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 }), OPENS_INTOXICATED],
+      variants: [slowFormVariant(SKILL.fireBreath1Hit, ROW, SLOW_FORM_HIT_FRAME + 4)],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

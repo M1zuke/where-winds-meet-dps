@@ -9,6 +9,7 @@ import {
   swapsForMysticArt,
 } from "../../src/migrations/customSkills/V68__mysticArtLevelCap"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
+import { healSkill as healDragonBreathSlowForm } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV67File from "./testCustomSkills/v67/store.json"
@@ -50,7 +51,9 @@ describe("V68__mysticArtLevelCap — called directly", () => {
     const ids = seededMysticIds()
     expect(ids.length).toBeGreaterThan(20)
     for (const id of ids) {
-      const healed = healMysticFreeMorphWolflikeFrenzyTiming(skillIn(after, id)) as Skill
+      const healed = healDragonBreathSlowForm(
+        healMysticFreeMorphWolflikeFrenzyTiming(skillIn(after, id)),
+      ) as Skill
       expect(healed.hits, id).toEqual(builtinOf(id).hits)
     }
   })

@@ -165,10 +165,28 @@ export const fluteRipple = defineDebuff({
   receives: [],
 })
 
+// In-game values as of 2026-11-10: a 30 s state marker on the caster, kept as
+// a status because Dragon's Breath's hit variants read it. The Drunken Poet cast
+// and a slow-form Dragon's Breath open it.
+export const intoxicated = defineDebuff({
+  id: DEBUFF.intoxicated,
+  classId: MYSTIC_ARTS_CLASS_ID,
+  name: "Intoxicated",
+  activation: "triggered",
+  durationFrames: 1800,
+  effects: [],
+  dot: null,
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-11-10T00:00:00.000Z",
+  updatedAt: "2026-11-10T00:00:00.000Z",
+})
+
 export const MYSTIC_DEBUFFS: readonly Debuff[] = [
   toadPoison,
   combustion,
   smolder,
   fluteRipple,
   toadPoisonFury,
+  intoxicated,
 ]

@@ -29,6 +29,7 @@ export const SKILL = {
 export const DEBUFF = {
   combustion: "debuff-mystic-combustion",
   fluteRipple: "debuff-mystic-flute-ripple",
+  intoxicated: "debuff-mystic-intoxicated",
   smolder: "debuff-mystic-smolder",
   toadPoison: "debuff-mystic-toad-poison",
   toadPoisonFury: "debuff-mystic-toad-poison-fury",

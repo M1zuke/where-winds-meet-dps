@@ -1,7 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
-import { SKILL } from "./ids"
+import { applyDebuff } from "../../../definitions/skills/triggers"
+import { SKILL, DEBUFF } from "./ids"
 
 export const drunkenpoetPrepull = defineSkill({
   id: SKILL.drunkenpoetPrepull,
@@ -27,6 +28,7 @@ export const drunkenpoetPrepull = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
+      triggers: [applyDebuff({ target: DEBUFF.intoxicated })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
