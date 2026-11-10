@@ -6,8 +6,13 @@ import {
 import { BREAKTHROUGH_TIERS } from "../../src/definitions/baseStats/breakthroughs"
 
 describe("art attack stage ladder", () => {
-  it("resolves 98/196 from breakthrough 13 through 17", () => {
-    for (const breakthrough of [13, 14, 15, 16, 17]) {
+  it("resolves 69/138 at breakthrough 13 and 80/160 at breakthrough 14", () => {
+    expect(artAttackStageAt("bellstrikeUmbra", 13)).toEqual({ min: 69, max: 138 })
+    expect(artAttackStageAt("bellstrikeUmbra", 14)).toEqual({ min: 80, max: 160 })
+  })
+
+  it("resolves 98/196 from breakthrough 15 through 17", () => {
+    for (const breakthrough of [15, 16, 17]) {
       expect(artAttackStageAt("bellstrikeUmbra", breakthrough)).toEqual({ min: 98, max: 196 })
     }
   })
@@ -34,7 +39,7 @@ describe("art attack stage ladder", () => {
   it("does not throw for an out-of-range breakthrough", () => {
     expect(() => artAttackStageAt("bellstrikeUmbra", 0)).not.toThrow()
     expect(() => artAttackStageAt("bellstrikeUmbra", 999)).not.toThrow()
-    expect(artAttackStageAt("bellstrikeUmbra", 0)).toEqual({ min: 98, max: 196 })
+    expect(artAttackStageAt("bellstrikeUmbra", 0)).toEqual({ min: 69, max: 138 })
   })
 
   it("the art attack stage ladder reaches the highest breakthrough the app offers", () => {
