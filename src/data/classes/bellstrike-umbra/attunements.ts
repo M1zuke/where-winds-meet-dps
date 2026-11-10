@@ -7,16 +7,6 @@ const SKILL_BOOST_MAX = { 86: 0.043, 91: 0.05, 96: 0.06, 100: 0.07, 105: 0.08 }
 
 export const BELLSTRIKE_UMBRA_ATTUNEMENTS = [
   {
-    id: "bleedingDamage",
-    label: "Strategic Sword - Bleeding DMG Boost",
-    min: SKILL_BOOST_MIN,
-    max: SKILL_BOOST_MAX,
-    slots: ARMOR_SLOTS,
-    classIds: ["bellstrikeUmbra"],
-    enginePath: "classSpecificAttunement.bleedingDamage",
-    affectsTag: "attune:bleed",
-  },
-  {
     id: "swordQ",
     label: "Strategic Sword Martial Art Skill DMG Boost",
     min: SKILL_BOOST_MIN,
@@ -55,5 +45,15 @@ export const BELLSTRIKE_UMBRA_ATTUNEMENTS = [
     classIds: ["bellstrikeUmbra"],
     enginePath: "classSpecificAttunement.spearCharged",
     affectsTag: "attune:spearCharged",
+  },
+  {
+    id: "bleedingDamage",
+    label: "Strategic Sword - Bleeding DMG Boost",
+    min: SKILL_BOOST_MIN,
+    max: SKILL_BOOST_MAX,
+    slots: ARMOR_SLOTS,
+    classIds: ["bellstrikeUmbra"],
+    enginePath: "classSpecificAttunement.bleedingDamage",
+    affectsTag: "attune:bleed",
   },
 ] as const satisfies readonly AttunementOption[]

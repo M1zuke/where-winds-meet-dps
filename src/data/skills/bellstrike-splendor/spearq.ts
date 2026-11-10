@@ -1,5 +1,5 @@
 import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
-import { CAST, PROP, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
@@ -20,7 +20,7 @@ export const spearq = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SpearQ",
   breakdownName: "Qiankun's Lock",
-  tags: [WEAPON.spear, PROP.isMartialSkillQ],
+  tags: [WEAPON.spear, ATTUNE.spearQ, PROP.isMartialSkillQ],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",

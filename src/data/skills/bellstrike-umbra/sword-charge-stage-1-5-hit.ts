@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORD_CHARGE_STAGE_1_HITS } from "./sword-charge-stage-1-hits"
 import { SWORD_CHARGE_STAGE_1_5_HIT_DISPLACEMENT } from "./rootMotion"
@@ -15,7 +15,7 @@ export const swordChargeStage15Hit = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Sword Charge Stage 1, 5-Hit",
   breakdownName: "Second Track Slash",
-  tags: [WEAPON.sword],
+  tags: [WEAPON.sword, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",

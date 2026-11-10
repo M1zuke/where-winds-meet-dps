@@ -104,3 +104,42 @@ describe("the custom graduation build store", () => {
     expect(loadCustomGraduationBuilds()).toEqual([])
   })
 })
+
+describe("a stored build holding a shared weapon-art attunement id", () => {
+  beforeEach(() => localStorage.clear())
+  afterEach(() => localStorage.clear())
+
+  function storedWithFirstAttunement(classId: string, attunement: string): CustomGraduationBuild {
+    const build = buildFrom(classId, "Mine")
+    return {
+      ...build,
+      slots: build.slots.map((slot, index) => (index === 0 ? { ...slot, attunement } : slot)),
+    }
+  }
+
+  function store(build: CustomGraduationBuild): void {
+    localStorage.setItem("wwm.customGraduationBuilds", JSON.stringify({ v: 1, builds: [build] }))
+  }
+
+  it("loads a Splendor build with the Splendor id", () => {
+    store(storedWithFirstAttunement("bellstrikeSplendor", "swordQ"))
+    expect(loadCustomGraduationBuilds()[0].slots[0].attunement).toBe("namelessSwordQ")
+  })
+
+  it("loads an Umbra build unchanged", () => {
+    store(storedWithFirstAttunement("bellstrikeUmbra", "swordQ"))
+    expect(loadCustomGraduationBuilds()[0].slots[0].attunement).toBe("swordQ")
+  })
+
+  it("retags an Umbra build imported into Splendor", () => {
+    const text = exportCustomGraduationBuild(storedWithFirstAttunement("bellstrikeUmbra", "swordQ"))
+    expect(importCustomGraduationBuild(text, "bellstrikeSplendor").slots[0].attunement).toBe(
+      "namelessSwordQ",
+    )
+  })
+
+  it("keeps the id when the build is imported into Umbra", () => {
+    const text = exportCustomGraduationBuild(storedWithFirstAttunement("bellstrikeUmbra", "swordQ"))
+    expect(importCustomGraduationBuild(text, "bellstrikeUmbra").slots[0].attunement).toBe("swordQ")
+  })
+})

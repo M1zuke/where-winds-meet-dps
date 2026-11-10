@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
@@ -24,7 +24,7 @@ export const spearspecial1HitCancel = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Spear Special (1 Hit Cancel)",
   breakdownName: "Sweep All",
-  tags: [WEAPON.spear],
+  tags: [WEAPON.spear, ATTUNE.spearSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",

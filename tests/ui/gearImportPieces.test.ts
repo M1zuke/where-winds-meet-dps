@@ -640,3 +640,34 @@ describe("toGearPieces", () => {
     expect(unmapped.attunementValue).toBe(0)
   })
 })
+
+describe("the Bellstrike weapon-art attunement rows", () => {
+  it("keeps Splendor's five attunement effects distinct", () => {
+    const expected: Readonly<Record<string, string>> = {
+      "260001": "attunement:namelessSwordQ",
+      "260002": "attunement:swordCharged",
+      "260003": "attunement:namelessSwordSpecial",
+      "260004": "attunement:namelessSpearCharged",
+      "260005": "attunement:spearSpecial",
+      "270001": "attunement:namelessSwordQ",
+      "270002": "attunement:swordCharged",
+      "270003": "attunement:namelessSwordSpecial",
+      "270004": "attunement:namelessSpearCharged",
+      "270005": "attunement:spearSpecial",
+      "280001": "attunement:namelessSwordQ",
+      "280002": "attunement:swordCharged",
+      "280003": "attunement:namelessSwordSpecial",
+      "280004": "attunement:namelessSpearCharged",
+      "280005": "attunement:spearSpecial",
+    }
+    for (const [affixId, statLine] of Object.entries(expected)) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe(statLine)
+    }
+  })
+
+  it("leaves another art's line unmapped", () => {
+    for (const affixId of ["201002", "211002", "200004", "250004", "202004", "300204"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBeUndefined()
+    }
+  })
+})

@@ -140,6 +140,9 @@ import {
   moveCustomBuildWeaponsToMartialArtSlots,
   moveWeaponsToMartialArtSlots,
   moveSetsOntoGearPieces,
+  migrateSplendorAttuneTag,
+  migrateSplendorAttunementId,
+  splitSplendorAttunements,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -715,7 +718,7 @@ export function loadProfiles(): ProfilesState & { firstRun: boolean } {
 
   const legacy = loadInputs()
   if (legacy) {
-    const legacyProfile = makeDefaultProfile("Default", legacy)
+    const legacyProfile = makeDefaultProfile("Default", splitSplendorAttunements(legacy) as Inputs)
     const profile = {
       ...legacyProfile,
       inputs: followBreakthroughReleases(legacyProfile.inputs, now),
@@ -759,7 +762,7 @@ export function importProfile(text: string): StoredProfile {
   if (!parsed || typeof parsed !== "object") {
     throw new Error("Imported value is not an object")
   }
-  let candidate: unknown = parsed
+  let candidate: unknown
   const maybeWrapper = parsed as { v?: unknown; profile?: unknown }
   if (
     typeof maybeWrapper.v === "number" &&
@@ -779,6 +782,9 @@ export function importProfile(text: string): StoredProfile {
       activeId,
     })
     candidate = result?.blob.profiles[0] ?? maybeWrapper.profile
+  } else {
+    const bare = parsed as { inputs?: unknown }
+    candidate = { ...bare, inputs: splitSplendorAttunements(bare.inputs) }
   }
   if (!isStoredProfile(candidate)) {
     throw new Error("Imported profile failed validation (missing or invalid fields)")
@@ -942,6 +948,28 @@ interface CustomGraduationBlob {
   builds: CustomGraduationBuild[]
 }
 
+function renameSplendorBuildAttunements(build: unknown): unknown {
+  if (!build || typeof build !== "object") return build
+  const candidate = build as { classId?: unknown; slots?: unknown }
+  if (!Array.isArray(candidate.slots)) return build
+  return {
+    ...candidate,
+    slots: candidate.slots.map((slot: unknown) =>
+      slot &&
+      typeof slot === "object" &&
+      typeof (slot as { attunement?: unknown }).attunement === "string"
+        ? {
+            ...slot,
+            attunement: migrateSplendorAttunementId(
+              candidate.classId,
+              (slot as { attunement: string }).attunement,
+            ),
+          }
+        : slot,
+    ),
+  }
+}
+
 export function loadCustomGraduationBuilds(): CustomGraduationBuild[] {
   try {
     const raw = kvStore.get(CUSTOM_GRADUATION_KEY)
@@ -949,13 +977,16 @@ export function loadCustomGraduationBuilds(): CustomGraduationBuild[] {
     const parsed = JSON.parse(raw) as CustomGraduationBlob
     if (parsed.v !== CUSTOM_GRADUATION_VERSION) return []
     if (!Array.isArray(parsed.builds)) return []
-    return parsed.builds.filter(isCustomGraduationBuild).map((build) => ({
-      ...build,
-      slots: moveCustomBuildWeaponsToMartialArtSlots(
-        build.classId,
-        build.slots,
-      ) as CustomGraduationBuild["slots"],
-    }))
+    return parsed.builds
+      .map(renameSplendorBuildAttunements)
+      .filter(isCustomGraduationBuild)
+      .map((build) => ({
+        ...build,
+        slots: moveCustomBuildWeaponsToMartialArtSlots(
+          build.classId,
+          build.slots,
+        ) as CustomGraduationBuild["slots"],
+      }))
   } catch {
     return []
   }
@@ -996,7 +1027,10 @@ export function importCustomGraduationBuild(
   if (!parsed || typeof parsed !== "object") {
     throw new Error("Imported value is not an object")
   }
-  const candidate = parsed as CustomGraduationBuild
+  const candidate = renameSplendorBuildAttunements({
+    ...parsed,
+    classId: targetClassId,
+  }) as CustomGraduationBuild
   const now = new Date().toISOString()
   const fresh: CustomGraduationBuild = {
     ...candidate,
@@ -1864,7 +1898,11 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     isWeaponSwap: c.isWeaponSwap === true ? true : undefined,
     cancelledBy: isCancelledByValue(c.cancelledBy) ? c.cancelledBy : undefined,
-    tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
+    tags: Array.isArray(c.tags)
+      ? c.tags
+          .filter((t): t is string => typeof t === "string")
+          .map((tag) => migrateSplendorAttuneTag(targetClassId, tag))
+      : [],
     receives: Array.isArray(c.receives)
       ? c.receives.filter((id): id is string => typeof id === "string")
       : undefined,

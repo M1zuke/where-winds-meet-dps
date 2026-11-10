@@ -118,6 +118,7 @@ import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migra
 import { healSkill as healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "../../src/migrations/customSkills/V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
 import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/migrations/customSkills/V123__gourdTossPursuitCutOncePerSecond"
 import { healSkill as healDragonHeadCastLength } from "../../src/migrations/customSkills/V124__dragonHeadCastLength"
+import { healSkill as healSplendorAttuneTags } from "../../src/migrations/customSkills/V132__splendorAttuneTags"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -260,6 +261,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [122, healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame],
   [123, healGourdTossPursuitCutOncePerSecond],
   [124, healDragonHeadCastLength],
+  [132, healSplendorAttuneTags],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
