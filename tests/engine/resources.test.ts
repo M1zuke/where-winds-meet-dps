@@ -52,6 +52,41 @@ function tickAndLand(simulation: CombatResource, frame: number, owner = 0) {
 }
 
 describe("resource refund on exhausted-target projectile hits", () => {
+  it("splits a cast's total over its declared hits per cast when summoned skills carry some of them", () => {
+    const simulation = new CombatResource(
+      {
+        ...definition,
+        gains: [
+          {
+            id: "split",
+            name: "Split",
+            defaultAmount: 10,
+            skillIds: ["fictional-first-half", "fictional-second-half"],
+            hitsPerCast: 2,
+          },
+        ],
+      },
+      { opening: 0 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        particleCount: 1,
+        buffLive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    const firstHalf = makeSkill("fictional", {
+      id: "fictional-first-half",
+      hits: [makeHit({ physMultiplier: 1 })],
+    })
+    const secondHalf = { ...firstHalf, id: "fictional-second-half" }
+    simulation.hit(firstHalf, 0)
+    simulation.hit(secondHalf, 30)
+    expect(amount(simulation)).toBe(10)
+  })
+
   it("distributes a combo's resource total across actual hits without crediting skipped hits", () => {
     const simulation = new CombatResource(
       {

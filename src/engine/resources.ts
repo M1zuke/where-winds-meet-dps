@@ -268,9 +268,9 @@ export class CombatResource {
         continue
       const live = rule.requiresBuff ? this.context.buffLive(rule.requiresBuff, frame - 1) : true
       if (live === false) continue
-      const divisor = rule.divideAcrossSkillHits
-        ? Math.max(1, skill.hits.filter(hitDealsDamage).length)
-        : 1
+      const divisor =
+        rule.hitsPerCast ??
+        (rule.divideAcrossSkillHits ? Math.max(1, skill.hits.filter(hitDealsDamage).length) : 1)
       this.creditRule(rule, (this.settings.gains[rule.id] ?? 0) / divisor, live, frame)
     }
     this.mergeEquivalent()

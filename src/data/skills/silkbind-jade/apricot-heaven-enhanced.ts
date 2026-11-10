@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { meterDelta } from "../../../definitions/skills/triggers"
+import { castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -7,10 +7,11 @@ import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
 import type { MeterDrain } from "../../../engine/skill"
 
-// In-game values as of 2026-09-29: the air-charge's own -15/s drain, held to
-// this stage's earliest release — 1.5 s into the air charge.
+// In-game values as of 2026-11-10: the air-charge's own -15/s drain, opening 72 f
+// after the 14.4 f hold decision and held to this stage's earliest release —
+// 1.5 s into the air charge.
 const APRICOT_HEAVEN_AIR_DRAIN: MeterDrain[] = [
-  { meterId: enduranceMeter.id, perSecond: 15, fromFrame: 72, stopAfterSec: 1.5 },
+  { meterId: enduranceMeter.id, perSecond: 15, fromFrame: 86.4, stopAfterSec: 1.5 },
 ]
 
 // Held past the 1.5 s threshold before releasing, trading the extra air-charge
@@ -36,16 +37,19 @@ export const apricotHeavenEnhanced = defineSkill({
   reachMeters: 3,
   hits: [
     hit(0, {
-      frame: 54,
-      physMultiplier: 0.626038,
-      attributeMultiplier: 0.939057,
-      physFixed: 173.2,
-      attributeFixed: 94.4,
+      // In-game values as of 2026-11-10: the rise lands 54.18 f after the
+      // 14.4 f hold decision.
+      frame: 68.58,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [castSkill({ target: SKILL.apricotHeavenRise })],
     }),
     hit(1, {
-      // In-game values as of 2026-09-24: -5 more at 1.6 s (96 f) in — a
-      // zero-damage marker, the pattern `legioncrusher.ts` uses.
-      frame: 96,
+      // In-game values as of 2026-11-10: -5 more 1.6 s after the hold
+      // decision — a zero-damage marker, the pattern `legioncrusher.ts` uses.
+      frame: 110.4,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,
@@ -53,10 +57,9 @@ export const apricotHeavenEnhanced = defineSkill({
       triggers: [meterDelta({ target: enduranceMeter.id, stacks: -5 })],
     }),
     hit(2, {
-      // Hit frames with only a window: the enhanced fall cannot land before
-      // its own release (1.5 s into the air charge, 162 f from the press),
-      // authored at that floor — this class's own evidence.
-      frame: 162,
+      // In-game values as of 2026-11-10: the enhanced fall is released 1.5 s
+      // into the air charge, and its collider is 27.15 f into the release.
+      frame: 203.55,
       physMultiplier: 2.504152,
       attributeMultiplier: 3.756228,
       physFixed: 692.8,

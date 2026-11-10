@@ -6,6 +6,7 @@ export interface ResourceGainRule {
   skillIds?: readonly string[]
   cooldownSeconds?: number
   divideAcrossSkillHits?: boolean
+  hitsPerCast?: number
   requiresParam?: string
   minTier?: number
   requiresBuff?: string

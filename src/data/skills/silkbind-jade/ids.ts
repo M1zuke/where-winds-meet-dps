@@ -8,6 +8,7 @@ export const SKILL = {
   umblightchargeLift: "silkbindJade-umblightcharge-lift",
   apricotHeavenNormal: "silkbindJade-apricot-heaven-normal",
   apricotHeavenEnhanced: "silkbindJade-apricot-heaven-enhanced",
+  apricotHeavenRise: "silkbindJade-apricot-heaven-rise",
   glowAndFlowStage1: "silkbindJade-glow-and-flow-stage-1",
   glowAndFlowStage2: "silkbindJade-glow-and-flow-stage-2",
   bambooBreeze: "silkbindJade-bamboo-breeze",

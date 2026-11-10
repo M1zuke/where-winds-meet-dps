@@ -743608,7 +743608,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 85,
+        "count": 86,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -743637,6 +743637,7 @@
           "mystic-wolflike-frenzy",
           "silkbindJade-apricot-heaven-enhanced",
           "silkbindJade-apricot-heaven-normal",
+          "silkbindJade-apricot-heaven-rise",
           "silkbindJade-bamboo-breeze",
           "silkbindJade-bitter-season-tick",
           "silkbindJade-deflect-cancel",
@@ -743696,7 +743697,7 @@
           "silkbindJade-umbrella-dash-bullet",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "ea01282f6622ea5d6adf46e7984072524d12635e931200307838fb2246c9e142"
+        "digest": "58db3e27052bda29be6ba2a4c9e32a6e1a678fe7537a8c61c591fc3b1a6bf627"
       },
       "debuffs": {
         "count": 13,
