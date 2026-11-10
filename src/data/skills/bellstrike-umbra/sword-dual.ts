@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const swordDual = defineSkill({
@@ -21,17 +22,11 @@ export const swordDual = defineSkill({
   hits: [
     hit(0, {
       frame: 13,
-      physMultiplier: 0.46416,
-      attributeMultiplier: 0.69624,
-      physFixed: 128.8,
-      attributeFixed: 70,
+      ...levelScaled(LEVEL_ROWS.swordDualHit0),
     }),
     hit(1, {
       frame: 33,
-      physMultiplier: 0.69624,
-      attributeMultiplier: 1.04436,
-      physFixed: 193.2,
-      attributeFixed: 105,
+      ...levelScaled(LEVEL_ROWS.swordDualHit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

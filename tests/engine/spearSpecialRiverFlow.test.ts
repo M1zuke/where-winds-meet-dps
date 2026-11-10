@@ -3,6 +3,8 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { makeStep } from "../../src/engine/rotation"
+import { levelSelectionFor } from "../../src/definitions/baseStats/breakthroughs"
+import { rowAtLevel } from "../../src/engine/levelRows"
 import {
   cancelledByOf,
   hitDealsDamage,
@@ -154,6 +156,17 @@ describe("Water Drop / Spring Surge — 12 s base, 15 s with Wolfchaser's Art", 
   })
 })
 
+function frozenRow(row: Parameters<typeof rowAtLevel>[0]) {
+  const resolved = rowAtLevel(row, levelSelectionFor(defaultInputs.breakthrough))
+  return {
+    physMultiplier: resolved.physMultiplier,
+    attributeMultiplier: resolved.attributeMultiplier,
+    physFixed: resolved.physFixed,
+    attributeFixed: resolved.attributeFixed,
+    levelRows: undefined,
+  }
+}
+
 function describeEmpoweredCast(
   skillIdArg: string,
   soberSorrowId: string,
@@ -186,10 +199,7 @@ function describeEmpoweredCast(
           if (!variant) return hit
           return {
             ...hit,
-            physMultiplier: variant.physMultiplier,
-            attributeMultiplier: variant.attributeMultiplier,
-            physFixed: variant.physFixed,
-            attributeFixed: variant.attributeFixed,
+            ...frozenRow(variant),
             variants: undefined,
           }
         }),
@@ -316,10 +326,7 @@ describe("River Flow — only exists while Wolfchaser's Art is slotted, at any t
         if (!variant) return hit
         return {
           ...hit,
-          physMultiplier: variant.physMultiplier,
-          attributeMultiplier: variant.attributeMultiplier,
-          physFixed: variant.physFixed,
-          attributeFixed: variant.attributeFixed,
+          ...frozenRow(variant),
           variants: undefined,
         }
       }),
@@ -349,10 +356,7 @@ describe("River Flow — only exists while Wolfchaser's Art is slotted, at any t
         if (!variant) return hit
         return {
           ...hit,
-          physMultiplier: variant.physMultiplier,
-          attributeMultiplier: variant.attributeMultiplier,
-          physFixed: variant.physFixed,
-          attributeFixed: variant.attributeFixed,
+          ...frozenRow(variant),
           variants: undefined,
         }
       }),

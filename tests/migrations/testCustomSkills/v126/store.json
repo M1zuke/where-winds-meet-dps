@@ -1,0 +1,1722 @@
+{
+  "v": 126,
+  "skills": [
+    {
+      "id": "mystic-dragon-head",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "role:dragonHead"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-n11jz0-d",
+          "frame": 281.62,
+          "physMultiplier": 19.07563988,
+          "attributeMultiplier": 28.61345982,
+          "physFixed": 3001.372,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 17.990698,
+                "attributeMultiplier": 26.986047,
+                "physFixed": 2218.7,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 19.07563988,
+                "attributeMultiplier": 28.61345982,
+                "physFixed": 3001.372,
+                "attributeFixed": 0
+              }
+            }
+          }
+        }
+      ],
+      "castFrames": 348,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "guaranteedNormal": true,
+      "vitalityCost": 100,
+      "castTag": "cast:dragonHead",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-dragon-head-plus",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head - Plus",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-s1f4u0-g",
+          "frame": 281.52,
+          "physMultiplier": 12.5972659585,
+          "attributeMultiplier": 18.8958989377,
+          "physFixed": 1999.47207547,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "6": {
+                "physMultiplier": 12.5972659585,
+                "attributeMultiplier": 18.8958989377,
+                "physFixed": 1999.47207547,
+                "attributeFixed": 0
+              }
+            }
+          }
+        }
+      ],
+      "castFrames": 348,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "neverAbrades": true,
+      "vitalityCost": 80,
+      "castTag": "cast:dragonHeadPlus",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-fire-breath-1-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath 1 Hit",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-clb5qv-j",
+          "frame": 36,
+          "physMultiplier": 1.36088435,
+          "attributeMultiplier": 2.041326525,
+          "physFixed": 215.2962,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-vhxfaj-k",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.36088435,
+              "attributeMultiplier": 2.041326525,
+              "physFixed": 215.2962,
+              "attributeFixed": 0,
+              "frame": 76.38,
+              "levelRows": {
+                "scale": "mysticTier",
+                "rows": {
+                  "5": {
+                    "physMultiplier": 1.2826975,
+                    "attributeMultiplier": 1.92404625,
+                    "physFixed": 158.27,
+                    "attributeFixed": 0
+                  },
+                  "6": {
+                    "physMultiplier": 1.36088435,
+                    "attributeMultiplier": 2.041326525,
+                    "physFixed": 215.2962,
+                    "attributeFixed": 0
+                  }
+                }
+              }
+            }
+          ],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 1.2826975,
+                "attributeMultiplier": 1.92404625,
+                "physFixed": 158.27,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 1.36088435,
+                "attributeMultiplier": 2.041326525,
+                "physFixed": 215.2962,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-58cqg4-l",
+          "frame": 102,
+          "physMultiplier": 1.36088435,
+          "attributeMultiplier": 2.041326525,
+          "physFixed": 215.2962,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 136.8,
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 1.2826975,
+                "attributeMultiplier": 1.92404625,
+                "physFixed": 158.27,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 1.36088435,
+                "attributeMultiplier": 2.041326525,
+                "physFixed": 215.2962,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-gc74lh-m",
+          "frame": 108,
+          "physMultiplier": 1.4997501,
+          "attributeMultiplier": 2.24962515,
+          "physFixed": 237.2652,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 136.8,
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 1.413585,
+                "attributeMultiplier": 2.1203775,
+                "physFixed": 174.42,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 1.4997501,
+                "attributeMultiplier": 2.24962515,
+                "physFixed": 237.2652,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-u09jcs-n",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 150
+        },
+        {
+          "id": "hit-mwb6mgp3-5dxcmd-o",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ],
+          "requiresNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 77.38
+        }
+      ],
+      "castFrames": 37.39,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 20,
+      "castTag": "cast:dragonSBreath1Hit",
+      "receives": ["volutefitWineboundDamage"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-toad-fury",
+      "classId": "bellstrikeUmbra",
+      "name": "Leaping Toad - Fury",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:area-debuff"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-2gy6nb-r",
+          "frame": 40,
+          "physMultiplier": 0.510072226415,
+          "attributeMultiplier": 0.765108339623,
+          "physFixed": 80.8233962264,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "6": {
+                "physMultiplier": 0.510072226415,
+                "attributeMultiplier": 0.765108339623,
+                "physFixed": 80.8233962264,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-qv1wcy-s",
+          "frame": 68,
+          "physMultiplier": 3.06043335849,
+          "attributeMultiplier": 4.59065003774,
+          "physFixed": 484.940377358,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-toad-poison-fury",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "6": {
+                "physMultiplier": 3.06043335849,
+                "attributeMultiplier": 4.59065003774,
+                "physFixed": 484.940377358,
+                "attributeFixed": 0
+              }
+            }
+          }
+        }
+      ],
+      "castFrames": 96,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "cancelledBy": "deflectCancel",
+      "vitalityCost": 25,
+      "castTag": "cast:toadFury",
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-free-morph",
+      "classId": "bellstrikeUmbra",
+      "name": "Free Morph",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:control"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-hu44jf-v",
+          "frame": 24,
+          "physMultiplier": 1.43428330957,
+          "attributeMultiplier": 2.15142496435,
+          "physFixed": 225.908,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 1.35215406563,
+                "attributeMultiplier": 2.02823109845,
+                "physFixed": 166.8,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 1.43428330957,
+                "attributeMultiplier": 2.15142496435,
+                "physFixed": 225.908,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-2x72tr-w",
+          "frame": 58,
+          "physMultiplier": 0.860569985741,
+          "attributeMultiplier": 1.29085497861,
+          "physFixed": 135.5448,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 0.811292439378,
+                "attributeMultiplier": 1.21693865907,
+                "physFixed": 100.08,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 0.860569985741,
+                "attributeMultiplier": 1.29085497861,
+                "physFixed": 135.5448,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-c5qy49-x",
+          "frame": 79,
+          "physMultiplier": 0.860569985741,
+          "attributeMultiplier": 1.29085497861,
+          "physFixed": 135.5448,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 0.811292439378,
+                "attributeMultiplier": 1.21693865907,
+                "physFixed": 100.08,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 0.860569985741,
+                "attributeMultiplier": 1.29085497861,
+                "physFixed": 135.5448,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-oo61jo-y",
+          "frame": 100,
+          "physMultiplier": 0.860569985741,
+          "attributeMultiplier": 1.29085497861,
+          "physFixed": 135.5448,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 0.811292439378,
+                "attributeMultiplier": 1.21693865907,
+                "physFixed": 100.08,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 0.860569985741,
+                "attributeMultiplier": 1.29085497861,
+                "physFixed": 135.5448,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-ziygd0-z",
+          "frame": 115,
+          "physMultiplier": 0.860569985741,
+          "attributeMultiplier": 1.29085497861,
+          "physFixed": 135.5448,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 0.811292439378,
+                "attributeMultiplier": 1.21693865907,
+                "physFixed": 100.08,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 0.860569985741,
+                "attributeMultiplier": 1.29085497861,
+                "physFixed": 135.5448,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-w8t6gy-10",
+          "frame": 126,
+          "physMultiplier": 0.860569985741,
+          "attributeMultiplier": 1.29085497861,
+          "physFixed": 135.5448,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 0.811292439378,
+                "attributeMultiplier": 1.21693865907,
+                "physFixed": 100.08,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 0.860569985741,
+                "attributeMultiplier": 1.29085497861,
+                "physFixed": 135.5448,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-gqaqws-11",
+          "frame": 170,
+          "physMultiplier": 1.43428330957,
+          "attributeMultiplier": 2.15142496435,
+          "physFixed": 225.908,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "5": {
+                "physMultiplier": 1.35215406563,
+                "attributeMultiplier": 2.02823109845,
+                "physFixed": 166.8,
+                "attributeFixed": 0
+              },
+              "6": {
+                "physMultiplier": 1.43428330957,
+                "attributeMultiplier": 2.15142496435,
+                "physFixed": 225.908,
+                "attributeFixed": 0
+              }
+            }
+          }
+        }
+      ],
+      "castFrames": 270,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 30,
+      "castTag": "cast:freeMorph",
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-dragon-fire-smolder-2-hits",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath: Smolder 2 Hits",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-t9bv78-1",
+          "frame": 36,
+          "physMultiplier": 1.283899,
+          "attributeMultiplier": 1.925849,
+          "physFixed": 205.9587,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-6pq2mx-2",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.28389938679,
+              "attributeMultiplier": 1.92584908019,
+              "physFixed": 204.958679245,
+              "attributeFixed": 0,
+              "frame": 76.38,
+              "castFrames": 164.66,
+              "levelRows": {
+                "scale": "mysticTier",
+                "rows": {
+                  "6": {
+                    "physMultiplier": 1.28389938679,
+                    "attributeMultiplier": 1.92584908019,
+                    "physFixed": 204.958679245,
+                    "attributeFixed": 0
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-mwb6mgp3-yn57n7-3",
+          "frame": 102,
+          "physMultiplier": 1.28389938679,
+          "attributeMultiplier": 1.92584908019,
+          "physFixed": 204.958679245,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-kcxu60-4",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.28389938679,
+              "attributeMultiplier": 1.92584908019,
+              "physFixed": 204.958679245,
+              "attributeFixed": 0,
+              "frame": 163.66,
+              "levelRows": {
+                "scale": "mysticTier",
+                "rows": {
+                  "6": {
+                    "physMultiplier": 1.28389938679,
+                    "attributeMultiplier": 1.92584908019,
+                    "physFixed": 204.958679245,
+                    "attributeFixed": 0
+                  }
+                }
+              }
+            }
+          ],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "6": {
+                "physMultiplier": 1.28389938679,
+                "attributeMultiplier": 1.92584908019,
+                "physFixed": 204.958679245,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-g2vzyj-5",
+          "frame": 108,
+          "physMultiplier": 1.4149095283,
+          "attributeMultiplier": 2.12236429245,
+          "physFixed": 225.872830189,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-baxkyl-6",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.4149095283,
+              "attributeMultiplier": 2.12236429245,
+              "physFixed": 225.872830189,
+              "attributeFixed": 0,
+              "frame": 169.66,
+              "levelRows": {
+                "scale": "mysticTier",
+                "rows": {
+                  "6": {
+                    "physMultiplier": 1.4149095283,
+                    "attributeMultiplier": 2.12236429245,
+                    "physFixed": 225.872830189,
+                    "attributeFixed": 0
+                  }
+                }
+              }
+            }
+          ],
+          "levelRows": {
+            "scale": "mysticTier",
+            "rows": {
+              "6": {
+                "physMultiplier": 1.4149095283,
+                "attributeMultiplier": 2.12236429245,
+                "physFixed": 225.872830189,
+                "attributeFixed": 0
+              }
+            }
+          }
+        },
+        {
+          "id": "hit-mwb6mgp3-hnr4rw-7",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ]
+        }
+      ],
+      "castFrames": 137,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 20,
+      "castTag": "cast:dragonSBreathSmolder2Hits",
+      "breakdownName": "Dragon's Breath",
+      "receives": ["volutefitWineboundDamage"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "Authored Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-sy1yy3-a",
+          "frame": 10,
+          "physMultiplier": 1.5,
+          "attributeMultiplier": 0,
+          "physFixed": 100,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial Q",
+      "breakdownName": "Inner Track Slash",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordMartialQ",
+      "triggersBuffs": ["jadeware"],
+      "receives": ["wolfchasersArtMartialDamage", "starweaveMartialBoost", "strategicSwordAdditionalAttack"],
+      "castFrames": 27,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 2.5001,
+            "maxMeters": 10,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "rootMotion",
+          "metersAtFrame": [
+            [0, 0],
+            [27, 0.8]
+          ]
+        }
+      },
+      "reachMeters": 4,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 20,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearheavy",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearHeavy",
+      "breakdownName": "Drifting Thrust",
+      "tags": ["weapon:Spear"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearHeavy",
+      "triggersBuffs": ["soulShaken"],
+      "receives": ["heavenquakerSpearAdditionalAttack"],
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 20,
+          "fromFrame": 18,
+          "stopAfterSec": 1.2,
+          "chargeRelease": {
+            "fallbackSkillId": "bellstrikeUmbra-spearheavy-stage-1"
+          }
+        }
+      ],
+      "meterFreezes": [
+        {
+          "meterId": "endurance",
+          "fromFrame": 0
+        }
+      ],
+      "castFrames": 302,
+      "triggerable": true,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 94.5,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 103.9,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 113.1,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 122.1,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 131,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-5",
+          "frame": 141,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-6",
+          "frame": 150.7,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-7",
+          "frame": 161,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-8",
+          "frame": 171.1,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-9",
+          "frame": 181.5,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-10",
+          "frame": 191.2,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-11",
+          "frame": 202.4,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-12",
+          "frame": 212.5,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-13",
+          "frame": 222.1,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-14",
+          "frame": 231.5,
+          "physMultiplier": 0.3314827,
+          "attributeMultiplier": 0.497224,
+          "physFixed": 91.69,
+          "attributeFixed": 49.979,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-15",
+          "frame": 248.97,
+          "physMultiplier": 1.250878,
+          "attributeMultiplier": 1.876317,
+          "physFixed": 346,
+          "attributeFixed": 188.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-16T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-crosswind-blade",
+      "classId": "bellstrikeUmbra",
+      "name": "Zenith Sword",
+      "breakdownName": "Crisscross - Inner Balance III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:crosswindBlade",
+      "castConditions": [
+        {
+          "param": "swordHorizon"
+        }
+      ],
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 57,
+      "triggerable": true,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 6,
+            "maxMeters": 8.999,
+            "then": {
+              "kind": "selfForward",
+              "meters": 11
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 0.625421,
+          "attributeMultiplier": 0.938132,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 8,
+              "condition": null,
+              "appliesOnCastEnd": true
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-swordspecial-4-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "SwordSpecial 4-Hit",
+      "breakdownName": "Inner Balance Strike III",
+      "tags": ["weapon:Sword", "attune:swordSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordSpecial4Hit",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 50
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 84,
+      "triggerable": true,
+      "displacement": {
+        "kind": "rootMotion",
+        "metersAtFrame": [
+          [0, 0],
+          [2, 0.019],
+          [4, 0.037],
+          [6, 0.06],
+          [8, 0.098],
+          [10, 0.151],
+          [12, 0.205],
+          [14, 0.259],
+          [16, 0.257],
+          [18, 0.226],
+          [20, 0.168],
+          [22, 0.05],
+          [24, -0.199],
+          [26, -0.447],
+          [28, -0.7],
+          [30, -0.923],
+          [32, -1.112],
+          [34, -1.278],
+          [36, -1.412],
+          [38, -1.522],
+          [40, -1.648],
+          [42, -1.839],
+          [44, -2.116],
+          [46, -2.455],
+          [48, -2.782],
+          [50, -2.996],
+          [52, -3.169],
+          [54, -3.313],
+          [56, -3.435],
+          [58, -3.538],
+          [60, -3.628],
+          [62, -3.695],
+          [64, -3.708],
+          [84, -3.708]
+        ]
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 28.8,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "cooldownCut",
+              "targetId": "bleedMechanismEnhancement",
+              "stacks": 180,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-swordspecial-4-hit-hit-0-sword-horizon",
+              "label": "Sword Horizon",
+              "conditions": [
+                {
+                  "param": "swordHorizon"
+                }
+              ],
+              "physMultiplier": 0.196354,
+              "attributeMultiplier": 0.294531,
+              "physFixed": 54.4,
+              "attributeFixed": 29.6,
+              "castFrames": 76.96
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 35.16,
+          "physMultiplier": 0.392708,
+          "attributeMultiplier": 0.589062,
+          "physFixed": 108.8,
+          "attributeFixed": 59.2,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 43.44,
+          "physMultiplier": 0.196354,
+          "attributeMultiplier": 0.294531,
+          "physFixed": 54.4,
+          "attributeFixed": 29.6,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 10,
+              "condition": {
+                "buffId": "debuff-bellstrikeUmbra-bleed-tick",
+                "op": "gte",
+                "stacks": 4
+              },
+              "cooldownFrames": 180,
+              "cooldownGroup": "bleedMechanismEnhancement",
+              "conditionsBeforeHit": true
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-swordspecial-4-hit-final",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-16T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearspecial",
+      "classId": "bellstrikeUmbra",
+      "name": "Spear Special",
+      "breakdownName": "Sweep All",
+      "tags": ["weapon:Spear", "attune:spearSpecial"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearSpecial",
+      "receives": ["heavenquakerSpearAdditionalAttack"],
+      "castConditions": [
+        {
+          "buffId": "meter:endurance",
+          "op": "gte",
+          "stacks": 40
+        }
+      ],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 40
+        }
+      ],
+      "castFrames": 102,
+      "triggerable": true,
+      "reachMeters": 3,
+      "displacement": {
+        "kind": "byDistance",
+        "bands": [
+          {
+            "minMeters": 1.5,
+            "maxMeters": 4.5,
+            "then": {
+              "kind": "toTarget",
+              "meters": 1.5
+            }
+          }
+        ],
+        "otherwise": {
+          "kind": "towardTarget",
+          "referenceMeters": 0
+        }
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-defense-down",
+              "stacks": 1,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-spring-surge",
+                "op": "gte",
+                "stacks": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 16,
+          "physMultiplier": 0.6848704,
+          "attributeMultiplier": 1.0273056,
+          "physFixed": 189.76,
+          "attributeFixed": 103.36,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              }
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-bleed-detonation",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spear-special-cooldown",
+              "stacks": 1,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 720,
+              "cooldownGroup": "wolfchasersArtSweepAllEnduranceGain"
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-spearspecial-hit-1-river-flow",
+              "label": "River Flow",
+              "conditions": [
+                {
+                  "buffId": "potentRiverFlow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.0273056,
+              "attributeMultiplier": 1.5409584,
+              "physFixed": 284.64,
+              "attributeFixed": 155.04,
+              "frame": 18
+            },
+            {
+              "id": "hv-spearspecial-hit-1-spring-surge",
+              "label": "Spring Surge",
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spring-surge",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 0.856088,
+              "attributeMultiplier": 1.284132,
+              "physFixed": 237.2,
+              "attributeFixed": 129.2,
+              "frame": 18
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 58,
+          "physMultiplier": 1.0273056,
+          "attributeMultiplier": 1.5409584,
+          "physFixed": 284.64,
+          "attributeFixed": 155.04,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              }
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-bleed-detonation",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spear-special-cooldown",
+              "stacks": 1,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": 20,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-empowered-river-flow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "cooldownFrames": 720,
+              "cooldownGroup": "wolfchasersArtSweepAllEnduranceGain"
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-spearspecial-hit-2-river-flow",
+              "label": "River Flow",
+              "conditions": [
+                {
+                  "buffId": "potentRiverFlow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.5409584,
+              "attributeMultiplier": 2.3114376,
+              "physFixed": 426.96,
+              "attributeFixed": 232.56
+            },
+            {
+              "id": "hv-spearspecial-hit-2-spring-surge",
+              "label": "Spring Surge",
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spring-surge",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.284132,
+              "attributeMultiplier": 1.926198,
+              "physFixed": 355.8,
+              "attributeFixed": 193.8
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-light-1",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword - Light Attack (Stage 1)",
+      "breakdownName": "Sword - Light Attack",
+      "tags": ["weapon:Sword", "attack:light"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:umbraSwordLight1",
+      "receives": ["swallowcallLightAttackBoost", "strategicSwordAdditionalAttack"],
+      "castFrames": 31,
+      "triggerable": true,
+      "reachMeters": 2.5,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 22,
+          "physMultiplier": 0.76903,
+          "attributeMultiplier": 0.403545,
+          "physFixed": 74.5,
+          "attributeFixed": 40.625,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-sword-dash",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword - Dash",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:umbraSwordDash",
+      "receives": ["strategicSwordAdditionalAttack"],
+      "castFrames": 41,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 8,
+          "physMultiplier": 0.173364,
+          "attributeMultiplier": 0.260046,
+          "physFixed": 48.2,
+          "attributeFixed": 26.2,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 26,
+          "physMultiplier": 0.693456,
+          "attributeMultiplier": 1.040184,
+          "physFixed": 192.8,
+          "attributeFixed": 104.8,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import { SWORDQ_FOLLOW_UP_MOTION, SWORDQ_FOLLOW_UP_61_F_MOTION } from "./rootMotion"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordqfollowup = defineSkill({
   id: SKILL.swordqfollowup,
@@ -27,10 +28,7 @@ export const swordqfollowup = defineSkill({
   hits: [
     hit(0, {
       frame: 5,
-      physMultiplier: 0.544068,
-      attributeMultiplier: 0.816102,
-      physFixed: 150.6,
-      attributeFixed: 82,
+      ...levelScaled(LEVEL_ROWS.swordqHit0),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
       // In-game cast length as of 2026-09-24: Sword Horizon cuts the animation
       // short into the Crisscross - Inner Track follow-up.
@@ -39,10 +37,7 @@ export const swordqfollowup = defineSkill({
           id: "hv-swordqfollowup-hit-0-sword-horizon",
           label: "Sword Horizon",
           conditions: [{ param: PARAM.swordHorizon }],
-          physMultiplier: 0.544068,
-          attributeMultiplier: 0.816102,
-          physFixed: 150.6,
-          attributeFixed: 82,
+          ...levelScaled(LEVEL_ROWS.swordqHit0),
           castFrames: 61,
           displacement: SWORDQ_FOLLOW_UP_61_F_MOTION,
         },
@@ -50,26 +45,17 @@ export const swordqfollowup = defineSkill({
     }),
     hit(1, {
       frame: 23,
-      physMultiplier: 0.408051,
-      attributeMultiplier: 0.6120765,
-      physFixed: 112.95,
-      attributeFixed: 61.5,
+      ...levelScaled(LEVEL_ROWS.swordqfollowupHit1),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(2, {
       frame: 34,
-      physMultiplier: 0.408051,
-      attributeMultiplier: 0.6120765,
-      physFixed: 112.95,
-      attributeFixed: 61.5,
+      ...levelScaled(LEVEL_ROWS.swordqfollowupHit1),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(3, {
       frame: 43,
-      physMultiplier: 0.816102,
-      attributeMultiplier: 1.224153,
-      physFixed: 225.9,
-      attributeFixed: 123,
+      ...levelScaled(LEVEL_ROWS.swordqfollowupHit3),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
   ],

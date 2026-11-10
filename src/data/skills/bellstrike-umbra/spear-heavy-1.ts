@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-11-10: the tap on the quickest release, 3.6 f after
 // the press; a press held to 0.3 s becomes the charge instead.
@@ -22,10 +23,7 @@ export const spearHeavy1 = defineSkill({
   hits: [
     hit(0, {
       frame: 29.53,
-      physMultiplier: 0.838872,
-      attributeMultiplier: 1.258308,
-      physFixed: 232.2,
-      attributeFixed: 126.6,
+      ...levelScaled(LEVEL_ROWS.spearHeavy1Hit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

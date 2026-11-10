@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const swordLight3EndsChain = defineSkill({
@@ -22,24 +23,15 @@ export const swordLight3EndsChain = defineSkill({
   hits: [
     hit(0, {
       frame: 8,
-      physMultiplier: 0.322836,
-      attributeMultiplier: 0.484254,
-      physFixed: 89.4,
-      attributeFixed: 48.75,
+      ...levelScaled(LEVEL_ROWS.swordLight2Hit1),
     }),
     hit(1, {
       frame: 20,
-      physMultiplier: 0.161418,
-      attributeMultiplier: 0.242127,
-      physFixed: 44.7,
-      attributeFixed: 24.375,
+      ...levelScaled(LEVEL_ROWS.swordLight3Hit1),
     }),
     hit(2, {
       frame: 34,
-      physMultiplier: 0.161418,
-      attributeMultiplier: 0.242127,
-      physFixed: 44.7,
-      attributeFixed: 24.375,
+      ...levelScaled(LEVEL_ROWS.swordLight3Hit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

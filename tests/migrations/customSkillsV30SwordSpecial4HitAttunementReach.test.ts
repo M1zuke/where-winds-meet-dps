@@ -9,10 +9,14 @@ import {
   V30__swordSpecial4HitAttunementReach,
   healSwordspecial4HitAttunementReach,
 } from "../../src/migrations/customSkills/V30__swordSpecial4HitAttunementReach"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { loadCustomSkills } from "../../src/storage"
 import type { HitTrigger, Skill, SkillHit } from "../../src/engine/skill"
 import storeV29File from "./testCustomSkills/v29/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const CLASS = "bellstrikeUmbra"
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
@@ -270,6 +274,6 @@ describe("every healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === SWORDSPECIAL_4_HIT_ID)!
-    expect(skill.hits).toEqual(HYDRATED_HITS)
+    expect(withoutLevelRows(skill).hits).toEqual(HYDRATED_HITS)
   })
 })

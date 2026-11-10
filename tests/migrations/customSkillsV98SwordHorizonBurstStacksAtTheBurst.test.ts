@@ -8,9 +8,13 @@ import {
   V98__swordHorizonBurstStacksAtTheBurst,
   healSkill,
 } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV97File from "./testCustomSkills/v97/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV97File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const BLOOD_BURST_ID = "bellstrikeUmbra-bleed-detonation"

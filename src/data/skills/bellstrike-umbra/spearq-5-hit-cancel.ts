@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -12,6 +12,7 @@ import {
   SPRING_SURGE_BUFF_ID,
   WATER_DROP_BUFF_ID,
 } from "../../innerWays/wolfchasersArtGates"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const spearq5HitCancel = defineSkill({
   id: SKILL.spearq5HitCancel,
@@ -36,38 +37,23 @@ export const spearq5HitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(1, {
       frame: 31,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(2, {
       frame: 45,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(3, {
       frame: 62,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(4, {
       frame: 82,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
       // In-game values as of 2026-09-24: the tier is Sober Sorrow's combo
       // count (its own 5 hits plus the target's Bleeding stacks) — see the
       // rule in `wolfchasersArtGates.ts`.

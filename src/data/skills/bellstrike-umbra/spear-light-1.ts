@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const spearLight1 = defineSkill({
@@ -22,10 +23,7 @@ export const spearLight1 = defineSkill({
   hits: [
     hit(0, {
       frame: 20,
-      physMultiplier: 0.3287865,
-      attributeMultiplier: 0.49317975,
-      physFixed: 91.05,
-      attributeFixed: 49.65,
+      ...levelScaled(LEVEL_ROWS.spearLight1Hit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

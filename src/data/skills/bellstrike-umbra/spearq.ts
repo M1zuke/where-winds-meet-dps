@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -12,6 +12,7 @@ import {
   SPRING_SURGE_BUFF_ID,
   WATER_DROP_BUFF_ID,
 } from "../../innerWays/wolfchasersArtGates"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -35,38 +36,23 @@ export const spearq = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(1, {
       frame: 31,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(2, {
       frame: 45,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(3, {
       frame: 62,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
     }),
     hit(4, {
       frame: 82,
-      physMultiplier: 0.321033,
-      attributeMultiplier: 0.4815495,
-      physFixed: 88.95,
-      attributeFixed: 48.45,
+      ...levelScaled(LEVEL_ROWS.spearqHit0),
       // In-game values as of 2026-09-24: the tier is Sober Sorrow's combo
       // count (its own 6 hits plus the target's Bleeding stacks) — see the
       // rule in `wolfchasersArtGates.ts`.
@@ -105,10 +91,7 @@ export const spearq = defineSkill({
     }),
     hit(5, {
       frame: 98,
-      physMultiplier: 0.535055,
-      attributeMultiplier: 0.8025825,
-      physFixed: 148.25,
-      attributeFixed: 80.75,
+      ...levelScaled(LEVEL_ROWS.spearqHit5),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

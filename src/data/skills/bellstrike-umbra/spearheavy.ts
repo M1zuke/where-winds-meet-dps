@@ -1,15 +1,13 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 import { DRIFTING_THRUST_STAGE_2_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
+import { LEVEL_ROWS } from "./levelRows"
 
 const DRILL_HIT = {
-  physMultiplier: 0.3314827,
-  attributeMultiplier: 0.497224,
-  physFixed: 91.69,
-  attributeFixed: 49.979,
+  ...levelScaled(LEVEL_ROWS.spearheavyHit0),
 }
 // In-game values as of 2026-10-16: the 15 drill hits' frames from the
 // release, folded onto the 90 f minimum press-to-release hold for this
@@ -46,10 +44,7 @@ export const spearheavy = defineSkill({
     ...DRILL_FRAMES.map((frame, index) => hit(index, { frame, ...DRILL_HIT })),
     hit(DRILL_FRAMES.length, {
       frame: 248.97,
-      physMultiplier: 1.250878,
-      attributeMultiplier: 1.876317,
-      physFixed: 346,
-      attributeFixed: 188.6,
+      ...levelScaled(LEVEL_ROWS.spearheavyHit15),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

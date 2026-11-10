@@ -10,10 +10,14 @@ import {
   healSpearqExtendParam,
   healSpearq5HitCancelExtendParam,
 } from "../../src/migrations/customSkills/V29__soberSorrowExtendUsesParam"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill, SkillHit } from "../../src/engine/skill"
 import storeV28File from "./testCustomSkills/v28/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const CLASS = "bellstrikeUmbra"
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
@@ -255,7 +259,7 @@ describe("every healed skill survives the hydrator too", () => {
     const loaded = loadCustomSkills()
     for (const id of HEALED_IDS) {
       const skill = loaded.find((candidate) => candidate.id === id)!
-      expect(skill.hits, id).toEqual(HEALED_HITS[id])
+      expect(withoutLevelRows(skill).hits, id).toEqual(HEALED_HITS[id])
     }
   })
 })
