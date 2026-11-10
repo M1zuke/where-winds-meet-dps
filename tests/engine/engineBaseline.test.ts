@@ -314,7 +314,7 @@ describe("engine baseline — profile-v7 anchor", () => {
 
   it("still reports the rotation figures", () => {
     expect(round(result.dps, 2)).toBe(71290.31)
-    expect(round(result.totalDamage, 2)).toBe(4277418.32)
+    expect(round(result.totalDamage, 2)).toBe(4277418.8)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -329,8 +329,8 @@ describe("engine baseline — profile-v7 anchor", () => {
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(469527.04)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(76242.08)
+    expect(damageOf("Smolder (DoT)")).toBe(469527.52)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76242.09)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
@@ -346,7 +346,7 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
 
   it("reports the rotation figures with the whole board taken", () => {
     expect(round(result.dps, 2)).toBe(72524.19)
-    expect(round(result.totalDamage, 2)).toBe(4351451.14)
+    expect(round(result.totalDamage, 2)).toBe(4351451.63)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -354,8 +354,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2104043.73)
     expect(damageOf("Bleeding (DoT)")).toBe(284814.68)
-    expect(damageOf("Smolder (DoT)")).toBe(478381.23)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(77625.32)
+    expect(damageOf("Smolder (DoT)")).toBe(478381.71)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(77625.33)
     expect(damageOf("Yi River")).toBe(50616.72)
   })
 })

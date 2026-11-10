@@ -9,6 +9,7 @@ import {
   healMysticDotLevelCap,
 } from "../../src/migrations/customDebuffs/V13__mysticArtLevelCap"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
+import { debuffWithoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Debuff } from "../../src/engine/debuff"
 import storeV12File from "./testCustomDebuffs/v12/store.json"
 
@@ -29,7 +30,9 @@ const debuffIn = (blob: { debuffs: unknown[] }, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
 
 const builtinOf = (id: string): Debuff =>
-  builtinDebuffsForClass("bellstrikeUmbra").find((debuff) => debuff.id === id)!
+  debuffWithoutLevelRows(
+    builtinDebuffsForClass("bellstrikeUmbra").find((debuff) => debuff.id === id)!,
+  )
 
 describe("the pre-V13 shape", () => {
   it("carries all five mystic debuffs at the level-71 / 171 rows", () => {

@@ -8,6 +8,8 @@ import {
   V125__mysticLevelRows,
   healSkill,
 } from "../../src/migrations/customSkills/V125__mysticLevelRows"
+import { healSkill as healExactSkill } from "../../src/migrations/customSkills/V126__mysticExactTierSixRows"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { MYSTIC_SKILLS } from "../../src/data/skills/mystic"
 import { isLevelRows, type CoefficientRow, type Skill } from "../../src/engine/skill"
 import storeV124File from "./testCustomSkills/v124/store.json"
@@ -46,25 +48,28 @@ describe("custom-skills v124 fixture", () => {
     }
   })
 
-  it("stores each seeded copy on the row the built-in still holds as its top row", () => {
+  it("stores each seeded copy on the rounded row the built-in held as its top row", () => {
     for (const id of SEEDED_IDS) {
-      expect(rowsOf(skillIn(STORE, id)), id).toEqual(rowsOf(builtinOf(id)))
+      expect(rowsOf(skillIn(STORE, id)), id).toEqual(rowsOf(withoutLevelRows(builtinOf(id))))
     }
   })
 })
 
 describe("healSkill", () => {
-  it.each(SEEDED_IDS)("gives the untouched %s copy the built-in's own level rows", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
-    const builtin = builtinOf(id)
-    expect(healed.hits.map((hit) => hit.levelRows)).toEqual(
-      builtin.hits.map((hit) => hit.levelRows),
-    )
-    expect(healed.hits.map((hit) => hit.variants?.map((variant) => variant.levelRows))).toEqual(
-      builtin.hits.map((hit) => hit.variants?.map((variant) => variant.levelRows)),
-    )
-    expect(rowsOf(healed)).toEqual(rowsOf(builtin))
-  })
+  it.each(SEEDED_IDS)(
+    "gives the untouched %s copy the built-in's level rows once made exact",
+    (id) => {
+      const healed = healExactSkill(healSkill(clone(skillIn(STORE, id)))) as Skill
+      const builtin = builtinOf(id)
+      expect(healed.hits.map((hit) => hit.levelRows)).toEqual(
+        builtin.hits.map((hit) => hit.levelRows),
+      )
+      expect(healed.hits.map((hit) => hit.variants?.map((variant) => variant.levelRows))).toEqual(
+        builtin.hits.map((hit) => hit.variants?.map((variant) => variant.levelRows)),
+      )
+      expect(rowsOf(healed)).toEqual(rowsOf(builtin))
+    },
+  )
 
   it("writes valid mystic-tier level rows with the branch form on tier 6 only", () => {
     const plus = healSkill(clone(skillIn(STORE, "mystic-dragon-head-plus"))) as Skill

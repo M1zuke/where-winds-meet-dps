@@ -126,6 +126,7 @@ import { V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "./V
 import { V123__gourdTossPursuitCutOncePerSecond } from "./V123__gourdTossPursuitCutOncePerSecond"
 import { V124__dragonHeadCastLength } from "./V124__dragonHeadCastLength"
 import { V125__mysticLevelRows } from "./V125__mysticLevelRows"
+import { V126__mysticExactTierSixRows } from "./V126__mysticExactTierSixRows"
 
 export type {
   CustomSkillMigration,
@@ -320,6 +321,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V123__gourdTossPursuitCutOncePerSecond,
   V124__dragonHeadCastLength,
   V125__mysticLevelRows,
+  V126__mysticExactTierSixRows,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

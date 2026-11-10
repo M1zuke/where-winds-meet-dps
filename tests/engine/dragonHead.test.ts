@@ -34,12 +34,12 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
     const plusHit = plus!.hits[0]
     // Plain reads 1.1 × its own level-76 row; Plus reads 0.77 × the level-176
     // row instead, so the two are no longer a fixed ratio of one another.
-    expect(baseHit.physMultiplier).toBeCloseTo(19.07564, 9)
-    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61346, 9)
+    expect(baseHit.physMultiplier).toBeCloseTo(19.07563988, 9)
+    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61345982, 9)
     expect(baseHit.physFixed).toBeCloseTo(3001.372, 9)
-    expect(plusHit.physMultiplier).toBeCloseTo(12.597266, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(18.895899, 9)
-    expect(plusHit.physFixed).toBeCloseTo(1999.4721, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(12.5972659585, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(18.8958989377, 9)
+    expect(plusHit.physFixed).toBeCloseTo(1999.47207547, 9)
   })
 
   it("both versions receive the same buffs, so the pair cannot drift apart again", () => {

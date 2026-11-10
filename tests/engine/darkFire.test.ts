@@ -53,9 +53,9 @@ describe("Smolder debuff data", () => {
 
   it("carries the DoT row recalibrated to the mystic art's actual reachable rank", () => {
     const dot = darkFire!.dot!
-    expect(dot.physMultiplier).toBeCloseTo(0.235818, 10)
-    expect(dot.attributeMultiplier).toBeCloseTo(0.353727, 10)
-    expect(dot.physFixed).toBeCloseTo(37.6455, 10)
+    expect(dot.physMultiplier).toBeCloseTo(0.235818254717, 10)
+    expect(dot.attributeMultiplier).toBeCloseTo(0.353727382076, 10)
+    expect(dot.physFixed).toBeCloseTo(37.6454716981, 10)
     expect(dot.attributeFixed).toBe(0)
     expect(dot.tickIntervalFrames).toBe(30)
     expect(darkFire!.maxStacks).toBe(1)
@@ -73,21 +73,21 @@ describe("Dragon Fire (Smolder) skills", () => {
       unconditionalHits(s).reduce((a, h) => a + h[field], 0)
 
     expect(unconditionalHits(one).length).toBe(1)
-    expect(sum(one, "physMultiplier")).toBeCloseTo(1.283899, 10)
-    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925849, 10)
-    expect(sum(one, "physFixed")).toBeCloseTo(204.9587, 10)
+    expect(sum(one, "physMultiplier")).toBeCloseTo(1.28389938679, 10)
+    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.92584908019, 10)
+    expect(sum(one, "physFixed")).toBeCloseTo(204.958679245, 10)
 
     expect(unconditionalHits(two).length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(3.982708, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974062, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(635.7902, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(3.98270830188, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.97406245283, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(635.790188679, 10)
   })
 
   it("apply Combustion, never Smolder", () => {
     const fb1 = skillOf(SKILL.fireBreath1Hit)
     const fb2 = skillOf(SKILL.fireBreath2Hit)
-    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.360884, 10)
-    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.221518, 10)
+    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36088435, 10)
+    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.2215188, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
       s.hits.flatMap((h) => h.triggers.map((t) => t.targetId)),
     )

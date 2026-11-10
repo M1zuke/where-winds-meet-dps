@@ -9,8 +9,9 @@ import {
   healDot,
 } from "../../src/migrations/customDebuffs/V26__mysticDotLevelRows"
 import { MYSTIC_DEBUFFS } from "../../src/data/skills/mystic"
-import { isLevelRows } from "../../src/engine/skill"
+import { isLevelRows, type CoefficientRow } from "../../src/engine/skill"
 import type { Debuff } from "../../src/engine/debuff"
+import { healDot as healExactDot } from "../../src/migrations/customDebuffs/V27__mysticExactTierSixDotRows"
 import storeV25File from "./testCustomDebuffs/v25/store.json"
 
 const STORE = storeV25File as unknown as RawCustomDebuffsBlob & { debuffs: Debuff[] }
@@ -25,6 +26,12 @@ const USER_AUTHORED_ID = "df-user-authored-gash"
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const debuffIn = (blob: RawCustomDebuffsBlob, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
+const rowOf = (row: CoefficientRow) => [
+  row.physMultiplier,
+  row.attributeMultiplier,
+  row.physFixed,
+  row.attributeFixed,
+]
 const builtinOf = (id: string): Debuff => MYSTIC_DEBUFFS.find((debuff) => debuff.id === id)!
 
 describe("custom-debuffs v25 fixture", () => {
@@ -39,8 +46,10 @@ describe("custom-debuffs v25 fixture", () => {
 describe("healDot", () => {
   it.each(SEEDED_IDS)("gives the untouched %s copy the built-in's own level rows", (id) => {
     const healed = healDot(clone(debuffIn(STORE, id))) as Debuff
-    expect(healed.dot!.levelRows).toEqual(builtinOf(id).dot!.levelRows)
     expect(isLevelRows(healed.dot!.levelRows)).toBe(true)
+    const exact = healExactDot(healed) as Debuff
+    expect(exact.dot!.levelRows).toEqual(builtinOf(id).dot!.levelRows)
+    expect(rowOf(exact.dot!)).toEqual(rowOf(builtinOf(id).dot!))
   })
 
   it("puts the branch form's tick on tier 6 only", () => {
