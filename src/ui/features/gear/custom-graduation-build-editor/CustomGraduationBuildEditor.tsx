@@ -114,7 +114,7 @@ export function CustomGraduationBuildEditor({
   }
 
   function attunementOptions(slot: GearSlot, storedId: string): ComboboxOption[] {
-    return attunementComboboxOptions(t, attunementsFor(slot, classId), storedId)
+    return attunementComboboxOptions(t, attunementsFor(slot, classId, GRADUATION_LEVEL), storedId)
   }
 
   function patch(next: Partial<CustomGraduationBuild>): void {

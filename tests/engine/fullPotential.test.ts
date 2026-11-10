@@ -387,7 +387,7 @@ describe("FT variant selection", { timeout: 30_000 }, () => {
     const pieceLevel = candidate.level
     const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
     const pool = poolForClass(inputs.classId)
-    const attunements = attunementsFor(candidate.slot, inputs.classId).filter(
+    const attunements = attunementsFor(candidate.slot, inputs.classId, pieceLevel).filter(
       (option) => option.enginePath !== null,
     )
 

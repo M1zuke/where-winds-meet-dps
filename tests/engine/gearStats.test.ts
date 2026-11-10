@@ -163,11 +163,11 @@ describe("applyPieceContribution: white-side stat updates feed effectiveRates", 
 })
 
 describe("formless penetration routes to the class primary attribute", () => {
-  function penPiece(attunement: string, value: number): GearPiece {
+  function penPiece(attunement: string, value: number, level: GearPiece["level"] = 91): GearPiece {
     return {
       id: "pen-piece",
       slot: "leftWeapon",
-      level: 91,
+      level,
       rarity: "legendary",
       minPhys: 0,
       maxPhys: 0,
@@ -192,6 +192,19 @@ describe("formless penetration routes to the class primary attribute", () => {
     expect(after.bellstrike.penetration).toBeCloseTo(inputs.bellstrike.penetration + 0.1, 9)
     expect(after.bamboocut.penetration).toBeCloseTo(inputs.bamboocut.penetration, 9)
     expect(after.phys.penetration).toBeCloseTo(inputs.phys.penetration, 9)
+  })
+
+  it("counts an attunement only on a gear level its ladder rolls at, and keeps the stored value", () => {
+    const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+    const unrolled = penPiece("formlessPen", 0.1, 86)
+    const penetrationPaths = (piece: GearPiece) =>
+      computeGearContribution(piece, inputs)
+        .map((entry) => entry.path)
+        .filter((path) => path.endsWith(".penetration"))
+    expect(penetrationPaths(unrolled)).toEqual([])
+    expect(unrolled.attunement).toBe("formlessPen")
+    expect(unrolled.attunementValue).toBe(0.1)
+    expect(penetrationPaths(penPiece("formlessPen", 0.1, 91))).toHaveLength(1)
   })
 
   it("physPen still routes to phys.penetration (unaffected by the resolver)", () => {
