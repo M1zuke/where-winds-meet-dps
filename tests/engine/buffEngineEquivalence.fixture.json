@@ -743368,7 +743368,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18% against a low-Qi target"
+          "summary": "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%) against a low-Qi target"
         },
         {
           "id": "swordEnergyHpDamage",
@@ -743391,7 +743391,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "HP damage +20%"
+          "summary": "HP damage +2% per full 100 Max Physical Attack (max 20%)"
         },
         {
           "id": "qiImbalance",
@@ -743570,7 +743570,7 @@
       ]
     },
     "dynamic": {
-      "digest": "19d30efab8ddc8eef3fbfe766dc6e7285976e58c0a51658de8a33264a6bb683b"
+      "digest": "748178ced85bc278d9e6154e5e921a9c6cd7f17ea6e9787b2aeea10e32892e84"
     }
   },
   "silkbindJade": {
