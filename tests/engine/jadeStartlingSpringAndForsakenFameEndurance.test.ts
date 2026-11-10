@@ -117,10 +117,10 @@ describe("Startling Spring's damage bonus", () => {
 })
 
 describe("Forsaken Fame's Endurance gain", () => {
-  it("is authored 0.03 s after the whirlwind's hit, not at the cast's end", () => {
+  it("lands on the frame of the whirlwind's hit, not at the cast's end", () => {
     const trigger = builtinSkill(JADE, SKILL.fanlightcharged).hits[0]!.triggers[0]!
     expect(trigger).toMatchObject({ kind: "meterDelta", targetId: "endurance", stacks: 10 })
-    expect(trigger.delayFrames).toBeCloseTo(0.03 * FPS, 9)
+    expect(trigger.delayFrames).toBeUndefined()
     expect(trigger.appliesOnCastEnd).toBeUndefined()
   })
 })

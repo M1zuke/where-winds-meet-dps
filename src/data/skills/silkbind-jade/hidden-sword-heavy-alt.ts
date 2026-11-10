@@ -21,10 +21,9 @@ export const hiddenSwordHeavyAlt = defineSkill({
   reachMeters: 3,
   hits: [
     hit(0, {
-      // Hit frames with only a window (this class's own evidence): the
-      // strike has no known frame of its own, only the window from the cast's
-      // start to its earliest next input — authored at that window's start.
-      frame: 0,
+      // In-game values as of 2026-11-10: the collider lands 14.15 f into the
+      // cast.
+      frame: 14.15,
       physMultiplier: 0.913968,
       attributeMultiplier: 1.370952,
       physFixed: 253.2,
