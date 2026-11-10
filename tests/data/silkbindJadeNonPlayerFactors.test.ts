@@ -30,8 +30,8 @@ describe("non-player damage factors are authored once, not baked in twice", () =
 
   it("the drone tick's coefficient is the player-target row, not the non-player total", () => {
     const hit = byId("silkbindJade-umbdrone-20hit").hits[0]
-    expect(hit.physMultiplier).toBe(0.510829)
-    expect(hit.attributeMultiplier).toBe(0.766243)
+    expect(hit.physMultiplier).toBe(0.51082875)
+    expect(hit.attributeMultiplier).toBe(0.766243125)
     expect(hit.physFixed).toBe(141.375)
     expect(hit.attributeFixed).toBe(77)
   })

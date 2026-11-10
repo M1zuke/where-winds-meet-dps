@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -6,6 +6,7 @@ import { INKWELL_FAN_RECEIVES } from "./receives"
 import { enduranceCost } from "../../resources/enduranceMeter"
 import type { MeterDrain } from "../../../engine/skill"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-09-24: -14/s while charging, held to this
 // stage's own 0.63 s threshold.
@@ -41,17 +42,11 @@ export const glowAndFlowStage2 = defineSkill({
       // Hit frames with only a window: authored at the start of the release
       // window, both strikes landing together (this class's own evidence).
       frame: 56,
-      physMultiplier: 1.22479,
-      attributeMultiplier: 1.837185,
-      physFixed: 339,
-      attributeFixed: 184.5,
+      ...levelScaled(LEVEL_ROWS.glowAndFlowStage2Hit0),
     }),
     hit(1, {
       frame: 56,
-      physMultiplier: 1.22479,
-      attributeMultiplier: 1.837185,
-      physFixed: 339,
-      attributeFixed: 184.5,
+      ...levelScaled(LEVEL_ROWS.glowAndFlowStage2Hit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

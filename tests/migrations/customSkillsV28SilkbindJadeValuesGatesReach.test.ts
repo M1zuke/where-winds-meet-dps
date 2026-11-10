@@ -26,6 +26,7 @@ import { healSkill as healJadeSpringSorrowChargesAndComboRechargeCut } from "../
 import { healSkill as healFractionalFrameTiming } from "../../src/migrations/customSkills/V95__fractionalFrameTiming"
 import { throughJadeAuditHops } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV27File from "./testCustomSkills/v27/store.json"
@@ -72,8 +73,10 @@ const normalizedField = (value: unknown, field: string): unknown =>
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
-const builtinOf = (id: string): Skill =>
+const currentBuiltinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
+
+const builtinOf = (id: string): Skill => withoutLevelRows(currentBuiltinOf(id))
 
 // A no-op on the ids a given later hop doesn't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
@@ -195,7 +198,7 @@ describe("every healed skill survives the hydrator too", () => {
     const loaded = loadCustomSkills()
     for (const id of HEALED_IDS) {
       const skill = loaded.find((candidate) => candidate.id === id)!
-      const builtin = builtinOf(id)
+      const builtin = currentBuiltinOf(id)
       for (const field of CHECKED_FIELDS) {
         const expected = field === "hits" ? builtin[field] : (builtin[field] ?? [])
         expect(normalizedField(skill[field], field), `${id}.${field}`).toEqual(

@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -6,6 +6,7 @@ import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 import { enduranceCost, enduranceMeter } from "../../resources/enduranceMeter"
 import type { MeterDrain } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-11-10: the air-charge's own -15/s drain, opening 72 f
 // after the 14.4 f hold decision and held to this stage's earliest release —
@@ -60,10 +61,7 @@ export const apricotHeavenEnhanced = defineSkill({
       // In-game values as of 2026-11-10: the enhanced fall is released 1.5 s
       // into the air charge, and its collider is 27.15 f into the release.
       frame: 203.55,
-      physMultiplier: 2.504152,
-      attributeMultiplier: 3.756228,
-      physFixed: 692.8,
-      attributeFixed: 377.6,
+      ...levelScaled(LEVEL_ROWS.apricotHeavenEnhancedHit2),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

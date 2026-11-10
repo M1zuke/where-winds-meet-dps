@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // The light attack available while Unfading Flower's umbrella floats (the
 // basic attacks become the hidden sword's); the ground branch of stage 1,
@@ -32,10 +33,7 @@ export const hiddenSwordLight1 = defineSkill({
   hits: [
     hit(0, {
       frame: 21,
-      physMultiplier: 0.19041,
-      attributeMultiplier: 0.285615,
-      physFixed: 52.75,
-      attributeFixed: 28.75,
+      ...levelScaled(LEVEL_ROWS.hiddenSwordLight1Hit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

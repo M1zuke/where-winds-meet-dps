@@ -1,4 +1,5 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import { LEVEL_ROWS } from "./levelRows"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTACK, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -34,11 +35,7 @@ export const umbdronelaunch23Hit = defineSkill({
       // In-game values as of 2026-10-15: the throw's collider lands at 35.78 f;
       // the umbrella attaches at 36 f, which opens the drone's run.
       frame: 35.78,
-      physMultiplier: 0.539718,
-      attributeMultiplier: 0.809577,
-      // In-game values as of 2026-10-05.
-      physFixed: 149.4,
-      attributeFixed: 81.4,
+      ...levelScaled(LEVEL_ROWS.umbdronelaunchHit0),
       extraCritDamage: 0,
       triggers: [applyDebuff({ target: DEBUFF.umbdrone23Hit })],
     }),

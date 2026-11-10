@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV115File from "./testCustomSkills/v115/store.json"
 
@@ -21,7 +22,7 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!)
 
 describe("custom-skills v115 fixture", () => {
   it("is v115 and stores Umb HeavyLight as a 78 frame cast of three Phoenix hits", () => {

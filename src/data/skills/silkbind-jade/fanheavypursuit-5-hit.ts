@@ -1,4 +1,6 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import type { LevelRows } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -9,20 +11,8 @@ import {
   STARTLING_SPRING_STACK,
 } from "./moonShatterSpring"
 
-// In-game values as of 2026-10-05.
-const CAST_TOTAL = {
-  physMultiplier: 3.0185,
-  attributeMultiplier: 4.5278,
-  physFixed: 835,
-  attributeFixed: 455,
-}
-const HIT_SHARES = [0.175, 0.175, 0.175, 0.175, 0.3]
-
-const coefficientsFor = (share: number) => ({
-  physMultiplier: CAST_TOTAL.physMultiplier * share,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
-  physFixed: CAST_TOTAL.physFixed * share,
-  attributeFixed: CAST_TOTAL.attributeFixed * share,
+const coefficientsFor = (levelRows: LevelRows) => ({
+  ...levelScaled(levelRows),
   extraCritDamage: 1,
   triggers: [PURSUIT_RECHARGE_CUT, STARTLING_SPRING_STACK],
 })
@@ -66,11 +56,11 @@ export const fanheavypursuit5Hit = defineSkill({
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 14.05, ...coefficientsFor(HIT_SHARES[0]) }),
-    hit(1, { frame: 32.51, ...coefficientsFor(HIT_SHARES[1]) }),
-    hit(2, { frame: 68.97, ...coefficientsFor(HIT_SHARES[2]) }),
-    hit(3, { frame: 84.2, ...coefficientsFor(HIT_SHARES[3]) }),
-    hit(4, { frame: 111.9, ...coefficientsFor(HIT_SHARES[4]) }),
+    hit(0, { frame: 14.05, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit5Hit0) }),
+    hit(1, { frame: 32.51, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit5Hit0) }),
+    hit(2, { frame: 68.97, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit5Hit0) }),
+    hit(3, { frame: 84.2, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit5Hit0) }),
+    hit(4, { frame: 111.9, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit5Hit4) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-10-05T00:00:00.000Z",

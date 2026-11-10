@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // The lift that opens Spring Away, triggered alongside its first bullet. No
 // attunement, no crit term, no non-player factor. In-game values as of
@@ -29,10 +30,7 @@ export const umblightchargeLift = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.304656,
-      attributeMultiplier: 0.456984,
-      physFixed: 84.4,
-      attributeFixed: 46.0,
+      ...levelScaled(LEVEL_ROWS.umblightchargeLiftHit0),
       extraCritDamage: 0,
     }),
   ],

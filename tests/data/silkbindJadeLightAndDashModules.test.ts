@@ -47,8 +47,8 @@ describe.each([
 describe("Umbrella - Dash", () => {
   it("hits twice by collider, then launches its bullet at 30 m/s as its own skill", () => {
     expect(hitValues(SKILL.umbrellaDash)).toEqual([
-      [17, 0.439065, 0.658598, 122, 66.5],
-      [51, 0.439065, 0.658598, 122, 66.5],
+      [17, 0.439065, 0.6585975, 122, 66.5],
+      [51, 0.439065, 0.6585975, 122, 66.5],
     ])
     expect(
       jadeSkill(SKILL.umbrellaDash).hits[1]!.triggers.map((trigger) => trigger.targetId),

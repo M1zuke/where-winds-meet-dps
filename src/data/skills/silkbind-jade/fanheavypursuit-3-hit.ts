@@ -1,4 +1,6 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import type { LevelRows } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -9,20 +11,8 @@ import {
   STARTLING_SPRING_STACK,
 } from "./moonShatterSpring"
 
-// In-game values as of 2026-10-05.
-const CAST_TOTAL = {
-  physMultiplier: 1.2478,
-  attributeMultiplier: 1.8716,
-  physFixed: 346,
-  attributeFixed: 188,
-}
-const HIT_SHARES = [0.3, 0.3, 0.4]
-
-const coefficientsFor = (share: number) => ({
-  physMultiplier: CAST_TOTAL.physMultiplier * share,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
-  physFixed: CAST_TOTAL.physFixed * share,
-  attributeFixed: CAST_TOTAL.attributeFixed * share,
+const coefficientsFor = (levelRows: LevelRows) => ({
+  ...levelScaled(levelRows),
   extraCritDamage: 1,
   triggers: [PURSUIT_RECHARGE_CUT, STARTLING_SPRING_STACK],
 })
@@ -66,9 +56,9 @@ export const fanheavypursuit3Hit = defineSkill({
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 9.66, ...coefficientsFor(HIT_SHARES[0]) }),
-    hit(1, { frame: 33.78, ...coefficientsFor(HIT_SHARES[1]) }),
-    hit(2, { frame: 71.82, ...coefficientsFor(HIT_SHARES[2]) }),
+    hit(0, { frame: 9.66, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit3Hit0) }),
+    hit(1, { frame: 33.78, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit3Hit0) }),
+    hit(2, { frame: 71.82, ...coefficientsFor(LEVEL_ROWS.fanheavypursuit3Hit2) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-10-05T00:00:00.000Z",

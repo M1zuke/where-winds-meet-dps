@@ -1,4 +1,5 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import { LEVEL_ROWS } from "./levelRows"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -7,20 +8,8 @@ import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 // Colorful Phoenix's own share of the cast total — the heavy attack's first
 // stage is a separate, non-attuned share (`umb-heavylight-heavyshare.ts`).
-// In-game values as of 2026-10-05.
-const HIT_SHARE = 0.33
-const CAST_TOTAL = {
-  physMultiplier: 1.1604,
-  attributeMultiplier: 1.1604 * 1.5,
-  physFixed: 322,
-  attributeFixed: 175,
-}
-
 const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier * HIT_SHARE,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier * HIT_SHARE,
-  physFixed: CAST_TOTAL.physFixed * HIT_SHARE,
-  attributeFixed: CAST_TOTAL.attributeFixed * HIT_SHARE,
+  ...levelScaled(LEVEL_ROWS.umbHeavylightHit1),
   extraCritDamage: 0,
 }
 

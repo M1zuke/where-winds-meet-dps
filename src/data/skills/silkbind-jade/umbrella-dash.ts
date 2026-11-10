@@ -1,14 +1,12 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const COLLIDER_HIT = {
-  physMultiplier: 0.439065,
-  attributeMultiplier: 0.658598,
-  physFixed: 122,
-  attributeFixed: 66.5,
+  ...levelScaled(LEVEL_ROWS.umbrellaDashHit0),
 }
 
 // In-game values as of 2026-11-10: the two collider hits carry no
