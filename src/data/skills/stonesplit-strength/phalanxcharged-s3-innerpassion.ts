@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -9,6 +9,7 @@ import {
   BURNING_HEART_INNER_PASSION_STAGE_3_COST,
   BURNING_HEART_INNER_PASSION_STAGE_3_DRAIN,
 } from "./buffs/burningHeartCharge"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const phalanxchargedS3Innerpassion = defineSkill({
   id: SKILL.phalanxchargedS3Innerpassion,
@@ -90,17 +91,11 @@ export const phalanxchargedS3Innerpassion = defineSkill({
     }),
     hit(2, {
       frame: 120,
-      physMultiplier: 1.719879,
-      attributeMultiplier: 2.579819,
-      physFixed: 475.8,
-      attributeFixed: 259.2,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS3InnerpassionHit2),
     }),
     hit(3, {
       frame: 129,
-      physMultiplier: 4.013051,
-      attributeMultiplier: 6.019577,
-      physFixed: 1110.2,
-      attributeFixed: 604.8,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS3InnerpassionHit3),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

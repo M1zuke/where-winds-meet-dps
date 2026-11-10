@@ -1,14 +1,12 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const TENTH_OF_ROW = {
-  physMultiplier: 0.243789,
-  attributeMultiplier: 0.365684,
-  physFixed: 67.5,
-  attributeFixed: 36.8,
+  ...levelScaled(LEVEL_ROWS.hengLightAttack3Hit0),
 }
 
 // In-game values as of 2026-10-06.
@@ -33,10 +31,7 @@ export const hengLightAttack3 = defineSkill({
     hit(1, { frame: 32, ...TENTH_OF_ROW }),
     hit(2, {
       frame: 55,
-      physMultiplier: 0.365684,
-      attributeMultiplier: 0.548525,
-      physFixed: 101.25,
-      attributeFixed: 55.2,
+      ...levelScaled(LEVEL_ROWS.hengLightAttack1Hit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, castSkill, clearStatus, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -8,6 +8,7 @@ import {
   bladeMomentumMeter,
   bladeMomentumRequires,
 } from "../../classes/stonesplit-strength/bladeMomentumMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const snowpartingvcPrepull = defineSkill({
   id: SKILL.snowpartingvcPrepull,
@@ -50,10 +51,7 @@ export const snowpartingvcPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 2.07686,
-      attributeMultiplier: 3.11529,
-      physFixed: 575,
-      attributeFixed: 313,
+      ...levelScaled(LEVEL_ROWS.snowpartingvcPrepullHit0),
       triggers: [
         applyBuff({ target: BUFF.snowbreakSpringCooldown, requiresParam: PARAM.frostCladNight }),
         clearStatus({

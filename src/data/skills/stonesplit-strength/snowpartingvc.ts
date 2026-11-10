@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, castSkill, clearStatus, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -8,6 +8,7 @@ import {
   bladeMomentumMeter,
   bladeMomentumRequires,
 } from "../../classes/stonesplit-strength/bladeMomentumMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const snowpartingvc = defineSkill({
@@ -81,10 +82,7 @@ export const snowpartingvc = defineSkill({
     }),
     hit(2, {
       frame: 34,
-      physMultiplier: 2.07686,
-      attributeMultiplier: 3.11529,
-      physFixed: 575,
-      attributeFixed: 313,
+      ...levelScaled(LEVEL_ROWS.snowpartingvcPrepullHit0),
       triggers: [
         castSkill({
           target: SKILL.anxisoldierheng,

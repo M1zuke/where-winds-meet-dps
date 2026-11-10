@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const snowpartingqSlash = defineSkill({
@@ -23,17 +24,11 @@ export const snowpartingqSlash = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.596352,
-      attributeMultiplier: 0.894528,
-      physFixed: 165.2,
-      attributeFixed: 90,
+      ...levelScaled(LEVEL_ROWS.snowpartingqSlashHit0),
     }),
     hit(1, {
       frame: 29,
-      physMultiplier: 0.894528,
-      attributeMultiplier: 1.341792,
-      physFixed: 247.8,
-      attributeFixed: 135,
+      ...levelScaled(LEVEL_ROWS.snowpartingqSlashHit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
