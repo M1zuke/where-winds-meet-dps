@@ -15,7 +15,7 @@ export const snowpartingqStab = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQStab,
-  receives: [BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
+  receives: [BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.throatPierced, BUFF.jadeware],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 69,

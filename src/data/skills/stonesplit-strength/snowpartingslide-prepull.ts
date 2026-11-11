@@ -14,7 +14,7 @@ export const snowpartingslidePrepull = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSlidePrepull,
   startLatency: "serverRoundTrip",
-  receives: SNOWPARTING_BLADE_RECEIVES,
+  receives: [...SNOWPARTING_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.jadeware],
   castFrames: 0,
   triggerable: true,

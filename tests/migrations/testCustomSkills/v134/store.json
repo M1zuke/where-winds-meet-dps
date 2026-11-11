@@ -1,0 +1,242 @@
+{
+  "v": 134,
+  "skills": [
+    {
+      "id": "stonesplitStrength-phalanxq",
+      "classId": "stonesplitStrength",
+      "name": "PhalanxQ",
+      "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:cleftpeakBoost", "role:phalanxQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:phalanxQ",
+      "receives": ["cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "jadeware"],
+      "triggersBuffsAtFrame": {
+        "jadeware": 7
+      },
+      "castFrames": 49,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 25.65,
+          "physMultiplier": 1.8948,
+          "attributeMultiplier": 2.8422,
+          "physFixed": 525,
+          "attributeFixed": 286,
+          "levelRows": {
+            "scale": "artLevel",
+            "rows": {
+              "90": {
+                "physMultiplier": 1.8938,
+                "attributeMultiplier": 2.8407,
+                "physFixed": 382,
+                "attributeFixed": 217
+              },
+              "95": {
+                "physMultiplier": 1.8943,
+                "attributeMultiplier": 2.84145,
+                "physFixed": 438,
+                "attributeFixed": 245
+              },
+              "100": {
+                "physMultiplier": 1.8948,
+                "attributeMultiplier": 2.8422,
+                "physFixed": 525,
+                "attributeFixed": 286
+              }
+            }
+          },
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "castSkill",
+              "targetId": "stonesplitStrength-anxisoldiermosweep",
+              "stacks": 0,
+              "condition": {
+                "buffId": "ironGuards",
+                "op": "gte",
+                "stacks": 1,
+                "source": "buffEngine"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingslide",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingSlide",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingSlide",
+      "startLatency": "serverRoundTrip",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "castFrames": 42,
+      "triggerable": true,
+      "reachMeters": 8,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 32,
+          "physMultiplier": 1.2338,
+          "attributeMultiplier": 1.8507,
+          "physFixed": 342,
+          "attributeFixed": 186,
+          "levelRows": {
+            "scale": "artLevel",
+            "rows": {
+              "90": {
+                "physMultiplier": 1.2328,
+                "attributeMultiplier": 1.8492,
+                "physFixed": 249,
+                "attributeFixed": 141
+              },
+              "95": {
+                "physMultiplier": 1.2333,
+                "attributeMultiplier": 1.84995,
+                "physFixed": 286,
+                "attributeFixed": 160
+              },
+              "100": {
+                "physMultiplier": 1.2338,
+                "attributeMultiplier": 1.8507,
+                "physFixed": 342,
+                "attributeFixed": 186
+              }
+            }
+          },
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-snowpartingq-slash",
+      "classId": "stonesplitStrength",
+      "name": "SnowpartingQ-Slash",
+      "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:snowpartingQSlash",
+      "receives": ["snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["jadeware"],
+      "castFrames": 40,
+      "triggerable": true,
+      "reachMeters": 4.5,
+      "displacement": {
+        "kind": "towardTarget",
+        "referenceMeters": 1.75
+      },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.6,
+          "attributeMultiplier": 0.894528,
+          "physFixed": 165.2,
+          "attributeFixed": 90,
+          "levelRows": {
+            "scale": "artLevel",
+            "rows": {
+              "90": {
+                "physMultiplier": 0.595952,
+                "attributeMultiplier": 0.893928,
+                "physFixed": 120,
+                "attributeFixed": 68.4
+              },
+              "95": {
+                "physMultiplier": 0.596152,
+                "attributeMultiplier": 0.894228,
+                "physFixed": 138,
+                "attributeFixed": 77.2
+              },
+              "100": {
+                "physMultiplier": 0.596352,
+                "attributeMultiplier": 0.894528,
+                "physFixed": 165.2,
+                "attributeFixed": 90
+              }
+            }
+          },
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 29,
+          "physMultiplier": 0.894528,
+          "attributeMultiplier": 1.341792,
+          "physFixed": 247.8,
+          "attributeFixed": 135,
+          "levelRows": {
+            "scale": "artLevel",
+            "rows": {
+              "90": {
+                "physMultiplier": 0.893928,
+                "attributeMultiplier": 1.340892,
+                "physFixed": 180,
+                "attributeFixed": 102.6
+              },
+              "95": {
+                "physMultiplier": 0.894228,
+                "attributeMultiplier": 1.341342,
+                "physFixed": 207,
+                "attributeFixed": 115.8
+              },
+              "100": {
+                "physMultiplier": 0.894528,
+                "attributeMultiplier": 1.341792,
+                "physFixed": 247.8,
+                "attributeFixed": 135
+              }
+            }
+          },
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "stonesplitStrength",
+      "name": "User Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": [],
+      "castFrames": 30,
+      "receives": [],
+      "hits": [
+        {
+          "id": "hit-user-0",
+          "frame": 10,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-11-10T00:00:00.000Z",
+      "updatedAt": "2026-11-10T00:00:00.000Z"
+    }
+  ]
+}

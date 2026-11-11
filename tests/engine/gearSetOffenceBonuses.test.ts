@@ -215,6 +215,28 @@ describe("Starweave reach — every Martial Art Skill across every registered cl
   })
 })
 
+describe("Starweave reach — Stonesplit Strength's class-108 skills", () => {
+  const STONESPLIT_MARTIAL_ART_SKILL_IDS = [
+    "stonesplitStrength-phalanxq",
+    "stonesplitStrength-phalanxq-supreme",
+    "stonesplitStrength-snowpartingq-slash",
+    "stonesplitStrength-snowpartingq-stab",
+    "stonesplitStrength-snowpartingslide",
+    "stonesplitStrength-snowpartingslide-prepull",
+    "stonesplitStrength-snowpartingslide-prepull-hit",
+    "stonesplitStrength-snowpartingslide-reslide-prepull",
+  ]
+
+  it("every one of them receives it", () => {
+    const skills = builtinSkillsForClass("stonesplitStrength")
+    const missing = STONESPLIT_MARTIAL_ART_SKILL_IDS.filter((id) => {
+      const skill = skills.find((candidate) => candidate.id === id)
+      return !skill?.receives?.includes(BUFF.starweaveMartialBoost)
+    })
+    expect(missing).toEqual([])
+  })
+})
+
 describe("Swallowcall — Light Attack HP damage bonus, gated to the skills that receive it", () => {
   it("contributes +12% to a skill that declares it, nothing to one that doesn't", () => {
     const engine = engineWithSet("swallowcall")
