@@ -23,6 +23,7 @@ function weaponAt(level: GearLevel, attunement: string, attunementValue: number)
     ],
     attunement,
     attunementValue,
+    relayed: false,
   }
 }
 
