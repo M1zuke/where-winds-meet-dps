@@ -7,6 +7,7 @@ import { slotInnerWayId } from "../../../../definitions/innerWays/registry"
 import { useItemRanking } from "../../../hooks/useItemRanking"
 import { ClassSelect } from "../class-select/ClassSelect"
 import { BreakthroughSelect } from "../breakthrough-select/BreakthroughSelect"
+import { SwordTrialBossSelect } from "../sword-trial-boss-select/SwordTrialBossSelect"
 import { MindMethodsPanel } from "../mind-methods-panel/MindMethodsPanel"
 import { EquippedStatLinesPanel } from "../equipped-stat-lines-panel/EquippedStatLinesPanel"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
@@ -43,6 +44,10 @@ export function OverviewTab({
             onChange={(breakthrough) =>
               onChange(resyncDefaultTalentsForBreakthrough({ ...inputs, breakthrough }))
             }
+          />
+          <SwordTrialBossSelect
+            inputs={inputs}
+            onChange={(swordTrialBoss) => onChange({ ...inputs, swordTrialBoss })}
           />
         </div>
         <div className="panel">

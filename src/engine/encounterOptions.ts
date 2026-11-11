@@ -227,6 +227,7 @@ const ENCOUNTER_FIELDS = [
   "shareDebuff5HenZhi",
   "shareEasyHurt",
   "qiTarget",
+  "swordTrialBoss",
   "combatSettings",
   "dummyMode",
   "useGraduationQiBreak",

@@ -7,6 +7,10 @@ export function camelCaseSegment(text: string): string {
     .join("")
 }
 
+export function swordTrialBossKey(bossId: string): string {
+  return `content.swordTrialBoss.${bossId}`
+}
+
 export function classKey(classId: string): string {
   return `content.class.${classId}`
 }

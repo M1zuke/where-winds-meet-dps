@@ -237,6 +237,7 @@ describe("encounter option catalogue", () => {
     shareDebuff5HenZhi: true,
     dummyMode: true,
     qiTarget: "herosRealm",
+    swordTrialBoss: "murongYuan",
     combatSettings: { ...defaultCombatSettings(), dragonsBreath: true, script: "voidrotScript" },
   }
 
@@ -252,6 +253,7 @@ describe("encounter option catalogue", () => {
       shareDebuff5HenZhi: true,
       dummyMode: true,
       qiTarget: "herosRealm",
+      swordTrialBoss: "murongYuan",
       combatSettings: changedEncounter.combatSettings,
     })
   })
