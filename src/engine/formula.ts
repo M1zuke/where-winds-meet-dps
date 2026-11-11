@@ -56,7 +56,6 @@ type ArtRow = {
   correction?: number
   extraDamageBoost?: number
   extraPhysPenetration?: number
-  usesChargeBoost?: number
   skillType?: string
   weaponOrAttribute?: string
   attributeAttack?: string
@@ -113,9 +112,7 @@ export interface FormulaContext {
   mysticTypeBoosts?: Record<string, number>
   allMysticBoost?: number
   generalDamageBoost: number
-  chargeBonus: number
   effectiveDefense: number
-  fatigueDamageTaken: number
   hasSixHenZhi: boolean
   foodPhysAttack?: PhysAttackRange
   flatPhysAttack?: PhysAttackRange
@@ -180,8 +177,6 @@ export function computeSkillDamage(
   const guaranteedNormal = art.guaranteedNormal === 1
   const abrasionAvoidRate = Math.min(numberOrZero(art.abrasionAvoidRate), 1)
   const isPersistent = art.specialTag === "sustain"
-  const usesChargeBoost = art.usesChargeBoost === 1
-  const usesGyrationUmbrella = art.specialTag === "Spinning Umbrella"
 
   const physPenResistance = ctx.physPenResistance ?? 0
   const attributePenResistance = ctx.attrPenResistance ?? 0
@@ -268,7 +263,7 @@ export function computeSkillDamage(
     ctx.outerPen + numberOrZero(art.extraPhysPenetration) + (ctx.hasSixHenZhi ? 10 : 0)
   const physPenFraction = penetrationFraction(physPenTotal, physPenResistance)
 
-  const physDamageBoost = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
+  const physDamageBoost = ctx.physDmgBoostPanel
   const physDamageBoostMultiplier = Math.max(1 + physDamageBoost - physDamageBoostReduction, 0)
 
   const physRowScale = 1
@@ -539,7 +534,6 @@ export function computeSkillDamage(
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
     scopedDamageBoost +
-    (usesChargeBoost ? ctx.chargeBonus : 0) +
     numberOrZero(art.extraDamageBoost) +
     (isPersistent ? ctx.sustainDmgBoostPanel : 0)
 

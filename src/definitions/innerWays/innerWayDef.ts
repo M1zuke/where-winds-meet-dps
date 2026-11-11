@@ -21,7 +21,6 @@ export interface InnerWayTier {
 export interface InnerWayScalars {
   minTier?: number
   generalDamageBoost?: number
-  chargeBonus?: number
   targetDefenseMultiplier?: number
 }
 
