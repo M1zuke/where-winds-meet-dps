@@ -34,7 +34,6 @@ export interface BreakthroughTier {
   // above world level 20 has shipped yet to read them from directly.
   physPenResistance: number
   attrPenResistance: number
-  generalDamageTaken: number
   damageReduction: number
   physDamageBoostReduction: number
   attrDamageBoostReduction: number

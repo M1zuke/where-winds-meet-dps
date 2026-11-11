@@ -3,6 +3,7 @@ import {
   arsenalAttack,
   arsenalHp,
   getSchool,
+  buildContext,
   getBreakthrough,
   penResistanceForBreakthrough,
   penResistanceForInputs,
@@ -15,6 +16,7 @@ import {
   defaultArsenalScores,
 } from "../../src/definitions/baseStats"
 import { calmwaters } from "../../src/data/sets/calmwaters"
+import { swordTrialBossFor } from "../../src/definitions/baseStats/swordTrialBosses"
 import { defaultInputs } from "../../src/engine/defaults"
 import { applySetBonuses, setPhysDefBonus } from "../../src/engine/setBonuses"
 import { withGearSet } from "../helpers/withGearSet"
@@ -192,5 +194,30 @@ describe("an armor-group set stored on a set-bearing piece", () => {
 
   it("adds no Physical Defense with no set equipped", () => {
     expect(setPhysDefBonus(defaultInputs)).toBe(0)
+  })
+})
+
+describe("boss talent in the additive boost", () => {
+  const dummyInputs = { ...defaultInputs, dummyMode: true }
+
+  it("adds the base boss talent to the additive boost outside dummy mode", () => {
+    expect(
+      buildContext(defaultInputs).generalDamageBoost - buildContext(dummyInputs).generalDamageBoost,
+    ).toBeCloseTo(0.15, 10)
+  })
+
+  it("scores a boss that is not open at the breakthrough as the default boss", () => {
+    const early = { ...defaultInputs, breakthrough: 13, swordTrialBoss: "yeluAbuli" as const }
+    const fallback = { ...early, swordTrialBoss: "riverMaster" as const }
+    expect(swordTrialBossFor(early).id).toBe("riverMaster")
+    expect(buildContext(early).generalDamageBoost).toBe(buildContext(fallback).generalDamageBoost)
+  })
+
+  it("scores an unknown stored boss as the default boss", () => {
+    const unknown = { ...defaultInputs, swordTrialBoss: "retiredBoss" as never }
+    expect(swordTrialBossFor(unknown).id).toBe("riverMaster")
+    expect(buildContext(unknown).generalDamageBoost).toBe(
+      buildContext(defaultInputs).generalDamageBoost,
+    )
   })
 })
