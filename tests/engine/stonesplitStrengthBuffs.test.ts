@@ -451,7 +451,6 @@ describe("Throat-Pierced from a successful Deflect", () => {
   const bystander = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
   const deflectAt = (target: BuffEngine, time: number) =>
     target.processSkillCast(CAST.deflect, time, { castTime: 0.25 }, false, [
-      BUFF.cleftpeakDeflectGrant,
       BUFF.throatPierceDeflectGrant,
     ])
 

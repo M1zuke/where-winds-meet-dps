@@ -1250,8 +1250,6 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
   "cast:poet2": ["poetFinalStrikeStack"],
   "cast:poet3": ["poetFinalStrikeStack"],
   "cast:poet4": ["poetFinalStrikeStack"],
-  "cast:deflectCancel": ["cleftpeakDeflectGrant"],
-  "cast:deflectCancelPrepull": ["cleftpeakDeflectGrant"],
 }
 
 const MIGRATED_LEGACY_AFFECTS = new Map(
@@ -1286,25 +1284,6 @@ function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
     triggersBuffs.length === seeded.length &&
     seeded.every((buffId, index) => triggersBuffs[index] === buffId)
   return untouched ? ["jadeware", ...triggersBuffs] : triggersBuffs
-}
-
-// additive value-level repair — see CLAUDE.md → "localStorage migrations"
-//
-// A successful deflect now also grants Cleftpeak's full 5 stacks; a copy
-// seeded before that still lists only the deflect's other trigger. Only a
-// list still identical to what was seeded is rewritten, same reason as the
-// trigger repair above.
-const TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT: Record<string, readonly string[]> = {
-  "stonesplitStrength-deflect": ["forgetfulness"],
-}
-
-function healCleftpeakDeflectGrantTrigger(id: string, triggersBuffs: string[]): string[] {
-  const seeded = TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT[id]
-  if (!seeded) return triggersBuffs
-  const untouched =
-    triggersBuffs.length === seeded.length &&
-    seeded.every((buffId, index) => triggersBuffs[index] === buffId)
-  return untouched ? [...triggersBuffs, "cleftpeakDeflectGrant"] : triggersBuffs
 }
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
@@ -1370,10 +1349,7 @@ function healSkillReach(
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
-  const healedTriggersBuffs = healCleftpeakDeflectGrantTrigger(
-    id,
-    healJadewareTrigger(id, triggersBuffs),
-  )
+  const healedTriggersBuffs = healJadewareTrigger(id, triggersBuffs)
   return {
     receives: receives.map(migrateBuffId),
     triggersBuffs: healedTriggersBuffs.map(migrateBuffId),

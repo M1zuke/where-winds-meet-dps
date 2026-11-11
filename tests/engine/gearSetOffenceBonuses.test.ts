@@ -154,13 +154,28 @@ describe("Starweave — Martial Art Skill damage bonus, gated to the skills that
     ).toBeCloseTo(0.06, 10)
   })
 
-  it("adds a further per-stack bonus at 4+ meters of target distance", () => {
-    const engine = engineWithSet("starweave", { distanceMeters: 8 })
-    landDamageHit(engine, 0, martialSkill)
-    expect(
-      engine.calculateDamageEffects(martialSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
-    ).toBeCloseTo(0.04, 10)
-  })
+  it.each([
+    [4, 0.03],
+    [4.01, 0.032],
+    [5, 0.032],
+    [5.01, 0.034],
+    [6, 0.034],
+    [6.01, 0.036],
+    [7, 0.036],
+    [7.01, 0.038],
+    [8, 0.038],
+    [8.01, 0.04],
+    [20, 0.04],
+  ])(
+    "at %s m of target distance a stack is worth %s, a band opening above its lower edge and closing at its upper",
+    (distanceMeters, perStack) => {
+      const engine = engineWithSet("starweave", { distanceMeters })
+      landDamageHit(engine, 0, martialSkill)
+      expect(
+        engine.calculateDamageEffects(martialSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
+      ).toBeCloseTo(perStack, 10)
+    },
+  )
 })
 
 // In-game Martial Art Skill roster as of 2026-09-24, independent of which
@@ -215,6 +230,28 @@ describe("Starweave reach — every Martial Art Skill across every registered cl
   })
 })
 
+describe("Starweave reach — Stonesplit Strength's class-108 skills", () => {
+  const STONESPLIT_MARTIAL_ART_SKILL_IDS = [
+    "stonesplitStrength-phalanxq",
+    "stonesplitStrength-phalanxq-supreme",
+    "stonesplitStrength-snowpartingq-slash",
+    "stonesplitStrength-snowpartingq-stab",
+    "stonesplitStrength-snowpartingslide",
+    "stonesplitStrength-snowpartingslide-prepull",
+    "stonesplitStrength-snowpartingslide-prepull-hit",
+    "stonesplitStrength-snowpartingslide-reslide-prepull",
+  ]
+
+  it("every one of them receives it", () => {
+    const skills = builtinSkillsForClass("stonesplitStrength")
+    const missing = STONESPLIT_MARTIAL_ART_SKILL_IDS.filter((id) => {
+      const skill = skills.find((candidate) => candidate.id === id)
+      return !skill?.receives?.includes(BUFF.starweaveMartialBoost)
+    })
+    expect(missing).toEqual([])
+  })
+})
+
 describe("Swallowcall — Light Attack HP damage bonus, gated to the skills that receive it", () => {
   it("contributes +12% to a skill that declares it, nothing to one that doesn't", () => {
     const engine = engineWithSet("swallowcall")
@@ -232,24 +269,48 @@ describe("Swallowcall — Light Attack HP damage bonus, gated to the skills that
   })
 })
 
-describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi or Qi-Imbalanced target", () => {
+describe("Swallowcall — conditional +6% physical (and Bamboocut) damage vs a low-Qi or Qi-Imbalanced target", () => {
   const lightAttack = makeSkill("test", {
     name: "Light Attack",
     receives: [BUFF.swallowcallLightAttackBoost],
   })
+  const amountsOf = (result: ReturnType<BuffEngine["calculateDamageEffects"]>, statKey: string) =>
+    result.effects.filter((effect) => effect.statKey === statKey).map((effect) => effect.amount)
 
   it("contributes nothing against a target at full Qi with no Qi Imbalance", () => {
     const engine = engineWithSet("swallowcall")
     const result = engine.calculateDamageEffects(lightAttack, 0)
-    expect(result.artBonuses.minPhysPctBonus).toBeUndefined()
+    expect(amountsOf(result, "physBoost")).toEqual([])
+    expect(amountsOf(result, "attributeDamageBoost")).toEqual([])
   })
 
-  it("adds +6% physical and attribute attack once the target's Qi bar has broken", () => {
+  it("adds +6% physical damage once the target's Qi bar has broken, and no attack-rate bonus", () => {
     const engine = engineWithSet("swallowcall", {}, exhaustedFrom(1, 10))
     const result = engine.calculateDamageEffects(lightAttack, 1.5)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
-    expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.06, 10)
-    expect(result.artBonuses.attributeAttackPctBonus).toBeCloseTo(0.06, 10)
+    expect(amountsOf(result, "physBoost")).toEqual([0.06])
+    expect(result.artBonuses.minPhysPctBonus).toBeUndefined()
+    expect(result.artBonuses.attributeAttackPctBonus).toBeUndefined()
+  })
+
+  it("adds the Bamboocut damage half for Bamboocut Draught only", () => {
+    const draught = buffEngineWith(
+      { classId: "bamboocutDraught", armorSet: "swallowcall" },
+      buffDefsForClass("bamboocutDraught"),
+      [],
+      exhaustedFrom(1, 10),
+    )
+    const umbra = buffEngineWith(
+      { classId: "bellstrikeUmbra", armorSet: "swallowcall" },
+      buffDefsForClass("bellstrikeUmbra"),
+      [],
+      exhaustedFrom(1, 10),
+    )
+    expect(
+      amountsOf(draught.calculateDamageEffects(lightAttack, 1.5), "attributeDamageBoost"),
+    ).toEqual([0.06])
+    expect(
+      amountsOf(umbra.calculateDamageEffects(lightAttack, 1.5), "attributeDamageBoost"),
+    ).toEqual([])
   })
 
   it("adds it against a target in Qi Imbalance even at full Qi", () => {
@@ -259,15 +320,29 @@ describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi 
     )
     engine.triggerDeclaredBuffs([BUFF.qiImbalance], "cast:test", 0)
     const result = engine.calculateDamageEffects(lightAttack, 2)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
+    expect(amountsOf(result, "physBoost")).toEqual([0.06])
   })
 })
 
-describe("Swift Gale — airborne Heavy Attack bonus, unreachable by any built-in skill", () => {
-  it.each(CLASS_IDS())("%s carries no receiver for it", (classId) => {
-    const receivers = builtinSkillsForClass(classId).filter((skill) =>
-      skill.receives?.includes(BUFF.swiftGaleAirborneHeavyBoost),
-    )
-    expect(receivers).toEqual([])
+describe("Swift Gale — airborne Heavy Attack bonus", () => {
+  const MOON_SHATTER_SPRING_IDS = [
+    "silkbindJade-fanheavypursuit-3-hit",
+    "silkbindJade-fanheavypursuit-5-hit",
+  ]
+
+  it("adds 10% to a skill that receives it, with the set equipped", () => {
+    const skill = makeSkill("test", {
+      name: "Any Hit",
+      receives: [BUFF.swiftGaleAirborneHeavyBoost],
+    })
+    const result = engineWithSet("swiftGale").calculateDamageEffects(skill, 0)
+    expect(result.breakdown[BUFF.swiftGaleAirborneHeavyBoost]).toBeCloseTo(0.1, 10)
+  })
+
+  it.each(CLASS_IDS())("%s reaches only Moon Shatter Spring with it", (classId) => {
+    const receivers = builtinSkillsForClass(classId)
+      .filter((skill) => skill.receives?.includes(BUFF.swiftGaleAirborneHeavyBoost))
+      .map((skill) => skill.id)
+    expect(receivers).toEqual(classId === "silkbindJade" ? MOON_SHATTER_SPRING_IDS : [])
   })
 })

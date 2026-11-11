@@ -63,6 +63,7 @@ describe("set suffix tables", () => {
   it("maps the gear set suffixes and nothing else", () => {
     expect(gearSetForSuffix(3)).toBe("hawkwing")
     expect(gearSetForSuffix(79)).toBe("tiltrim")
+    expect(gearSetForSuffix(71)).toBe("cloudshear")
     expect(gearSetForSuffix(4)).toBeNull()
     expect(gearSetForSuffix(46)).toBeNull()
     expect(gearSetForSuffix(null)).toBeNull()

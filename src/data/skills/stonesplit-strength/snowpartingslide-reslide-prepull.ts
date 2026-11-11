@@ -13,7 +13,7 @@ export const snowpartingslideReslidePrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSlideReslidePrepull,
-  receives: SNOWPARTING_BLADE_RECEIVES,
+  receives: [...SNOWPARTING_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.jadeware],
   castFrames: 0,
   triggerable: true,

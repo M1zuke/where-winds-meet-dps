@@ -7,24 +7,28 @@ import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migra
 import { healSkill as healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "../../src/migrations/customSkills/V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
 import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/migrations/customSkills/V123__gourdTossPursuitCutOncePerSecond"
 import { healSkill as healVernalUmbrellaAttuneTags } from "../../src/migrations/customSkills/V133__vernalUmbrellaAttuneTags"
+import { healSkill as healSwiftGaleReachesMoonShatterSpring } from "../../src/migrations/customSkills/V136__swiftGaleReachesMoonShatterSpring"
+import { healSkill as healCleftpeakReachesJadeTaggedHits } from "../../src/migrations/customSkills/V137__cleftpeakReachesJadeTaggedHits"
+import { healSkill as healSwallowcallReachesFanLightAttacks } from "../../src/migrations/customSkills/V138__swallowcallReachesFanLightAttacks"
 import type { Skill } from "../../src/engine/skill"
 
+const JADE_AUDIT_HOPS: readonly ((skill: unknown) => unknown)[] = [
+  healUmbHeavylightFromThePress,
+  healJadeTrajectoryHitsReach,
+  healJadeLaunchBrokenByHigherPriority,
+  healUmbrellaDualTwoBullets,
+  healApricotHeavenRiseSplitAndTiming,
+  healJadeSpringThunderAndComboReach,
+  healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame,
+  healGourdTossPursuitCutOncePerSecond,
+  healVernalUmbrellaAttuneTags,
+  healSwiftGaleReachesMoonShatterSpring,
+  healCleftpeakReachesJadeTaggedHits,
+  healSwallowcallReachesFanLightAttacks,
+]
+
 export const throughJadeAuditHops = (skill: unknown): Skill =>
-  healVernalUmbrellaAttuneTags(
-    healGourdTossPursuitCutOncePerSecond(
-      healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(
-        healJadeSpringThunderAndComboReach(
-          healApricotHeavenRiseSplitAndTiming(
-            healUmbrellaDualTwoBullets(
-              healJadeLaunchBrokenByHigherPriority(
-                healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  ) as Skill
+  JADE_AUDIT_HOPS.reduce((healed, heal) => heal(healed), skill) as Skill
 
 export const withoutLaunchFollowUpGate = (skill: Skill): Skill["hits"] =>
   skill.id.startsWith("silkbindJade-umbdronelaunch")

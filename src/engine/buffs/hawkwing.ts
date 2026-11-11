@@ -39,7 +39,6 @@ export class HawkwingTracker {
   private cachedStacks = 0
 
   constructor(
-    private readonly procChance: number,
     runRandom?: () => number,
     private readonly keepHistory = false,
   ) {
@@ -52,13 +51,13 @@ export class HawkwingTracker {
     this.generation = new Uint32Array(count)
   }
 
-  roll(timeSec: number, occurrence: number): void {
-    if (this.procChance <= 0 || occurrence <= 0) return
+  roll(timeSec: number, occurrence: number, procChance: number, rolledAffinity?: boolean): void {
+    if (occurrence <= 0 || (rolledAffinity === undefined && procChance <= 0)) return
     this.expireThrough(timeSec)
     for (let sim = 0; sim < this.stacks.length; sim++) {
       if (occurrence < 1 && !(this.draw(sim) < occurrence)) continue
       if (this.stacks[sim] > 0 && timeSec - this.lastStackSec[sim] > DECAY_SEC) this.stacks[sim] = 0
-      if (this.draw(sim) < this.procChance) {
+      if (rolledAffinity ?? this.draw(sim) < procChance) {
         const stacked = Math.min(this.stacks[sim] + 1, MAX_STACKS)
         this.stacks[sim] = stacked
         this.lastStackSec[sim] = timeSec

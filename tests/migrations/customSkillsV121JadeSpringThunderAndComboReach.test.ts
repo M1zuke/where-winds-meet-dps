@@ -8,6 +8,7 @@ import {
   V121__jadeSpringThunderAndComboReach,
   healSkill,
 } from "../../src/migrations/customSkills/V121__jadeSpringThunderAndComboReach"
+import { healSkill as healCleftpeakReachesJadeTaggedHits } from "../../src/migrations/customSkills/V137__cleftpeakReachesJadeTaggedHits"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV120File from "./testCustomSkills/v120/store.json"
@@ -45,7 +46,7 @@ describe("custom-skills v120 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in's reach list", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healCleftpeakReachesJadeTaggedHits(healSkill(clone(skillIn(STORE, id)))) as Skill
     expect(sorted(healed)).toEqual(sorted(builtinOf(id)))
   })
 

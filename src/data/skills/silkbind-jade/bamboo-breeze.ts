@@ -17,7 +17,12 @@ export const bambooBreeze = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.bambooBreeze,
-  receives: [BUFF.thunderousBloom, BUFF.springThunder, ...VERNAL_UMBRELLA_RECEIVES],
+  receives: [
+    BUFF.thunderousBloom,
+    BUFF.springThunder,
+    ...VERNAL_UMBRELLA_RECEIVES,
+    BUFF.cleftpeakDeflect,
+  ],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 62,
   triggerable: true,

@@ -44,6 +44,8 @@ export const fanheavypursuit3Hit = defineSkill({
     BUFF.mistwillowBuff,
     BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
+    BUFF.swiftGaleAirborneHeavyBoost,
+    BUFF.cleftpeakDeflect,
   ],
   triggersBuffs: [BUFF.pursuitChargedBoost, BUFF.moonShatterSpringLockout],
   castConditions: MOON_SHATTER_SPRING_CONDITIONS,

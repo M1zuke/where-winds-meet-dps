@@ -19,8 +19,8 @@ function trackerAfter(
   procChance: number,
   runRandom?: () => number,
 ): HawkwingTracker {
-  const tracker = new HawkwingTracker(procChance, runRandom, true)
-  for (const timeSec of rollTimesSec) tracker.roll(timeSec, 1)
+  const tracker = new HawkwingTracker(runRandom, true)
+  for (const timeSec of rollTimesSec) tracker.roll(timeSec, 1, procChance)
   return tracker
 }
 
@@ -84,9 +84,9 @@ describe("HawkwingTracker", () => {
   })
 
   it("reads a roll only from the moment it lands, so the event that rolls never reads its own stack", () => {
-    const tracker = new HawkwingTracker(1, undefined, true)
+    const tracker = new HawkwingTracker(undefined, true)
     expect(tracker.expectedStacksAt(10)).toBe(0)
-    tracker.roll(10, 1)
+    tracker.roll(10, 1, 1)
     expect(tracker.expectedStacksAt(10)).toBe(1)
     expect(tracker.expectedStacksAt(9.99)).toBe(0)
   })
@@ -98,9 +98,25 @@ describe("HawkwingTracker", () => {
     expect(tracker.expectedStacksAt(3.5)).toBe(3)
   })
 
+  it("stacks on each roll with that roll's own chance", () => {
+    const tracker = new HawkwingTracker(undefined, true)
+    tracker.roll(1, 1, 0)
+    expect(tracker.expectedStacksAt(1)).toBe(0)
+    tracker.roll(2, 1, 1)
+    expect(tracker.expectedStacksAt(2)).toBe(1)
+  })
+
+  it("takes a rolled outcome over the chance when the run rolls its hits", () => {
+    const tracker = new HawkwingTracker(() => 0.99, true)
+    tracker.roll(1, 1, 0, true)
+    expect(tracker.expectedStacksAt(1)).toBe(1)
+    tracker.roll(2, 1, 1, false)
+    expect(tracker.expectedStacksAt(2)).toBe(1)
+  })
+
   it("scales a roll that only part of the trajectories reach", () => {
-    const tracker = new HawkwingTracker(1)
-    tracker.roll(0, 0.5)
+    const tracker = new HawkwingTracker()
+    tracker.roll(0, 0.5, 1)
     const expected = tracker.expectedStacksAt(0)
     expect(expected).toBeGreaterThan(0.4)
     expect(expected).toBeLessThan(0.6)
@@ -198,11 +214,11 @@ describe("HawkwingTracker against a per-roll snapshot reference", () => {
   it.each([true, false])(
     "answers every query bit-identically (history kept: %s)",
     (keepHistory) => {
-      const tracker = new HawkwingTracker(0.35, undefined, keepHistory)
+      const tracker = new HawkwingTracker(undefined, keepHistory)
       const reference = new SnapshotHawkwing(0.35, keepHistory)
       const queries = mulberry32(5)
       rollTimes.forEach((timeSec, index) => {
-        tracker.roll(timeSec, occurrences[index]!)
+        tracker.roll(timeSec, occurrences[index]!, 0.35)
         reference.roll(timeSec, occurrences[index]!)
         const queryTimes = [timeSec, timeSec + queries() * 12, queries() * timeSec]
         for (const queryTime of queryTimes)

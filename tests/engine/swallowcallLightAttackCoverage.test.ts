@@ -16,6 +16,8 @@ const CLASS_101_SKILLS_BY_CLASS: Record<string, readonly string[]> = {
     "bamboocutDraught-dual-blades-light-attack-4",
   ],
   silkbindJade: [
+    "silkbindJade-fan-light",
+    "silkbindJade-fan-light-chain",
     "silkbindJade-hidden-sword-light-1",
     "silkbindJade-hidden-sword-light-2",
     "silkbindJade-hidden-sword-light-3",

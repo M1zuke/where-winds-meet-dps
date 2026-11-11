@@ -101,6 +101,15 @@ describe("gear set tiers", () => {
     expect(applied.phys.min).toBeCloseTo(inputs.phys.min + cleftpeak.panelBonus.value[96]!, 10)
   })
 
+  it("Cloudshear's 2-piece adds Min Physical Attack on the same ladder as the other weapon sets", () => {
+    const inputs = inputsWith([
+      { set: SET_ID.cloudshear, level: 105 },
+      { set: SET_ID.cloudshear, level: 105 },
+    ])
+    expect(resolveActiveSets(inputs).twoPiece).toEqual([{ setId: SET_ID.cloudshear, level: 105 }])
+    expect(applySetBonuses(inputs).phys.min).toBeCloseTo(inputs.phys.min + 105.6, 10)
+  })
+
   it("a single piece activates nothing", () => {
     const inputs = inputsWith([{ set: SET_ID.hawkwing, level: 105 }])
     expect(resolveActiveSets(inputs).twoPiece).toEqual([])

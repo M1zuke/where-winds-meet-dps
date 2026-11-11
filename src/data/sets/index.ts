@@ -12,6 +12,7 @@ import { swayingHeights } from "./swayingHeights"
 import { etherwrath } from "./etherwrath"
 import { swallowcall } from "./swallowcall"
 import { swiftGale } from "./swiftGale"
+import { cloudshear } from "./cloudshear"
 
 export const SET_DEFS: readonly SetDef[] = [
   hawkwing,
@@ -27,4 +28,5 @@ export const SET_DEFS: readonly SetDef[] = [
   etherwrath,
   swallowcall,
   swiftGale,
+  cloudshear,
 ]

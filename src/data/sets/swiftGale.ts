@@ -2,9 +2,7 @@ import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 
 // The 4-piece's own airborne-heavy-attack damage bonus lives in
-// `data/skills/buffs/swiftGaleAirborneHeavyBoost.ts`. No built-in rotation
-// carries an airborne heavy attack, so it never reaches a skill on a dummy —
-// authored for the build it belongs to, not active there.
+// `data/skills/buffs/swiftGaleAirborneHeavyBoost.ts`.
 export const swiftGale = defineSet({
   id: SET_ID.swiftGale,
   group: "gear",

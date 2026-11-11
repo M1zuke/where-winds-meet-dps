@@ -35,14 +35,14 @@ describe("custom-skills v114 fixture", () => {
 
 describe("the built-in Deflect skills", () => {
   it.each([deflect, deflectCancel, universalDeflectCancel, deflectCancelPrepull])(
-    "$id lists both grants",
+    "$id lists Throat-Pierce's grant alone",
     (builtin) => {
-      expect(builtin.triggersBuffs).toEqual(HEALED)
+      expect(builtin.triggersBuffs).toEqual(["throatPierceDeflectGrant"])
     },
   )
 
-  it("leaves a class's own Deflect Cancel that does not carry Throat-Pierce alone", () => {
-    expect(draughtDeflectCancel.triggersBuffs).toEqual(["cleftpeakDeflectGrant"])
+  it("lists nothing on a class's own Deflect Cancel that does not carry Throat-Pierce", () => {
+    expect(draughtDeflectCancel.triggersBuffs).toEqual([])
   })
 })
 

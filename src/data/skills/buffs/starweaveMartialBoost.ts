@@ -6,16 +6,16 @@ import { starweave } from "../../sets/starweave"
 const DURATION_SEC = 5.1
 const MAX_STACKS = 5
 const PER_STACK = 0.03
-const RANGE_BANDS: readonly { atOrAboveMeters: number; perStack: number }[] = [
-  { atOrAboveMeters: 8, perStack: 0.01 },
-  { atOrAboveMeters: 7, perStack: 0.008 },
-  { atOrAboveMeters: 6, perStack: 0.006 },
-  { atOrAboveMeters: 5, perStack: 0.004 },
-  { atOrAboveMeters: 4, perStack: 0.002 },
+const RANGE_BANDS: readonly { aboveMeters: number; perStack: number }[] = [
+  { aboveMeters: 8, perStack: 0.01 },
+  { aboveMeters: 7, perStack: 0.008 },
+  { aboveMeters: 6, perStack: 0.006 },
+  { aboveMeters: 5, perStack: 0.004 },
+  { aboveMeters: 4, perStack: 0.002 },
 ]
 
 function rangeBonusPerStack(distanceMeters: number): number {
-  return RANGE_BANDS.find((band) => distanceMeters >= band.atOrAboveMeters)?.perStack ?? 0
+  return RANGE_BANDS.find((band) => distanceMeters > band.aboveMeters)?.perStack ?? 0
 }
 
 // "When hitting at least 2 enemies simultaneously, or hitting a boss or

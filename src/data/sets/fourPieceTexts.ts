@@ -5,8 +5,7 @@ export interface SetFourPieceText {
   full: string
 }
 
-type NonGearSetId = typeof SET_ID.brimflow | typeof SET_ID.calmwaters
-type GearSetId = Exclude<(typeof SET_ID)[keyof typeof SET_ID], NonGearSetId>
+type GearSetId = Exclude<(typeof SET_ID)[keyof typeof SET_ID], typeof SET_ID.calmwaters>
 
 // In-game values as of 2026-10-17.
 export const SET_FOUR_PIECE_TEXTS: Readonly<Record<GearSetId, SetFourPieceText>> = {
@@ -53,6 +52,10 @@ export const SET_FOUR_PIECE_TEXTS: Readonly<Record<GearSetId, SetFourPieceText>>
   [SET_ID.etherwrath]: {
     short: "Boss hit: +1.2% all Atk/stack x5; +6 Pen on MA effects",
     full: "Hitting a boss or player grants Etherwrath: Increases all types of Attack by 1.2% (including Physical Attack and all Attribute Attacks) for 8s, stacking up to 5 times. At 5 stacks of Etherwrath, grants 6 additional Penetration of all types when Martial Art effects deal damage. Triggering a Perfect Dodge instantly grants 5 stacks of Etherwrath.\nApplicable Martial Art effects: Heavenwill Gauntlets - Falcon's Pursuit and Vile Condemned series, Skystrike Gauntlets - Falcon's Pursuit, Mortal Rope Dart - Rodent, Everspring Umbrella - Resonance, Phalanxbane Blade - Anxi Army Assist.",
+  },
+  [SET_ID.cloudshear]: {
+    short: "Attack Buff effects also grant +2% DMG and healing, 6% on self",
+    full: "When you successfully apply an Attack Buff Effect to the target, you also apply Cloudshear, increasing all damage and healing bonuses by 2% for up to 15 seconds. If the target is yourself, the effect is replaced with Cloudshear: Wings, increasing the bonus to 6%.\nApplicable Attack Buff Effects include: Museflow Waist Drum: Radiant, Willowbend Fan: Rustling, Soulshade Umbrella: DMG Boost and DMG Boost: Deluge.",
   },
   [SET_ID.tiltrim]: {
     short: "Hit while enhanced: +1% all Atk/stack x5; +5% Inebriate",

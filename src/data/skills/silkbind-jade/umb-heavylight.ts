@@ -29,6 +29,7 @@ export const umbHeavylight = defineSkill({
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
     ...VERNAL_UMBRELLA_RECEIVES,
+    BUFF.cleftpeakDeflect,
   ],
   // In-game values as of 2026-11-10, from the heavy press: the heavy tap's hit
   // lands at 20.79 f and hands over to Colorful Phoenix at 41.95 f, whose hits land

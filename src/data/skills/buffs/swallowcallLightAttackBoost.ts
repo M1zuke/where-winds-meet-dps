@@ -1,6 +1,6 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF } from "./ids"
-import { artBonus, stat, type Effect } from "../../../engine/effects/effect"
+import { stat, type Effect } from "../../../engine/effects/effect"
 import { swallowcall } from "../../sets/swallowcall"
 
 // "Light Attacks and effects triggered by Light Attacks (e.g., rodents) deal
@@ -17,15 +17,12 @@ export const swallowcallLightAttackBoost = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary:
-    "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance",
+    "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance",
   effects: (ctx) => {
     const effects: Effect[] = [stat("allDamageBoost", 0.12)]
     if (ctx.target.qiFraction < 0.4 || ctx.status.isActive(BUFF.qiImbalance)) {
-      effects.push(
-        artBonus("minPhysPctBonus", 0.06),
-        artBonus("maxPhysPctBonus", 0.06),
-        artBonus("attributeAttackPctBonus", 0.06),
-      )
+      effects.push(stat("physBoost", 0.06))
+      if (ctx.build.classId === "bamboocutDraught") effects.push(stat("attributeDamageBoost", 0.06))
     }
     return effects
   },

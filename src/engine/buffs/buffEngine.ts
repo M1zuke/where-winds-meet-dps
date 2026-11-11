@@ -1035,6 +1035,11 @@ export class BuffEngine {
     )
       return
     if (!this.stackOnDamagePhaseHolds(module, readTime)) return
+    if (
+      module.stackOnDamageWhile &&
+      !module.stackOnDamageWhile(this.buildContext(readTime, { kind: "display" }, 0, module))
+    )
+      return
     if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) return
     if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, stampTime)
     else if (this.canGrantDamageStack(module, stampTime))

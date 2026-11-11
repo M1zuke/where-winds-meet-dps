@@ -14,6 +14,7 @@ const GEAR_SET_BY_SUFFIX: Readonly<Record<number, string>> = {
   34: SET_ID.starweave,
   50: SET_ID.cleftpeak,
   56: SET_ID.etherwrath,
+  71: SET_ID.cloudshear,
   79: SET_ID.tiltrim,
 }
 

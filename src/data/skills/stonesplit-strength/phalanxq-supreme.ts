@@ -19,7 +19,7 @@ export const phalanxqSupreme = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxQSupreme,
-  receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
+  receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.throatPierced, BUFF.totalAnnihilationSupremeShield, BUFF.jadeware],
   triggersBuffsAtFrame: { [BUFF.totalAnnihilationSupremeShield]: 221.76, [BUFF.jadeware]: 179.76 },
   castFrames: 221.76,

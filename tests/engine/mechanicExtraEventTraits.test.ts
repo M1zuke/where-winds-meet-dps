@@ -57,7 +57,7 @@ function observedFrom(event: MechanicEvent): MechanicObservedEvent {
     occurrence: 1,
     direct: event.direct,
     canRollAffinity: event.art.guaranteedNormal !== 1,
-    affinityChance: 0,
+    affinityChance: 1,
   }
 }
 
@@ -119,7 +119,7 @@ describe("Fire Oil's own extra events", () => {
       occurrence: 1,
       direct: true,
       canRollAffinity: true,
-      affinityChance: 0,
+      affinityChance: 1,
     })
 
     for (let hit = 0; hit <= 5; hit++) feed(hitAt(hit * 0.1))

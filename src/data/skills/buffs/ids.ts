@@ -168,7 +168,6 @@ export const BUFF = {
   waterClone: "waterClone",
   windrider: "windrider",
   fluteDistanceBonus: "fluteDistanceBonus",
-  cleftpeakDeflectGrant: "cleftpeakDeflectGrant",
   throatPierceDeflectGrant: "throatPierceDeflectGrant",
 } as const
 

@@ -5,7 +5,6 @@ export const SET_ID = {
   rainwhisper: "rainwhisper",
   cleftpeak: "cleftpeak",
   tiltrim: "tiltrim",
-  brimflow: "brimflow",
   calmwaters: "calmwaters",
   ivorybloom: "ivorybloom",
   starweave: "starweave",
@@ -13,4 +12,5 @@ export const SET_ID = {
   etherwrath: "etherwrath",
   swallowcall: "swallowcall",
   swiftGale: "swiftGale",
+  cloudshear: "cloudshear",
 } as const

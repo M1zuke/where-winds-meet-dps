@@ -1765,49 +1765,6 @@ describe("seeded-skill Poet final-strike stack reach heal (no version bump)", ()
   })
 })
 
-describe("seeded-skill Cleftpeak deflect-grant trigger heal (no version bump)", () => {
-  const reload = (classId: string, id: string) =>
-    loadCustomSkillsForClass(classId).find((skill) => skill.id === id)!
-
-  it("adds the buff to a copy of Stonesplit Strength's own deflect seeded before it was modeled", () => {
-    const classId = "stonesplitStrength"
-    const builtin = builtinSkillsForClass(classId).find(
-      (skill) => skill.id === "stonesplitStrength-deflect",
-    )!
-    const stale = { ...seedSkillFromBuiltin(classId, builtin), triggersBuffs: ["forgetfulness"] }
-    saveCustomSkill(stale)
-    expect(reload(classId, stale.id).triggersBuffs).toEqual([
-      "forgetfulness",
-      "cleftpeakDeflectGrant",
-    ])
-  })
-
-  it("leaves a curated deflect list alone rather than guessing which entry is stale", () => {
-    const classId = "stonesplitStrength"
-    const builtin = builtinSkillsForClass(classId).find(
-      (skill) => skill.id === "stonesplitStrength-deflect",
-    )!
-    const curated = {
-      ...seedSkillFromBuiltin(classId, builtin),
-      triggersBuffs: ["forgetfulness", "someOtherBuff"],
-    }
-    saveCustomSkill(curated)
-    expect(reload(classId, curated.id).triggersBuffs).toEqual(["forgetfulness", "someOtherBuff"])
-  })
-
-  it.each([
-    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel"],
-    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel-prepull"],
-    ["bamboocutDraught", "bamboocutDraught-deflect-cancel"],
-  ])("adds the buff to a copy of %s's %s seeded before it was modeled", (classId, id) => {
-    const builtin = builtinSkillsForClass(classId).find((skill) => skill.id === id)!
-    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(classId, builtin)
-    void _triggersBuffs
-    saveCustomSkill(stale)
-    expect(reload(classId, id).triggersBuffs).toEqual(["cleftpeakDeflectGrant"])
-  })
-})
-
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". The
 // legacy `wwm.inputs` blob has no version chain of its own (V8 in
 // `src/migrations/` covers `wwm.profiles`), so `set` is healed here instead —

@@ -50,7 +50,6 @@ import { divinecraftHeartPoison } from "./divinecraftHeartPoison"
 import { divinecraftTemperedFire } from "./divinecraftTemperedFire"
 import { divinecraftWater } from "./divinecraftWater"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
-import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
 import { toadVenomQiBonus } from "./toadVenomQiBonus"
 import { ivorybloomFullHpBonus } from "./ivorybloomFullHpBonus"
 import { starweaveMartialBoost } from "./starweaveMartialBoost"
@@ -59,6 +58,7 @@ import { etherwrathAttackBoost } from "./etherwrathAttackBoost"
 import { etherwrathPenetrationBoost } from "./etherwrathPenetrationBoost"
 import { swallowcallLightAttackBoost } from "./swallowcallLightAttackBoost"
 import { swiftGaleAirborneHeavyBoost } from "./swiftGaleAirborneHeavyBoost"
+import { cleftpeakDeflect } from "./cleftpeakDeflect"
 import { totalAnnihilationSupremeShield } from "./totalAnnihilationSupremeShield"
 
 // Order is load-bearing (float addition is not associative): the globals that
@@ -111,7 +111,6 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   divinecraftFire,
   fluteArrival,
   fluteDistanceBonus,
-  cleftpeakDeflectGrant,
   toadVenomQiBonus,
   ivorybloomFullHpBonus,
   starweaveMartialBoost,
@@ -124,6 +123,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   divinecraftWater,
   divinecraftHeartPoison,
   divinecraftTemperedFire,
+  cleftpeakDeflect,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

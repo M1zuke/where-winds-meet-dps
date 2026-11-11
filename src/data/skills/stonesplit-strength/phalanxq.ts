@@ -19,7 +19,7 @@ export const phalanxq = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxQ,
-  receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
+  receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.throatPierced, BUFF.jadeware],
   triggersBuffsAtFrame: { [BUFF.jadeware]: 7 },
   castFrames: 49,

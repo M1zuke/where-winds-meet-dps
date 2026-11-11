@@ -112,6 +112,8 @@ export type BuffMeta = BuffGate & {
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.
   stackOnDamagePhase?: QiGate | readonly QiGate[]
+  // `stackOnDamage` grants a stack only while this holds at the hit's own time.
+  stackOnDamageWhile?: (ctx: EffectContext) => boolean
   // Restricts `stackOnDamage` to hits from skills that reach this def — the
   // same `reaches` predicate the damage query uses.
   stackOnDamageScoped?: boolean

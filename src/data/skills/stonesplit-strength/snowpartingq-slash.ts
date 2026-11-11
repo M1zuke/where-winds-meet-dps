@@ -15,7 +15,7 @@ export const snowpartingqSlash = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQSlash,
-  receives: SNOWPARTING_BLADE_RECEIVES,
+  receives: [...SNOWPARTING_BLADE_RECEIVES, BUFF.starweaveMartialBoost],
   triggersBuffs: [BUFF.jadeware],
   castFrames: 40,
   triggerable: true,

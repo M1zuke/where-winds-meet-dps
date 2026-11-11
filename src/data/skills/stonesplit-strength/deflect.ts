@@ -13,7 +13,7 @@ export const deflect = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Stonesplit",
   castTag: CAST.deflect,
-  triggersBuffs: [BUFF.cleftpeakDeflectGrant, BUFF.throatPierceDeflectGrant],
+  triggersBuffs: [BUFF.throatPierceDeflectGrant],
   // Cast length to the earliest next input with Snowparting Blade drawn
   // (in-game animation, 2026-09-24); the Mo Blade drawn reads 3.06 f longer
   // (in-game values as of 2026-09-28), the variant below.
