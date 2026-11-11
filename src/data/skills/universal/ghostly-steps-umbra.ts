@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { BUFF } from "../buffs/ids"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "../mystic/branchFormFloor"
 import { SKILL } from "./ids"
 import { ghostlyStepsUmbraGrant } from "./buffs/ghostlyStepsUmbra"
 import { mirageEnduranceCostReductionGrant } from "./buffs/mirageEnduranceCostReduction"
@@ -14,6 +15,7 @@ export const ghostlyStepsUmbra = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.ghostlyStepsUmbra,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   triggersBuffs: [BUFF.mirage],
   castFrames: 0,
   triggerable: true,

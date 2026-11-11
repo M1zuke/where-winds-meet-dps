@@ -2,6 +2,7 @@ import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skill
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC, PROP, ROLE } from "../ids"
 import { BUFF } from "../buffs/ids"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "./branchFormFloor"
 import { LEVEL_ROWS } from "./levelRows"
 import { SKILL } from "./ids"
 
@@ -16,6 +17,7 @@ export const dragonHeadPlus = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonHeadPlus,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
   triggersBuffs: [BUFF.surgingWaves],
   neverAbrades: true,

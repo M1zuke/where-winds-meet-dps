@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { DODGE_CONTEXT_TAG } from "../../../engine/buffs/tags"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST } from "../ids"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "./branchFormFloor"
 import { SKILL } from "./ids"
 
 // In-game values as of 2026-11-11: fired from the dodge's own graph, so the hit
@@ -16,6 +17,7 @@ export const ghostlyAfterimage = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.ghostlyAfterimage,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   castFrames: 0,
   triggerable: true,
   hits: [

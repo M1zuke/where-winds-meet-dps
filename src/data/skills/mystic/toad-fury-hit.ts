@@ -2,6 +2,7 @@ import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skill
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "./branchFormFloor"
 import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 
@@ -15,6 +16,7 @@ export const toadFuryHit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.toadFuryHit,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   cancelledBy: "deflectCancel",
   castFrames: 96,
   triggerable: true,

@@ -60,6 +60,10 @@ on the 60 fps grid. Rules:
   fields equal its highest row. The engine resolves every skill and debuff to
   the selected breakthrough once, before the run; no reader reads a
   level-scaled row's own fields directly.
+- **A skill that exists in the game only from a given breakthrough declares
+  `minBreakthrough`**: casting it below that breakthrough is an illegal step,
+  exactly like a level row the breakthrough does not select. The value is
+  authored on the built-in skill and restored onto every saved copy by id.
 - **A Skill Editor edit of a level-scaled row fixes it at the value shown**: the
   edited row loses its level rows; its neighbours keep theirs.
 - **Identifiers are English only** (CLAUDE.md § "Language").

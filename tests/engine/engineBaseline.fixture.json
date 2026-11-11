@@ -3807,7 +3807,7 @@
     "totalDamage": 721745.63,
     "rotationDuration": 60,
     "warnings": [
-      "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 14+ (breakthrough 13).",
+      "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 15+ (breakthrough 13).",
       "SwordSpecial 3-Hit at 4.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Zenith Sword [cancel] at 5.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 3-Hit at 9.77s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
@@ -4026,6 +4026,6 @@
       "buffWindows": 126,
       "casts": 97
     },
-    "digest": "7333ba924c753960d69ffec47c01d9c5681949ff854c3def4539d0c910059fe4"
+    "digest": "39439612c25882aaa95b71a62b6bd4b8a34a2c57dc3832359bc1c227b1dfd6a6"
   }
 }

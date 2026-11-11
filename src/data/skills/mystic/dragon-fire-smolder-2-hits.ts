@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "./branchFormFloor"
 import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import {
@@ -28,6 +29,7 @@ export const dragonFireSmolder2Hits = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonSBreathSmolder2Hits,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   // Hit frames: in-game animation, 2026-09-09. castFrames is not margin-derived — see
   // dragon-fire-smolder-1-hit.ts.
   castFrames: 137,

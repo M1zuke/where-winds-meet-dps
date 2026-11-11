@@ -151,4 +151,20 @@ describe("skill and debuff resolution", () => {
     expect(breakthroughFloor(branchSkill, 14)).toBeNull()
     expect(breakthroughFloor(skill, 13)).toBeNull()
   })
+
+  it("names a skill's declared minimum breakthrough below it and nothing at or above it", () => {
+    const declared = makeSkill("probeClass", { minBreakthrough: 15 })
+    expect(breakthroughFloor(declared, 14)).toBe(15)
+    expect(breakthroughFloor(declared, 15)).toBeNull()
+  })
+
+  it("names the higher of a declared minimum and the level-row floor", () => {
+    const both = makeSkill("probeClass", {
+      minBreakthrough: 15,
+      hits: [makeHit({ ...levelScaled(BRANCH) })],
+    })
+    expect(breakthroughFloor(both, 13)).toBe(15)
+    expect(breakthroughFloor(both, 14)).toBe(15)
+    expect(breakthroughFloor(both, 15)).toBeNull()
+  })
 })

@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { BRANCH_FORM_MIN_BREAKTHROUGH } from "./branchFormFloor"
 import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import {
@@ -29,6 +30,7 @@ export const dragonFireSmolder1Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonSBreathSmolder1Hit,
+  minBreakthrough: BRANCH_FORM_MIN_BREAKTHROUGH,
   // In-game values as of 2026-11-10: the cast a higher-priority follow-up breaks, one frame
   // after the first hit's own animation frame. Any other follow-up waits for the full
   // animation, so the later hits land too.
