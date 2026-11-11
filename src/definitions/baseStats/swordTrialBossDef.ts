@@ -20,6 +20,12 @@ export type SwordTrialBossId =
   | "bellToller"
   | "rosyFacedSwordsworn"
   | "yeluAbuli"
+  | "catEmperor"
+  | "fivePoisonScorpion"
+  | "cloudclutchSerpent"
+  | "tidewatcher"
+  | "jingniang"
+  | "ironFlower"
 
 export interface QiBreakTalentRung {
   fromBreakthrough: number

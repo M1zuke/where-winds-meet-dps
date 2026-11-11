@@ -25,6 +25,8 @@ export function SwordTrialBossSelect({ inputs, onChange }: Props) {
   const stored = inputs.swordTrialBoss ?? DEFAULT_SWORD_TRIAL_BOSS_ID
   const scored = swordTrialBossFor(inputs)
   const talentText = (boss: SwordTrialBossDef): string => {
+    if (boss.damageBoost === 0 && boss.qiBreakDamageBoost.length === 0)
+      return t("overview.swordTrialBossSelect.noTalent")
     const parts = [
       t("overview.swordTrialBossSelect.talent").replace("{pct}", percentOf(boss.damageBoost)),
     ]
