@@ -47,6 +47,8 @@ import {
   getMindMethodContributions,
 } from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
+import { DEFAULT_SWORD_TRIAL_BOSS_ID } from "../src/definitions/baseStats/swordTrialBosses"
+import newestUmbraFile from "./migrations/testProfiles/v34/bellstrikeUmbra.json"
 import { allowedInnerWaysForClass } from "../src/engine/panel"
 import { applySetBonuses } from "../src/engine/setBonuses"
 
@@ -2327,5 +2329,51 @@ describe("hydrateInputs — sets on pieces and the bow pair", () => {
       "setFromALaterBuild",
       undefined,
     ])
+  })
+})
+
+describe("Sword Trial boss and Qi bar target hydration (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+  const newestProfile = (newestUmbraFile as unknown as { v: number; profile: StoredProfile })
+    .profile
+
+  beforeEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+  afterEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+
+  function loadWith(patch: Record<string, unknown>, drop: readonly string[] = []): Inputs {
+    const stored: Record<string, unknown> = { ...newestProfile.inputs, ...patch }
+    for (const field of drop) delete stored[field]
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ ...newestProfile, inputs: stored }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  it("fills the default Sword Trial boss into a profile saved without one", () => {
+    expect(loadWith({}, ["swordTrialBoss"]).swordTrialBoss).toBe(DEFAULT_SWORD_TRIAL_BOSS_ID)
+  })
+
+  it("keeps a stored Sword Trial boss as written", () => {
+    expect(loadWith({ swordTrialBoss: "murongYuan" }).swordTrialBoss).toBe("murongYuan")
+  })
+
+  it("keeps an unknown stored Sword Trial boss as written and scores it as the default boss", () => {
+    const unknown = loadWith({ swordTrialBoss: "bossFromALaterBuild" })
+    expect(unknown.swordTrialBoss).toBe("bossFromALaterBuild")
+    expect(runEngine(unknown).dps).toBe(
+      runEngine({ ...unknown, swordTrialBoss: DEFAULT_SWORD_TRIAL_BOSS_ID }).dps,
+    )
   })
 })

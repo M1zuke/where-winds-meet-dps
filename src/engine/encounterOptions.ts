@@ -1,6 +1,10 @@
 import { SCRIPT_IDS, SCRIPT_MIN_BREAKTHROUGH } from "../data/skills/buffs/scriptOptions"
 import { ATTACK_FOODS, HP_FOODS, type AttackFoodId, type HpFoodId } from "../data/consumables/foods"
-import { QI_TARGET_IDS, type QiTargetId } from "../definitions/baseStats/qiTargetDef"
+import {
+  QI_TARGET_IDS,
+  effectiveQiTarget,
+  type QiTargetId,
+} from "../definitions/baseStats/qiTargetDef"
 import {
   appliedRefinement,
   DIVINECRAFT_ELEMENTS,
@@ -48,8 +52,6 @@ export const attackFoodOptionId = (food: AttackFoodId | null): string => `food:$
 export const hpFoodOptionId = (food: HpFoodId | null): string => `hpFood:${food ?? "none"}`
 export const scriptOptionId = (script: ScriptId | null): string => `script:${script ?? "none"}`
 export const qiTargetOptionId = (qiTarget: QiTargetId): string => `qiTarget:${qiTarget}`
-
-export const effectiveQiTarget = (inputs: Inputs): QiTargetId => inputs.qiTarget ?? "swordTrial"
 
 export const combatSettingsOf = (inputs: Inputs): CombatSettings =>
   inputs.combatSettings ?? defaultCombatSettings()
@@ -227,6 +229,7 @@ const ENCOUNTER_FIELDS = [
   "shareDebuff5HenZhi",
   "shareEasyHurt",
   "qiTarget",
+  "swordTrialBoss",
   "combatSettings",
   "dummyMode",
   "useGraduationQiBreak",

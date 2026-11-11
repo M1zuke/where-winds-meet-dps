@@ -20,3 +20,4 @@ export {
   HELM_BRACER_ENHANCEMENT_LEVELS,
   WEAPON_ENHANCEMENT_LEVELS,
 } from "./enhancements"
+export { SWORD_TRIAL_BOSS_DEFS } from "./swordTrialBosses"

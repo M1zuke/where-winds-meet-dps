@@ -110,8 +110,8 @@ describe("computeEncounterOptions", { timeout: 60_000 }, () => {
       const answered = `qiTarget:${qiTarget}` in res.dpsByOption
       expect(answered).toBe(qiTarget !== "swordTrial")
     }
-    expect(res.dpsByOption["qiTarget:herosRealm"]).toBe(
-      dpsFor({ ...umbraInputs, qiTarget: "herosRealm" }),
+    expect(res.dpsByOption["qiTarget:swordTrialResistanceUp"]).toBe(
+      dpsFor({ ...umbraInputs, qiTarget: "swordTrialResistanceUp" }),
     )
   })
 })
@@ -144,7 +144,7 @@ describe("encounter option catalogue", () => {
       hpFood: "wineBraisedPork",
       divinecraft: "poison",
       dummyMode: true,
-      qiTarget: "herosRealm",
+      qiTarget: "swordTrialResistanceUp",
       combatSettings: { ...defaultCombatSettings(), healerBuff: true, script: "voidrotScript" },
     }
     expect(activeEncounterOptionCount(configured, "food")).toBe(2)
@@ -236,7 +236,8 @@ describe("encounter option catalogue", () => {
     shareEasyHurt: true,
     shareDebuff5HenZhi: true,
     dummyMode: true,
-    qiTarget: "herosRealm",
+    qiTarget: "swordTrialResistanceUp",
+    swordTrialBoss: "murongYuan",
     combatSettings: { ...defaultCombatSettings(), dragonsBreath: true, script: "voidrotScript" },
   }
 
@@ -251,7 +252,8 @@ describe("encounter option catalogue", () => {
       shareEasyHurt: true,
       shareDebuff5HenZhi: true,
       dummyMode: true,
-      qiTarget: "herosRealm",
+      qiTarget: "swordTrialResistanceUp",
+      swordTrialBoss: "murongYuan",
       combatSettings: changedEncounter.combatSettings,
     })
   })

@@ -8,6 +8,7 @@ import {
   type EncounterGroup,
   type EncounterOption,
 } from "../../../../engine/encounterOptions"
+import { isQiTargetId } from "../../../../definitions/baseStats/qiTargetDef"
 import type { Inputs } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useEncounterOptionDps } from "../../../hooks/useEncounterOptionDps"
@@ -132,6 +133,10 @@ export function EncounterCategoryPanel({
             .replace("{option}", t(OPTION_LABEL_KEYS[savedLockedOption.id]))
             .replace("{bt}", String(inputs.breakthrough))}
         </p>
+      )}
+
+      {category === "extras" && inputs.qiTarget !== undefined && !isQiTargetId(inputs.qiTarget) && (
+        <p className={styles.note}>{t("overview.encounterSettings.qiTargetRetired")}</p>
       )}
 
       {groups.map((entry) => (

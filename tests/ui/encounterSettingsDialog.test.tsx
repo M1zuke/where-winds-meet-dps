@@ -326,7 +326,9 @@ describe("changing options", () => {
     fireEvent.click(within(dialog).getByRole("switch", { name: "Healer Buff" }))
     fireEvent.click(within(dialog).getByRole("switch", { name: "Bitter Season (from a teammate)" }))
     fireEvent.click(within(dialog).getByRole("tab", { name: /Extra Settings/ }))
-    fireEvent.click(within(dialog).getByRole("radio", { name: "Hero's Realm Stake" }))
+    fireEvent.click(
+      within(dialog).getByRole("radio", { name: "Sword Trial Stake (Resistance Up)" }),
+    )
     expect(onChangeSpy).not.toHaveBeenCalled()
     expect(triggerButton()).toHaveTextContent("Encounter Settings (Dummy: OFF)")
 
@@ -339,7 +341,7 @@ describe("changing options", () => {
       hpFood: "lotusSoup",
       divinecraft: "poison",
       shareDebuff5HenZhi: true,
-      qiTarget: "herosRealm",
+      qiTarget: "swordTrialResistanceUp",
       combatSettings: {
         ...OVERVIEW_INPUTS.combatSettings,
         fragrantOrchidBathBean: true,
@@ -905,5 +907,32 @@ describe("DPS differences", () => {
     const none = foodChoice(dialog, ATTACK_FOOD_GROUP, "None")
     expect(none).toHaveAccessibleDescription(expect.stringContaining("−10.0 %"))
     expect(none).toHaveAccessibleName("None")
+  })
+})
+
+describe("the Qi bar target choice", () => {
+  function openExtras(initial: Inputs): HTMLElement {
+    renderOverview(initial)
+    const dialog = openDialog()
+    fireEvent.click(within(dialog).getByRole("tab", { name: /Extra Settings/ }))
+    return dialog
+  }
+
+  it("offers no Hero's Realm stake", () => {
+    const dialog = openExtras(OVERVIEW_INPUTS)
+    expect(within(dialog).queryByRole("radio", { name: /Hero/ })).toBeNull()
+    expect(within(dialog).getByRole("radio", { name: "Sword Trial Stake" })).toBeChecked()
+  })
+
+  it("notes a retired Qi bar target and selects the Sword Trial stake in its place", () => {
+    const dialog = openExtras({ ...OVERVIEW_INPUTS, qiTarget: "herosRealm" as never })
+    expect(
+      within(dialog).getByText(
+        "The saved Qi bar target is no longer offered and counts as the Sword Trial Stake",
+      ),
+    ).toBeInTheDocument()
+    expect(within(dialog).getByRole("radio", { name: "Sword Trial Stake" })).toBeChecked()
+    clickDone(dialog)
+    expect(latest.inputs.qiTarget).toBe("herosRealm")
   })
 })

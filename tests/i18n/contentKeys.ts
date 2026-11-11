@@ -3,6 +3,7 @@ import { INNER_WAYS } from "../../src/definitions/innerWays/registry"
 import { MARTIAL_ARTS } from "../../src/definitions/martialArts/registry"
 import { SET_DEFS } from "../../src/definitions/sets/registry"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
+import { SWORD_TRIAL_BOSSES } from "../../src/definitions/baseStats/swordTrialBosses"
 import { STAT_LINES } from "../../src/data/stats/statLines"
 import { SET_FOUR_PIECE_TEXTS } from "../../src/data/sets/fourPieceTexts"
 import {
@@ -43,6 +44,7 @@ import {
   talentKey,
   talentNodeDescriptionKey,
   talentNodeKey,
+  swordTrialBossKey,
   weaponKey,
 } from "../../src/i18n/contentKeys"
 
@@ -57,6 +59,7 @@ export function collectContentKeys(): Record<string, string> {
   }
 
   for (const line of STAT_LINES) add(statLineKey(line.id), line.label)
+  for (const boss of SWORD_TRIAL_BOSSES) add(swordTrialBossKey(boss.id), boss.name)
   for (const option of ATTUNEMENT_OPTIONS) {
     add(attunementKey(option.id), option.label)
     add(attunementHintKey(option.id), option.hint)

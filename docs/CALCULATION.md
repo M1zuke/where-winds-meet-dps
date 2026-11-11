@@ -95,6 +95,12 @@ anything rate-shaped. Two rules bind here:
 - **An independent damage boost is its own multiplicative factor in the shared
   tail every row passes through, never an addend in the additive boost
   total.**
+- **A boss talent is an attacker-side addend in the additive boost total**,
+  never a target property and never a breakthrough-tier field. Its value comes
+  from the selected boss and the breakthrough's version of it; the part that
+  holds only against a broken target joins the same total only while the Qi bar
+  is broken, so it reaches a damage-over-time tick and an ordinary hit alike.
+  Dummy mode drops every boss talent.
 
 ## Qi damage
 

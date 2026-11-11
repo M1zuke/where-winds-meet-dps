@@ -16,6 +16,7 @@ import {
 } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
 import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { swordTrialBossFor } from "../definitions/baseStats/swordTrialBosses"
 import { SET_BY_ID } from "../definitions/sets/registry"
 import { resolveActiveSets } from "./setBonuses"
 import {
@@ -204,8 +205,6 @@ export function buildContext(
   const target = {
     ...baseTarget,
     defense: baseTarget.defense + (targetOverride?.defenseDelta ?? 0),
-    generalDamageTaken:
-      baseTarget.generalDamageTaken + (targetOverride?.generalDamageTakenDelta ?? 0),
   }
   const eff = effectiveRates(inputs)
 
@@ -214,12 +213,8 @@ export function buildContext(
   const henZhiActive = henZhiActiveForInputs(inputs)
   const effectiveDefense = target.defense * (henZhiActive ? HEN_ZHI_DEFENSE_MULTIPLIER : 1)
 
-  // Dummy mode drops what the target brings on its own, not what the player
-  // puts on it: a training dummy has no baseline vulnerability, but it still
-  // takes every debuff that writes to the same path.
-  const targetGeneralDamageTaken =
-    (inputs.dummyMode ? 0 : baseTarget.generalDamageTaken) +
-    (targetOverride?.generalDamageTakenDelta ?? 0)
+  const bossTalentDamageBoost = inputs.dummyMode ? 0 : swordTrialBossFor(inputs).damageBoost
+  const targetGeneralDamageTaken = targetOverride?.generalDamageTakenDelta ?? 0
   const targetDamageReduction = inputs.dummyMode ? 0 : target.damageReduction
   const targetPhysDamageBoostReduction = inputs.dummyMode ? 0 : target.physDamageBoostReduction
   const targetAttrDamageBoostReduction = inputs.dummyMode ? 0 : target.attrDamageBoostReduction
@@ -229,6 +224,7 @@ export function buildContext(
   const fourPieceSet = resolveActiveSets(inputs).fourPiece
 
   const generalDamageBoost =
+    bossTalentDamageBoost +
     targetGeneralDamageTaken +
     innerWayScalar(withScoredInnerWays(inputs).mindMethods, "generalDamageBoost") +
     (fourPieceSet ? (SET_BY_ID[fourPieceSet]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +

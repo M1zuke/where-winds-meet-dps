@@ -3,6 +3,7 @@ import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
 import type { QiDamageLog } from "./qiBar"
 import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
+import type { SwordTrialBossId } from "../definitions/baseStats/swordTrialBossDef"
 import type {
   DivinecraftElement,
   DivinecraftRefinementId,
@@ -111,6 +112,7 @@ export interface Inputs {
   // The Qi bar's own stake choice — absent means the default Sword Trial
   // stake (docs/TIMELINE.md § "Qi bar").
   qiTarget?: QiTargetId
+  swordTrialBoss?: SwordTrialBossId
 
   // The Formless share inside the primary attribute block. Derived with the
   // stat paths below and never persisted.
