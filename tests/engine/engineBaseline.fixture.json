@@ -1,11 +1,11 @@
 {
   "anchor": {
-    "dps": 71714.89,
-    "totalDamage": 4302893.58,
+    "dps": 71290.31,
+    "totalDamage": 4277418.32,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -21,15 +21,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96468.17,
+        "expectedDamage": 96088.65,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 295488.3,
+        "count": 55,
+        "expectedDamage": 279624.49,
         "castCount": 0
       },
       {
@@ -45,7 +45,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 469993.81,
+        "expectedDamage": 469527.04,
         "castCount": 0
       },
       {
@@ -69,7 +69,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105996.82,
+        "expectedDamage": 104045.32,
         "castCount": 4
       },
       {
@@ -77,7 +77,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100776.8,
+        "expectedDamage": 100733.44,
         "castCount": 10
       },
       {
@@ -85,7 +85,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2075007.37,
+        "expectedDamage": 2069217.19,
         "castCount": 0
       },
       {
@@ -125,7 +125,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 49695.44,
+        "expectedDamage": 49694.67,
         "castCount": 0
       },
       {
@@ -133,7 +133,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30139.81,
+        "expectedDamage": 30139.05,
         "castCount": 4
       },
       {
@@ -141,7 +141,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 120559.24,
+        "expectedDamage": 120558.22,
         "castCount": 4
       },
       {
@@ -149,7 +149,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38936.99,
+        "expectedDamage": 37959.42,
         "castCount": 4
       },
       {
@@ -170,19 +170,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "3d8b5421f7f6cbb85ea94ca4341fd0a6e8f6ac84c6e4d7b3641e4c1da4285525"
+    "digest": "77f0b7ecb8bc87b2ece1814f286f56106ecfb09bad5c2b521fd5b5561adefc2f"
   },
   "anchor:noAttunement": {
-    "dps": 64437.22,
-    "totalDamage": 3866233.44,
+    "dps": 64126.01,
+    "totalDamage": 3847560.84,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -198,15 +198,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96629.77,
+        "expectedDamage": 96250.25,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 241876.5,
+        "count": 55,
+        "expectedDamage": 228688.31,
         "castCount": 0
       },
       {
@@ -222,7 +222,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 470412.57,
+        "expectedDamage": 469945.8,
         "castCount": 0
       },
       {
@@ -246,7 +246,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107660.51,
+        "expectedDamage": 104045.32,
         "castCount": 4
       },
       {
@@ -254,7 +254,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 101524.65,
+        "expectedDamage": 101476.95,
         "castCount": 10
       },
       {
@@ -262,7 +262,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1691219.32,
+        "expectedDamage": 1690979.23,
         "castCount": 0
       },
       {
@@ -270,7 +270,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 71251.42,
+        "expectedDamage": 70549.5,
         "castCount": 10
       },
       {
@@ -302,7 +302,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 49695.44,
+        "expectedDamage": 49694.67,
         "castCount": 0
       },
       {
@@ -310,7 +310,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30139.81,
+        "expectedDamage": 30139.05,
         "castCount": 4
       },
       {
@@ -318,7 +318,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 120559.24,
+        "expectedDamage": 120558.22,
         "castCount": 4
       },
       {
@@ -326,7 +326,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38936.99,
+        "expectedDamage": 38906.31,
         "castCount": 4
       },
       {
@@ -347,19 +347,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "70288c875d48b1b5f3a96cb6c7120b5c7b7c34df87bb7e53de731a63e0b45fd9"
+    "digest": "d8090361e62daa506cb18d925417431c83c865ea668a715a7023aab062346f34"
   },
   "anchor:dummyOff": {
-    "dps": 76733.64,
-    "totalDamage": 4604018.28,
+    "dps": 71090.81,
+    "totalDamage": 4265448.61,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -375,15 +375,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 104073.11,
+        "expectedDamage": 103680.32,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 315542.44,
+        "count": 55,
+        "expectedDamage": 298941.18,
         "castCount": 0
       },
       {
@@ -399,7 +399,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 501880.93,
+        "expectedDamage": 501414.22,
         "castCount": 0
       },
       {
@@ -423,7 +423,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 118725.78,
+        "expectedDamage": 116774.28,
         "castCount": 4
       },
       {
@@ -431,7 +431,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 110968.63,
+        "expectedDamage": 110921.18,
         "castCount": 10
       },
       {
@@ -439,7 +439,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2207157,
+        "expectedDamage": 2206873.9,
         "castCount": 0
       },
       {
@@ -479,7 +479,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 54665.6,
+        "expectedDamage": 54664.83,
         "castCount": 0
       },
       {
@@ -487,7 +487,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 32804.1,
+        "expectedDamage": 32005.36,
         "castCount": 4
       },
       {
@@ -495,7 +495,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 128822.43,
+        "expectedDamage": 128023.44,
         "castCount": 4
       },
       {
@@ -503,7 +503,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 41354.98,
+        "expectedDamage": 41324.61,
         "castCount": 4
       },
       {
@@ -519,24 +519,24 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 581529.67,
+        "expectedDamage": 264331.67,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "01aeb13557d7d6490d6bfad7a80162796ef15b052899f81c500833ebeb33d1e1"
+    "digest": "31b2774a425aba87fa318f9584aa594b2f50f6971c16796c22bcbd1851369860"
   },
   "anchor:breakthrough17": {
-    "dps": 72956.48,
-    "totalDamage": 4377388.93,
+    "dps": 72524.19,
+    "totalDamage": 4351451.14,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -552,15 +552,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 98061.04,
+        "expectedDamage": 97676.09,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 300972.34,
+        "count": 55,
+        "expectedDamage": 284814.68,
         "castCount": 0
       },
       {
@@ -576,7 +576,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 478856.38,
+        "expectedDamage": 478381.23,
         "castCount": 0
       },
       {
@@ -600,7 +600,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107819.09,
+        "expectedDamage": 105834.02,
         "castCount": 4
       },
       {
@@ -608,7 +608,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 102506.78,
+        "expectedDamage": 102463.29,
         "castCount": 10
       },
       {
@@ -616,7 +616,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2109937.01,
+        "expectedDamage": 2104043.73,
         "castCount": 0
       },
       {
@@ -656,7 +656,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 50617.49,
+        "expectedDamage": 50616.72,
         "castCount": 0
       },
       {
@@ -664,7 +664,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30656.47,
+        "expectedDamage": 30655.69,
         "castCount": 4
       },
       {
@@ -672,7 +672,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 122625.87,
+        "expectedDamage": 122624.84,
         "castCount": 4
       },
       {
@@ -680,7 +680,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39672.1,
+        "expectedDamage": 38676.51,
         "castCount": 4
       },
       {
@@ -701,19 +701,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "17a92ba475ffa2e48d2269c40fb48fa67ae7ba6eca3bbedaa1564e1ab78d2782"
+    "digest": "c570ac921f844d15dc64c7d5f91958a5e5333eaa9a375db66ec5362d21592aa1"
   },
   "anchor:healerBuff": {
-    "dps": 75077.04,
-    "totalDamage": 4504622.42,
+    "dps": 74667.68,
+    "totalDamage": 4480060.83,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -729,15 +729,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 101591.55,
+        "expectedDamage": 101203.17,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 308667.24,
+        "count": 55,
+        "expectedDamage": 292183.55,
         "castCount": 0
       },
       {
@@ -753,7 +753,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 491391.48,
+        "expectedDamage": 490924.69,
         "castCount": 0
       },
       {
@@ -777,7 +777,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 113940.93,
+        "expectedDamage": 111989.43,
         "castCount": 4
       },
       {
@@ -785,7 +785,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 107819.19,
+        "expectedDamage": 107773.1,
         "castCount": 10
       },
       {
@@ -793,7 +793,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2163098.25,
+        "expectedDamage": 2162820.83,
         "castCount": 0
       },
       {
@@ -833,7 +833,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 53008.88,
+        "expectedDamage": 51974.04,
         "castCount": 0
       },
       {
@@ -841,7 +841,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 31916,
+        "expectedDamage": 31138.94,
         "castCount": 4
       },
       {
@@ -849,7 +849,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 127664.01,
+        "expectedDamage": 124557.72,
         "castCount": 4
       },
       {
@@ -857,7 +857,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 40232.42,
+        "expectedDamage": 40202.88,
         "castCount": 4
       },
       {
@@ -878,19 +878,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "ea7d3d65c2b84b9249a6fbc9244f6c604ca4c14ee097732493850f4d1a4ca538"
+    "digest": "f958c73c98782afe1c8c9b490befc6bb4e9bf099e3d3a1555264fddfe56716e4"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 72139.67,
-    "totalDamage": 4328380.41,
+    "dps": 71697.19,
+    "totalDamage": 4301831.15,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -906,15 +906,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96629.77,
+        "expectedDamage": 96250.25,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 297029.29,
+        "count": 55,
+        "expectedDamage": 281120.74,
         "castCount": 0
       },
       {
@@ -930,7 +930,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 473104.81,
+        "expectedDamage": 472638.01,
         "castCount": 0
       },
       {
@@ -954,7 +954,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106434.99,
+        "expectedDamage": 104483.49,
         "castCount": 4
       },
       {
@@ -962,7 +962,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 101132.61,
+        "expectedDamage": 101089.25,
         "castCount": 10
       },
       {
@@ -970,7 +970,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2083206.02,
+        "expectedDamage": 2076547.12,
         "castCount": 0
       },
       {
@@ -1010,7 +1010,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 50006.68,
+        "expectedDamage": 50005.91,
         "castCount": 0
       },
       {
@@ -1018,7 +1018,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30382.31,
+        "expectedDamage": 30381.53,
         "castCount": 4
       },
       {
@@ -1026,7 +1026,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 121529.24,
+        "expectedDamage": 121528.2,
         "castCount": 4
       },
       {
@@ -1034,7 +1034,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39243.35,
+        "expectedDamage": 38105.3,
         "castCount": 4
       },
       {
@@ -1055,19 +1055,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "4f1c2c7839edd8de128148b5000212cd452e541ccdd2b34dc4ab242773634b7e"
+    "digest": "510276f5022ef179f3a42b3cd0ce47d380ab840673e0fdea416ec5467b78fc7b"
   },
   "anchor:voidrotScript": {
-    "dps": 73073.73,
-    "totalDamage": 4384423.68,
+    "dps": 72600.83,
+    "totalDamage": 4356049.93,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -1083,15 +1083,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96629.77,
+        "expectedDamage": 96250.25,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 299647.71,
+        "count": 55,
+        "expectedDamage": 283663.17,
         "castCount": 0
       },
       {
@@ -1107,7 +1107,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 477555.16,
+        "expectedDamage": 477088.31,
         "castCount": 0
       },
       {
@@ -1131,7 +1131,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107125.84,
+        "expectedDamage": 105174.34,
         "castCount": 4
       },
       {
@@ -1139,7 +1139,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 101694.1,
+        "expectedDamage": 101650.74,
         "castCount": 10
       },
       {
@@ -1147,7 +1147,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2111731.67,
+        "expectedDamage": 2103597.08,
         "castCount": 0
       },
       {
@@ -1187,7 +1187,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 50542.34,
+        "expectedDamage": 50541.54,
         "castCount": 0
       },
       {
@@ -1195,7 +1195,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30764.42,
+        "expectedDamage": 30763.63,
         "castCount": 4
       },
       {
@@ -1203,7 +1203,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 123057.69,
+        "expectedDamage": 123056.63,
         "castCount": 4
       },
       {
@@ -1211,7 +1211,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 39763.95,
+        "expectedDamage": 38353.21,
         "castCount": 4
       },
       {
@@ -1232,19 +1232,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "018e30c41d51c7de325c7275cd7a03f86b9cec21d9ca82c2f58e7fab00b0ff3d"
+    "digest": "97f8b31bd9e1945d67439e570b1c226effa652efd54fc5af2191ef52121b410d"
   },
   "anchor:breakExtension": {
-    "dps": 73107.28,
-    "totalDamage": 4386436.51,
+    "dps": 72710.4,
+    "totalDamage": 4362624.13,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -1260,15 +1260,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 98417.96,
+        "expectedDamage": 98011.44,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 301450.08,
+        "count": 55,
+        "expectedDamage": 284581.53,
         "castCount": 0
       },
       {
@@ -1284,7 +1284,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 479745.37,
+        "expectedDamage": 479205.66,
         "castCount": 0
       },
       {
@@ -1300,7 +1300,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 11200.27,
+        "expectedDamage": 11387.94,
         "castCount": 0
       },
       {
@@ -1308,7 +1308,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 108769.64,
+        "expectedDamage": 106622.99,
         "castCount": 4
       },
       {
@@ -1316,7 +1316,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 103759.54,
+        "expectedDamage": 103711.84,
         "castCount": 10
       },
       {
@@ -1324,7 +1324,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2123921.31,
+        "expectedDamage": 2123628.64,
         "castCount": 0
       },
       {
@@ -1364,7 +1364,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 50664.5,
+        "expectedDamage": 50663.73,
         "castCount": 0
       },
       {
@@ -1372,7 +1372,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30872.81,
+        "expectedDamage": 30139.05,
         "castCount": 4
       },
       {
@@ -1380,7 +1380,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 123491.25,
+        "expectedDamage": 120558.22,
         "castCount": 4
       },
       {
@@ -1388,7 +1388,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38936.99,
+        "expectedDamage": 38906.31,
         "castCount": 4
       },
       {
@@ -1409,22 +1409,21 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "ed4e7f70ed9d381eebb1acbc5c0ac79f0f3afca621412ba457365c2fc7f1b9bf"
+    "digest": "594f21ba287e6ae46bc05aed7bfcd2c43a46ca04fc3ed445f8c9325669b37a21"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41948.39,
-    "totalDamage": 2516903.38,
+    "dps": 41598.31,
+    "totalDamage": 2495898.82,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
       "SwordSpecial 4-Hit at 20.98s would be illegal in the game: needs Endurance ≥ 50 (has 24.67).",
       "SwordSpecial 4-Hit at 33.13s would be illegal in the game: needs Endurance ≥ 50 (has 11.49).",
-      "SwordSpecial 4-Hit at 47.33s would be illegal in the game: needs Endurance ≥ 50 (has 38.17).",
-      "SwordSpecial 3-Hit at 50.08s would be illegal in the game: needs Endurance ≥ 50 (has 4.84)."
+      "SwordSpecial 3-Hit at 51.78s would be illegal in the game: needs Endurance ≥ 50 (has 17.51)."
     ],
     "perSkill": [
       {
@@ -1440,7 +1439,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 89960.15,
+        "expectedDamage": 89830.25,
         "castCount": 0
       },
       {
@@ -1448,7 +1447,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 44,
-        "expectedDamage": 210719.64,
+        "expectedDamage": 198222.18,
         "castCount": 0
       },
       {
@@ -1480,7 +1479,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 10310.97,
+        "expectedDamage": 10307.75,
         "castCount": 0
       },
       {
@@ -1488,7 +1487,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 101933.56,
+        "expectedDamage": 100573.77,
         "castCount": 4
       },
       {
@@ -1496,7 +1495,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95598.97,
+        "expectedDamage": 95550.09,
         "castCount": 10
       },
       {
@@ -1504,7 +1503,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 997760.25,
+        "expectedDamage": 992572.29,
         "castCount": 0
       },
       {
@@ -1512,7 +1511,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66886.19,
+        "expectedDamage": 66881.34,
         "castCount": 10
       },
       {
@@ -1528,7 +1527,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 38237.94,
+        "expectedDamage": 37333.45,
         "castCount": 4
       },
       {
@@ -1536,7 +1535,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 19177.61,
+        "expectedDamage": 18725.55,
         "castCount": 0
       },
       {
@@ -1544,7 +1543,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 45981.89,
+        "expectedDamage": 45928.7,
         "castCount": 0
       },
       {
@@ -1552,7 +1551,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27225.72,
+        "expectedDamage": 27852.13,
         "castCount": 4
       },
       {
@@ -1560,7 +1559,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111569.4,
+        "expectedDamage": 111493.43,
         "castCount": 4
       },
       {
@@ -1568,7 +1567,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35938.22,
+        "expectedDamage": 35897.81,
         "castCount": 4
       },
       {
@@ -1584,7 +1583,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 232608.44,
+        "expectedDamage": 231735.65,
         "castCount": 1
       }
     ],
@@ -1593,11 +1592,11 @@
       "buffWindows": 143,
       "casts": 90
     },
-    "digest": "cb4f9736b3e96a61d3ef9c86669ce593db4ebfdd37e7472a7f10222a15da5830"
+    "digest": "6204d71e8b78e02d5c69ce71c4ebd40ea0480e8f4361d0fcc5ec840ce33e990b"
   },
   "anchor:noSwordHorizon": {
-    "dps": 36707.94,
-    "totalDamage": 2202476.42,
+    "dps": 36994.87,
+    "totalDamage": 2219691.96,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 5.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1617,17 +1616,16 @@
       "SwordSpecial 3-Hit at 31.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Zenith Sword [cancel] at 32.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 4-Hit at 33.45s would be illegal in the game: needs Endurance ≥ 50 (has 12.99).",
-      "Sword Martial QQQ at 40.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 41.92s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 42.98s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 45.58s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 46.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 4-Hit at 47.82s would be illegal in the game: needs Endurance ≥ 50 (has 39.83).",
-      "SwordSpecial 3-Hit at 50.70s would be illegal in the game: needs Endurance ≥ 50 (has 6.01) and needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 51.77s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 53.88s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 55.32s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Zenith Sword [cancel] at 56.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
+      "Sword Martial QQQ at 42.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 43.62s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 44.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 47.28s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 48.33s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 52.40s would be illegal in the game: needs Endurance ≥ 50 (has 18.51) and needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 53.47s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 55.58s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 57.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Zenith Sword [cancel] at 58.08s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
     ],
     "perSkill": [
       {
@@ -1635,23 +1633,23 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54372.56,
+        "expectedDamage": 54372.72,
         "castCount": 4
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 60,
-        "expectedDamage": 91430.28,
+        "count": 59,
+        "expectedDamage": 89755.01,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 42,
-        "expectedDamage": 193747.96,
+        "count": 46,
+        "expectedDamage": 216957.41,
         "castCount": 0
       },
       {
@@ -1683,7 +1681,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 10309.92,
+        "expectedDamage": 10306.36,
         "castCount": 0
       },
       {
@@ -1691,7 +1689,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 101137.43,
+        "expectedDamage": 100131.27,
         "castCount": 4
       },
       {
@@ -1699,7 +1697,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95596.33,
+        "expectedDamage": 95554.43,
         "castCount": 10
       },
       {
@@ -1707,7 +1705,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 837331.69,
+        "expectedDamage": 837281.39,
         "castCount": 0
       },
       {
@@ -1715,7 +1713,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66887.49,
+        "expectedDamage": 66887.22,
         "castCount": 10
       },
       {
@@ -1731,7 +1729,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 38236.2,
+        "expectedDamage": 38236.28,
         "castCount": 4
       },
       {
@@ -1739,7 +1737,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 19176.57,
+        "expectedDamage": 19176.72,
         "castCount": 0
       },
       {
@@ -1747,7 +1745,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 46357.36,
+        "expectedDamage": 46334.72,
         "castCount": 0
       },
       {
@@ -1755,7 +1753,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27892.7,
+        "expectedDamage": 27868.05,
         "castCount": 4
       },
       {
@@ -1763,7 +1761,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111576.51,
+        "expectedDamage": 109506.26,
         "castCount": 4
       },
       {
@@ -1771,7 +1769,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35070.17,
+        "expectedDamage": 35034.08,
         "castCount": 4
       },
       {
@@ -1787,24 +1785,24 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 232695.72,
+        "expectedDamage": 231632.5,
         "castCount": 1
       }
     ],
     "counts": {
-      "timeline": 318,
+      "timeline": 321,
       "buffWindows": 122,
       "casts": 90
     },
-    "digest": "b8090fa368a2e49c7c7bb1bda188dacf70173a2a6e164d0582b40153f1bcf012"
+    "digest": "4ad15906e6b286fce689524443e6a74b3ce00934496b34f073be02aedebc4354"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 63187.85,
-    "totalDamage": 3791271.22,
+    "dps": 62875.24,
+    "totalDamage": 3772514.17,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -1820,15 +1818,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 92453.92,
+        "expectedDamage": 92088.53,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 256072.15,
+        "count": 55,
+        "expectedDamage": 242121.81,
         "castCount": 0
       },
       {
@@ -1844,7 +1842,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 408390.3,
+        "expectedDamage": 407963.84,
         "castCount": 0
       },
       {
@@ -1868,7 +1866,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98157.33,
+        "expectedDamage": 94479.07,
         "castCount": 4
       },
       {
@@ -1876,7 +1874,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 92217.37,
+        "expectedDamage": 92172.98,
         "castCount": 10
       },
       {
@@ -1884,7 +1882,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1790076.83,
+        "expectedDamage": 1789815.51,
         "castCount": 0
       },
       {
@@ -1924,7 +1922,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 44801.47,
+        "expectedDamage": 44800.78,
         "castCount": 0
       },
       {
@@ -1932,7 +1930,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27391.02,
+        "expectedDamage": 27390.33,
         "castCount": 4
       },
       {
@@ -1940,7 +1938,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109564.07,
+        "expectedDamage": 109563.15,
         "castCount": 4
       },
       {
@@ -1948,7 +1946,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35239.79,
+        "expectedDamage": 35211.22,
         "castCount": 4
       },
       {
@@ -1969,19 +1967,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "82d3c76a4783306b7d3cd5aedfcf0debf638c7ab526e3687d6367a8790745f81"
+    "digest": "f2cbd27a99d3481637bd571920d7f37c88b4d390f597ff6229550e28f04a92ee"
   },
   "anchor:noMoraleChant": {
-    "dps": 65928.26,
-    "totalDamage": 3955695.66,
+    "dps": 65518.67,
+    "totalDamage": 3931120.35,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -1997,15 +1995,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 89284.86,
+        "expectedDamage": 89078.54,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 275414.4,
+        "count": 55,
+        "expectedDamage": 260452.33,
         "castCount": 0
       },
       {
@@ -2021,7 +2019,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 438163.56,
+        "expectedDamage": 437719.9,
         "castCount": 0
       },
       {
@@ -2045,7 +2043,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99102.23,
+        "expectedDamage": 96479.78,
         "castCount": 4
       },
       {
@@ -2053,7 +2051,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 93767.72,
+        "expectedDamage": 93495.63,
         "castCount": 10
       },
       {
@@ -2061,7 +2059,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1931022.19,
+        "expectedDamage": 1925630.27,
         "castCount": 0
       },
       {
@@ -2069,7 +2067,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 65671.27,
+        "expectedDamage": 65025.95,
         "castCount": 10
       },
       {
@@ -2101,7 +2099,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27814.83,
+        "expectedDamage": 27813.89,
         "castCount": 4
       },
       {
@@ -2109,7 +2107,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111259.32,
+        "expectedDamage": 111257.16,
         "castCount": 4
       },
       {
@@ -2117,7 +2115,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35865.78,
+        "expectedDamage": 35837.4,
         "castCount": 4
       },
       {
@@ -2138,11 +2136,11 @@
       }
     ],
     "counts": {
-      "timeline": 431,
+      "timeline": 430,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "0b2c1f72a4b9765b7c8c7e51353dd42168f0d7b80aeb4411da922a3dd2501662"
+    "digest": "952c10d1558304c2e0f025cb379afc6519d73ee8eaaa2f99883128c26465044a"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 40852.23,
@@ -2359,16 +2357,14 @@
     "digest": "52406412ef113abb402e2cdb39ee4a0aac2a7ff1aa70c0c0e76afe74e6df25bf"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 44122.84,
-    "totalDamage": 2647370.26,
+    "dps": 44144.97,
+    "totalDamage": 2648698.24,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
       "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
       "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
-      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
-      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
-      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 51.75s would be illegal in the game: needs Endurance ≥ 50 (has 10.17)."
     ],
     "perSkill": [
       {
@@ -2384,15 +2380,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 64687.77,
+        "expectedDamage": 64678.64,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 190102.12,
+        "count": 58,
+        "expectedDamage": 197261.43,
         "castCount": 0
       },
       {
@@ -2400,7 +2396,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 9122.94,
+        "expectedDamage": 9140.05,
         "castCount": 0
       },
       {
@@ -2448,7 +2444,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 90659.06,
+        "expectedDamage": 89690.78,
         "castCount": 10
       },
       {
@@ -2456,7 +2452,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1115478.95,
+        "expectedDamage": 1111789.11,
         "castCount": 0
       },
       {
@@ -2464,7 +2460,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63557.51,
+        "expectedDamage": 62900,
         "castCount": 10
       },
       {
@@ -2520,7 +2516,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 32188.46,
+        "expectedDamage": 31664.79,
         "castCount": 4
       },
       {
@@ -2541,23 +2537,21 @@
       }
     ],
     "counts": {
-      "timeline": 485,
+      "timeline": 487,
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "29e380b2708051ac7b4a500887f049001b3a0414fdfde2700004fd5e2b42363a"
+    "digest": "d20911c7372ca2690119a4167f5ff04e519ff003481888c49491648548c89db1"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 43292.51,
-    "totalDamage": 2597550.6,
+    "dps": 43314.13,
+    "totalDamage": 2598848.06,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
       "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
       "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
-      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
-      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
-      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 51.75s would be illegal in the game: needs Endurance ≥ 50 (has 10.17)."
     ],
     "perSkill": [
       {
@@ -2573,15 +2567,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 63108.23,
+        "expectedDamage": 63099.31,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 186568.31,
+        "count": 58,
+        "expectedDamage": 193595.42,
         "castCount": 0
       },
       {
@@ -2589,7 +2583,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 8717.6,
+        "expectedDamage": 8727.38,
         "castCount": 0
       },
       {
@@ -2637,7 +2631,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 89028.31,
+        "expectedDamage": 88077.7,
         "castCount": 10
       },
       {
@@ -2645,7 +2639,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1094804.31,
+        "expectedDamage": 1091183.65,
         "castCount": 0
       },
       {
@@ -2653,7 +2647,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 62383.24,
+        "expectedDamage": 61737.87,
         "castCount": 10
       },
       {
@@ -2709,7 +2703,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 31593.06,
+        "expectedDamage": 31079.21,
         "castCount": 4
       },
       {
@@ -2730,23 +2724,21 @@
       }
     ],
     "counts": {
-      "timeline": 485,
+      "timeline": 487,
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "d5b1d0e029cc99358e07f750c84ab439b6f228ea7a5b31bcbfcdb86011250b47"
+    "digest": "c3bda62f5474afdf8343576949a8897514012c9c674fd0d5db1784acc92f093a"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 42933.02,
-    "totalDamage": 2575981.29,
+    "dps": 42954.4,
+    "totalDamage": 2577264.24,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.45s would be illegal in the game: needs Endurance ≥ 50 (has 27.51).",
       "SwordSpecial 4-Hit at 20.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.17).",
       "SwordSpecial 4-Hit at 33.08s would be illegal in the game: needs Endurance ≥ 50 (has 25.67).",
-      "SwordSpecial 4-Hit at 47.30s would be illegal in the game: needs Endurance ≥ 50 (has 38.33).",
-      "SwordSpecial 3-Hit at 50.05s would be illegal in the game: needs Endurance ≥ 50 (has 0.83).",
-      "Endurance at 49.08s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 51.75s would be illegal in the game: needs Endurance ≥ 50 (has 10.17)."
     ],
     "perSkill": [
       {
@@ -2762,15 +2754,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 63108.23,
+        "expectedDamage": 63099.31,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 184552.5,
+        "count": 58,
+        "expectedDamage": 191503.93,
         "castCount": 0
       },
       {
@@ -2778,7 +2770,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 8619.8,
+        "expectedDamage": 8629.46,
         "castCount": 0
       },
       {
@@ -2826,7 +2818,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 88064.83,
+        "expectedDamage": 87124.28,
         "castCount": 10
       },
       {
@@ -2834,7 +2826,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1087218.07,
+        "expectedDamage": 1083635.32,
         "castCount": 0
       },
       {
@@ -2842,7 +2834,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 61660.81,
+        "expectedDamage": 61022.92,
         "castCount": 10
       },
       {
@@ -2898,7 +2890,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 31227.71,
+        "expectedDamage": 30719.65,
         "castCount": 4
       },
       {
@@ -2919,19 +2911,19 @@
       }
     ],
     "counts": {
-      "timeline": 485,
+      "timeline": 487,
       "buffWindows": 201,
       "casts": 90
     },
-    "digest": "1a567b0002d6df3dbde9841b7a9820c5e0806ce4e7454ae46e25325a793fc65c"
+    "digest": "0cefff4dc7bbfb9a402d32aef64c6654d44a01d5781a38984431294e1e3356f0"
   },
   "anchor:noSet": {
-    "dps": 64371.33,
-    "totalDamage": 3862279.52,
+    "dps": 64054.41,
+    "totalDamage": 3843264.82,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -2947,15 +2939,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87512.46,
+        "expectedDamage": 87168.32,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 264119.25,
+        "count": 55,
+        "expectedDamage": 249757.58,
         "castCount": 0
       },
       {
@@ -2971,7 +2963,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 421723.58,
+        "expectedDamage": 421306.9,
         "castCount": 0
       },
       {
@@ -2995,7 +2987,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97134.31,
+        "expectedDamage": 94237.52,
         "castCount": 4
       },
       {
@@ -3003,7 +2995,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91949.45,
+        "expectedDamage": 91902.14,
         "castCount": 10
       },
       {
@@ -3011,7 +3003,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1855718.76,
+        "expectedDamage": 1855429.07,
         "castCount": 0
       },
       {
@@ -3019,7 +3011,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63762.72,
+        "expectedDamage": 63134.74,
         "castCount": 10
       },
       {
@@ -3075,7 +3067,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 34853.73,
+        "expectedDamage": 34823.3,
         "castCount": 4
       },
       {
@@ -3096,19 +3088,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "e0814575a61fb35419cadf228ef4896ec9795ee21e507be9d806c4917d127acf"
+    "digest": "41d1106f4fbc80571ad5f7f5fd1bf8d8caa03b343796c9e5340d3e9e185912e0"
   },
   "anchor:set-Jadeware": {
-    "dps": 71065.98,
-    "totalDamage": 4263958.69,
+    "dps": 70572.76,
+    "totalDamage": 4234365.35,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -3124,15 +3116,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 89112.34,
+        "expectedDamage": 88762.14,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 289706.92,
+        "count": 55,
+        "expectedDamage": 275906.37,
         "castCount": 0
       },
       {
@@ -3148,7 +3140,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 462665.37,
+        "expectedDamage": 464357.15,
         "castCount": 0
       },
       {
@@ -3172,7 +3164,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97322.33,
+        "expectedDamage": 98035.99,
         "castCount": 4
       },
       {
@@ -3180,7 +3172,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99843.98,
+        "expectedDamage": 101044.91,
         "castCount": 10
       },
       {
@@ -3188,7 +3180,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2064718.05,
+        "expectedDamage": 2052422.8,
         "castCount": 0
       },
       {
@@ -3196,7 +3188,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 69116.92,
+        "expectedDamage": 70539.5,
         "castCount": 10
       },
       {
@@ -3236,7 +3228,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30600.1,
+        "expectedDamage": 29888.76,
         "castCount": 4
       },
       {
@@ -3244,7 +3236,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 122400.39,
+        "expectedDamage": 117207.64,
         "castCount": 4
       },
       {
@@ -3252,7 +3244,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38696.23,
+        "expectedDamage": 36424.02,
         "castCount": 4
       },
       {
@@ -3273,19 +3265,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "92af066c67b8ae64dea8b6ede45a0399db4f2a8e6c0de4ae5aefda555f2ec9e1"
+    "digest": "be094feabc1939f3009964f30924203d6209bb5a3bbbb47fcb8d51e040d8d1ae"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64957.82,
-    "totalDamage": 3897469.49,
+    "dps": 64559.21,
+    "totalDamage": 3873552.37,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -3301,15 +3293,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87366.38,
+        "expectedDamage": 87168.32,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 267439.57,
+        "count": 55,
+        "expectedDamage": 252897.81,
         "castCount": 0
       },
       {
@@ -3325,7 +3317,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 427276.05,
+        "expectedDamage": 426854.26,
         "castCount": 0
       },
       {
@@ -3349,7 +3341,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97968.93,
+        "expectedDamage": 95417.18,
         "castCount": 4
       },
       {
@@ -3357,7 +3349,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 93099.06,
+        "expectedDamage": 92824.27,
         "castCount": 10
       },
       {
@@ -3365,7 +3357,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1870808.54,
+        "expectedDamage": 1865546.64,
         "castCount": 0
       },
       {
@@ -3373,7 +3365,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64621.87,
+        "expectedDamage": 63985.42,
         "castCount": 10
       },
       {
@@ -3429,7 +3421,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35322.62,
+        "expectedDamage": 35292.02,
         "castCount": 4
       },
       {
@@ -3450,19 +3442,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "fbbf7a3de355de3ab4fb89a4beb9c83af632239b82a217ebf8a227e5eb0beff4"
+    "digest": "5c9412f111641930c9a855a13c1a773c11ba3270d67709343e396ca40f13f0ab"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65781.66,
-    "totalDamage": 3946899.38,
+    "dps": 65376.92,
+    "totalDamage": 3922615.42,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -3478,15 +3470,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87366.38,
+        "expectedDamage": 87168.32,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 271507.42,
+        "count": 55,
+        "expectedDamage": 256744.65,
         "castCount": 0
       },
       {
@@ -3502,7 +3494,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 433839.28,
+        "expectedDamage": 433411.01,
         "castCount": 0
       },
       {
@@ -3526,7 +3518,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99608.02,
+        "expectedDamage": 97013.59,
         "castCount": 4
       },
       {
@@ -3534,7 +3526,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 94656.72,
+        "expectedDamage": 94377.17,
         "castCount": 10
       },
       {
@@ -3542,7 +3534,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1889309.07,
+        "expectedDamage": 1883966.2,
         "castCount": 0
       },
       {
@@ -3550,7 +3542,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 65673.53,
+        "expectedDamage": 65026.73,
         "castCount": 10
       },
       {
@@ -3606,7 +3598,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35897.82,
+        "expectedDamage": 35866.6,
         "castCount": 4
       },
       {
@@ -3627,19 +3619,19 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "746e3d550c12e867988cf7ca669aac5ccdeef780550072efd367e968af3c2b31"
+    "digest": "b10cad83a3cce0da9713c813ae0992ecbb3c0c8829d4744829cdd17a5150883c"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66335.49,
-    "totalDamage": 3980129.16,
+    "dps": 65931.37,
+    "totalDamage": 3955882.08,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
-      "SwordSpecial 3-Hit at 50.20s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
+      "SwordSpecial 3-Hit at 51.90s would be illegal in the game: needs Endurance ≥ 50 (has 44.17)."
     ],
     "perSkill": [
       {
@@ -3655,15 +3647,15 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 91227.31,
+        "expectedDamage": 91025.51,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 271875.62,
+        "count": 55,
+        "expectedDamage": 257111.72,
         "castCount": 0
       },
       {
@@ -3679,7 +3671,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 434003.08,
+        "expectedDamage": 433583.99,
         "castCount": 0
       },
       {
@@ -3703,7 +3695,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100410.87,
+        "expectedDamage": 97853.18,
         "castCount": 4
       },
       {
@@ -3711,7 +3703,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 95338.9,
+        "expectedDamage": 95057.32,
         "castCount": 10
       },
       {
@@ -3719,7 +3711,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1909853.46,
+        "expectedDamage": 1904513.67,
         "castCount": 0
       },
       {
@@ -3727,7 +3719,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66181.88,
+        "expectedDamage": 65530,
         "castCount": 10
       },
       {
@@ -3783,7 +3775,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36114.52,
+        "expectedDamage": 36083.18,
         "castCount": 4
       },
       {
@@ -3804,11 +3796,11 @@
       }
     ],
     "counts": {
-      "timeline": 436,
+      "timeline": 435,
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "efe51feffab8e2324710a6ae9b9901628d004fa840f1ae204200cf607eabe6da"
+    "digest": "0edd9b77673807a2b780d72026e82fac1a94350a067b1be742341aff13da89cb"
   },
   "defaults:umbra": {
     "dps": 12359.43,

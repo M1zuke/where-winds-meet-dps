@@ -1,0 +1,121 @@
+{
+  "v": 123,
+  "skills": [
+    {
+      "id": "mystic-dragon-head",
+      "classId": "mystic",
+      "name": "Dragon Head",
+      "tags": ["mystic:burst", "role:dragonHead"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:dragonHead",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "guaranteedNormal": true,
+      "castFrames": 246,
+      "triggerable": true,
+      "reachMeters": 8,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 246,
+          "physMultiplier": 19.07564,
+          "attributeMultiplier": 28.61346,
+          "physFixed": 3001.372,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "mystic-dragon-head-plus",
+      "classId": "mystic",
+      "name": "Dragon Head - Plus",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:dragonHeadPlus",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
+      "neverAbrades": true,
+      "castFrames": 246,
+      "triggerable": true,
+      "reachMeters": 8,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 246,
+          "physMultiplier": 12.597266,
+          "attributeMultiplier": 18.895899,
+          "physFixed": 1999.4721,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-dragon-head",
+      "classId": "mystic",
+      "name": "Dragon Head",
+      "tags": ["mystic:burst", "role:dragonHead"],
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:dragonHead",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "guaranteedNormal": true,
+      "castFrames": 300,
+      "triggerable": true,
+      "reachMeters": 8,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 300,
+          "physMultiplier": 25,
+          "attributeMultiplier": 28.61181,
+          "physFixed": 2869.37,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "tags": ["weapon:Sword"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castFrames": 36,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 36,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-02T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z"
+    }
+  ]
+}

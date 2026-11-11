@@ -4,6 +4,8 @@ import { CAST, MYSTIC, PROP, ROLE } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
+// In-game values as of 2026-11-10: the hit lands 281.52 frames into the cast,
+// which blocks the next skill until 348.
 export const dragonHeadPlus = defineSkill({
   id: SKILL.dragonHeadPlus,
   classId: MYSTIC_ARTS_CLASS_ID,
@@ -16,7 +18,7 @@ export const dragonHeadPlus = defineSkill({
   receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
   triggersBuffs: [BUFF.surgingWaves],
   neverAbrades: true,
-  castFrames: 246,
+  castFrames: 348,
   triggerable: true,
   // In-game values as of 2026-10-18.
   vitalityCost: 80,
@@ -25,7 +27,7 @@ export const dragonHeadPlus = defineSkill({
   approach: "stationary",
   hits: [
     hit(0, {
-      frame: 246,
+      frame: 281.52,
       // In-game values as of 2026-10-15.
       physMultiplier: 12.597266,
       attributeMultiplier: 18.895899,

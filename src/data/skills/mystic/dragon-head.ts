@@ -5,8 +5,8 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 // Fixed damage — triggers neither crit, affinity nor abrasion (CN mystic-arts
-// guide, gc.com.cn, checked 2026-08). Cast timing is user-verified 2026-08-06:
-// a 246-frame cast landing its hit on the final frame.
+// guide, gc.com.cn, checked 2026-08). In-game values as of 2026-11-10: the hit
+// lands 281.62 frames into the cast, which blocks the next skill until 348.
 export const dragonHead = defineSkill({
   id: SKILL.dragonHead,
   classId: MYSTIC_ARTS_CLASS_ID,
@@ -19,7 +19,7 @@ export const dragonHead = defineSkill({
   // In-game, the low-HP bonus covers this and the Plus variant alike, 2026-09-10.
   receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
   guaranteedNormal: true,
-  castFrames: 246,
+  castFrames: 348,
   triggerable: true,
   // In-game values as of 2026-10-18.
   vitalityCost: 100,
@@ -28,7 +28,7 @@ export const dragonHead = defineSkill({
   approach: "stationary",
   hits: [
     hit(0, {
-      frame: 246,
+      frame: 281.62,
       // In-game values as of 2026-10-15.
       physMultiplier: 19.07564,
       attributeMultiplier: 28.61346,

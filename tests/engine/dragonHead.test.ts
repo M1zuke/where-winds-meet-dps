@@ -390,7 +390,6 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
     fixedQiBreaks: [{ startSec, durationSec, lowQiLeadSec: 0 }],
   })
 
-  // the cast is 246 frames, so a break opening at 0 s still covers the hit
   const insideBreak = qiBreak(0)
   const outsideBreak = qiBreak(60)
 
