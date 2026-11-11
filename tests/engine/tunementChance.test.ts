@@ -119,11 +119,18 @@ describe("a retunable line's chances", () => {
     expect(twoHeld.get("maxStonesplit")).toBeUndefined()
   })
 
-  it("sums the two older mystic lines a level-86 helm rolls into the app's single word", () => {
+  it("rolls each of the four mystic subtype lines a level-86 helm offers at its own weight", () => {
     const chances = tunementDrawChances(piece("helm", 86), null, 1)
-    const single = chances.get("singleTargetMysticBoost")!
-    expect(single / chances.get("crit")!).toBeCloseTo((2 * 431) / 930)
-    expect(chances.get("areaMysticBoost")).toBeCloseTo(single)
+    for (const word of [
+      "areaDebuffMysticBoost",
+      "areaDamageMysticBoost",
+      "singleTargetControlMysticBoost",
+      "singleTargetBurstMysticBoost",
+    ] as const) {
+      expect(chances.get(word)! / chances.get("crit")!).toBeCloseTo(431 / 930)
+    }
+    expect(chances.has("areaMysticBoost")).toBe(false)
+    expect(chances.has("singleTargetMysticBoost")).toBe(false)
   })
 
   it("never adds up past certainty", () => {

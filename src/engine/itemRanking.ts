@@ -145,6 +145,18 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     wordSpec("areaMysticBoost", (x, roll) => {
       x.areaMysticBoost += roll
     }),
+    wordSpec("areaDebuffMysticBoost", (x, roll) => {
+      x.areaDebuffMysticBoost += roll
+    }),
+    wordSpec("areaDamageMysticBoost", (x, roll) => {
+      x.areaDamageMysticBoost += roll
+    }),
+    wordSpec("singleTargetControlMysticBoost", (x, roll) => {
+      x.controlMysticBoost += roll
+    }),
+    wordSpec("singleTargetBurstMysticBoost", (x, roll) => {
+      x.burstMysticBoost += roll
+    }),
     wordSpec("allMysticBoost", (x, roll) => {
       x.allMysticBoost += roll
     }),

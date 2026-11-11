@@ -22,7 +22,7 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   const rows = computeRanking(umbraInputs, base.dps)
 
   it("produces a row per gear word the build's gear level offers, plus one per class-legal attunement", () => {
-    expect(rows.filter((row) => row.source === "tunement").length).toBe(28)
+    expect(rows.filter((row) => row.source === "tunement").length).toBe(32)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
       "Strategic Sword Martial Art Skill DMG Boost",
@@ -115,9 +115,22 @@ describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
     expect(single.amount).toBeCloseTo(area.amount, 10)
   })
 
-  it("offers one merged area word, not the two pre-merge ones", () => {
+  it("offers the area debuff and area damage lines beside the merged area word", () => {
     const areaWords = specs.filter((s) => s.label.startsWith("Area"))
-    expect(areaWords.map((s) => s.word)).toEqual(["areaMysticBoost"])
+    expect(areaWords.map((s) => s.word).sort()).toEqual([
+      "areaDamageMysticBoost",
+      "areaDebuffMysticBoost",
+      "areaMysticBoost",
+    ])
+  })
+
+  it("offers the control and burst lines beside the merged single-target word", () => {
+    const singleWords = specs.filter((s) => s.label.startsWith("Single-"))
+    expect(singleWords.map((s) => s.word).sort()).toEqual([
+      "singleTargetBurstMysticBoost",
+      "singleTargetControlMysticBoost",
+      "singleTargetMysticBoost",
+    ])
   })
 
   it("a piece rolled at the new max contributes the full 9.797 % to singleMysticBoost", () => {

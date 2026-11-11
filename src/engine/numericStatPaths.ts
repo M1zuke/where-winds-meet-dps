@@ -37,5 +37,9 @@ export const NUMERIC_PATHS = [
   "bossBoost",
   "singleMysticBoost",
   "areaMysticBoost",
+  "controlMysticBoost",
+  "burstMysticBoost",
+  "areaDebuffMysticBoost",
+  "areaDamageMysticBoost",
   "allMysticBoost",
 ] as const

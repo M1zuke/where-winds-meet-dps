@@ -2,7 +2,7 @@ import type { Inputs, AttributeKey, Arsenal, ArsenalScores } from "./types"
 import type { FormulaContext } from "./formula"
 import type { ContextPatch } from "./mechanics/types"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
-import { MYSTIC_TYPE_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
+import { MYSTIC_TYPE_BOOST_STAT_KEYS, type StatKey } from "./statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
 import {
   foodPhysAttackAfterMultiplier,
@@ -38,11 +38,14 @@ const CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX = "classSpecificAttunement."
 // consumer.
 function scopedStatMap(
   inputs: Inputs,
-  keyByCategory: Readonly<Record<string, StatKey>>,
+  keysByCategory: Readonly<Record<string, StatKey | readonly StatKey[]>>,
 ): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const [category, statKey] of Object.entries(keyByCategory)) {
-    out[category] = (inputs as unknown as Record<string, number>)[statKey] ?? 0
+  for (const [category, statKeys] of Object.entries(keysByCategory)) {
+    out[category] = (typeof statKeys === "string" ? [statKeys] : statKeys).reduce(
+      (sum, statKey) => sum + ((inputs as unknown as Record<string, number>)[statKey] ?? 0),
+      0,
+    )
   }
   return out
 }
@@ -377,7 +380,7 @@ export function buildContext(
     },
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
-    mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
+    mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEYS),
     allMysticBoost: inputs.allMysticBoost,
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,

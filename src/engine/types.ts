@@ -156,6 +156,10 @@ export interface Inputs {
   bossBoost: number
   singleMysticBoost: number
   areaMysticBoost: number
+  controlMysticBoost: number
+  burstMysticBoost: number
+  areaDebuffMysticBoost: number
+  areaDamageMysticBoost: number
   allMysticBoost: number
 
   classSpecificAttunement: Record<string, number>

@@ -4,7 +4,7 @@ import { attuneTagsOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { reaches } from "../scope"
 import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
-import { MYSTIC_TYPE_BOOST_STAT_KEY, STAT_DEF_BY_KEY, type StatKey } from "../statRegistry"
+import { MYSTIC_TYPE_BOOST_STAT_KEYS, STAT_DEF_BY_KEY, type StatKey } from "../statRegistry"
 import { WEAPON_BOOST_STAT_KEY } from "../../data/stats/weaponBoosts"
 import { GRANT_REQUIRES_DEFAULT, type BuffModule } from "./buffModule"
 import type { Effect } from "../effects/effect"
@@ -234,9 +234,9 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     rows.push(gearStatRow("allMartialBoost", inputs))
   }
   const mysticCategory = mysticCategoryOf(skill)
-  const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
-  if (mysticBoostKey) rows.push(gearStatRow(mysticBoostKey, inputs))
-  if (mysticBoostKey || skill.skillType === "mystic") {
+  const mysticBoostKeys = MYSTIC_TYPE_BOOST_STAT_KEYS[mysticCategory]
+  for (const mysticBoostKey of mysticBoostKeys ?? []) rows.push(gearStatRow(mysticBoostKey, inputs))
+  if (mysticBoostKeys || skill.skillType === "mystic") {
     rows.push(gearStatRow("allMysticBoost", inputs))
   }
   for (const attuneTag of attuneTagsOf(skill)) {
