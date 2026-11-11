@@ -154,13 +154,28 @@ describe("Starweave — Martial Art Skill damage bonus, gated to the skills that
     ).toBeCloseTo(0.06, 10)
   })
 
-  it("adds a further per-stack bonus at 4+ meters of target distance", () => {
-    const engine = engineWithSet("starweave", { distanceMeters: 8 })
-    landDamageHit(engine, 0, martialSkill)
-    expect(
-      engine.calculateDamageEffects(martialSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
-    ).toBeCloseTo(0.04, 10)
-  })
+  it.each([
+    [4, 0.03],
+    [4.01, 0.032],
+    [5, 0.032],
+    [5.01, 0.034],
+    [6, 0.034],
+    [6.01, 0.036],
+    [7, 0.036],
+    [7.01, 0.038],
+    [8, 0.038],
+    [8.01, 0.04],
+    [20, 0.04],
+  ])(
+    "at %s m of target distance a stack is worth %s, a band opening above its lower edge and closing at its upper",
+    (distanceMeters, perStack) => {
+      const engine = engineWithSet("starweave", { distanceMeters })
+      landDamageHit(engine, 0, martialSkill)
+      expect(
+        engine.calculateDamageEffects(martialSkill, 0.5).breakdown[BUFF.starweaveMartialBoost],
+      ).toBeCloseTo(perStack, 10)
+    },
+  )
 })
 
 // In-game Martial Art Skill roster as of 2026-09-24, independent of which
