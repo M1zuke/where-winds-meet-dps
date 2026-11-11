@@ -5,8 +5,7 @@ export interface SetFourPieceText {
   full: string
 }
 
-type NonGearSetId = typeof SET_ID.brimflow | typeof SET_ID.calmwaters
-type GearSetId = Exclude<(typeof SET_ID)[keyof typeof SET_ID], NonGearSetId>
+type GearSetId = Exclude<(typeof SET_ID)[keyof typeof SET_ID], typeof SET_ID.calmwaters>
 
 // In-game values as of 2026-10-17.
 export const SET_FOUR_PIECE_TEXTS: Readonly<Record<GearSetId, SetFourPieceText>> = {

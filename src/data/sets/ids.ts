@@ -5,7 +5,6 @@ export const SET_ID = {
   rainwhisper: "rainwhisper",
   cleftpeak: "cleftpeak",
   tiltrim: "tiltrim",
-  brimflow: "brimflow",
   calmwaters: "calmwaters",
   ivorybloom: "ivorybloom",
   starweave: "starweave",
