@@ -2091,9 +2091,51 @@ describe("the stage attack talent rows follow the stored breakthrough (additive,
     expect(second).toEqual(first)
   })
 
-  it("the default build still hydrates to 98/196", () => {
+  it("hydrates a profile stored at breakthrough 15 with the 98/196 rows", () => {
+    storeProfileAt(15)
     const { profiles } = loadProfiles()
     expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 98, max: 196 })
+  })
+
+  it("hydrates a profile stored at breakthrough 14 with the 80/160 rows", () => {
+    storeProfileAt(14)
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 80, max: 160 })
+  })
+
+  it("hydrates a profile stored at breakthrough 13 with the 69/138 rows", () => {
+    storeProfileAt(13)
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 69, max: 138 })
+  })
+
+  it("replaces stored default talents that still carry the 98/196 rows at breakthrough 13", () => {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Stale stage",
+            inputs: {
+              ...defaultInputs,
+              classId: "bellstrikeUmbra",
+              breakthrough: 13,
+              martialArtsTalents: getDefaultTalentsForClass("bellstrikeUmbra", 15),
+            },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 69, max: 138 })
+  })
+
+  it("the default build hydrates to the 69/138 rows of its breakthrough 13", () => {
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 69, max: 138 })
   })
 })
 

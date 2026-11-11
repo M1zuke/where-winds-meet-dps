@@ -181,6 +181,45 @@ describe("user-defined martial-arts talents", () => {
       },
     )
 
+    it.each([
+      ["bellstrikeUmbra", "Affinity Rate UP", "Bellstrike Penetration Scale", 0.0336],
+      ["bellstrikeSplendor", "Affinity Rate UP", "Bellstrike Penetration Scale", 0.0336],
+      ["stonesplitStrength", "Critical Rate UP", "Stonesplit Penetration Scale", 0.0672],
+      ["silkbindJade", "Critical Rate UP", "Silkbind Penetration Scale", 0.0672],
+      ["bamboocutDraught", "Critical Rate UP", "Bamboocut Penetration Scale", 0.0672],
+    ])(
+      "%s carries the stage 11, 12 and 13 talent caps at breakthrough 13, 14 and 15",
+      (classId, rateName, penetrationName, penetrationPerPoint) => {
+        const at = (breakthrough: number) =>
+          Object.fromEntries(
+            getDefaultTalentsForClass(classId, breakthrough).map((d) => [d.name, d]),
+          )
+        const expected = [
+          { breakthrough: 13, scaleMax: 200, rate: 200, phys: 52.8, pen: 15.2, scale: 0.076 },
+          { breakthrough: 14, scaleMax: 225, rate: 225, phys: 59.4, pen: 18, scale: 0.09 },
+          { breakthrough: 15, scaleMax: 280, rate: 280, phys: 73.92, pen: 22, scale: 0.11 },
+        ]
+        const ratePerPoint = rateName === "Affinity Rate UP" ? 0.000152 : 0.000304
+        for (const row of expected) {
+          const byName = at(row.breakthrough)
+          expect(byName[rateName].maxBonus, `${row.breakthrough}`).toBeCloseTo(
+            row.rate * ratePerPoint,
+            6,
+          )
+          expect(byName[rateName].scaleMax).toBe(row.scaleMax)
+          expect(byName["Physical Attack UP"].maxBonus).toBeCloseTo(row.phys, 6)
+          expect(byName["Physical Attack UP"].scaleMax).toBe(row.scaleMax)
+          expect(byName[penetrationName].maxBonus).toBeCloseTo(row.pen / 100, 6)
+          expect(byName[penetrationName].scaleMax).toBeCloseTo(row.pen / penetrationPerPoint, 6)
+          expect(byName["Attribute Damage Scale"].maxBonus).toBeCloseTo(row.scale, 6)
+          expect(byName["Attribute Damage Scale"].scaleMax).toBeCloseTo(
+            row.pen / penetrationPerPoint,
+            6,
+          )
+        }
+      },
+    )
+
     it("the stage attack rows follow the breakthrough, and nothing unrelated moves", () => {
       const at17 = getDefaultTalentsForClass("bellstrikeUmbra", 17)
       const at18 = getDefaultTalentsForClass("bellstrikeUmbra", 18)

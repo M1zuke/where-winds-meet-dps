@@ -177,8 +177,8 @@ describe("following a breakthrough release", () => {
 
   it("changes nothing on the build but the breakthrough and the stamp", () => {
     vi.setSystemTime(BREAKTHROUGH_17_RELEASE)
-    writeProfiles([{ breakthrough: 16 }, { breakthrough: 14 }])
+    writeProfiles([{ breakthrough: 16 }, { breakthrough: 15 }])
     const [followed, untouched] = loadProfiles().profiles
-    expect({ ...followed.inputs, breakthrough: 14 }).toEqual(untouched.inputs)
+    expect({ ...followed.inputs, breakthrough: 15 }).toEqual(untouched.inputs)
   })
 })

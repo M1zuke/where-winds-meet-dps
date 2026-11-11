@@ -3,9 +3,11 @@ export interface ArtAttackStage {
   max: number
 }
 
-// In-game martial-art stage attack values as of 2026-09-11.
+// In-game martial-art stage attack values as of 2026-11-10.
 export const SHARED_ART_ATTACK_LADDER: Readonly<Record<number, ArtAttackStage>> = {
-  13: { min: 98, max: 196 },
+  13: { min: 69, max: 138 },
+  14: { min: 80, max: 160 },
+  15: { min: 98, max: 196 },
   18: { min: 106, max: 212 },
   19: { min: 114, max: 228 },
   20: { min: 123, max: 246 },
