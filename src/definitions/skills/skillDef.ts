@@ -1,6 +1,8 @@
 import type { HitVariant, Skill, SkillHit } from "../../engine/skill"
 import type { Debuff } from "../../engine/debuff"
 import type { Buff } from "../../engine/buff"
+import type { CoefficientRow } from "../../engine/skill"
+import { highestRow } from "./levelRowsDef"
 
 // An undeclared key is otherwise accepted and then read by nothing, leaving the
 // author believing an unimplemented field took effect.
@@ -27,12 +29,20 @@ export function defineGateBuff<const T extends Buff>(buff: T & NoExcessKeys<T, B
   return buff
 }
 
+export function levelScaled(
+  levelRows: NonNullable<SkillHit["levelRows"]>,
+): CoefficientRow & { levelRows: NonNullable<SkillHit["levelRows"]> } {
+  const { physMultiplier, attributeMultiplier, physFixed, attributeFixed } = highestRow(levelRows)
+  return { physMultiplier, attributeMultiplier, physFixed, attributeFixed, levelRows }
+}
+
 interface HitSpec {
   frame: number
   physMultiplier: number
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  levelRows?: SkillHit["levelRows"]
   extraCritDamage?: number
   triggers?: SkillHit["triggers"]
   variants?: HitVariant[]
@@ -57,6 +67,7 @@ export function hit(index: number, spec: HitSpec): SkillHit {
     attributeMultiplier: spec.attributeMultiplier,
     physFixed: spec.physFixed,
     attributeFixed: spec.attributeFixed,
+    ...(spec.levelRows ? { levelRows: spec.levelRows } : {}),
     extraCritDamage: spec.extraCritDamage ?? 0,
     triggers: spec.triggers ?? [],
     ...(spec.variants ? { variants: spec.variants } : {}),
@@ -81,6 +92,7 @@ interface EvenlySpacedHitsSpec {
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  levelRows?: SkillHit["levelRows"]
   extraCritDamage?: number
 }
 
@@ -97,6 +109,7 @@ export function evenlySpacedHits(spec: EvenlySpacedHitsSpec): SkillHit[] {
       attributeMultiplier: spec.attributeMultiplier,
       physFixed: spec.physFixed,
       attributeFixed: spec.attributeFixed,
+      levelRows: spec.levelRows,
       extraCritDamage: spec.extraCritDamage,
     }),
   )

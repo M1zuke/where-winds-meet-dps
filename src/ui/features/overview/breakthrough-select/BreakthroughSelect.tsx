@@ -14,9 +14,9 @@ export function BreakthroughSelect({ value, onChange }: Props) {
   return (
     <>
       <div className="row">
-        <label>{t("overview.breakthroughSelect.breakthrough")}</label>
+        <label>{t("common.breakthrough")}</label>
         <Select
-          ariaLabel={t("overview.breakthroughSelect.breakthrough")}
+          ariaLabel={t("common.breakthrough")}
           value={String(value)}
           onChange={(next) => onChange(Number(next))}
           options={BREAKTHROUGH_TIERS.map((tier) => ({

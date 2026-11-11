@@ -1,5 +1,5 @@
 import type { BuffStatEffect, StackScaling, BuffActivation } from "./buff"
-import type { ProjectileSpec } from "./skill"
+import type { LevelRows, ProjectileSpec } from "./skill"
 import type { AttributeKey } from "./types"
 
 export interface DotStackShape {
@@ -32,6 +32,7 @@ export interface DebuffDotSpec {
   physFixed: number
   attributeMultiplier: number
   attributeFixed: number
+  levelRows?: LevelRows
   elevatedAttributeMultiplier?: boolean
   extraCritDamage?: number
   attributeAttack: AttributeKey | ""

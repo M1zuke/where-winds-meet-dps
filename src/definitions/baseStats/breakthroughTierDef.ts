@@ -20,6 +20,8 @@ export interface BreakthroughAttribute {
 
 export interface BreakthroughTier {
   breakthrough: number
+  artLevel: number
+  mysticTier: number
   // The practice target's in-game health pool, as of 2026-09-10.
   targetHp: number
   gearLevel: GearLevel

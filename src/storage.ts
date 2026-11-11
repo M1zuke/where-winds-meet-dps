@@ -74,6 +74,7 @@ import {
   newVariantId,
   isSkill,
   isHitVariant,
+  isLevelRows,
   isQiPhase,
   isTriggerCondition,
   isReleaseGate,
@@ -1382,14 +1383,24 @@ function hydrateSkill(s: Skill): Skill {
   }
 }
 
+function withValidLevelRows<T extends { levelRows?: unknown }>(row: T): T {
+  if (row.levelRows === undefined || isLevelRows(row.levelRows)) return row
+  const { levelRows: _invalid, ...rest } = row
+  void _invalid
+  return rest as T
+}
+
 function hydrateSkillHit(h: SkillHit): SkillHit {
   if (!h || typeof h !== "object") return h
-  const hit: SkillHit = { ...h }
+  const hit: SkillHit = withValidLevelRows({ ...h })
   if (Array.isArray(h.variants)) {
-    hit.variants = h.variants.filter(isHitVariant).map((v) => ({
-      ...v,
-      conditions: v.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition),
-    }))
+    hit.variants = h.variants
+      .map(withValidLevelRows)
+      .filter(isHitVariant)
+      .map((v) => ({
+        ...v,
+        conditions: v.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition),
+      }))
   } else {
     delete hit.variants
   }
@@ -1587,6 +1598,12 @@ function allHitsZero(skill: Skill): boolean {
   )
 }
 
+function withoutLevelRows<T extends { levelRows?: unknown }>(row: T): Omit<T, "levelRows"> {
+  const { levelRows: _levelRows, ...rest } = row
+  void _levelRows
+  return rest
+}
+
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
 export function migrateDotStandinOverrides(): void {
   try {
@@ -1606,7 +1623,7 @@ export function migrateDotStandinOverrides(): void {
         const merged: Skill = {
           ...base,
           hits: base.hits.map((h) => ({
-            ...h,
+            ...withoutLevelRows(h),
             physMultiplier: d.dot!.physMultiplier,
             physFixed: d.dot!.physFixed,
             attributeMultiplier: d.dot!.attributeMultiplier,
@@ -1716,7 +1733,8 @@ function importedTrigger(t: unknown): HitTrigger {
   return trigger
 }
 
-function importedVariant(v: unknown): HitVariant | null {
+function importedVariant(raw: unknown): HitVariant | null {
+  const v = raw && typeof raw === "object" ? withValidLevelRows(raw as HitVariant) : raw
   if (!isHitVariant(v)) return null
   return { ...v, id: newVariantId(), conditions: v.conditions.filter(isHitOrVariantCondition) }
 }
@@ -1784,6 +1802,7 @@ function importedHit(h: unknown): SkillHit {
     extraCritDamage: typeof c.extraCritDamage === "number" ? c.extraCritDamage : 0,
     triggers: Array.isArray(c.triggers) ? c.triggers.map(importedTrigger) : [],
   }
+  if (isLevelRows(c.levelRows)) hit.levelRows = c.levelRows
   if (Array.isArray(c.variants)) {
     const variants = c.variants.map(importedVariant).filter((v): v is HitVariant => v !== null)
     if (variants.length > 0) hit.variants = variants
@@ -2015,6 +2034,7 @@ function migrateStatusStoresIfNeeded(): void {
               mysticCategory:
                 typeof rawDot.mysticCategory === "string" ? rawDot.mysticCategory : null,
               count: typeof rawDot.count === "number" ? rawDot.count : 1,
+              levelRows: isLevelRows(rawDot.levelRows) ? rawDot.levelRows : undefined,
               perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),
               perStackMultipliers: sanitizePerStackMultipliers(rawDot.perStackMultipliers),
             }
@@ -2213,6 +2233,7 @@ function hydrateDebuff(d: Debuff): Debuff {
   const dot: DebuffDotSpec | null = d.dot
     ? {
         ...d.dot,
+        levelRows: isLevelRows(d.dot.levelRows) ? d.dot.levelRows : undefined,
         perStackShapes: sanitizePerStackShapes(d.dot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(d.dot.perStackMultipliers),
         qiRate:
@@ -2334,6 +2355,7 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
           typeof rawDot.weaponOrAttribute === "string" ? rawDot.weaponOrAttribute : null,
         mysticCategory: typeof rawDot.mysticCategory === "string" ? rawDot.mysticCategory : null,
         count: typeof rawDot.count === "number" ? rawDot.count : 1,
+        levelRows: isLevelRows(rawDot.levelRows) ? rawDot.levelRows : undefined,
         perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(rawDot.perStackMultipliers),
         qiRate:

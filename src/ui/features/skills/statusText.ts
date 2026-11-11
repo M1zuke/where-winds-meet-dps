@@ -105,6 +105,10 @@ function conditionFailureText(reason: ConditionFailureReason, t: Translate): str
       const joiner = ` ${t("skills.status.anyOfJoiner", "or")} `
       return `(${reason.reasons.map((clause) => conditionFailureText(clause, t)).join(joiner)})`
     }
+    case "breakthrough": {
+      const label = t("common.breakthrough", "Breakthrough")
+      return `${needs} ${label} ${reason.required}+ (${label} ${reason.actual})`
+    }
     case "weapon": {
       const needed = t(weaponKey(reason.id), reason.name)
       const actual = reason.actualId ? t(weaponKey(reason.actualId), reason.actualName) : notActive
