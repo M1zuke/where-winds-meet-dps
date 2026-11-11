@@ -3,6 +3,28 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import {
+  SLOW_FORM_BONUS_FRAME,
+  SLOW_FORM_FIRST_HIT_FRAME,
+  SLOW_FORM_FULL_CAST_FRAMES,
+  SLOW_FORM_SECOND_HIT_FRAME,
+  slowFormOpensIntoxicated,
+  slowFormVariant,
+} from "../dragonBreathSlowForm"
+
+const ROW = {
+  physMultiplier: 1.360884,
+  attributeMultiplier: 2.041327,
+  physFixed: 215.2962,
+  attributeFixed: 0,
+}
+
+const BONUS_ROW = {
+  physMultiplier: 1.49975,
+  attributeMultiplier: 2.249625,
+  physFixed: 237.2652,
+  attributeFixed: 0,
+}
 
 export const fireBreath2Hit = defineSkill({
   id: SKILL.fireBreath2Hit,
@@ -31,6 +53,15 @@ export const fireBreath2Hit = defineSkill({
       physFixed: 215.2962,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
+      variants: [
+        slowFormVariant(
+          SKILL.fireBreath2Hit,
+          0,
+          ROW,
+          SLOW_FORM_FIRST_HIT_FRAME,
+          SLOW_FORM_FULL_CAST_FRAMES,
+        ),
+      ],
     }),
     hit(1, {
       frame: 102,
@@ -45,13 +76,11 @@ export const fireBreath2Hit = defineSkill({
           extendOnly: true,
         }),
       ],
+      variants: [slowFormVariant(SKILL.fireBreath2Hit, 1, ROW, SLOW_FORM_SECOND_HIT_FRAME)],
     }),
     hit(2, {
       frame: 108,
-      physMultiplier: 1.49975,
-      attributeMultiplier: 2.249625,
-      physFixed: 237.2652,
-      attributeFixed: 0,
+      ...BONUS_ROW,
       triggers: [
         applyDebuff({
           target: DEBUFF.combustion,
@@ -59,7 +88,9 @@ export const fireBreath2Hit = defineSkill({
           extendOnly: true,
         }),
       ],
+      variants: [slowFormVariant(SKILL.fireBreath2Hit, 2, BONUS_ROW, SLOW_FORM_BONUS_FRAME)],
     }),
+    slowFormOpensIntoxicated(3),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

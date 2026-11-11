@@ -149,10 +149,11 @@ describe("V43__evasiveChargeDodgeRefund — through the chain", () => {
 describe("every healed skill survives the hydrator too", () => {
   beforeEach(() => localStorage.clear())
 
-  it("keeps both gains after loadCustomSkills, not just after the migration step", () => {
+  it("keeps the refund after loadCustomSkills, merged by a later step, not just after the migration step", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === "bamboocutDraught-perfect-dodge")!
-    expect(hasBothGains(skill)).toBe(true)
+    expect(skill.hits[0]?.triggers.some(isBaseGain)).toBe(true)
+    expect(skill.hits[0]?.triggers.some(isTier2Gain)).toBe(false)
   })
 })

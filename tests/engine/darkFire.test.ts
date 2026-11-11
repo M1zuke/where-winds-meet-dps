@@ -68,15 +68,16 @@ describe("Dragon Fire (Smolder) skills", () => {
     const one = skillOf(ONE_HIT)
     const two = skillOf(TWO_HITS)
 
+    const unconditionalHits = (s: typeof one) => s.hits.filter((h) => !h.conditions)
     const sum = (s: typeof one, field: "physMultiplier" | "attributeMultiplier" | "physFixed") =>
-      s.hits.reduce((a, h) => a + h[field], 0)
+      unconditionalHits(s).reduce((a, h) => a + h[field], 0)
 
-    expect(one.hits.length).toBe(1)
+    expect(unconditionalHits(one).length).toBe(1)
     expect(sum(one, "physMultiplier")).toBeCloseTo(1.283899, 10)
     expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925849, 10)
     expect(sum(one, "physFixed")).toBeCloseTo(204.9587, 10)
 
-    expect(two.hits.length).toBe(3)
+    expect(unconditionalHits(two).length).toBe(3)
     expect(sum(two, "physMultiplier")).toBeCloseTo(3.982708, 10)
     expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.974062, 10)
     expect(sum(two, "physFixed")).toBeCloseTo(635.7902, 10)
@@ -138,11 +139,11 @@ describe("Dragon Fire (Smolder) → Smolder in the simulator", () => {
 describe("Smolder duration", () => {
   const darkFire = builtinDebuff(CLASS, DARK_FIRE_ID)
 
-  it("has a 4 s base window, and every Smolder hit extends it 4 s", () => {
-    expect(darkFire.durationFrames).toBe(240)
+  it("has a 3.9 s first window, and every Smolder hit extends it 4 s", () => {
+    expect(darkFire.durationFrames).toBe(234)
     for (const skillId of [ONE_HIT, TWO_HITS]) {
       const skill = skillOf(skillId)
-      for (const hit of skill.hits) {
+      for (const hit of skill.hits.filter((candidate) => candidate.physMultiplier > 0)) {
         const t = hit.triggers.find((tr) => tr.targetId === DARK_FIRE_ID)
         expect(t).toBeTruthy()
         expect(t!.extendFrames).toBe(240)
@@ -211,8 +212,9 @@ describe("Zenith detonation extends Smolder", () => {
     const detonation = skillOf(UMBRA_SKILL.bleedDetonation)
     const smolder = skillOf(TWO_HITS)
     const filler = skillOf(SKILL.soaring)
+    const poet = skillOf(SKILL.drunkenpoetPrepull)
     const ticksFor = (detonations: number) => {
-      const steps = [makeStep({ skillId: smolder.id })]
+      const steps = [makeStep({ skillId: poet.id }), makeStep({ skillId: smolder.id })]
       for (let i = 0; i < detonations; i++) steps.push(makeStep({ skillId: detonation.id }))
       for (let i = 0; i < 20; i++) steps.push(makeStep({ skillId: filler.id }))
       const inputs: Inputs = {

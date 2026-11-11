@@ -253,6 +253,18 @@ describe("Iron Guards", () => {
     expect(statOf(overCap, any(), 1, "phys.penetration")).toBeCloseTo(0.12, 9)
   })
 
+  it("reads the live Max Physical Attack, with every other attribute effect active at the hit", () => {
+    const boosted = engine({ maxPhysAttack: 400 })
+    boosted.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
+    const penetrationWith = (externalMaxPhysAttack: number) =>
+      boosted
+        .calculateDamageEffects(any(), 1, [], 0, undefined, externalMaxPhysAttack)
+        .effects.filter((effect) => effect.statKey === "phys.penetration")
+        .reduce((total, effect) => total + effect.amount, 0)
+    expect(penetrationWith(0)).toBeCloseTo(0.06, 9)
+    expect(penetrationWith(100)).toBeCloseTo(0.08, 9)
+  })
+
   it("lasts 30 s on a 20 s cooldown without Steadfast Devotion, 40 s on a 1 s cooldown with it", () => {
     const withoutSteadfastDevotion = engine({ maxPhysAttack: 750 })
     withoutSteadfastDevotion.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [

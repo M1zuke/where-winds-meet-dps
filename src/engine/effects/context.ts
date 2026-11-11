@@ -7,6 +7,7 @@ export interface BuildView {
   spec: string | undefined
   armorSet: string | undefined
   minPhysAttack: number
+  // The live value only for a module declaring `readsLiveMaxPhysAttack`.
   maxPhysAttack: number
   whiteCritRate: number
   breakthrough: number

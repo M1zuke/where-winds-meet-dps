@@ -38,35 +38,27 @@ export function driveMechanic<State>(
     const nextExtra = pendingExtras[0]?.frame ?? Infinity
     if (nextHit === Infinity && nextExtra === Infinity) break
     if (nextHit <= nextExtra) {
-      mechanic.observeEvent?.(
-        state,
-        {
-          source: "hit",
-          timeSec: nextHit / setup.fps,
-          occurrence: 1,
-          direct: true,
-          canRollAffinity: true,
-          affinityChance: 0,
-        },
-        setup,
-        host,
-      )
+      const hit = {
+        source: "hit" as const,
+        timeSec: nextHit / setup.fps,
+        occurrence: 1,
+        direct: true,
+        canRollAffinity: true,
+      }
+      mechanic.beforeEvent?.(state, hit, setup)
+      mechanic.observeEvent?.(state, { ...hit, affinityChance: 0 }, setup, host)
       hitIndex++
     } else {
       const extra = pendingExtras.shift()!
-      mechanic.observeEvent?.(
-        state,
-        {
-          source: "extra",
-          timeSec: extra.frame / setup.fps,
-          occurrence: 1,
-          direct: extra.direct,
-          canRollAffinity: extra.art.guaranteedNormal !== 1,
-          affinityChance: 0,
-        },
-        setup,
-        host,
-      )
+      const extraEvent = {
+        source: "extra" as const,
+        timeSec: extra.frame / setup.fps,
+        occurrence: 1,
+        direct: extra.direct,
+        canRollAffinity: extra.art.guaranteedNormal !== 1,
+      }
+      mechanic.beforeEvent?.(state, extraEvent, setup)
+      mechanic.observeEvent?.(state, { ...extraEvent, affinityChance: 0 }, setup, host)
       mechanic.afterExtraEvent?.(state, extra, host, setup)
     }
   }

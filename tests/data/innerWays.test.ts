@@ -292,7 +292,7 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
     [INNER_WAY_ID.moraleChant, []],
     [INNER_WAY_ID.bitterSeason, []],
-    [INNER_WAY_ID.breakingPoint, ["disintegration"]],
+    [INNER_WAY_ID.breakingPoint, ["disintegrationBrokenTarget", "disintegration"]],
   ])("%s declares buffDefs %j", (id, ids) => {
     const def = innerWayDefinition(id)!
     expect((def.buffDefs ?? []).map((module) => module.id)).toEqual(ids)

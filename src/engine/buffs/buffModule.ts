@@ -160,6 +160,13 @@ export type BuffMeta = BuffGate & {
   // Encounter Settings panel shows the distance input only while the build
   // carries a module or mechanic that declares this.
   readsTargetDistance?: boolean
+  // Whether this module's `effects` read `ctx.build.maxPhysAttack` as the
+  // attacker's live max physical attack at the event — the panel value plus
+  // every other attribute effect active at that moment, never the same hit's
+  // own adjustments. Such a module is evaluated after every other module, so
+  // it must not itself emit a `phys.max` effect. Absent, the field holds the
+  // panel value.
+  readsLiveMaxPhysAttack?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

@@ -106,6 +106,11 @@ import { V102__prepullVagrantSwordBoltTiming } from "./V102__prepullVagrantSword
 import { V103__splendorRootMotion } from "./V103__splendorRootMotion"
 import { V104__umbraRootMotion } from "./V104__umbraRootMotion"
 import { V105__swordMorphConversionAtTheRelease } from "./V105__swordMorphConversionAtTheRelease"
+import { V106__umbraSpearTapHeavyQuickestRelease } from "./V106__umbraSpearTapHeavyQuickestRelease"
+import { V107__evasiveChargeRefundFromRankOne } from "./V107__evasiveChargeRefundFromRankOne"
+import { V108__dragonBreathSlowFormWithoutIntoxicated } from "./V108__dragonBreathSlowFormWithoutIntoxicated"
+import { V109__dragonBreathSingleHitFastFrame } from "./V109__dragonBreathSingleHitFastFrame"
+import { V110__dragonBreathSlowFormChosenAtThePress } from "./V110__dragonBreathSlowFormChosenAtThePress"
 
 export type {
   CustomSkillMigration,
@@ -280,6 +285,11 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V103__splendorRootMotion,
   V104__umbraRootMotion,
   V105__swordMorphConversionAtTheRelease,
+  V106__umbraSpearTapHeavyQuickestRelease,
+  V107__evasiveChargeRefundFromRankOne,
+  V108__dragonBreathSlowFormWithoutIntoxicated,
+  V109__dragonBreathSingleHitFastFrame,
+  V110__dragonBreathSlowFormChosenAtThePress,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

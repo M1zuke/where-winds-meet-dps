@@ -153,9 +153,14 @@ export interface SkillHit {
   // could not interrupt before this frame. Absent, this hit lands exactly as
   // any other.
   requiresNextStepSkillIds?: string[]
-  // Overrides the skill's own `castFrames` when this hit's own
-  // `requiresNextStepSkillIds` gate is what included it — the next-step
-  // counterpart of a hit variant's own `castFrames` override.
+  // The inverse gate: the hit lands unless the step immediately following
+  // names one of the listed skills — a following skill that outranks the
+  // running cast breaks it before this hit. The last step of a rotation
+  // breaks nothing.
+  unlessNextStepSkillIds?: string[]
+  // Overrides the skill's own `castFrames` when this hit's own next-step
+  // gate is what included it — the next-step counterpart of a hit variant's
+  // own `castFrames` override.
   castFramesWhenGated?: number
   // The hit's own Qi rate, in-game values as of 2026-09-25 —
   // docs/CALCULATION.md § "Qi damage". Absent means 1, the in-game default.
@@ -591,6 +596,10 @@ export function isSkillHit(x: unknown): x is SkillHit {
     if (!isStringArray(h.requiresNextStepSkillIds) || h.requiresNextStepSkillIds.length === 0)
       return false
   }
+  if (h.unlessNextStepSkillIds !== undefined) {
+    if (!isStringArray(h.unlessNextStepSkillIds) || h.unlessNextStepSkillIds.length === 0)
+      return false
+  }
   if (h.castFramesWhenGated !== undefined) {
     if (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
       return false
@@ -694,6 +703,39 @@ export function resolvedHitFrame(
   if (!projectile || distance === undefined) return base
   const distanceMeters = typeof distance === "function" ? distance(base) : distance
   return base + projectileTravelFrames(projectile, distanceMeters)
+}
+
+const UNIVERSAL_ID_PREFIX = "universal-"
+
+function namesSkill(listedIds: readonly string[], skillId: string, classId: string): boolean {
+  return listedIds.some(
+    (listedId) =>
+      listedId === skillId ||
+      (listedId.startsWith(UNIVERSAL_ID_PREFIX) &&
+        `${classId}-${listedId.slice(UNIVERSAL_ID_PREFIX.length)}` === skillId),
+  )
+}
+
+export function hasNextStepGate(hit: SkillHit): boolean {
+  return hit.requiresNextStepSkillIds !== undefined || hit.unlessNextStepSkillIds !== undefined
+}
+
+export function hitLandsByNextStep(
+  hit: SkillHit,
+  nextStepSkillId: string | undefined,
+  classId: string,
+): boolean {
+  if (hit.requiresNextStepSkillIds) {
+    if (
+      nextStepSkillId === undefined ||
+      !namesSkill(hit.requiresNextStepSkillIds, nextStepSkillId, classId)
+    )
+      return false
+  }
+  if (hit.unlessNextStepSkillIds && nextStepSkillId !== undefined) {
+    if (namesSkill(hit.unlessNextStepSkillIds, nextStepSkillId, classId)) return false
+  }
+  return true
 }
 
 // The one place `SkillHit.conditions` is checked — every path that turns a

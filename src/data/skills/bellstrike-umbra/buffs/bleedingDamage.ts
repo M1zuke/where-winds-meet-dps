@@ -11,6 +11,7 @@ export const bellstrikeUmbraBleedingDamage = defineClassBuff({
   id: BUFF.bellstrikeUmbraBleedingDamage,
   name: "Damage Over Time",
   alwaysActive: true,
+  readsLiveMaxPhysAttack: true,
   duration: 9999,
   summary: "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
   effects: (ctx) => {

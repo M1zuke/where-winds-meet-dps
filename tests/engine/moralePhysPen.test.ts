@@ -7,7 +7,7 @@ import { makeStep } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
 import { defaultInputs } from "../../src/engine/defaults"
 
-import { moraleDmgPerStack, moraleStacksAtTime } from "../../src/engine/buffs/morale"
+import { MoraleStacks, moraleDmgPerStack } from "../../src/engine/buffs/morale"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
@@ -20,6 +20,12 @@ const MORALE_PEN_PER_STACK = 0.02
 const T_ONE_STACK = 0
 const T_FIVE_STACKS = 8
 const T_QI_BREAK = 27
+const HIT_SECONDS = [T_ONE_STACK, 2, 4, 6, T_FIVE_STACKS, T_QI_BREAK]
+const SAMPLES = [
+  { tSec: T_ONE_STACK, stacks: 1, damageStacks: 0 },
+  { tSec: T_FIVE_STACKS, stacks: 5, damageStacks: 5 },
+  { tSec: T_QI_BREAK, stacks: 1, damageStacks: 0 },
+]
 
 function baseInputs(classId: string, mindMethods: Inputs["mindMethods"]): Inputs {
   return {
@@ -43,7 +49,7 @@ function art(name: string) {
 
 describe("Morale Chant phys-penetration term", () => {
   it("scales with the stack count and matches a hand-reconstructed +stacks*0.02 phys.penetration bump", () => {
-    const hits = [T_ONE_STACK, T_FIVE_STACKS, T_QI_BREAK].map((tSec) =>
+    const hits = HIT_SECONDS.map((tSec) =>
       makeHit({ frame: Math.round(tSec * FPS), physMultiplier: 1, physFixed: 0 }),
     )
     const skill = makeSkill("bellstrikeUmbra", {
@@ -71,12 +77,11 @@ describe("Morale Chant phys-penetration term", () => {
     const events = result
       .timeline!.filter((e) => e.skillName === "Test Weapon Hit")
       .sort((a, b) => a.frame - b.frame)
-    expect(events).toHaveLength(3)
+    expect(events).toHaveLength(HIT_SECONDS.length)
     const breaks = result.qiBreaks ?? []
 
-    for (const [i, tSec] of [T_ONE_STACK, T_FIVE_STACKS, T_QI_BREAK].entries()) {
-      const stacks = moraleStacksAtTime(tSec, false)
-      expect(stacks).toBeLessThanOrEqual(5)
+    for (const { tSec, stacks, damageStacks } of SAMPLES) {
+      const event = events[HIT_SECONDS.indexOf(tSec)]!
       // The engine's own exhausted-phase independentDamageBoost is unrelated
       // to Morale Chant and fires regardless of it — read off the run's own
       // simulated breaks rather than assumed from a forced window.
@@ -89,21 +94,23 @@ describe("Morale Chant phys-penetration term", () => {
             ...inputs.phys,
             penetration: inputs.phys.penetration + stacks * MORALE_PEN_PER_STACK,
           },
-          allDamageBoost: (inputs.allDamageBoost ?? 0) + stacks * moraleDmgPerStack(false),
+          allDamageBoost: (inputs.allDamageBoost ?? 0) + damageStacks * moraleDmgPerStack(false),
           independentDamageBoost: inQiBreak ? 0.1 : 0,
         }),
         1,
       ).expectedDamage
-      expect(events[i].damage).toBeCloseTo(expected, 6)
+      expect(event.damage).toBeCloseTo(expected, 6)
     }
 
-    // Both samples sit at the 5-stack cap, so Morale Chant's own contribution
-    // is identical once neither is boosted by a Qi break landing on it.
-    expect(events[2].damage).toBe(events[1].damage)
+    expect(events[HIT_SECONDS.indexOf(T_QI_BREAK)]!.damage).toBeLessThan(
+      events[HIT_SECONDS.indexOf(T_FIVE_STACKS)]!.damage,
+    )
   })
 
   it("does not double stacks or per-stack damage during the Qi break — the target is never controlled", () => {
-    expect(moraleStacksAtTime(T_QI_BREAK, false)).toBe(moraleStacksAtTime(T_FIVE_STACKS, false))
+    const stacks = new MoraleStacks()
+    for (let hitSec = 0; hitSec <= 40; hitSec += 1) stacks.gainFromDirectHit(hitSec)
+    expect(stacks.stacksAt(40)).toBe(5)
     expect(moraleDmgPerStack(false)).toBe(0.01)
   })
 
@@ -148,7 +155,7 @@ describe("Morale Chant phys-penetration term", () => {
         attributeAttack: "Bellstrike",
         specialTag: "sustain",
       } as never,
-      buildContext({ ...inputs, allDamageBoost: (inputs.allDamageBoost ?? 0) + 5 * 0.01 }),
+      buildContext({ ...inputs, allDamageBoost: inputs.allDamageBoost ?? 0 }),
       1,
     ).expectedDamage
     expect(row.expectedDamage).toBeCloseTo(withoutMoralePen, 6)

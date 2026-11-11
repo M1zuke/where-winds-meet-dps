@@ -161,8 +161,8 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
 
   it("spear heavy attacks carry the heavy tag, 5 m reach and no Soul-Shaken", () => {
     const chain: Skill[] = [spearHeavy1, spearHeavy2, spearHeavy3]
-    expect(chain.map(frames)).toEqual([[43], [22], [59]])
-    expect(chain.map((skill) => skill.castFrames)).toEqual([66, 43, 72])
+    expect(chain.map(frames)).toEqual([[29.53], [22], [59]])
+    expect(chain.map((skill) => skill.castFrames)).toEqual([52.2, 43, 72])
     for (const skill of chain) {
       expect(skill.tags).toEqual([WEAPON.spear, ATTACK.heavy])
       expect(skill.reachMeters).toBe(5)

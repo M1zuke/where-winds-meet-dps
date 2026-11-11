@@ -1410,6 +1410,15 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   } else if (h.requiresNextStepSkillIds !== undefined) {
     delete hit.requiresNextStepSkillIds
   }
+  if (Array.isArray(h.unlessNextStepSkillIds)) {
+    const skillIds = h.unlessNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.unlessNextStepSkillIds = skillIds
+    else delete hit.unlessNextStepSkillIds
+  } else if (h.unlessNextStepSkillIds !== undefined) {
+    delete hit.unlessNextStepSkillIds
+  }
   if (
     h.castFramesWhenGated !== undefined &&
     (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
@@ -1788,6 +1797,12 @@ function importedHit(h: unknown): SkillHit {
       (skillId): skillId is string => typeof skillId === "string",
     )
     if (skillIds.length > 0) hit.requiresNextStepSkillIds = skillIds
+  }
+  if (Array.isArray(c.unlessNextStepSkillIds)) {
+    const skillIds = c.unlessNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.unlessNextStepSkillIds = skillIds
   }
   if (typeof c.castFramesWhenGated === "number" && Number.isFinite(c.castFramesWhenGated)) {
     hit.castFramesWhenGated = c.castFramesWhenGated

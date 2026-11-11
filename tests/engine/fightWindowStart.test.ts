@@ -377,12 +377,12 @@ describe("a DoT tick can start the fight, and its own triggers fire regardless",
   })
 })
 
-describe("a fixed window that no hit or tick opens", () => {
+describe("a fixed window and a mechanic's own timed events", () => {
   it("still counts what a mechanic's own timed events deal inside the window", () => {
     const grant = makeSkill(CLASS, {
       name: "Grant",
-      castFrames: 10,
-      hits: [makeHit({ frame: 0 })],
+      castFrames: 490,
+      hits: [0, 120, 240, 360, 480].map((frame) => makeHit({ frame, physMultiplier: 1 })),
     })
     const inputs: Inputs = {
       ...defaultInputs,
@@ -403,6 +403,10 @@ describe("a fixed window that no hit or tick opens", () => {
     const result = simulateTimeline(inputs)
     const yiRiver = result.perSkill.find((entry) => entry.name === "Yi River")
     expect(yiRiver?.count).toBeGreaterThan(0)
-    expect(result.totalDamage).toBe(yiRiver?.expectedDamage)
+    const grantRow = result.perSkill.find((entry) => entry.name === "Grant")
+    expect(result.totalDamage).toBeCloseTo(
+      (yiRiver?.expectedDamage ?? 0) + (grantRow?.expectedDamage ?? 0),
+      6,
+    )
   })
 })

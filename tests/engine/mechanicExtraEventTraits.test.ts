@@ -44,7 +44,7 @@ function setupWith(patch: Partial<MechanicSetup["inputs"]> = {}): MechanicSetup 
 
 function yiRiverEvent(): MechanicEvent {
   const [event] = driveMechanic(moraleChantMechanic(), setupWith(), {
-    hitTimesSec: [],
+    hitTimesSec: [0, 2, 4, 6, 8],
     windowEndSec: 60,
   })
   return event!

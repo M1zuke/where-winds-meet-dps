@@ -9,20 +9,59 @@ export const MORALE_DMG_PER_STACK = 0.01
 export const MORALE_DMG_PER_STACK_QI_BREAK = 0.02
 export const MORALE_PEN_PER_STACK = 0.02 // site's moralePenBase: 2 pen points (~L22248) → 0.02 in the panel's fraction-of-100 unit
 export const MORALE_STACK_THRESHOLD = 5 // site's zi.moraleStackThreshold
-export const YI_RIVER_INTERVAL_SEC = 10 // site's zi.triggerInterval
 export const MORALE_MAX_STACKS = 5
 
-// Ramp: site's `ml()` (~L22103-22109).
-function baseMoraleStacks(tSec: number): number {
-  if (tSec < 0) return 0
-  return Math.min(MORALE_MAX_STACKS, 1 + Math.floor(tSec / 2))
-}
-
-export function moraleStacksAtTime(tSec: number, controlled: boolean): number {
-  const base = baseMoraleStacks(tSec)
-  return controlled ? Math.min(MORALE_MAX_STACKS, base * 2) : base
-}
+// In-game values as of 2026-11-10: a direct hit adds a stack at most once per
+// 2 s, each add renews the 12 s window, and the window lapsing drops every
+// stack. Yi River fires on a landed direct hit while the full stacks are up,
+// at most once per 10 s, and lands 0.05 s after that hit.
+export const MORALE_STACK_INTERVAL_SEC = 2
+export const MORALE_STACK_LIFETIME_SEC = 12
+export const YI_RIVER_INTERVAL_SEC = 10
+export const YI_RIVER_DELAY_SEC = 0.05
 
 export function moraleDmgPerStack(controlled: boolean): number {
   return controlled ? MORALE_DMG_PER_STACK_QI_BREAK : MORALE_DMG_PER_STACK
+}
+
+interface StackStep {
+  gainedAtSec: number
+  stacks: number
+  createdBuff: boolean
+}
+
+const SAME_HIT_EPSILON_SEC = 1e-9
+
+export class MoraleStacks {
+  private steps: StackStep[] = []
+
+  stacksAt(timeSec: number): number {
+    for (let index = this.steps.length - 1; index >= 0; index--) {
+      const step = this.steps[index]!
+      if (step.gainedAtSec > timeSec) continue
+      return timeSec < step.gainedAtSec + MORALE_STACK_LIFETIME_SEC ? step.stacks : 0
+    }
+    return 0
+  }
+
+  // The hit that creates the buff is read before the buff's damage listener
+  // exists, so it carries the new stack's penetration but not its damage bonus.
+  damageStacksAt(timeSec: number): number {
+    const stacks = this.stacksAt(timeSec)
+    const creating = this.steps.some(
+      (step) => step.createdBuff && Math.abs(step.gainedAtSec - timeSec) < SAME_HIT_EPSILON_SEC,
+    )
+    return creating ? stacks - 1 : stacks
+  }
+
+  gainFromDirectHit(timeSec: number): void {
+    const last = this.steps[this.steps.length - 1]
+    if (last && timeSec - last.gainedAtSec < MORALE_STACK_INTERVAL_SEC) return
+    const stacksBefore = this.stacksAt(timeSec)
+    this.steps.push({
+      gainedAtSec: timeSec,
+      stacks: Math.min(MORALE_MAX_STACKS, stacksBefore + 1),
+      createdBuff: stacksBefore === 0,
+    })
+  }
 }

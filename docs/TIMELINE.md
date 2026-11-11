@@ -127,7 +127,10 @@ skills — a cast whose own animation keeps running, and so keeps landing
 hits, only because nothing before that next input interrupted it. Unlike an ordinary condition this is never true for the rotation's own last
 step, and it is meaningless on a `castSkill`-generated cast, which has no
 rotation step of its own to look ahead from — author it only on a hit a real
-rotation step lands directly. Such a hit may also carry its own
+rotation step lands directly. `unlessNextStepSkillIds` is its inverse: the hit
+occurs unless the next step names a listed skill, and the rotation's own last
+step never excludes it. A listed id of the `universal-` form names that
+universal skill's instance in the rotation's own class. Such a hit may also carry its own
 `castFramesWhenGated`, overriding the skill's own `castFrames` for that cast
 the same way an active hit variant's own `castFrames` would — read only when
 this hit is among the ones that actually occurred, never derived from a hit

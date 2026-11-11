@@ -308,13 +308,14 @@ export class BuffEngine {
     forDisplay = false,
     damageSoFar = 0,
     statusesView?: StatusView,
+    liveMaxPhysAttack?: number,
   ): EffectContext {
     const build: BuildView = {
       classId: (this.params.classId as string) ?? "",
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
       minPhysAttack: this.paramNum("minPhysAttack"),
-      maxPhysAttack: this.paramNum("maxPhysAttack"),
+      maxPhysAttack: liveMaxPhysAttack ?? this.paramNum("maxPhysAttack"),
       whiteCritRate: this.paramNum("whiteCritRate"),
       breakthrough: this.paramNum("breakthrough"),
       param: (id) => this.paramOn(id),
@@ -1231,6 +1232,7 @@ export class BuffEngine {
     castScopedBuffIds: readonly string[] = [],
     damageSoFar = 0,
     statusesView?: StatusView,
+    externalMaxPhysAttack = 0,
   ): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
@@ -1244,6 +1246,7 @@ export class BuffEngine {
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
     const echoFeeds: { debuffId: string }[] = []
     let currentId = ""
+    const deferred: { id: string; module: BuffModule; stacks: number; windowWeight: number }[] = []
 
     const sink: EffectSink = {
       stat(statKey, amount) {
@@ -1299,6 +1302,10 @@ export class BuffEngine {
 
       const stacks =
         this.maxStacksOf(module.id) !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      if (module.readsLiveMaxPhysAttack) {
+        deferred.push({ id, module, stacks, windowWeight })
+        continue
+      }
       const ctx = this.buildContext(
         time,
         { kind: "damage", castTag, tags: tagSet, isDotTick: skill.isDotTick === true },
@@ -1315,6 +1322,31 @@ export class BuffEngine {
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
       for (const effect of resolveEffects(module, ctx))
         applyEffect(sink, windowWeight < 1 ? weightedEffect(effect, windowWeight, id) : effect)
+    }
+
+    if (deferred.length > 0) {
+      const liveMaxPhysAttack =
+        this.paramNum("maxPhysAttack") +
+        externalMaxPhysAttack +
+        effects.reduce(
+          (sum, effect) => (effect.statKey === "phys.max" ? sum + effect.amount : sum),
+          0,
+        )
+      for (const { id, module, stacks, windowWeight } of deferred) {
+        const ctx = this.buildContext(
+          time,
+          { kind: "damage", castTag, tags: tagSet, isDotTick: skill.isDotTick === true },
+          stacks,
+          module,
+          false,
+          damageSoFar,
+          statusesView,
+          liveMaxPhysAttack,
+        )
+        currentId = id
+        for (const effect of resolveEffects(module, ctx))
+          applyEffect(sink, windowWeight < 1 ? weightedEffect(effect, windowWeight, id) : effect)
+      }
     }
 
     return {

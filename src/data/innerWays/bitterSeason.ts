@@ -31,7 +31,7 @@ export function bitterSeasonTuningAtTier(tier: number): BitterSeasonTuning {
     procChance: has(INNER_WAY_NODE.bitterSeasonImprovedProcChance) ? 0.15 : 0.1,
     defenseReductionPerStack: has(INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction)
       ? 0.012
-      : 0.006,
+      : 0.01,
     // −10 target physical resistance, modelled as +10 player physical
     // penetration points (0.1 in the panel's fraction-of-100 unit) — target
     // pen resistance is zero for every target, so the two are numerically

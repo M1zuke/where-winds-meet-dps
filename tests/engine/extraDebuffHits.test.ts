@@ -29,8 +29,8 @@ describe("extraDebuffHits wiring", () => {
 
   it("wires Dragon's Breath 2 Hits as one apply plus pure Combustion-extend triggers (dragonBreath path)", () => {
     const breath = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.fireBreath2Hit)
-    expect(breath.hits).toHaveLength(3)
-    const [first, ...rest] = breath.hits
+    const [first, ...rest] = breath.hits.filter((candidate) => candidate.physMultiplier > 0)
+    expect(rest).toHaveLength(2)
 
     // First hit applies Combustion (and sets its duration); the rest only extend.
     expect(first.triggers).toHaveLength(1)

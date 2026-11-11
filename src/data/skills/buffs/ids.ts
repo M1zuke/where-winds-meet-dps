@@ -14,6 +14,7 @@ export const BUFF = {
   comboUmbLightBonus: "comboUmbLightBonus",
   comboSpringAwayBonus: "comboSpringAwayBonus",
   disintegration: "disintegration",
+  disintegrationBrokenTarget: "disintegrationBrokenTarget",
   draughtQiBonuses: "draughtQiBonuses",
   etherwrathAttackBoost: "etherwrathAttackBoost",
   etherwrathPenetrationBoost: "etherwrathPenetrationBoost",

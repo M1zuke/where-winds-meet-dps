@@ -3,6 +3,31 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import {
+  QUICK_FORM_HIGHER_PRIORITY_BREAK_FRAME,
+  SLOW_FORM_FIRST_HIT_FRAME,
+  quickFormFollowUpHit,
+  slowFormBreakMarkers,
+  slowFormVariant,
+} from "../dragonBreathSlowForm"
+
+const ROW = {
+  physMultiplier: 1.360884,
+  attributeMultiplier: 2.041327,
+  physFixed: 215.2962,
+  attributeFixed: 0,
+}
+
+const BONUS_ROW = {
+  physMultiplier: 1.49975,
+  attributeMultiplier: 2.249625,
+  physFixed: 237.2652,
+  attributeFixed: 0,
+}
+
+const COMBUSTION_EXTENSION = [
+  applyDebuff({ target: DEBUFF.combustion, extendFrames: 90, extendOnly: true }),
+]
 
 export const fireBreath1Hit = defineSkill({
   id: SKILL.fireBreath1Hit,
@@ -13,7 +38,10 @@ export const fireBreath1Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonSBreath1Hit,
-  castFrames: 40,
+  // In-game values as of 2026-11-10: the cast a higher-priority follow-up breaks, one frame
+  // after the first hit's own animation frame. Any other follow-up waits for the full
+  // animation, so the later hits land too.
+  castFrames: QUICK_FORM_HIGHER_PRIORITY_BREAK_FRAME,
   triggerable: true,
   // In-game values as of 2026-10-18.
   vitalityCost: 20,
@@ -23,13 +51,17 @@ export const fireBreath1Hit = defineSkill({
   // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
-      frame: 40,
+      frame: 36,
       physMultiplier: 1.360884,
       attributeMultiplier: 2.041327,
       physFixed: 215.2962,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
+      variants: [slowFormVariant(SKILL.fireBreath1Hit, 0, ROW, SLOW_FORM_FIRST_HIT_FRAME)],
     }),
+    quickFormFollowUpHit(1, 102, ROW, COMBUSTION_EXTENSION),
+    quickFormFollowUpHit(2, 108, BONUS_ROW, COMBUSTION_EXTENSION),
+    ...slowFormBreakMarkers(3),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

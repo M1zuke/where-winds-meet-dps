@@ -23,10 +23,10 @@ type BreakFrames = readonly (readonly [startFrame: number, endFrame: number])[]
 
 const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
   "builtin-bellstrikeUmbra-36-bbs": [[1606, 2206]],
-  "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1665, 2265]],
+  "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths": [[1702, 2302]],
   "builtin-bellstrikeUmbra-38-bbs": [[1637, 2237]],
   "builtin-bellstrikeUmbra-nox-1m-dh": [[1624, 2224]],
-  "builtin-bellstrikeUmbra-nox-30s-dh": [[1680, 2280]],
+  "builtin-bellstrikeUmbra-nox-30s-dh": [[1726, 2326]],
   "builtin-stonesplitStrength-tilla-dummy-rotation": [[1822, 2422]],
   "builtin-stonesplitStrength-windsfromcn-switch": [[1486, 2086]],
   "builtin-stonesplitStrength-windsfromcn-switch-no-toad": [[1459, 2059]],
@@ -37,7 +37,7 @@ const COMPUTED_BREAK_FRAMES: Readonly<Record<string, BreakFrames>> = {
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves": [[1045, 1645]],
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db": [[1120, 1720]],
   "builtin-silkbindJade-20-dh-video-60s": [[1707, 2307]],
-  "builtin-silkbindJade-30s-dummy-max": [[1634, 2234]],
+  "builtin-silkbindJade-30s-dummy-max": [[1673, 2273]],
   "builtin-silkbindJade-standardized-1-7": [[1859, 2459]],
   "builtin-silkbindJade-t5": [[2215, 2815]],
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": [[1508, 2108]],

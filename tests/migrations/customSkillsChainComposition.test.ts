@@ -99,6 +99,11 @@ import { healSkill as healPrepullVagrantSwordBoltTiming } from "../../src/migrat
 import { healSkill as healSplendorRootMotion } from "../../src/migrations/customSkills/V103__splendorRootMotion"
 import { healSkill as healUmbraRootMotion } from "../../src/migrations/customSkills/V104__umbraRootMotion"
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
+import { healSkill as healUmbraSpearTapHeavy } from "../../src/migrations/customSkills/V106__umbraSpearTapHeavyQuickestRelease"
+import { healSkill as healEvasiveChargeRefundFromRankOne } from "../../src/migrations/customSkills/V107__evasiveChargeRefundFromRankOne"
+import { healSkill as healDragonBreathSlowForm } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
+import { healSkill as healDragonBreathSingleHitFastFrame } from "../../src/migrations/customSkills/V109__dragonBreathSingleHitFastFrame"
+import { healSkill as healDragonBreathSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -118,6 +123,10 @@ function healDrunkenHazeExplosion(skill: unknown): unknown {
     ...skill,
     hits: addFinalStrikeExplosionTrigger(id, addDrunkenHazeExplosionHits(id, hits)),
   }
+}
+
+function underCurrentId(heal: (skill: unknown) => unknown): (skill: unknown) => unknown {
+  return (skill) => heal({ ...(skill as Skill), id: migrateMysticId((skill as Skill).id) })
 }
 
 const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
@@ -211,6 +220,11 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [103, healSplendorRootMotion],
   [104, healUmbraRootMotion],
   [105, healSwordMorphConversion],
+  [106, healUmbraSpearTapHeavy],
+  [107, healEvasiveChargeRefundFromRankOne],
+  [108, underCurrentId(healDragonBreathSlowForm)],
+  [109, healDragonBreathSingleHitFastFrame],
+  [110, underCurrentId(healDragonBreathSlowFormChosenAtThePress)],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

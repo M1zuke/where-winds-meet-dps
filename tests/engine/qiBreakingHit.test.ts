@@ -8,7 +8,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import { QI_BREAK_HP_DAMAGE_BONUS } from "../../src/data/baseStats/qiConstants"
-import { disintegrationBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
+import { disintegrationBrokenTargetBuffDef } from "../../src/data/innerWays/breakingPointBuffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { PROP } from "../../src/data/skills/ids"
 import type { Inputs } from "../../src/engine/types"
@@ -153,13 +153,15 @@ describe("a grant decided around the event that empties the bar", () => {
       { breakingPoint: true, breakingPointTier: 5 },
       bar,
       [],
-      [disintegrationBuffDef()],
+      [disintegrationBrokenTargetBuffDef()],
     )
     engine.processDamageHitPreScore(emptyingSec)
-    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, emptyingSec)).toBe(0)
+    expect(engine.getHistoricalBuffStacks(BUFF.disintegrationBrokenTarget, emptyingSec)).toBe(0)
     bar.apply(emptyingFrame, 400, "direct")
     engine.processDamageHitPreScore(sameFrameLaterSec)
-    expect(engine.getHistoricalBuffStacks(BUFF.disintegration, sameFrameLaterSec)).toBe(1)
+    expect(engine.getHistoricalBuffStacks(BUFF.disintegrationBrokenTarget, sameFrameLaterSec)).toBe(
+      1,
+    )
   })
 
   it("sees the break when it is decided after the event's Qi", () => {
