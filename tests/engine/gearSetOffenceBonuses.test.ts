@@ -285,11 +285,25 @@ describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi 
   })
 })
 
-describe("Swift Gale — airborne Heavy Attack bonus, unreachable by any built-in skill", () => {
-  it.each(CLASS_IDS())("%s carries no receiver for it", (classId) => {
-    const receivers = builtinSkillsForClass(classId).filter((skill) =>
-      skill.receives?.includes(BUFF.swiftGaleAirborneHeavyBoost),
-    )
-    expect(receivers).toEqual([])
+describe("Swift Gale — airborne Heavy Attack bonus", () => {
+  const MOON_SHATTER_SPRING_IDS = [
+    "silkbindJade-fanheavypursuit-3-hit",
+    "silkbindJade-fanheavypursuit-5-hit",
+  ]
+
+  it("adds 10% to a skill that receives it, with the set equipped", () => {
+    const skill = makeSkill("test", {
+      name: "Any Hit",
+      receives: [BUFF.swiftGaleAirborneHeavyBoost],
+    })
+    const result = engineWithSet("swiftGale").calculateDamageEffects(skill, 0)
+    expect(result.breakdown[BUFF.swiftGaleAirborneHeavyBoost]).toBeCloseTo(0.1, 10)
+  })
+
+  it.each(CLASS_IDS())("%s reaches only Moon Shatter Spring with it", (classId) => {
+    const receivers = builtinSkillsForClass(classId)
+      .filter((skill) => skill.receives?.includes(BUFF.swiftGaleAirborneHeavyBoost))
+      .map((skill) => skill.id)
+    expect(receivers).toEqual(classId === "silkbindJade" ? MOON_SHATTER_SPRING_IDS : [])
   })
 })

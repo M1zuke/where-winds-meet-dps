@@ -136,6 +136,7 @@ import { V132__splendorAttuneTags } from "./V132__splendorAttuneTags"
 import { V133__vernalUmbrellaAttuneTags } from "./V133__vernalUmbrellaAttuneTags"
 import { V134__ghostlyAfterimageDodgeContext } from "./V134__ghostlyAfterimageDodgeContext"
 import { V135__starweaveReachesStonesplitMartialArts } from "./V135__starweaveReachesStonesplitMartialArts"
+import { V136__swiftGaleReachesMoonShatterSpring } from "./V136__swiftGaleReachesMoonShatterSpring"
 
 export type {
   CustomSkillMigration,
@@ -340,6 +341,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V133__vernalUmbrellaAttuneTags,
   V134__ghostlyAfterimageDodgeContext,
   V135__starweaveReachesStonesplitMartialArts,
+  V136__swiftGaleReachesMoonShatterSpring,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

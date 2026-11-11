@@ -3,10 +3,8 @@ import { BUFF } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 import { swiftGale } from "../../sets/swiftGale"
 
-// "Increases Airborne Heavy Attack by 10% and knocks the target." (in-game
-// set tooltip, 2026-09-24.) The knock-down carries no damage row. No skill
-// this app models is an airborne heavy attack, so no `receives` names this
-// id — authored for the set it belongs to, never reachable on a dummy.
+// Airborne Heavy Attack skills deal 10% more damage (in-game values as of
+// 2026-11-11); the knock-down carries no damage row.
 export const swiftGaleAirborneHeavyBoost = defineBuff({
   id: BUFF.swiftGaleAirborneHeavyBoost,
   name: "Swift Gale",
