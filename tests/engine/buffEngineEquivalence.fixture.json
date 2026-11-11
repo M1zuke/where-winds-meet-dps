@@ -741510,7 +741510,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "2c59daeb4d8f8bfa61fddbbf9a0eb936b4d6cceec1514722b2c763996efca724"
+        "digest": "d8b820b956678130bd74b6d088f4bacda1588797efee70b22976615e94952152"
       },
       "debuffs": {
         "count": 7,
@@ -743299,7 +743299,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%"
+          "summary": "affinityDmg +0.6% per full 1% Affinity Rate, cap 18%"
         },
         {
           "id": "endlessGaleAtStartAffinityBoost",
@@ -743322,7 +743322,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%, except while the cast-end copy already grants it"
+          "summary": "affinityDmg as Endless Gale, except while the cast-end copy already grants it"
         },
         {
           "id": "swordSlashDamageBoost",
@@ -743368,7 +743368,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18% against a low-Qi target"
+          "summary": "affinityDmg +1.2% per full 100 Max Physical Attack (max 18%) against a low-Qi target"
         },
         {
           "id": "swordEnergyHpDamage",
@@ -743391,7 +743391,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "HP damage +20%"
+          "summary": "HP damage +2% per full 100 Max Physical Attack (max 20%)"
         },
         {
           "id": "qiImbalance",
@@ -743490,7 +743490,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%, except while Endless Gale already grants it"
+          "summary": "affinityDmg as Endless Gale, except while Endless Gale already grants it"
         },
         {
           "id": "namelessSwordAdditionalAttack",
@@ -743570,7 +743570,7 @@
       ]
     },
     "dynamic": {
-      "digest": "19d30efab8ddc8eef3fbfe766dc6e7285976e58c0a51658de8a33264a6bb683b"
+      "digest": "748178ced85bc278d9e6154e5e921a9c6cd7f17ea6e9787b2aeea10e32892e84"
     }
   },
   "silkbindJade": {

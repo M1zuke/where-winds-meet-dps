@@ -106,6 +106,8 @@ import { healSkill as healDragonBreathSingleHitFastFrame } from "../../src/migra
 import { healSkill as healDragonBreathSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
 import { healSkill as healVolutefitReachesWineboundMystics } from "../../src/migrations/customSkills/V111__volutefitReachesWineboundMystics"
 import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrations/customSkills/V112__bladeVesselRapidSlashSpacing"
+import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
+import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -236,6 +238,8 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [110, underCurrentId(healDragonBreathSlowFormChosenAtThePress)],
   [111, healVolutefitOnMigratedId],
   [112, healBladeVesselRapidSlashSpacing],
+  [113, healSplendorWaveCoefficientsExact],
+  [114, healSplendorQuickCastCoefficientsExact],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

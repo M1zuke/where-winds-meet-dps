@@ -8,6 +8,7 @@ import {
   V105__swordMorphConversionAtTheRelease,
   healSkill,
 } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
+import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
@@ -51,7 +52,7 @@ describe("custom-skills v104 fixture", () => {
 
 describe("healSkill", () => {
   it.each(HEALED_IDS)("lands the untouched %s copy on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = healSplendorWaveCoefficientsExact(healSkill(clone(skillIn(STORE, id)))) as Skill
     expect(healed.hits).toEqual(builtinOf(id).hits)
     expect(healed.castFrames).toBe(builtinOf(id).castFrames)
   })
@@ -101,7 +102,10 @@ describe("V105__swordMorphConversionAtTheRelease — called directly", () => {
   it("heals the Vagrant Sword copies and keeps every other skill", () => {
     const after = V105__swordMorphConversionAtTheRelease.migrate(clone(STORE))
     expect(after.v).toBe(105)
-    for (const id of HEALED_IDS) expect(skillIn(after, id).hits, id).toEqual(builtinOf(id).hits)
+    for (const id of HEALED_IDS)
+      expect((healSplendorWaveCoefficientsExact(skillIn(after, id)) as Skill).hits, id).toEqual(
+        builtinOf(id).hits,
+      )
     for (const id of [UNTOUCHED_ID, USER_AUTHORED_ID, EDITED_ID])
       expect(skillIn(after, id)).toEqual(skillIn(STORE, id))
   })

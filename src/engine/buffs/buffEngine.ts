@@ -317,6 +317,7 @@ export class BuffEngine {
       minPhysAttack: this.paramNum("minPhysAttack"),
       maxPhysAttack: liveMaxPhysAttack ?? this.paramNum("maxPhysAttack"),
       whiteCritRate: this.paramNum("whiteCritRate"),
+      whiteAffinityRate: this.paramNum("whiteAffinityRate"),
       breakthrough: this.paramNum("breakthrough"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
