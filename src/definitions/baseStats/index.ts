@@ -259,8 +259,6 @@ export function formlessAttack(
   return { min: acc.minFormless, max: acc.maxFormless }
 }
 
-// A readout, not an engine path: the damage math keeps Formless attack inside
-// the primary attribute block and never subtracts this back out.
 export function totalFormlessAttack(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[],
@@ -497,6 +495,12 @@ export function buildScalingSources(
     equippedPieces,
     inputs.disabledTalentNodes,
   )
+  const primaryKey = primaryAttackKey(inputs.classId)
+  const formless = inputs.formlessAttack ?? { min: 0, max: 0 }
+  const attackBeforeFormless = (
+    block: "bellstrike" | "stonesplit" | "silkbind" | "bamboocut",
+    bound: "min" | "max",
+  ) => inputs[block][bound] - (block === primaryKey ? formless[bound] : 0)
   return {
     power: totals.power,
     agility: totals.agility,
@@ -504,17 +508,17 @@ export function buildScalingSources(
     "phys.min": inputs.phys.min,
     "phys.max": inputs.phys.max,
     "phys.penetration": inputs.phys.penetration,
-    "bellstrike.min": inputs.bellstrike.min,
-    "bellstrike.max": inputs.bellstrike.max,
+    "bellstrike.min": attackBeforeFormless("bellstrike", "min"),
+    "bellstrike.max": attackBeforeFormless("bellstrike", "max"),
     "bellstrike.penetration": inputs.bellstrike.penetration,
-    "stonesplit.min": inputs.stonesplit.min,
-    "stonesplit.max": inputs.stonesplit.max,
+    "stonesplit.min": attackBeforeFormless("stonesplit", "min"),
+    "stonesplit.max": attackBeforeFormless("stonesplit", "max"),
     "stonesplit.penetration": inputs.stonesplit.penetration,
-    "silkbind.min": inputs.silkbind.min,
-    "silkbind.max": inputs.silkbind.max,
+    "silkbind.min": attackBeforeFormless("silkbind", "min"),
+    "silkbind.max": attackBeforeFormless("silkbind", "max"),
     "silkbind.penetration": inputs.silkbind.penetration,
-    "bamboocut.min": inputs.bamboocut.min,
-    "bamboocut.max": inputs.bamboocut.max,
+    "bamboocut.min": attackBeforeFormless("bamboocut", "min"),
+    "bamboocut.max": attackBeforeFormless("bamboocut", "max"),
     "bamboocut.penetration": inputs.bamboocut.penetration,
   }
 }
