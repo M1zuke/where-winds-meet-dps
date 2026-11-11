@@ -85,7 +85,11 @@ import {
 } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
-import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import {
+  classDefinition,
+  grantsMinPhysCritBoostFor,
+  martialArtsOf,
+} from "../definitions/classes/registry"
 import { CombatResource, type ResourceTickOutcome } from "./resources"
 import { MeterEngine } from "./meter"
 import { settleLateMeters, lateMeterStatusIds, type LateMeterSettlement } from "./lateMeter"
@@ -133,7 +137,7 @@ import {
 } from "./qiBar"
 import { QI_TARGETS, qiTargetHpMax } from "../data/baseStats/qiTargets"
 import { PLAYER_QI_DAMAGE_INDEX, QI_BREAK_HP_DAMAGE_BONUS } from "../data/baseStats/qiConstants"
-import { castTagOf, skillTagsOf, weaponTagOf, WEAPON_TAG } from "./buffs/tags"
+import { castTagOf, isDodgeContext, skillTagsOf, weaponTagOf, WEAPON_TAG } from "./buffs/tags"
 import {
   DRAWN_STATUS_PREFIX,
   drawnWeaponStatusId,
@@ -2611,6 +2615,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const classArts = classDef ? martialArtsOf(classDef) : []
+  const drawnArtAt = (frame: number) =>
+    classArts.find(
+      (art) => ledger.conditionStacksAt(drawnWeaponStatusId(art.drawnWeapon), frame) > 0,
+    ) ?? classArts[0]
+
   function scoreHit(
     event: HitScoreInput,
     rng: (() => number) | undefined,
@@ -2619,6 +2629,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   ): ScoredEvent {
     return withQiReadAtFrame(event.frame, reference, () => {
       const { frame, skill, hit, castFrame, stepStart, ledgerMark } = event
+      const dodgeArt = isDodgeContext(skill) ? drawnArtAt(castFrame) : undefined
+      const resolvedSkill: Skill = dodgeArt
+        ? { ...skill, receives: [...(skill.receives ?? []), dodgeArt.additionalAttackBuffId] }
+        : skill
       const behavior = behaviorFor(skill)
       const hitInput = hitInputAt(skill, hit, frame, castFrame, stepStart)
       let { extraEffects, forceGuaranteedAffinity } = event
@@ -2649,7 +2663,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           : undefined
       const st = resolveState(
         frame,
-        skill,
+        resolvedSkill,
         resolveOverride,
         castFrame,
         fightDamageSoFar,
@@ -2663,6 +2677,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           buffEngine?.isBuffActiveAtTime(id, frame / FPS + event.engineOffsetSec) ?? false,
       }
       const art = behavior.buildArt(hitInput, hitContext)
+      if (dodgeArt) art.weaponOrAttribute = dodgeArt.weaponType
       if (st.forceCrit) art.guaranteedCrit = 1
       if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
       const artSink: EffectSink = {
@@ -2697,7 +2712,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         affinityChanceWithout: affinityChancesWithout(forObservers, rng, (mechanicId) => {
           const without = resolveState(
             frame,
-            skill,
+            resolvedSkill,
             resolveOverride,
             castFrame,
             fightDamageSoFar,

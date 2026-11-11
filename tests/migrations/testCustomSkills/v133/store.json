@@ -1,0 +1,30 @@
+{
+  "v": 133,
+  "skills": [
+    {
+      "id": "mystic-ghostly-afterimage",
+      "classId": "mystic",
+      "name": "Ghostly Afterimage",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": [],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-afterimage-0",
+          "frame": 48,
+          "physMultiplier": 2.041567,
+          "attributeMultiplier": 3.062351,
+          "physFixed": 312,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z"
+    }
+  ]
+}

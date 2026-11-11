@@ -66,10 +66,13 @@ type ArtRow = {
   conditionalFinalCrit?: ConditionalFinalCrit
   extraStonesplitPenetration?: number
   mysticCategory?: string
+  dodgeContext?: boolean
 }
 
-export function isMysticHit(art: Pick<ArtRow, "skillType" | "mysticCategory">): boolean {
-  return art.skillType === "mystic" || !!art.mysticCategory
+export function isMysticHit(
+  art: Pick<ArtRow, "skillType" | "mysticCategory" | "dodgeContext">,
+): boolean {
+  return !art.dodgeContext && (art.skillType === "mystic" || !!art.mysticCategory)
 }
 
 type Attribute = "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut"
@@ -522,7 +525,9 @@ export function computeSkillDamage(
   const mysticCategory = art.mysticCategory
   const mysticHit = isMysticHit(art)
   const scopedDamageBoost =
-    (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
+    (weaponBoost !== undefined
+      ? weaponBoost + (art.dodgeContext ? 0 : (ctx.allMartialBoost ?? 0))
+      : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0) +
     (mysticHit ? (ctx.allMysticBoost ?? 0) : 0)
   const damageBoostTotal =

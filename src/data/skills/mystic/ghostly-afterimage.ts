@@ -1,15 +1,17 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { DODGE_CONTEXT_TAG } from "../../../engine/buffs/tags"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
 
-// In-game values as of 2026-10-06: fired from the dodge, so no mystic category
-// boost reaches it. All Mystic Skill DMG Boost does (as of 2026-10-15).
+// In-game values as of 2026-11-11: fired from the dodge's own graph, so the hit
+// takes the drawn weapon's damage line and its flat-bonus ranks, and neither
+// All Martial nor any mystic line.
 export const ghostlyAfterimage = defineSkill({
   id: SKILL.ghostlyAfterimage,
   classId: MYSTIC_ARTS_CLASS_ID,
   name: "Ghostly Afterimage",
-  tags: [],
+  tags: [DODGE_CONTEXT_TAG],
   skillType: "mystic",
   weaponOrAttribute: "",
   attributeAttack: "",

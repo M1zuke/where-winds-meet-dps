@@ -133,12 +133,62 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
     )
   })
 
-  it("takes All Mystic Skill DMG Boost as an uncategorised mystic skill", () => {
+  it("takes no All Mystic Skill DMG Boost", () => {
     const steps = [UMBRA, "Opener", DODGE, "Idle 2000"]
     const base = run("bellstrikeUmbra", steps, { allMysticBoost: 0 })
     const boosted = run("bellstrikeUmbra", steps, { allMysticBoost: 0.5 })
-    expect(afterimageEvents("bellstrikeUmbra", boosted)[0]!.damage).toBeGreaterThan(
+    expect(afterimageEvents("bellstrikeUmbra", boosted)[0]!.damage).toBe(
       afterimageEvents("bellstrikeUmbra", base)[0]!.damage,
+    )
+  })
+
+  it("takes the drawn weapon's damage line but not All Martial", () => {
+    const steps = [UMBRA, "Opener", DODGE, "Idle 2000"]
+    const damageOf = (overrides: Partial<Inputs>) =>
+      afterimageEvents("bellstrikeUmbra", run("bellstrikeUmbra", steps, overrides))[0]!.damage
+    const base = damageOf({})
+    expect(damageOf({ swordBoost: 0.5 })).toBeGreaterThan(base)
+    expect(damageOf({ spearBoost: 0.5 })).toBe(base)
+    expect(damageOf({ allMartialBoost: 0.5 })).toBe(base)
+  })
+
+  it("follows the weapon drawn when the dodge is cast", () => {
+    const spearOpener = makeSkill("bellstrikeUmbra", {
+      id: "afterimageSpearOpener",
+      name: "Spear Opener",
+      castFrames: 6,
+      tags: ["weapon:Spear"],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, attributeMultiplier: 1 })],
+    })
+    const result = simulateTimeline({
+      ...defaultInputs,
+      classId: "bellstrikeUmbra",
+      customSkills: [spearOpener, idleFor("bellstrikeUmbra", 2000)],
+      activeCustomRotation: testRotation("bellstrikeUmbra", {
+        steps: [
+          builtinSkill("bellstrikeUmbra", UMBRA).id,
+          spearOpener.id,
+          builtinSkill("bellstrikeUmbra", DODGE).id,
+          "afterimageIdle2000",
+        ].map((skillId) => makeStep({ skillId })),
+      }),
+      spearBoost: 0.5,
+    })
+    const plain = simulateTimeline({
+      ...defaultInputs,
+      classId: "bellstrikeUmbra",
+      customSkills: [spearOpener, idleFor("bellstrikeUmbra", 2000)],
+      activeCustomRotation: testRotation("bellstrikeUmbra", {
+        steps: [
+          builtinSkill("bellstrikeUmbra", UMBRA).id,
+          spearOpener.id,
+          builtinSkill("bellstrikeUmbra", DODGE).id,
+          "afterimageIdle2000",
+        ].map((skillId) => makeStep({ skillId })),
+      }),
+    })
+    expect(afterimageEvents("bellstrikeUmbra", result)[0]!.damage).toBeGreaterThan(
+      afterimageEvents("bellstrikeUmbra", plain)[0]!.damage,
     )
   })
 
@@ -153,6 +203,6 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
       attributeFixed: 0,
     })
     expect(explosion.hits[0]!.qiRate ?? 1).toBe(1)
-    expect(explosion.tags ?? []).toEqual([])
+    expect(explosion.tags ?? []).toEqual(["context:dodge"])
   })
 })

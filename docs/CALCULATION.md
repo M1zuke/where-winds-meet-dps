@@ -166,6 +166,11 @@ attribute flat term alike, and applies before the martial art's
 attribute-flat multiplier** so the two compose multiplicatively in that
 order. It never reaches either coefficient term.
 
+**A skill tagged as fired from a dodge is scored in the dodge's context.** It
+takes the damage line of the weapon drawn when the dodge is cast, without the
+all-martial-arts line, takes no mystic line of any kind, and receives the flat
+bonus of the drawn weapon's own art.
+
 **Attack rates form one additive pool per attack track, and a flat attack
 bonus sits outside it.** Every rate that raises the physical attack — a buff's,
 a set's — is summed first and multiplies the steady attack once; a flat bonus is
