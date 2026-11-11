@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -7,15 +7,13 @@ import {
   MISTWILLOW_LIGHT_ATTACK_RECEIVES,
   RIVEN_TWINBLADES_RECEIVES,
 } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const COEFFICIENTS = {
-  physMultiplier: 0.22542,
-  attributeMultiplier: 0.33813,
-  physFixed: 63,
-  attributeFixed: 34,
+  ...levelScaled(LEVEL_ROWS.dualBladesLightAttack2Hit0),
 }
 
-// In-game values as of 2026-09-24, level 100: stage 2 of the 4-stage twin
+// In-game values as of 2026-09-24: stage 2 of the 4-stage twin
 // blade light-attack chain, two hits of 0.5 each.
 export const dualBladesLightAttack2 = defineSkill({
   id: SKILL.dualBladesLightAttack2,

@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, ATTUNE, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { eonpourExhaustedTriggers } from "./buffs/eonpourExhausted"
+import { LEVEL_ROWS } from "./levelRows"
 
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 const REQUIRES_COOLDOWN_CLEAR = [{ buffId: STATUS.peakfallCooldown, op: "eq" as const, stacks: 0 }]
@@ -37,10 +38,7 @@ export const peakfall = defineSkill({
   hits: [
     hit(0, {
       frame: 20,
-      physMultiplier: 0.91934,
-      attributeMultiplier: 1.37901,
-      physFixed: 255,
-      attributeFixed: 139,
+      ...levelScaled(LEVEL_ROWS.peakfallHit0),
       conditions: REQUIRES_COOLDOWN_CLEAR,
       triggers: [
         ...eonpourExhaustedTriggers,
@@ -52,20 +50,14 @@ export const peakfall = defineSkill({
           id: "hv-peakfall-jadeflush",
           label: "Gauntlet Q - Jadeflush",
           conditions: JADEFLUSH,
-          physMultiplier: 0.78782,
-          attributeMultiplier: 1.18173,
-          physFixed: 218.5,
-          attributeFixed: 119,
+          ...levelScaled(LEVEL_ROWS.peakfallHit0GauntletQJadeflush),
           castFrames: 52,
         },
       ],
     }),
     hit(1, {
       frame: 34,
-      physMultiplier: 0.78782,
-      attributeMultiplier: 1.18173,
-      physFixed: 218.5,
-      attributeFixed: 119,
+      ...levelScaled(LEVEL_ROWS.peakfallHit0GauntletQJadeflush),
       conditions: [...JADEFLUSH, ...REQUIRES_COOLDOWN_CLEAR],
     }),
   ],

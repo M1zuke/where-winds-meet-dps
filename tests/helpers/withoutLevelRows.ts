@@ -1,6 +1,7 @@
 import { matchesRow, withRow } from "../../src/migrations/customSkills/hitRows"
 import { EXACT_SWAPS } from "../../src/migrations/customSkills/V126__mysticExactTierSixRows"
 import { LEVEL_TABLES } from "../../src/migrations/customSkills/V127__umbraLevelRows"
+import { LEVEL_TABLES as DRAUGHT_LEVEL_TABLES } from "../../src/migrations/customSkills/V130__draughtLevelRows"
 import type { Debuff } from "../../src/engine/debuff"
 import type { CoefficientRow, LevelRows, Skill } from "../../src/engine/skill"
 
@@ -18,6 +19,16 @@ function seededRow<Value extends CoefficientRow & { levelRows?: LevelRows }>(
     ])
   })
   if (umbra) return withRow(rest, umbra.from) as unknown as Omit<Value, "levelRows">
+  const draught = DRAUGHT_LEVEL_TABLES.find((candidate) => {
+    const top = candidate.rows["100"]!
+    return matchesRow(rest, [
+      top.physMultiplier,
+      top.attributeMultiplier,
+      top.physFixed,
+      top.attributeFixed,
+    ])
+  })
+  if (draught) return withRow(rest, draught.from) as unknown as Omit<Value, "levelRows">
   const swap = EXACT_SWAPS.find((candidate) => {
     const top = candidate.rows["6"]!
     return matchesRow(rest, [

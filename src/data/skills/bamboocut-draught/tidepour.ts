@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, ROLE, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import {
@@ -10,14 +10,12 @@ import {
   MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   RIVEN_TWINBLADES_RECEIVES,
 } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const bolt = (index: number, launchFrame: number) =>
   hit(index, {
     frame: launchFrame,
-    physMultiplier: 0.36636,
-    attributeMultiplier: 0.54954,
-    physFixed: 102,
-    attributeFixed: 55.5,
+    ...levelScaled(LEVEL_ROWS.tidepourHit0),
     projectile: { speedMetersPerSecond: 32, maxTravelFrames: 24 },
   })
 

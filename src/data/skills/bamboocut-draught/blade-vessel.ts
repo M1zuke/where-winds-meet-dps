@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -9,16 +9,14 @@ import {
   RIVEN_TWINBLADES_RECEIVES,
 } from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 const RAPID_SLASH = {
-  physMultiplier: 0.1659372,
-  attributeMultiplier: 0.2489058,
-  physFixed: 46.046,
-  attributeFixed: 25.025,
+  ...levelScaled(LEVEL_ROWS.bladeVesselHit1),
 }
 
 // Riven Twinblades' Heavy Attack and its held Charged Skill outside Tipsy
-// (in-game values as of 2026-09-24, level 100). The press lands at 22 f; the
+// (in-game values as of 2026-09-24). The press lands at 22 f; the
 // hold drains Endurance from 12 f later (0.2 s), 15/s for up to 1.6 s
 // (3 per 0.2 s). The rapid-slash loop is a 27.96 f pass whose two slashes
 // land 10.0 f and 24.2 f into it, so over the 96 f hold the seven slashes
@@ -53,10 +51,7 @@ export const bladeVessel = defineSkill({
   hits: [
     hit(0, {
       frame: 22,
-      physMultiplier: 0.35636,
-      attributeMultiplier: 0.53454,
-      physFixed: 100,
-      attributeFixed: 54,
+      ...levelScaled(LEVEL_ROWS.lightAttackHit0),
     }),
     hit(1, { frame: 44, ...RAPID_SLASH }),
     hit(2, { frame: 58, ...RAPID_SLASH }),
@@ -67,17 +62,11 @@ export const bladeVessel = defineSkill({
     hit(7, { frame: 128, ...RAPID_SLASH }),
     hit(8, {
       frame: 145,
-      physMultiplier: 0.23088,
-      attributeMultiplier: 0.34632,
-      physFixed: 64.4,
-      attributeFixed: 34.8,
+      ...levelScaled(LEVEL_ROWS.boundvesselHit15),
     }),
     hit(9, {
       frame: 167,
-      physMultiplier: 0.34632,
-      attributeMultiplier: 0.51948,
-      physFixed: 96.6,
-      attributeFixed: 52.2,
+      ...levelScaled(LEVEL_ROWS.bladeVesselHit9),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

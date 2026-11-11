@@ -1,5 +1,5 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import type { TriggerCondition } from "../../../engine/skill"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import type { LevelRows, TriggerCondition } from "../../../engine/skill"
 import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -8,22 +8,14 @@ import {
   MISTWILLOW_HEAVY_ATTACK_RECEIVES,
   SKYSTRIKE_GAUNTLETS_RECEIVES,
 } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", stacks: 1 }]
 
-const stage = (
-  index: number,
-  frame: number,
-  physMultiplier: number,
-  physFixed: number,
-  attributeFixed: number,
-) =>
+const stage = (index: number, frame: number, levelRows: LevelRows) =>
   hit(index, {
     frame,
-    physMultiplier,
-    attributeMultiplier: physMultiplier * 1.5,
-    physFixed,
-    attributeFixed,
+    ...levelScaled(levelRows),
     // In-game values as of 2026-09-25, before the class's own Qi bonuses.
     qiRate: 0.65,
     conditions: UNLOCKED,
@@ -32,12 +24,12 @@ const stage = (
 // The finisher's three strikes split its total 0.3 / 0.3 / 0.4, not evenly.
 // In-game values as of 2026-09-16.
 export const dragonquenchStagesAt = (frames: readonly number[]) => [
-  stage(0, frames[0], 0.68814, 191, 104),
-  stage(1, frames[1], 0.66144, 184, 100),
-  stage(2, frames[2], 0.80698, 224, 122),
-  stage(3, frames[3], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
-  stage(4, frames[4], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
-  stage(5, frames[5], 1.82136 * 0.4, 505 * 0.4, 275 * 0.4),
+  stage(0, frames[0], LEVEL_ROWS.dragonquenchInebriateHit0),
+  stage(1, frames[1], LEVEL_ROWS.dragonquenchInebriateHit1),
+  stage(2, frames[2], LEVEL_ROWS.dragonquenchInebriateHit2),
+  stage(3, frames[3], LEVEL_ROWS.dragonquenchInebriateHit3),
+  stage(4, frames[4], LEVEL_ROWS.dragonquenchInebriateHit3),
+  stage(5, frames[5], LEVEL_ROWS.dragonquenchInebriateHit5),
 ]
 
 // In-game values as of 2026-09-28: 4 m approach reach, plus a further

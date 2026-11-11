@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import type { TriggerCondition } from "../../../engine/skill"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
@@ -7,6 +7,7 @@ import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { eonpourExhaustedTriggers } from "./buffs/eonpourExhausted"
 import { skillBingePointAccumulationTriggers } from "./buffs/skillBingePointAccumulation"
+import { LEVEL_ROWS } from "./levelRows"
 
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 // In-game values as of 2026-09-16.
@@ -31,10 +32,7 @@ const jadeflushKick = {
   id: "hv-castlink-jadeflush",
   label: "Jadeflush",
   conditions: JADEFLUSH,
-  physMultiplier: 0.635355,
-  attributeMultiplier: 0.9530325,
-  physFixed: 176,
-  attributeFixed: 95.75,
+  ...levelScaled(LEVEL_ROWS.castlinkHit0Jadeflush),
 }
 
 // Shares Peakfall's Eonpour tier-6 Exhausted trigger and its 60 s cooldown
@@ -65,10 +63,7 @@ export const castlink = defineSkill({
   hits: [
     hit(0, {
       frame: 21,
-      physMultiplier: 0.616165,
-      attributeMultiplier: 0.9242475,
-      physFixed: 171,
-      attributeFixed: 93,
+      ...levelScaled(LEVEL_ROWS.castlinkHit0),
       conditions: [...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
       triggers: [
         ...eonpourExhaustedTriggers,
@@ -79,27 +74,18 @@ export const castlink = defineSkill({
     }),
     hit(1, {
       frame: 34,
-      physMultiplier: 0.616165,
-      attributeMultiplier: 0.9242475,
-      physFixed: 171,
-      attributeFixed: 93,
+      ...levelScaled(LEVEL_ROWS.castlinkHit0),
       conditions: [...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
       variants: [{ ...jadeflushKick, frame: 31 }],
     }),
     hit(2, {
       frame: 43,
-      physMultiplier: 0.635355,
-      attributeMultiplier: 0.9530325,
-      physFixed: 176,
-      attributeFixed: 95.75,
+      ...levelScaled(LEVEL_ROWS.castlinkHit0Jadeflush),
       conditions: [...JADEFLUSH, ...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
     }),
     hit(3, {
       frame: 73,
-      physMultiplier: 0.635355,
-      attributeMultiplier: 0.9530325,
-      physFixed: 176,
-      attributeFixed: 95.75,
+      ...levelScaled(LEVEL_ROWS.castlinkHit0Jadeflush),
       conditions: [...JADEFLUSH, ...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
     }),
     bingeGrant(4, 35, PLAIN),

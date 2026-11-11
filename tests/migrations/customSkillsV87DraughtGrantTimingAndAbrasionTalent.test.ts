@@ -12,9 +12,13 @@ import { healSkill as healDraughtMistwillowReach } from "../../src/migrations/cu
 import { healSkill as healDraughtReveldriftChargesAndEmpoweredLightAttack } from "../../src/migrations/customSkills/V89__draughtReveldriftChargesAndEmpoweredLightAttack"
 import { healSkill as healDraughtTipsylayAndExCooldowns } from "../../src/migrations/customSkills/V90__draughtTipsylayAndExCooldowns"
 import { healSkill as healDraughtNightwickStanceAndVariedComboOverrides } from "../../src/migrations/customSkills/V91__draughtNightwickStanceAndVariedComboOverrides"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV86File from "./testCustomSkills/v86/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV86File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const UNTOUCHED_ID = "bamboocutDraught-peakfall"
