@@ -1692,7 +1692,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance"
+          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance"
         },
         {
           "id": "swiftGaleAirborneHeavyBoost",
@@ -757106,7 +757106,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance"
+          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance"
         },
         {
           "id": "swiftGaleAirborneHeavyBoost",
@@ -759097,7 +759097,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance"
+          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance"
         },
         {
           "id": "swiftGaleAirborneHeavyBoost",
@@ -761468,7 +761468,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance"
+          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance"
         },
         {
           "id": "swiftGaleAirborneHeavyBoost",
@@ -763588,7 +763588,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical/attribute attack below 40% target Qi or Qi Imbalance"
+          "summary": "allDamageBoost +12% (Light Attack hits only), +6% physical damage (and Bamboocut damage) below 40% target Qi or Qi Imbalance"
         },
         {
           "id": "swiftGaleAirborneHeavyBoost",

@@ -254,24 +254,48 @@ describe("Swallowcall — Light Attack HP damage bonus, gated to the skills that
   })
 })
 
-describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi or Qi-Imbalanced target", () => {
+describe("Swallowcall — conditional +6% physical (and Bamboocut) damage vs a low-Qi or Qi-Imbalanced target", () => {
   const lightAttack = makeSkill("test", {
     name: "Light Attack",
     receives: [BUFF.swallowcallLightAttackBoost],
   })
+  const amountsOf = (result: ReturnType<BuffEngine["calculateDamageEffects"]>, statKey: string) =>
+    result.effects.filter((effect) => effect.statKey === statKey).map((effect) => effect.amount)
 
   it("contributes nothing against a target at full Qi with no Qi Imbalance", () => {
     const engine = engineWithSet("swallowcall")
     const result = engine.calculateDamageEffects(lightAttack, 0)
-    expect(result.artBonuses.minPhysPctBonus).toBeUndefined()
+    expect(amountsOf(result, "physBoost")).toEqual([])
+    expect(amountsOf(result, "attributeDamageBoost")).toEqual([])
   })
 
-  it("adds +6% physical and attribute attack once the target's Qi bar has broken", () => {
+  it("adds +6% physical damage once the target's Qi bar has broken, and no attack-rate bonus", () => {
     const engine = engineWithSet("swallowcall", {}, exhaustedFrom(1, 10))
     const result = engine.calculateDamageEffects(lightAttack, 1.5)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
-    expect(result.artBonuses.maxPhysPctBonus).toBeCloseTo(0.06, 10)
-    expect(result.artBonuses.attributeAttackPctBonus).toBeCloseTo(0.06, 10)
+    expect(amountsOf(result, "physBoost")).toEqual([0.06])
+    expect(result.artBonuses.minPhysPctBonus).toBeUndefined()
+    expect(result.artBonuses.attributeAttackPctBonus).toBeUndefined()
+  })
+
+  it("adds the Bamboocut damage half for Bamboocut Draught only", () => {
+    const draught = buffEngineWith(
+      { classId: "bamboocutDraught", armorSet: "swallowcall" },
+      buffDefsForClass("bamboocutDraught"),
+      [],
+      exhaustedFrom(1, 10),
+    )
+    const umbra = buffEngineWith(
+      { classId: "bellstrikeUmbra", armorSet: "swallowcall" },
+      buffDefsForClass("bellstrikeUmbra"),
+      [],
+      exhaustedFrom(1, 10),
+    )
+    expect(
+      amountsOf(draught.calculateDamageEffects(lightAttack, 1.5), "attributeDamageBoost"),
+    ).toEqual([0.06])
+    expect(
+      amountsOf(umbra.calculateDamageEffects(lightAttack, 1.5), "attributeDamageBoost"),
+    ).toEqual([])
   })
 
   it("adds it against a target in Qi Imbalance even at full Qi", () => {
@@ -281,7 +305,7 @@ describe("Swallowcall — conditional +6% physical/attribute attack vs a low-Qi 
     )
     engine.triggerDeclaredBuffs([BUFF.qiImbalance], "cast:test", 0)
     const result = engine.calculateDamageEffects(lightAttack, 2)
-    expect(result.artBonuses.minPhysPctBonus).toBeCloseTo(0.06, 10)
+    expect(amountsOf(result, "physBoost")).toEqual([0.06])
   })
 })
 
