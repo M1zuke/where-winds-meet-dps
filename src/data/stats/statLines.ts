@@ -51,6 +51,9 @@ const MYSTIC_BOOST_CEILING: GearLevelValues = {
   105: 0.134,
 }
 
+// In-game values as of 2026-11-11.
+const MYSTIC_SUBTYPE_BOOST_CEILING: GearLevelValues = { 86: 0.07, 91: 0.08 }
+
 // In-game values as of 2026-10-15.
 const ALL_MYSTIC_BOOST_CEILING: GearLevelValues = { 100: 0.114, 105: 0.134 }
 
@@ -273,6 +276,42 @@ export const STAT_LINES = [
     unit: "percent",
     enginePath: "areaMysticBoost",
     maxRoll: MYSTIC_BOOST_CEILING,
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
+    id: "areaDebuffMysticBoost",
+    label: "Area Debuff Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "areaDebuffMysticBoost",
+    maxRoll: MYSTIC_SUBTYPE_BOOST_CEILING,
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
+    id: "areaDamageMysticBoost",
+    label: "Area DMG Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "areaDamageMysticBoost",
+    maxRoll: MYSTIC_SUBTYPE_BOOST_CEILING,
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
+    id: "singleTargetControlMysticBoost",
+    label: "Single-target Control Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "controlMysticBoost",
+    maxRoll: MYSTIC_SUBTYPE_BOOST_CEILING,
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
+    id: "singleTargetBurstMysticBoost",
+    label: "Single-target Burst Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "burstMysticBoost",
+    maxRoll: MYSTIC_SUBTYPE_BOOST_CEILING,
     scope: "player",
     category: "Target-Type Boosts",
   },

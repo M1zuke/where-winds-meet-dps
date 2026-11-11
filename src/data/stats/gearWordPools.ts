@@ -165,6 +165,8 @@ const RETUNE_86: PoolByGroup = {
   helmArmor: [
     "affinity",
     "agility",
+    "areaDamageMysticBoost",
+    "areaDebuffMysticBoost",
     "areaMysticBoost",
     "body",
     "crit",
@@ -189,6 +191,8 @@ const RETUNE_86: PoolByGroup = {
     "power",
     "precision",
     "ropeDartBoost",
+    "singleTargetBurstMysticBoost",
+    "singleTargetControlMysticBoost",
     "singleTargetMysticBoost",
     "spearBoost",
     "swordBoost",
@@ -286,6 +290,8 @@ const RETUNE_91: PoolByGroup = {
   helmArmor: [
     "affinity",
     "agility",
+    "areaDamageMysticBoost",
+    "areaDebuffMysticBoost",
     "areaMysticBoost",
     "body",
     "crit",
@@ -310,6 +316,8 @@ const RETUNE_91: PoolByGroup = {
     "power",
     "precision",
     "ropeDartBoost",
+    "singleTargetBurstMysticBoost",
+    "singleTargetControlMysticBoost",
     "singleTargetMysticBoost",
     "spearBoost",
     "swordBoost",
@@ -502,21 +510,61 @@ const RETUNE_POOLS: Readonly<Record<GearLevel, PoolByGroup>> = {
 }
 
 const ALL_MYSTIC_BOOST_LEVEL: GearLevel = 100
-const MERGED_INTO_ALL_MYSTIC_BOOST: ReadonlySet<string> = new Set([
-  "singleTargetMysticBoost",
-  "areaMysticBoost",
-])
+
+const MYSTIC_SUBTYPE_LINE_AT_LEVEL: Readonly<
+  Record<string, Readonly<Record<GearLevel, GearWordId>>>
+> = {
+  areaDebuffMysticBoost: {
+    86: "areaDebuffMysticBoost",
+    91: "areaDebuffMysticBoost",
+    96: "areaMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+  areaDamageMysticBoost: {
+    86: "areaDamageMysticBoost",
+    91: "areaDamageMysticBoost",
+    96: "areaMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+  singleTargetControlMysticBoost: {
+    86: "singleTargetControlMysticBoost",
+    91: "singleTargetControlMysticBoost",
+    96: "singleTargetMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+  singleTargetBurstMysticBoost: {
+    86: "singleTargetBurstMysticBoost",
+    91: "singleTargetBurstMysticBoost",
+    96: "singleTargetMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+  areaMysticBoost: {
+    86: "areaDamageMysticBoost",
+    91: "areaDamageMysticBoost",
+    96: "areaMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+  singleTargetMysticBoost: {
+    86: "singleTargetBurstMysticBoost",
+    91: "singleTargetBurstMysticBoost",
+    96: "singleTargetMysticBoost",
+    100: "allMysticBoost",
+    105: "allMysticBoost",
+  },
+}
 
 export function gearWordRelayedToLevel(
   word: GearWordId,
   fromLevel: GearLevel,
   toLevel: GearLevel,
 ): GearWordId {
-  return fromLevel < ALL_MYSTIC_BOOST_LEVEL &&
-    toLevel >= ALL_MYSTIC_BOOST_LEVEL &&
-    MERGED_INTO_ALL_MYSTIC_BOOST.has(word)
-    ? "allMysticBoost"
-    : word
+  if (fromLevel === toLevel || fromLevel >= ALL_MYSTIC_BOOST_LEVEL) return word
+  return MYSTIC_SUBTYPE_LINE_AT_LEVEL[word]?.[toLevel] ?? word
 }
 
 const WEAPON_ART_BOOST_WORDS: ReadonlySet<string> = new Set(Object.values(WEAPON_BOOST_STAT_KEY))

@@ -52,7 +52,16 @@ const MARTIAL_BOOST_PATHS = [
   "gauntletsBoost",
 ]
 
-const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost", "allMysticBoost"]
+const TARGET_BOOST_PATHS = [
+  "bossBoost",
+  "singleMysticBoost",
+  "areaMysticBoost",
+  "controlMysticBoost",
+  "burstMysticBoost",
+  "areaDebuffMysticBoost",
+  "areaDamageMysticBoost",
+  "allMysticBoost",
+]
 
 interface RowEntry {
   label: string

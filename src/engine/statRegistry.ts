@@ -38,12 +38,12 @@ export const STAT_DEF_BY_KEY: Readonly<Record<string, StatDef>> = Object.fromEnt
 export const PLAYER_STAT_DEFS: readonly StatDef[] = STAT_DEFS.filter((d) => d.scope === "player")
 export const TARGET_STAT_DEFS: readonly StatDef[] = STAT_DEFS.filter((d) => d.scope === "target")
 
-export const MYSTIC_TYPE_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
-  control: "singleMysticBoost",
-  burst: "singleMysticBoost",
-  area: "areaMysticBoost",
-  "area-debuff": "areaMysticBoost",
-  "area-damage": "areaMysticBoost",
+export const MYSTIC_TYPE_BOOST_STAT_KEYS: Readonly<Record<string, readonly StatKey[]>> = {
+  control: ["singleMysticBoost", "controlMysticBoost"],
+  burst: ["singleMysticBoost", "burstMysticBoost"],
+  area: ["areaMysticBoost", "areaDamageMysticBoost"],
+  "area-debuff": ["areaMysticBoost", "areaDebuffMysticBoost"],
+  "area-damage": ["areaMysticBoost", "areaDamageMysticBoost"],
 }
 
 const ATTACK_BLOCKS = new Set(["phys", "bellstrike", "stonesplit", "silkbind", "bamboocut"])

@@ -58,6 +58,10 @@ export const defaultInputs: Inputs = {
   bossBoost: 0,
   singleMysticBoost: 0,
   areaMysticBoost: 0,
+  controlMysticBoost: 0,
+  burstMysticBoost: 0,
+  areaDebuffMysticBoost: 0,
+  areaDamageMysticBoost: 0,
   allMysticBoost: 0,
 
   classSpecificAttunement: {},
