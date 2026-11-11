@@ -70,6 +70,23 @@ describe("Sword Trial bosses", () => {
     }
   })
 
+  it("opens each boss at the breakthrough of its lowest-level version", () => {
+    const openedAt = Object.fromEntries(
+      SWORD_TRIAL_BOSS_DEFS.map((boss) => [boss.id, boss.minBreakthrough]),
+    )
+    expect(openedAt).toMatchObject({
+      wolfMaiden: 14,
+      snakeDoctor: 14,
+      earthFiendDeity: 14,
+      namelessGeneral: 14,
+      fengRuzhi: 14,
+      horseTamer: 16,
+      ironheartCentipede: 17,
+      ciAndCuo: 17,
+      lodestarSwordmaster: 18,
+    })
+  })
+
   it("orders each Qi break ladder by breakthrough, from the boss's first breakthrough", () => {
     for (const boss of SWORD_TRIAL_BOSS_DEFS) {
       const rungs = boss.qiBreakDamageBoost
