@@ -355,14 +355,14 @@
     }
   },
   "builtin-bamboocutDraught-1m-dummy-windsfromcn": {
-    "dps": 80085.73393672855,
-    "totalDamage": 4779783.553790415,
+    "dps": 80051.4194871944,
+    "totalDamage": 4777735.553060719,
     "damageBySkill": {
       "Gauntlet Q Prepull": 8707.812024296134,
-      "Twinblade Special": 34504.27648511884,
+      "Twinblade Special": 34417.03778665061,
       "Divinecraft - Fire": 71741.6857169675,
-      "Twinblade Q [1-hit cancel]": 7905.722622083327,
-      "Castlink": 197282.79131841147,
+      "Twinblade Q [1-hit cancel]": 7835.793798804156,
+      "Castlink": 195757.92582812987,
       "Divinecraft - Fire Explosion": 11099.957107986549,
       "Flute Ripple (DoT)": 167140.14873015575,
       "Falcon's Pursuit": 128578.60440152406,
@@ -373,7 +373,7 @@
       "Yi River": 46599.861729394834,
       "Dragonquench - Inebriate (3rd combo) [cancel]": 632048.3949282623,
       "Twinblade Special - Inebriate": 1158630.0986492934,
-      "Drunkslay State": 826974.6845677515,
+      "Drunkslay State": 826608.7168500839,
       "Gauntlet Q": 98572.68972063294,
       "Flute of the Tides Cancel": 15210.313349178909
     }

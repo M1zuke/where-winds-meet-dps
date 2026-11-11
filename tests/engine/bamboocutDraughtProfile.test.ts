@@ -21,8 +21,8 @@ describe("Bamboocut Draught — the measured build", () => {
     const result = runEngine(
       applySetBonuses(withDerivedStats(withoutBoardsAddedLater(profile.inputs))),
     )
-    expect(result.dps).toBe(68476.85191690786)
-    expect(result.totalDamage).toBe(4086926.7785741175)
+    expect(result.dps).toBe(68444.14092035529)
+    expect(result.totalDamage).toBe(4084974.4772632048)
   })
 
   it("lands within two percent of the mean of four in-game one-minute runs from 2026-09-10", () => {

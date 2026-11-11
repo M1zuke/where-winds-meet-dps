@@ -71,6 +71,29 @@ describe("Tiltrim", () => {
     expect(herosBloodCast.buffs.some((buff) => buff.id === BUFF.tiltrimStack)).toBe(false)
   })
 
+  it("builds no stack from hits landed outside Tipsy and Deepdaze", () => {
+    const outside = makeSkill(CLASS, {
+      name: "Outside Probe",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, physMultiplier: 1 }), makeHit({ frame: 10, physMultiplier: 1 })],
+    })
+    const run = (set: string | null) =>
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        ...gearSetFields(set, { fabricatePieces: true }),
+        customSkills: [outside],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: outside.id }), makeStep({ skillId: outside.id })],
+        }),
+      })
+    const damageOf = (result: ReturnType<typeof run>) =>
+      result
+        .timeline!.filter((event) => event.skillName === outside.name)
+        .map((event) => event.damage)
+    expect(damageOf(run(SET_ID.tiltrim))).toEqual(damageOf(run(null)))
+  })
+
   it("scales the attack value, so a hit made only of flat damage gains nothing", () => {
     const run = (physMultiplier: number, physFixed: number, set: string | null) => {
       const probe = makeSkill(CLASS, {
@@ -131,8 +154,9 @@ describe("Tiltrim", () => {
       name: "Late Probe",
       castFrames: 700,
       hits: [
-        makeHit({ frame: 329, physMultiplier: 1 }), // 5.5s: within the 5.1s grace after Deepdaze's 5s window
-        makeHit({ frame: 629, physMultiplier: 1 }), // 10.5s: the grace has elapsed
+        makeHit({ frame: 290, physMultiplier: 1 }), // 4.8s: Deepdaze is up, so this hit stacks
+        makeHit({ frame: 329, physMultiplier: 1 }), // 5.5s: Deepdaze is over, the stack still pays
+        makeHit({ frame: 629, physMultiplier: 1 }), // 10.5s: the stack has run out
       ],
     })
     const run = (set: string | null) =>
@@ -150,8 +174,8 @@ describe("Tiltrim", () => {
         .timeline!.filter((event) => event.skillName === probe.name)
         .map((event) => event.damage)
 
-    const [withinGrace, afterGrace] = damageOf(run(SET_ID.tiltrim))
-    const [baselineWithinGrace, baselineAfterGrace] = damageOf(run(null))
+    const [, withinGrace, afterGrace] = damageOf(run(SET_ID.tiltrim))
+    const [, baselineWithinGrace, baselineAfterGrace] = damageOf(run(null))
 
     expect(withinGrace).toBeGreaterThan(baselineWithinGrace)
     expect(afterGrace).toBeCloseTo(baselineAfterGrace, 6)
