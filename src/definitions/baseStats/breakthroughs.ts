@@ -90,8 +90,8 @@ export function gearLevelsUpTo(breakthrough: number): GearLevel[] {
 
 const MEASURED_TIERS = BREAKTHROUGH_TIERS.filter((tier) => tier.attributes?.length)
 
-// Breakthrough 13 has no attribute table; a tier without one resolves to the
-// nearest tier that has.
+// A breakthrough outside the tiers that carry an attribute table resolves to
+// the nearest one that does.
 export function breakthroughAttributes(breakthrough: number): readonly BreakthroughAttribute[] {
   let nearest: BreakthroughTier | undefined
   for (const tier of MEASURED_TIERS) {

@@ -23,6 +23,14 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
     attrDamageBoostReduction: 0,
     critDamageReduction: 0,
     affinityDamageReduction: 0,
+    attributes: [
+      { id: 1, stat: "precisionRate", value: 0.115 },
+      { id: 2, stat: "power", value: 104 },
+      { id: 3, stat: "agility", value: 104 },
+      { id: 4, stat: "momentum", value: 104 },
+      { id: 5, stat: "body", value: 104 },
+      { id: 6, stat: "defense", value: 104 },
+    ],
   },
   {
     breakthrough: 14,
