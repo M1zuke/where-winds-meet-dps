@@ -76,7 +76,7 @@ function legalTargets(
 ): AffixTarget[] {
   if (affix.isAttunementAffix) {
     if (!slot) return []
-    return attunementsFor(slot, inputs.classId).map((option) => ({
+    return attunementsFor(slot, inputs.classId, level).map((option) => ({
       kind: "attunement",
       attunementId: option.id,
       label: option.label,

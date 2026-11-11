@@ -65,7 +65,7 @@ function bestReattuneDps(
   classId: string,
   options: EngineRunOptions | undefined,
 ): number | null {
-  const attunements = attunementsFor(piece.slot, classId)
+  const attunements = attunementsFor(piece.slot, classId, piece.level)
   if (attunements.length === 0) return null
 
   let best: number | null = null

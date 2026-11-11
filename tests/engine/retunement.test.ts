@@ -22,6 +22,7 @@ import {
   relayedCapValue,
 } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
+import { reattunementPool } from "../../src/data/stats/gearReattunementWeights"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
 import { retuneWeightPool, type RetuneLine } from "../../src/data/stats/gearRetuneWeights"
@@ -439,23 +440,17 @@ describe("computeReattunement — weighted advisor", () => {
     expect(res86.pityThreshold).toBeNull()
   })
 
-  it("leaves an unmodelled pool member's weighted fields null alongside its modelled siblings", () => {
-    const armor = piece([w("crit", 0.07), w("agility", 35), EMPTY, EMPTY, EMPTY], {
-      slot: "helm",
-      hp: 5000,
-      physDef: 800,
-      minPhys: 0,
-      maxPhys: 0,
-      attunement: "umbQ",
-      attunementValue: 0.036,
-    })
-    const inputs = { ...withPieceInInventory(armor), classId: "silkbindJade" }
-    const res = computeReattunement({ reqId: 1, inputs, pieceId: armor.id })
+  it("keeps the weight of pool members that carry no engine line in the total", () => {
+    const weapon = weaponPiece({ level: 86, attunement: "physPen", attunementValue: 0.05 })
+    const inputs = withPieceInInventory(weapon)
+    const res = computeReattunement({ reqId: 1, inputs, pieceId: weapon.id })
     expect(res.reason).toBe("ok")
-    const unmodelled = res.options.find((o) => o.optionId === "umbFrequentProjectile")!
-    expect(unmodelled.pDraw).toBeNull()
-    const modelled = res.options.find((o) => o.optionId === "umbQ")!
-    expect(typeof modelled.pDraw).toBe("number")
+    const pool = reattunementPool(inputs.classId, "leftWeapon", 86)!
+    expect(pool.totalWeight).toBe(600)
+    expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(300)
+    const drawChances = res.options.map((option) => option.pDraw as number)
+    for (const chance of drawChances) expect(typeof chance).toBe("number")
+    expect(drawChances.reduce((sum, chance) => sum + chance, 0)).toBeLessThanOrEqual(300 / 600)
   })
 })
 

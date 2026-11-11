@@ -421,7 +421,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     }
   }
 
-  const pool = attunementsFor(piece.slot, inputs.classId)
+  const pool = attunementsFor(piece.slot, inputs.classId, piece.level)
   if (pool.length === 0) {
     return {
       reqId: req.reqId,

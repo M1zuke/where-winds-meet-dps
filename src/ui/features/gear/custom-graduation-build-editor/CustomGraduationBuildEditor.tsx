@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import { GRADUATION_LEVEL } from "../../../../data/classes/graduationGear"
 import { gearWordPoolForLine, gearWordRelayedToLevel } from "../../../../data/stats/gearWordPools"
-import { statLineLabel } from "../../../../data/stats/statLines"
+import { isUnknownGearWord, statLineLabel } from "../../../../data/stats/statLines"
 import { classDefinition, weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import type { GraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { attunementsFor } from "../../../../engine/attunements"
@@ -105,16 +105,26 @@ export function CustomGraduationBuildEditor({
     [t],
   )
 
-  function wordOptions(slot: GearSlot, lineIndex: number): ComboboxOption[] {
+  function wordOptions(slot: GearSlot, lineIndex: number, storedWord: string): ComboboxOption[] {
     const pool = gearWordPoolForLine(level, slot, lineIndex, weaponTypeForSlot(classId, slot))
     return [
       { value: "", label: t("common.none") },
+      ...(isUnknownGearWord(storedWord)
+        ? [
+            {
+              value: storedWord,
+              label: t(statLineKey(storedWord), statLineLabel(storedWord)),
+              detail: t("common.noLongerAvailable"),
+              disabled: true,
+            },
+          ]
+        : []),
       ...pool.map((word) => ({ value: word, label: t(statLineKey(word), statLineLabel(word)) })),
     ]
   }
 
   function attunementOptions(slot: GearSlot, storedId: string): ComboboxOption[] {
-    return attunementComboboxOptions(t, attunementsFor(slot, classId), storedId)
+    return attunementComboboxOptions(t, attunementsFor(slot, classId, GRADUATION_LEVEL), storedId)
   }
 
   function patch(next: Partial<CustomGraduationBuild>): void {
@@ -281,7 +291,7 @@ export function CustomGraduationBuildEditor({
                 <Combobox
                   key={lineIndex}
                   value={word ? gearWordRelayedToLevel(word, GRADUATION_LEVEL, level) : word}
-                  options={wordOptions(entry.slot, lineIndex)}
+                  options={wordOptions(entry.slot, lineIndex, word)}
                   onChange={(value) => patchWord(entry.slot, lineIndex, value as GearWordId)}
                   aria-label={`${t(gearSlotLabelKey(entry.slot, classId))} ${lineIndex + 1}`}
                 />

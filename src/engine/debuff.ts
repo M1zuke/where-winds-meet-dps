@@ -40,7 +40,7 @@ export interface DebuffDotSpec {
   directHit?: boolean
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
-  attuneTag?: string | null
+  attuneTags?: readonly string[] | null
   // The tick's own Qi rate, in-game values as of 2026-09-25 —
   // docs/CALCULATION.md § "Qi damage". Absent means 1, the in-game default.
   qiRate?: number

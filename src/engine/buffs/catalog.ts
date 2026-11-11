@@ -1,6 +1,6 @@
 import { catalogBuffDefs } from "./data"
 import { builtinBuffsForClass } from "../builtinBuffs"
-import { attuneTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
+import { attuneTagsOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { reaches } from "../scope"
 import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
@@ -239,11 +239,9 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   if (mysticBoostKey || skill.skillType === "mystic") {
     rows.push(gearStatRow("allMysticBoost", inputs))
   }
-  const attuneTag = attuneTagOf(skill)
-  const attunement = attuneTag
-    ? ATTUNEMENT_OPTIONS.find((option) => option.affectsTag === attuneTag)
-    : undefined
-  if (attunement?.enginePath) {
+  for (const attuneTag of attuneTagsOf(skill)) {
+    const attunement = ATTUNEMENT_OPTIONS.find((option) => option.affectsTag === attuneTag)
+    if (!attunement?.enginePath) continue
     const rolled = inputs?.classSpecificAttunement[attunement.id] ?? 0
     const forThisClass = !attunement.classIds || !classId || attunement.classIds.includes(classId)
     rows.push({

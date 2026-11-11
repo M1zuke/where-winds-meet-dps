@@ -30,7 +30,7 @@ describe("an attunement the class does not offer", () => {
   it("is listed as stored, marked no longer available and not selectable", () => {
     const options = attunementComboboxOptions(
       (key, fallback) => fallback ?? key,
-      attunementsFor("helm", "bellstrikeSplendor"),
+      attunementsFor("helm", "bellstrikeSplendor", 96),
       "spearQ",
     )
     expect(options.find((option) => option.value === "spearQ")).toMatchObject({
@@ -49,7 +49,7 @@ describe("an attunement the class does not offer", () => {
   })
 
   it("adds no extra entry for an id the class offers", () => {
-    const offered = attunementsFor("helm", "bellstrikeSplendor")
+    const offered = attunementsFor("helm", "bellstrikeSplendor", 96)
     const options = attunementComboboxOptions(
       (key, fallback) => fallback ?? key,
       offered,

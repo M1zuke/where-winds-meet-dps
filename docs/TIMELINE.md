@@ -199,6 +199,9 @@ keeps its own fields.
   are actually reached, the other's hits summoned from the first through a
   `castSkill` trigger at the right frame offset — never a tag scoped to one
   hit inside a single skill.
+- **A skill may carry several `attune:` tags.** Every carried tag's roll adds
+  into the one attunement factor of each hit the skill owns; a tag whose
+  attunement is unrolled adds nothing.
 - **A summoned hit counts as a hit for every hit-driven mechanic** and for
   the ledger a later step's conditions read — the same as a laid one, and a
   detonation's burst hit likewise. A `castSkill` trigger's own hits are not a separate category from

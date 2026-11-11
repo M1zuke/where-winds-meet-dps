@@ -263,6 +263,21 @@ describe("the shipped affix table is the authority", () => {
       expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbFrequentProjectile")
     }
   })
+
+  it("keeps the Vernal Umbrella Charged and Special lines of gear levels 86 and 91 apart from Frequent Projectile", () => {
+    for (const affixId of ["260304", "270304"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbCharged")
+    }
+    for (const affixId of ["260305", "270305"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbSpecial")
+    }
+  })
+
+  it("maps the Vernal Umbrella Light/Heavy Attack & Varied Combo ids of gear levels 96 to 105", () => {
+    for (const affixId of ["280306", "290305", "300305"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbLightHeavyVariedCombo")
+    }
+  })
 })
 
 describe("suggestions from the reported max roll", () => {

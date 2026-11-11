@@ -64,7 +64,7 @@ export function droneDotSpec(withLingeringBoneBullet: boolean): DebuffDotSpec {
     skillType: "weapon",
     directHit: true,
     projectile: DRONE_BULLET_PROJECTILE,
-    attuneTag: ATTUNE.umbFrequentProjectile,
+    attuneTags: [ATTUNE.umbFrequentProjectile, ATTUNE.umbSpecial],
     count: 1,
     perStackShapes: null,
     ...(withLingeringBoneBullet ? { additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS } : {}),

@@ -1,6 +1,4 @@
-// Labels are the official English Attune Effect name (in-game re-attuning
-// preview, 2026-08-17; the two Vernal Umbrella affixes from the patch 2.1 note,
-// 2026-08-20). Ranges are the gear-level ladder's matching rows (2026-09-07).
+// Official English Attune Effect names and ranges, in-game as of 2026-11-11.
 import type { AttunementOption } from "../../../engine/attunements"
 import { ARMOR_SLOTS } from "../attunementSlots"
 
@@ -8,6 +6,8 @@ const SKILL_BOOST_MIN = { 86: 0.026, 91: 0.03, 96: 0.036, 100: 0.042, 105: 0.048
 const SKILL_BOOST_MAX = { 86: 0.043, 91: 0.05, 96: 0.06, 100: 0.07, 105: 0.08 }
 const VERNAL_UMBRELLA_MIN = { 96: 0.036, 100: 0.042, 105: 0.048 }
 const VERNAL_UMBRELLA_MAX = { 96: 0.06, 100: 0.07, 105: 0.08 }
+const EARLY_UMBRELLA_MIN = { 86: 0.026, 91: 0.03 }
+const EARLY_UMBRELLA_MAX = { 86: 0.043, 91: 0.05 }
 // Its last rollable tier is gear level 81.
 const BELOW_MODELLED_LEVELS = {}
 
@@ -35,12 +35,22 @@ export const SILKBIND_JADE_ATTUNEMENTS = [
   {
     id: "umbCharged",
     label: "Vernal Umbrella Charged Skill DMG Boost",
-    min: SKILL_BOOST_MIN,
-    max: SKILL_BOOST_MAX,
+    min: EARLY_UMBRELLA_MIN,
+    max: EARLY_UMBRELLA_MAX,
     slots: ARMOR_SLOTS,
     classIds: ["silkbindJade"],
     enginePath: "classSpecificAttunement.umbCharged",
     affectsTag: "attune:umbCharged",
+  },
+  {
+    id: "umbSpecial",
+    label: "Vernal Umbrella Special Skill DMG Boost",
+    min: EARLY_UMBRELLA_MIN,
+    max: EARLY_UMBRELLA_MAX,
+    slots: ARMOR_SLOTS,
+    classIds: ["silkbindJade"],
+    enginePath: "classSpecificAttunement.umbSpecial",
+    affectsTag: "attune:umbSpecial",
   },
   {
     id: "umbLightHeavyVariedCombo",

@@ -24,8 +24,18 @@ export function attunementsForClass(classId: string): AttunementOption[] {
   return ATTUNEMENT_OPTIONS.filter((opt) => !opt.classIds || opt.classIds.includes(classId))
 }
 
-export function attunementsFor(slot: GearSlot, classId: string): AttunementOption[] {
-  return attunementsForClass(classId).filter((opt) => opt.slots.includes(slot))
+export function rollsAt(option: AttunementOption, level: GearLevel): boolean {
+  return option.max[level] !== undefined
+}
+
+export function attunementsFor(
+  slot: GearSlot,
+  classId: string,
+  level: GearLevel,
+): AttunementOption[] {
+  return attunementsForClass(classId).filter(
+    (opt) => opt.slots.includes(slot) && rollsAt(opt, level),
+  )
 }
 
 export function getAttunement(id: string): AttunementOption | undefined {

@@ -24,9 +24,9 @@ const ART = {
   skillType: "weapon",
 } as Parameters<typeof computeSkillDamage>[0]
 
-function damageWith(attuneTag: string | undefined, inputs: Inputs): number {
+function damageWith(attuneTags: readonly string[] | undefined, inputs: Inputs): number {
   const ctx = buildContext(inputs)
-  return computeSkillDamage({ ...ART, attuneTag }, ctx, 1).expectedDamage
+  return computeSkillDamage({ ...ART, attuneTags }, ctx, 1).expectedDamage
 }
 
 describe("attunement scope — the stat reaches only what declares the tag", () => {
@@ -38,13 +38,31 @@ describe("attunement scope — the stat reaches only what declares the tag", () 
   it("multiplies a tagged art row by (1 + rolled), and leaves an untagged one alone", () => {
     const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST })
     const untagged = damageWith(undefined, inputs)
-    expect(damageWith("attune:bleed", inputs)).toBeCloseTo(untagged * (1 + BLEED_BOOST), 6)
-    expect(damageWith("attune:swordQ", inputs)).toBeCloseTo(untagged, 6)
+    expect(damageWith(["attune:bleed"], inputs)).toBeCloseTo(untagged * (1 + BLEED_BOOST), 6)
+    expect(damageWith(["attune:swordQ"], inputs)).toBeCloseTo(untagged, 6)
+  })
+
+  it("adds the rolls of every tag a row carries into one factor", () => {
+    const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST, swordQ: 0.04 })
+    const untagged = damageWith(undefined, inputs)
+    expect(damageWith(["attune:bleed", "attune:swordQ"], inputs)).toBeCloseTo(
+      untagged * (1 + BLEED_BOOST + 0.04),
+      6,
+    )
+  })
+
+  it("leaves an unrolled second tag out of the factor", () => {
+    const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST })
+    const untagged = damageWith(undefined, inputs)
+    expect(damageWith(["attune:bleed", "attune:swordQ"], inputs)).toBeCloseTo(
+      untagged * (1 + BLEED_BOOST),
+      6,
+    )
   })
 
   it("contributes nothing when the stat is unrolled", () => {
     const inputs = umbraInputs()
-    expect(damageWith("attune:bleed", inputs)).toBeCloseTo(damageWith(undefined, inputs), 6)
+    expect(damageWith(["attune:bleed"], inputs)).toBeCloseTo(damageWith(undefined, inputs), 6)
   })
 
   // The option's `classIds` is the gate. `buildContext` cannot be driven by a
@@ -68,7 +86,7 @@ describe("attunement scope — the two entities that declare it", () => {
 
   it("puts the tag on the art row the timeline builds", () => {
     for (const skill of tagged) {
-      expect(hitToArtRow(skill.hits[0], skill).attuneTag).toBe("attune:bleed")
+      expect(hitToArtRow(skill.hits[0], skill).attuneTags).toEqual(["attune:bleed"])
     }
   })
 

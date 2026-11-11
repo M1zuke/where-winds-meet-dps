@@ -56,7 +56,9 @@ function applyBestAttunement(
   level: GearLevel,
   options: EngineRunOptions | undefined,
 ): GearPiece {
-  const opts = attunementsFor(piece.slot, inputs.classId).filter((o) => o.enginePath !== null)
+  const opts = attunementsFor(piece.slot, inputs.classId, level).filter(
+    (o) => o.enginePath !== null,
+  )
   if (opts.length === 0) return piece
 
   const baseRun = runEngine(applyPieceContribution(baseline, piece, +1), options)

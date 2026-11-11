@@ -3,7 +3,7 @@ import { isWeaponSlot } from "./types"
 import { gearBaseStatsFor } from "../data/stats/gearBaseStats"
 import { gearWordPoolForLine } from "../data/stats/gearWordPools"
 import { getWordSpecs } from "./itemRanking"
-import { getAttunement } from "./attunements"
+import { getAttunement, rollsAt } from "./attunements"
 import { weaponTypeForSlot } from "../definitions/classes/registry"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { NUMERIC_PATHS } from "./numericStatPaths"
@@ -109,7 +109,7 @@ export function computeGearContribution(piece: GearPiece, ctx: Inputs): GearCont
 
   if (piece.attunement && piece.attunementValue) {
     const opt = getAttunement(piece.attunement)
-    if (opt && opt.enginePath) {
+    if (opt && opt.enginePath && rollsAt(opt, piece.level)) {
       out.push({
         path: resolveEnginePath(opt.enginePath, ctx),
         amount: piece.attunementValue,

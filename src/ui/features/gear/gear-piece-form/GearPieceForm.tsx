@@ -174,8 +174,8 @@ export function GearPieceForm({
     return oneRetuneTunedLinesChance(piece, weaponTypeForSlot(inputs.classId, piece.slot), library)
   }, [piece, inputs.classId])
   const attunementCatalog = useMemo(
-    () => attunementsFor(piece.slot, inputs.classId),
-    [piece.slot, inputs.classId],
+    () => attunementsFor(piece.slot, inputs.classId, piece.level),
+    [piece.slot, inputs.classId, piece.level],
   )
   const attunementOptions = useMemo(
     () => attunementComboboxOptions(t, attunementCatalog, piece.attunement),

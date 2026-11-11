@@ -57,8 +57,8 @@ export function mysticCategoryOf(skill: Pick<Skill, "tags">): string {
 
 // Returns the whole tag, not its suffix — `FormulaContext.attuneBoostByTag` is
 // keyed by the tag as authored so the scope reads the same in data and in code.
-export function attuneTagOf(skill: Pick<Skill, "tags">): string {
-  return (skill.tags ?? []).find((t) => t.startsWith(ATTUNE_TAG)) ?? ""
+export function attuneTagsOf(skill: Pick<Skill, "tags">): readonly string[] {
+  return [...new Set((skill.tags ?? []).filter((t) => t.startsWith(ATTUNE_TAG)))]
 }
 
 // "" for a skill with no `weapon:` tag or the explicit `weapon:none` — neither

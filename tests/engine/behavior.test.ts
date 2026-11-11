@@ -42,7 +42,7 @@ describe("DEFAULT_BEHAVIOR — data-driven, what every skill gets", () => {
     const art = DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit), context)
     expect(art.physMultiplier).toBe(2)
     expect(art.weaponOrAttribute).toBe("Sword")
-    expect(art.attuneTag).toBe("attune:bleed")
+    expect(art.attuneTags).toEqual(["attune:bleed"])
   })
 
   it("swaps in a variant's coefficients when its conditions hold, and not otherwise", () => {

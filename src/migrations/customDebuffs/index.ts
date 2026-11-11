@@ -29,6 +29,7 @@ import { V24__volutefitReachesWineboundTicks } from "./V24__volutefitReachesWine
 import { V25__droneRecallBecomesCastLock } from "./V25__droneRecallBecomesCastLock"
 import { V26__mysticDotLevelRows } from "./V26__mysticDotLevelRows"
 import { V27__mysticExactTierSixDotRows } from "./V27__mysticExactTierSixDotRows"
+import { V28__dotAttuneTags } from "./V28__dotAttuneTags"
 
 export type {
   CustomDebuffMigration,
@@ -76,6 +77,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V25__droneRecallBecomesCastLock,
   V26__mysticDotLevelRows,
   V27__mysticExactTierSixDotRows,
+  V28__dotAttuneTags,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

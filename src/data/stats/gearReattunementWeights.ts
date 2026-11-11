@@ -183,16 +183,33 @@ const STRENGTH_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
   105: 500,
 }
 
-// Silkbind - Jade armour re-attunement pool, in-game 2026-09-08. Two pool
-// members (`umbCharged`, `umbSpecial`) and one unidentified member carry no
-// modelled engine effect; their weight stays in `totalWeight` so the modelled
-// lines' draw chance is not overstated.
+// Silkbind - Jade armour re-attunement pool, in-game 2026-11-11. Fully modelled.
+// At gear level 96 the game lists the Frequent Projectile line as two rows of
+// weight 150 and 1; they are one line here.
 const JADE_WEIGHTS: ClassWeights = {
-  86: { fanCharged: 100, fanSpecial: 100, umbQ: 100 },
-  91: { fanCharged: 50, fanSpecial: 100, umbQ: 80 },
-  96: { fanCharged: 50, fanSpecial: 100, umbQ: 100 },
-  100: { fanCharged: 50, fanSpecial: 100, umbQ: 100 },
-  105: { fanCharged: 50, fanSpecial: 100, umbQ: 100 },
+  86: { fanCharged: 100, fanSpecial: 100, umbQ: 100, umbCharged: 100, umbSpecial: 100 },
+  91: { fanCharged: 50, fanSpecial: 100, umbQ: 80, umbCharged: 120, umbSpecial: 150 },
+  96: {
+    fanCharged: 50,
+    fanSpecial: 100,
+    umbQ: 100,
+    umbFrequentProjectile: 151,
+    umbLightHeavyVariedCombo: 100,
+  },
+  100: {
+    fanCharged: 50,
+    fanSpecial: 100,
+    umbQ: 100,
+    umbFrequentProjectile: 150,
+    umbLightHeavyVariedCombo: 100,
+  },
+  105: {
+    fanCharged: 50,
+    fanSpecial: 100,
+    umbQ: 100,
+    umbFrequentProjectile: 150,
+    umbLightHeavyVariedCombo: 100,
+  },
 }
 const JADE_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
   86: 500,
