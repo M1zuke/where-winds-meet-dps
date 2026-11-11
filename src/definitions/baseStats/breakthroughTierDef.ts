@@ -35,7 +35,6 @@ export interface BreakthroughTier {
   physPenResistance: number
   attrPenResistance: number
   generalDamageTaken: number
-  fatigueDamageTaken: number
   damageReduction: number
   physDamageBoostReduction: number
   attrDamageBoostReduction: number

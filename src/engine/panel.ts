@@ -55,18 +55,6 @@ function scopedStatMap(
 // `targetDefenseMultiplier` instead.
 const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 
-export interface DerivedStats {
-  classId: string
-  primaryAttribute: AttributeKey
-  defense: number
-  effectiveDefense: number
-  generalDamageTaken: number
-  fatigueDamageTaken: number
-  generalDamageBoost: number
-  weaponBoosts: Record<string, number>
-  typeBoosts: Record<string, number>
-}
-
 export function getSchool(classId: string): ClassDefinition {
   const definition = classDefinition(classId)
   if (!definition) throw new Error(`Unknown classId: ${classId}`)
@@ -201,62 +189,9 @@ export function swapArsenal(inputs: Inputs, next: Arsenal): Inputs {
   return { ...inputs, arsenal: next }
 }
 
-export function deriveStats(inputs: Inputs): DerivedStats {
-  const school = getSchool(inputs.classId)
-  const target = getBreakthrough(inputs.breakthrough)
-
-  const effectiveDefense = target.defense * (1 - inputs.phys.penetration)
-
-  const fourPieceSet = resolveActiveSets(inputs).fourPiece
-  const setFormula = (fourPieceSet ? SET_BY_ID[fourPieceSet]?.formulaBonus : undefined) ?? {}
-
-  const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
-  const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
-  const effectiveBossBoost = inputs.bossBoost
-
-  const henZhi = inputs.shareDebuff5HenZhi ? 0.05 : 0
-  const easyHurt = inputs.shareEasyHurt ? 0.05 : 0
-  const generalDamageBoost =
-    henZhi + easyHurt + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
-
-  const weaponBoosts: Record<string, number> = {
-    Sword: inputs.swordBoost,
-    Spear: inputs.spearBoost,
-    Fan: inputs.fanBoost,
-    Umbrella: inputs.umbrellaBoost,
-    Modao: inputs.modaoBoost,
-    "Twin Blades": inputs.dualKnivesBoost,
-    "Rope Dart": inputs.ropeDartBoost,
-    Hengdao: inputs.hengDaoBoost,
-    Gauntlets: inputs.gauntletsBoost,
-  }
-
-  const typeBoosts: Record<string, number> = {
-    Boss: effectiveBossBoost,
-    control: inputs.singleMysticBoost + inputs.allMysticBoost,
-    burst: inputs.singleMysticBoost + inputs.allMysticBoost,
-    area: inputs.areaMysticBoost + inputs.allMysticBoost,
-    "area-debuff": inputs.areaMysticBoost + inputs.allMysticBoost,
-    "area-damage": inputs.areaMysticBoost + inputs.allMysticBoost,
-  }
-
-  return {
-    classId: school.id,
-    primaryAttribute: school.primaryAttribute,
-    defense: target.defense,
-    effectiveDefense,
-    generalDamageTaken: targetGeneralDamageTaken,
-    fatigueDamageTaken: targetFatigueDamageTaken,
-    generalDamageBoost,
-    weaponBoosts,
-    typeBoosts,
-  }
-}
-
 export interface TargetOverride {
   defenseDelta?: number
   generalDamageTakenDelta?: number
-  fatigueDamageTakenDelta?: number
 }
 
 export function buildContext(
@@ -271,8 +206,6 @@ export function buildContext(
     defense: baseTarget.defense + (targetOverride?.defenseDelta ?? 0),
     generalDamageTaken:
       baseTarget.generalDamageTaken + (targetOverride?.generalDamageTakenDelta ?? 0),
-    fatigueDamageTaken:
-      baseTarget.fatigueDamageTaken + (targetOverride?.fatigueDamageTakenDelta ?? 0),
   }
   const eff = effectiveRates(inputs)
 
@@ -281,17 +214,12 @@ export function buildContext(
   const henZhiActive = henZhiActiveForInputs(inputs)
   const effectiveDefense = target.defense * (henZhiActive ? HEN_ZHI_DEFENSE_MULTIPLIER : 1)
 
-  const chargeBonus = innerWayScalar(withScoredInnerWays(inputs).mindMethods, "chargeBonus")
-
   // Dummy mode drops what the target brings on its own, not what the player
   // puts on it: a training dummy has no baseline vulnerability, but it still
   // takes every debuff that writes to the same path.
   const targetGeneralDamageTaken =
     (inputs.dummyMode ? 0 : baseTarget.generalDamageTaken) +
     (targetOverride?.generalDamageTakenDelta ?? 0)
-  const targetFatigueDamageTaken =
-    (inputs.dummyMode ? 0 : baseTarget.fatigueDamageTaken) +
-    (targetOverride?.fatigueDamageTakenDelta ?? 0)
   const targetDamageReduction = inputs.dummyMode ? 0 : target.damageReduction
   const targetPhysDamageBoostReduction = inputs.dummyMode ? 0 : target.physDamageBoostReduction
   const targetAttrDamageBoostReduction = inputs.dummyMode ? 0 : target.attrDamageBoostReduction
@@ -364,9 +292,7 @@ export function buildContext(
     generalDamageBoost,
     allDamageBoost: inputs.allDamageBoost ?? 0,
     independentDamageBoost: inputs.independentDamageBoost ?? 0,
-    chargeBonus,
     effectiveDefense,
-    fatigueDamageTaken: targetFatigueDamageTaken,
     hasSixHenZhi: henZhiActive,
     foodPhysAttack: foodPhysAttackBeforeMultiplier(inputs),
     flatPhysAttack: foodPhysAttackAfterMultiplier(inputs),

@@ -1863,8 +1863,8 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
-// `getSchool()` throws on a `classId` outside `CLASS_IDS`, and `deriveStats` /
-// `withDerivedStats` call it unconditionally on every render.
+// `getSchool()` throws on a `classId` outside `CLASS_IDS`, and
+// `withDerivedStats` calls it unconditionally on every render.
 describe("class id degrade (an unrecognised classId falls back to the default build's class)", () => {
   const PROFILES_KEY = "wwm.profiles"
 

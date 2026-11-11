@@ -88,7 +88,7 @@ export function activeInnerWayDefs(slots: readonly SlottedInnerWay[]): InnerWayD
 
 export function innerWayScalar(
   slots: readonly SlottedInnerWay[],
-  channel: "generalDamageBoost" | "chargeBonus",
+  channel: "generalDamageBoost",
 ): number {
   let total = 0
   for (const def of activeInnerWayDefs(slots)) total += def.scalars?.[channel] ?? 0
