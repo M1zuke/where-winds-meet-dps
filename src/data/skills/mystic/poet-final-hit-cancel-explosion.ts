@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 
 // In-game as of 2026-09-24: the Drunken Aura this strike leaves explodes on a
@@ -23,14 +24,10 @@ export const poetFinalHitCancelExplosion = defineSkill({
   castFrames: 0,
   triggerable: true,
   receives: WINEBOUND_MYSTIC_RECEIVES,
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.701728,
-      attributeMultiplier: 1.052591,
-      physFixed: 110.3386,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.combustionExplosion),
       conditions: [
         { buffId: DEBUFF.combustion, op: "gte", stacks: 1 },
         { buffId: DEBUFF.smolder, op: "eq", stacks: 0 },
@@ -38,10 +35,7 @@ export const poetFinalHitCancelExplosion = defineSkill({
     }),
     hit(1, {
       frame: 0,
-      physMultiplier: 1.608126,
-      attributeMultiplier: 2.412189,
-      physFixed: 252.8592,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.smolderExplosion),
       conditions: [{ buffId: DEBUFF.smolder, op: "gte", stacks: 1 }],
     }),
   ],

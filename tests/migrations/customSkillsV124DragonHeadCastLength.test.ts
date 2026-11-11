@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V124__dragonHeadCastLength"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV123File from "./testCustomSkills/v123/store.json"
 
@@ -20,7 +21,7 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("bellstrikeUmbra").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("bellstrikeUmbra").find((skill) => skill.id === id)!)
 
 describe("custom-skills v123 fixture", () => {
   it("is v123 and stores both Dragon Heads with the 246 frame cast and hit", () => {

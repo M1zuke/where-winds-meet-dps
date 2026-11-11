@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import {
   QUICK_FORM_HIGHER_PRIORITY_BREAK_FRAME,
@@ -12,19 +13,9 @@ import {
   slowFormVariant,
 } from "../dragonBreathSlowForm"
 
-const ROW = {
-  physMultiplier: 1.360884,
-  attributeMultiplier: 2.041327,
-  physFixed: 215.2962,
-  attributeFixed: 0,
-}
+const ROW = levelScaled(LEVEL_ROWS.fireBreathStrike)
 
-const BONUS_ROW = {
-  physMultiplier: 1.49975,
-  attributeMultiplier: 2.249625,
-  physFixed: 237.2652,
-  attributeFixed: 0,
-}
+const BONUS_ROW = levelScaled(LEVEL_ROWS.fireBreathFinisher)
 
 const COMBUSTION_EXTENSION = [
   applyDebuff({ target: DEBUFF.combustion, extendFrames: 90, extendOnly: true }),
@@ -50,14 +41,10 @@ export const fireBreath1Hit = defineSkill({
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.360884,
-      attributeMultiplier: 2.041327,
-      physFixed: 215.2962,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fireBreathStrike),
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
       variants: [slowFormVariant(SKILL.fireBreath1Hit, 0, ROW, SLOW_FORM_FIRST_HIT_FRAME)],
     }),

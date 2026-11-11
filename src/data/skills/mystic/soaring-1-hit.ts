@@ -1,6 +1,7 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL } from "./ids"
 
 export const soaring1Hit = defineSkill({
@@ -22,14 +23,10 @@ export const soaring1Hit = defineSkill({
   // range — confirmed no scripted displacement despite the visible dash-in.
   reachMeters: 15,
   approach: "stationary",
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 48,
-      physMultiplier: 3.196543,
-      attributeMultiplier: 4.794815,
-      physFixed: 504.027,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.soaringFirst),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

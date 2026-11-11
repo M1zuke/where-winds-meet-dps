@@ -1,29 +1,14 @@
-import { hit } from "../../../definitions/skills/skillDef"
+import { LEVEL_ROWS } from "./levelRows"
+import { hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import type { SkillHit } from "../../../engine/skill"
 import { DEBUFF } from "./ids"
 
-// In-game values as of 2026-10-15, level 76.
-const STRIKE = {
-  physMultiplier: 1.023353,
-  attributeMultiplier: 1.535029,
-  physFixed: 160.9104,
-  attributeFixed: 0,
-}
+const STRIKE = levelScaled(LEVEL_ROWS.poetStrike)
 
-const COMBUSTION_EXPLOSION = {
-  physMultiplier: 0.701728,
-  attributeMultiplier: 1.052591,
-  physFixed: 110.3386,
-  attributeFixed: 0,
-}
+const COMBUSTION_EXPLOSION = levelScaled(LEVEL_ROWS.combustionExplosion)
 
-const SMOLDER_EXPLOSION = {
-  physMultiplier: 1.608126,
-  attributeMultiplier: 2.412189,
-  physFixed: 252.8592,
-  attributeFixed: 0,
-}
+const SMOLDER_EXPLOSION = levelScaled(LEVEL_ROWS.smolderExplosion)
 
 const COMBUSTION_ONLY_CONDITIONS = [
   { buffId: DEBUFF.combustion, op: "gte" as const, stacks: 1 },

@@ -1,0 +1,189 @@
+{
+  "v": 26,
+  "debuffs": [
+    {
+      "id": "debuff-mystic-toad-poison",
+      "classId": "bellstrikeUmbra",
+      "name": "Toad Poison",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 300,
+        "physMultiplier": 1.622006,
+        "attributeMultiplier": 2.433009,
+        "physFixed": 254.7984,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "mystic",
+        "directHit": true,
+        "mysticCategory": "area-debuff",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null,
+        "levelRows": {
+          "scale": "mysticTier",
+          "rows": {
+            "5": {
+              "physMultiplier": 1.529628,
+              "attributeMultiplier": 2.294442,
+              "physFixed": 188.64,
+              "attributeFixed": 0
+            },
+            "6": {
+              "physMultiplier": 1.622006,
+              "attributeMultiplier": 2.433009,
+              "physFixed": 254.7984,
+              "attributeFixed": 0
+            }
+          }
+        }
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "tags": ["role:toadVenom"],
+      "receives": []
+    },
+    {
+      "id": "debuff-mystic-toad-poison-fury",
+      "classId": "bellstrikeUmbra",
+      "name": "Toad Poison (Fury)",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 300,
+        "physMultiplier": 1.530217,
+        "attributeMultiplier": 2.295325,
+        "physFixed": 242.4702,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "mystic",
+        "directHit": true,
+        "mysticCategory": "area-debuff",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null,
+        "levelRows": {
+          "scale": "mysticTier",
+          "rows": {
+            "6": {
+              "physMultiplier": 1.530217,
+              "attributeMultiplier": 2.295325,
+              "physFixed": 242.4702,
+              "attributeFixed": 0
+            }
+          }
+        }
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "tags": ["role:toadVenom"],
+      "receives": []
+    },
+    {
+      "id": "debuff-mystic-combustion",
+      "classId": "bellstrikeUmbra",
+      "name": "Combustion",
+      "activation": "triggered",
+      "durationFrames": 481,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.295506,
+        "attributeMultiplier": 0.443259,
+        "physFixed": 46.75,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "qiRate": 0.6,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null,
+        "levelRows": {
+          "scale": "mysticTier",
+          "rows": {
+            "5": {
+              "physMultiplier": 0.2785286,
+              "attributeMultiplier": 0.4177929,
+              "physFixed": 34.3672,
+              "attributeFixed": 0
+            },
+            "6": {
+              "physMultiplier": 0.295506,
+              "attributeMultiplier": 0.443259,
+              "physFixed": 46.75,
+              "attributeFixed": 0
+            }
+          }
+        }
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T21:08:18.568Z",
+      "updatedAt": "2026-11-10T21:08:18.568Z",
+      "tags": ["role:combustion"],
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken", "volutefitWineboundDamage"]
+    },
+    {
+      "id": "debuff-mystic-smolder",
+      "classId": "bellstrikeUmbra",
+      "name": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 234,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "firstTickOffsetFrames": 0,
+        "reschedulesPerTick": true,
+        "physMultiplier": 0.245818,
+        "attributeMultiplier": 0.353727,
+        "physFixed": 37.6455,
+        "attributeFixed": 0,
+        "attributeAttack": "",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "qiRate": 0.6,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "breakdownName": "Smolder",
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken", "volutefitWineboundDamage"]
+    },
+    {
+      "id": "df-user-authored-gash",
+      "classId": "bellstrikeUmbra",
+      "name": "Authored Gash",
+      "activation": "triggered",
+      "durationFrames": 600,
+      "effects": [],
+      "dot": null,
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "echo": null,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z"
+    }
+  ]
+}

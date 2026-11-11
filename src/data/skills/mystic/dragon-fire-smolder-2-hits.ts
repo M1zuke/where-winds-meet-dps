@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import {
   SLOW_FORM_BONUS_FRAME,
@@ -13,19 +14,9 @@ import {
   slowFormVariant,
 } from "../dragonBreathSlowForm"
 
-const ROW = {
-  physMultiplier: 1.283899,
-  attributeMultiplier: 1.925849,
-  physFixed: 204.9587,
-  attributeFixed: 0,
-}
+const ROW = levelScaled(LEVEL_ROWS.dragonFireSmolderStrike)
 
-const BONUS_ROW = {
-  physMultiplier: 1.41491,
-  attributeMultiplier: 2.122364,
-  physFixed: 225.8728,
-  attributeFixed: 0,
-}
+const BONUS_ROW = levelScaled(LEVEL_ROWS.dragonFireSmolderFinisher)
 
 export const dragonFireSmolder2Hits = defineSkill({
   id: SKILL.dragonFireSmolder2Hits,
@@ -51,10 +42,7 @@ export const dragonFireSmolder2Hits = defineSkill({
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.283899,
-      attributeMultiplier: 1.925849,
-      physFixed: 204.9587,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.dragonFireSmolderStrike),
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
       variants: [
         slowFormVariant(
@@ -68,10 +56,7 @@ export const dragonFireSmolder2Hits = defineSkill({
     }),
     hit(1, {
       frame: 102,
-      physMultiplier: 1.283899,
-      attributeMultiplier: 1.925849,
-      physFixed: 204.9587,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.dragonFireSmolderStrike),
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
       variants: [slowFormVariant(SKILL.dragonFireSmolder2Hits, 1, ROW, SLOW_FORM_SECOND_HIT_FRAME)],
     }),

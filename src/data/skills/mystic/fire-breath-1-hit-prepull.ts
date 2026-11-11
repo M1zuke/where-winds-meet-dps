@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 
 export const fireBreath1HitPrepull = defineSkill({
@@ -22,14 +23,10 @@ export const fireBreath1HitPrepull = defineSkill({
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
-  // In-game values as of 2026-10-15, level 76.
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.360884,
-      attributeMultiplier: 2.041327,
-      physFixed: 215.2962,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fireBreathStrike),
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
   ],

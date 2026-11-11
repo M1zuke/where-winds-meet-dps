@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC, ROLE } from "../ids"
 import { BUFF } from "../buffs/ids"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL } from "./ids"
 
 // Fixed damage — triggers neither crit, affinity nor abrasion (CN mystic-arts
@@ -30,10 +31,7 @@ export const dragonHead = defineSkill({
     hit(0, {
       frame: 281.62,
       // In-game values as of 2026-10-15.
-      physMultiplier: 19.07564,
-      attributeMultiplier: 28.61346,
-      physFixed: 3001.372,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.dragonHead),
     }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",

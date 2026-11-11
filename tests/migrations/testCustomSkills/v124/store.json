@@ -1,0 +1,547 @@
+{
+  "v": 124,
+  "skills": [
+    {
+      "id": "mystic-dragon-head",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "role:dragonHead"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-n11jz0-d",
+          "frame": 281.62,
+          "physMultiplier": 19.07564,
+          "attributeMultiplier": 28.61346,
+          "physFixed": 3001.372,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 348,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "guaranteedNormal": true,
+      "vitalityCost": 100,
+      "castTag": "cast:dragonHead",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-dragon-head-plus",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head - Plus",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-s1f4u0-g",
+          "frame": 281.52,
+          "physMultiplier": 12.597266,
+          "attributeMultiplier": 18.895899,
+          "physFixed": 1999.4721,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 348,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "neverAbrades": true,
+      "vitalityCost": 80,
+      "castTag": "cast:dragonHeadPlus",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-fire-breath-1-hit",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath 1 Hit",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-clb5qv-j",
+          "frame": 36,
+          "physMultiplier": 1.360884,
+          "attributeMultiplier": 2.041327,
+          "physFixed": 215.2962,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-vhxfaj-k",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.360884,
+              "attributeMultiplier": 2.041327,
+              "physFixed": 215.2962,
+              "attributeFixed": 0,
+              "frame": 76.38
+            }
+          ]
+        },
+        {
+          "id": "hit-mwb6mgp3-58cqg4-l",
+          "frame": 102,
+          "physMultiplier": 1.360884,
+          "attributeMultiplier": 2.041327,
+          "physFixed": 215.2962,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 136.8
+        },
+        {
+          "id": "hit-mwb6mgp3-gc74lh-m",
+          "frame": 108,
+          "physMultiplier": 1.49975,
+          "attributeMultiplier": 2.249625,
+          "physFixed": 237.2652,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-combustion",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 90,
+              "extendOnly": true
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "gte",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 136.8
+        },
+        {
+          "id": "hit-mwb6mgp3-u09jcs-n",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ],
+          "unlessNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 150
+        },
+        {
+          "id": "hit-mwb6mgp3-5dxcmd-o",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ],
+          "requiresNextStepSkillIds": ["universal-deflect-cancel", "bellstrikeSplendor-energysurge"],
+          "castFramesWhenGated": 77.38
+        }
+      ],
+      "castFrames": 37.39,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 20,
+      "castTag": "cast:dragonSBreath1Hit",
+      "receives": ["volutefitWineboundDamage"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-toad-fury",
+      "classId": "bellstrikeUmbra",
+      "name": "Leaping Toad - Fury",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:area-debuff"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-2gy6nb-r",
+          "frame": 40,
+          "physMultiplier": 0.510072,
+          "attributeMultiplier": 0.765108,
+          "physFixed": 80.8234,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-qv1wcy-s",
+          "frame": 68,
+          "physMultiplier": 3.060433,
+          "attributeMultiplier": 4.59065,
+          "physFixed": 484.9404,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-toad-poison-fury",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 96,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "cancelledBy": "deflectCancel",
+      "vitalityCost": 25,
+      "castTag": "cast:toadFury",
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-free-morph",
+      "classId": "bellstrikeUmbra",
+      "name": "Free Morph",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:control"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-hu44jf-v",
+          "frame": 24,
+          "physMultiplier": 1.4342834,
+          "attributeMultiplier": 2.1514251,
+          "physFixed": 225.90800000000002,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-2x72tr-w",
+          "frame": 58,
+          "physMultiplier": 0.8605700399999999,
+          "attributeMultiplier": 1.29085506,
+          "physFixed": 135.54479999999998,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-c5qy49-x",
+          "frame": 79,
+          "physMultiplier": 0.8605700399999999,
+          "attributeMultiplier": 1.29085506,
+          "physFixed": 135.54479999999998,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-oo61jo-y",
+          "frame": 100,
+          "physMultiplier": 0.8605700399999999,
+          "attributeMultiplier": 1.29085506,
+          "physFixed": 135.54479999999998,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-ziygd0-z",
+          "frame": 115,
+          "physMultiplier": 0.8605700399999999,
+          "attributeMultiplier": 1.29085506,
+          "physFixed": 135.54479999999998,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-w8t6gy-10",
+          "frame": 126,
+          "physMultiplier": 0.8605700399999999,
+          "attributeMultiplier": 1.29085506,
+          "physFixed": 135.54479999999998,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-mwb6mgp3-gqaqws-11",
+          "frame": 170,
+          "physMultiplier": 1.4342834,
+          "attributeMultiplier": 2.1514251,
+          "physFixed": 225.90800000000002,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 270,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 30,
+      "castTag": "cast:freeMorph",
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "mystic-dragon-fire-smolder-2-hits",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath: Smolder 2 Hits",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-t9bv78-1",
+          "frame": 36,
+          "physMultiplier": 1.283899,
+          "attributeMultiplier": 1.925849,
+          "physFixed": 205.9587,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-6pq2mx-2",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.283899,
+              "attributeMultiplier": 1.925849,
+              "physFixed": 204.9587,
+              "attributeFixed": 0,
+              "frame": 76.38,
+              "castFrames": 164.66
+            }
+          ]
+        },
+        {
+          "id": "hit-mwb6mgp3-yn57n7-3",
+          "frame": 102,
+          "physMultiplier": 1.283899,
+          "attributeMultiplier": 1.925849,
+          "physFixed": 204.9587,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-kcxu60-4",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.283899,
+              "attributeMultiplier": 1.925849,
+              "physFixed": 204.9587,
+              "attributeFixed": 0,
+              "frame": 163.66
+            }
+          ]
+        },
+        {
+          "id": "hit-mwb6mgp3-g2vzyj-5",
+          "frame": 108,
+          "physMultiplier": 1.41491,
+          "attributeMultiplier": 2.122364,
+          "physFixed": 225.8728,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 1,
+              "condition": null,
+              "extendFrames": 240
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-mwb6mgp3-baxkyl-6",
+              "label": "Not Intoxicated",
+              "conditions": [
+                {
+                  "buffId": "debuff-mystic-intoxicated",
+                  "op": "lt",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 1.41491,
+              "attributeMultiplier": 2.122364,
+              "physFixed": 225.8728,
+              "attributeFixed": 0,
+              "frame": 169.66
+            }
+          ]
+        },
+        {
+          "id": "hit-mwb6mgp3-hnr4rw-7",
+          "frame": 12,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-intoxicated",
+              "stacks": 1,
+              "condition": null
+            }
+          ],
+          "conditions": [
+            {
+              "buffId": "debuff-mystic-intoxicated",
+              "op": "lt",
+              "stacks": 1
+            }
+          ]
+        }
+      ],
+      "castFrames": 137,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z",
+      "vitalityCost": 20,
+      "castTag": "cast:dragonSBreathSmolder2Hits",
+      "breakdownName": "Dragon's Breath",
+      "receives": ["volutefitWineboundDamage"],
+      "reachMeters": 8,
+      "approach": "stationary"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "Authored Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-mwb6mgp3-sy1yy3-a",
+          "frame": 10,
+          "physMultiplier": 1.5,
+          "attributeMultiplier": 0,
+          "physFixed": 100,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "createdAt": "2026-11-10T21:08:18.567Z",
+      "updatedAt": "2026-11-10T21:08:18.567Z"
+    }
+  ]
+}

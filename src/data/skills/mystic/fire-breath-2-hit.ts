@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { WINEBOUND_MYSTIC_RECEIVES } from "../wineboundReceives"
+import { LEVEL_ROWS } from "./levelRows"
 import { SKILL, DEBUFF } from "./ids"
 import {
   SLOW_FORM_BONUS_FRAME,
@@ -13,19 +14,9 @@ import {
   slowFormVariant,
 } from "../dragonBreathSlowForm"
 
-const ROW = {
-  physMultiplier: 1.360884,
-  attributeMultiplier: 2.041327,
-  physFixed: 215.2962,
-  attributeFixed: 0,
-}
+const ROW = levelScaled(LEVEL_ROWS.fireBreathStrike)
 
-const BONUS_ROW = {
-  physMultiplier: 1.49975,
-  attributeMultiplier: 2.249625,
-  physFixed: 237.2652,
-  attributeFixed: 0,
-}
+const BONUS_ROW = levelScaled(LEVEL_ROWS.fireBreathFinisher)
 
 export const fireBreath2Hit = defineSkill({
   id: SKILL.fireBreath2Hit,
@@ -50,10 +41,7 @@ export const fireBreath2Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.360884,
-      attributeMultiplier: 2.041327,
-      physFixed: 215.2962,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fireBreathStrike),
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
       variants: [
         slowFormVariant(
@@ -67,10 +55,7 @@ export const fireBreath2Hit = defineSkill({
     }),
     hit(1, {
       frame: 102,
-      physMultiplier: 1.360884,
-      attributeMultiplier: 2.041327,
-      physFixed: 215.2962,
-      attributeFixed: 0,
+      ...levelScaled(LEVEL_ROWS.fireBreathStrike),
       triggers: [
         applyDebuff({
           target: DEBUFF.combustion,
