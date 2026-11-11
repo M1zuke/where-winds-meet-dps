@@ -22,6 +22,9 @@ export const PRECISION_RATE_CAP = 1
 export const CRIT_RATE_CAP = 0.8
 export const AFFINITY_RATE_CAP = 0.4
 
+// In-game penetration curve as of 2026-11-11.
+export const PENETRATION_DEFICIT_KNEE = 75
+
 export function effectivePhysRange(
   minPhys: number,
   maxPhys: number,
@@ -189,7 +192,9 @@ export function computeSkillDamage(
   // docs/CALCULATION.md § "Calculation rules" rule 2.
   const penetrationFraction = (penetration: number, resistancePercent: number) => {
     const net = penetration - resistancePercent
-    return net <= 0 ? net / 100 : net / 200
+    if (net > 0) return net / 200
+    const deficit = -net
+    return deficit > PENETRATION_DEFICIT_KNEE ? (-4 * deficit) / (4 * deficit + 100) : net / 100
   }
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
   const rowDealsNoAttributeDamage = attributeCoefficient === 0 && physCoefficient > 0

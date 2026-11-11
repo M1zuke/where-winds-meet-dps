@@ -33,6 +33,9 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   imports it. A gear-word delta is derived from the word's roll and that table —
   a pre-multiplied literal is a second copy of the max roll, and goes stale the
   moment either moves.
+- A talent that scales from an attribute attack reads that attack **without**
+  the Formless attack — the talent board's and the gear's alike. The Formless
+  attack still reaches the damage.
 - A selection is stored; the bonus it implies is added during the derive. Never
   store a bonus that a selection already implies.
 - **The food bonus is not a stat-layer add.** It is applied inside the kernel at
@@ -133,9 +136,10 @@ guard, and it is directional.
    `1 − precision` (PDF §8). Differs only below 100 % precision. An
    abrasion-avoid fraction scales this rate down further, and the mass it
    removes lands on the normal row, never on crit.
-2. **Penetration** uses net `(pen − resistance)`, `÷100` when net ≤ 0 (deficit
-   at full weight) and `÷200` when net > 0 (overflow halved), for the physical
-   and every attribute track. ⚠️ This **corrects PDF §7** — the CN sources'
+2. **Penetration** uses net `(pen − resistance)`: `÷200` when net > 0
+   (overflow halved), `÷100` for a deficit of up to 75 points (full weight), and
+   `−4d ÷ (4d + 100)` for a deficit `d` beyond 75 — for the physical and every
+   attribute track. ⚠️ This **corrects PDF §7** — the CN sources'
    worked examples go the other way, and the PDF-literal branch inflated the
    pen term about 2×. **Do not "fix" it back.**
 3. **A skill's own rate bonus** — crit and affinity alike — is added undivided

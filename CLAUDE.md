@@ -285,9 +285,9 @@ display wrapper that duplicates an engine constant. One source of truth.
 ## Calculation rules
 
 Three rules apply unconditionally, from the external sources (Midasione PDF +
-CN community sources): graze rate `(1−precision)(1−affinity)`; net-pen `÷100`
-deficit / `÷200` overflow (corrects PDF §7 — **do not "fix" it back**); a
-skill's own rate bonus is added undivided and falls inside the cap, for both
+CN community sources): graze rate `(1−precision)(1−affinity)`; net-pen
+`÷100` deficit up to 75 points, `−4d ÷ (4d + 100)` beyond, `÷200` overflow
+(corrects PDF §7 — **do not "fix" it back**); a skill's own rate bonus is added undivided and falls inside the cap, for both
 crit and affinity alike, while the direct rate is added outside it. The
 martial art's attribute multiplier applies to every row alike, DoT ticks
 included, and to a row's flat term together with its coefficient.
