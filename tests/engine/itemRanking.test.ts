@@ -24,6 +24,10 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   it("produces a row per gear word the build's gear level offers, plus one per class-legal attunement", () => {
     expect(rows.filter((row) => row.source === "tunement").length).toBe(32)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
+      "Bellstrike Penetration",
+      "Stonesplit Penetration",
+      "Silkbind Penetration",
+      "Bamboocut Penetration",
       "Physical Resistance",
       "Strategic Sword Martial Art Skill DMG Boost",
       "Strategic Sword Special Skill DMG Boost",

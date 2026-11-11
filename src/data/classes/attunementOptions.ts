@@ -10,6 +10,8 @@ import { STONESPLIT_STRENGTH_ATTUNEMENTS } from "./stonesplit-strength/attunemen
 // the percentage number; the app stores a fraction, so every value is ÷100.
 const PHYS_PEN_MIN = { 86: 0.047, 91: 0.054, 96: 0.066, 100: 0.077, 105: 0.088 }
 const PHYS_PEN_MAX = { 86: 0.078, 91: 0.09, 96: 0.11, 100: 0.128, 105: 0.146 }
+const ATTRIBUTE_PEN_MIN = { 86: 0.055 }
+const ATTRIBUTE_PEN_MAX = { 86: 0.092 }
 const FORMLESS_PEN_MIN = { 91: 0.065, 96: 0.078, 100: 0.091, 105: 0.104 }
 const FORMLESS_PEN_MAX = { 91: 0.108, 96: 0.13, 100: 0.152, 105: 0.174 }
 
@@ -31,6 +33,42 @@ const EVERY_CLASS_OPTIONS = [
     slots: GENERAL_SLOTS,
     classIds: null,
     enginePath: "primaryAttr.penetration",
+  },
+  {
+    id: "bellstrikePen",
+    label: "Bellstrike Penetration",
+    min: ATTRIBUTE_PEN_MIN,
+    max: ATTRIBUTE_PEN_MAX,
+    slots: GENERAL_SLOTS,
+    classIds: null,
+    enginePath: "bellstrike.penetration",
+  },
+  {
+    id: "stonesplitPen",
+    label: "Stonesplit Penetration",
+    min: ATTRIBUTE_PEN_MIN,
+    max: ATTRIBUTE_PEN_MAX,
+    slots: GENERAL_SLOTS,
+    classIds: null,
+    enginePath: "stonesplit.penetration",
+  },
+  {
+    id: "silkbindPen",
+    label: "Silkbind Penetration",
+    min: ATTRIBUTE_PEN_MIN,
+    max: ATTRIBUTE_PEN_MAX,
+    slots: GENERAL_SLOTS,
+    classIds: null,
+    enginePath: "silkbind.penetration",
+  },
+  {
+    id: "bamboocutPen",
+    label: "Bamboocut Penetration",
+    min: ATTRIBUTE_PEN_MIN,
+    max: ATTRIBUTE_PEN_MAX,
+    slots: GENERAL_SLOTS,
+    classIds: null,
+    enginePath: "bamboocut.penetration",
   },
   {
     id: "physResist",
