@@ -71,6 +71,7 @@ export interface DebuffEchoReleaseAdjustment {
 
 export interface DebuffEchoSpec {
   share: number
+  qiShare?: number
   breakdownName: string
   skillType: string
   releaseAdjustment?: DebuffEchoReleaseAdjustment | null
@@ -215,6 +216,11 @@ function isDebuffEchoSpec(x: unknown): x is DebuffEchoSpec {
     typeof echo.breakdownName === "string" &&
     typeof echo.skillType === "string"
   if (!shapeOk) return false
+  if (
+    echo.qiShare !== undefined &&
+    (typeof echo.qiShare !== "number" || !Number.isFinite(echo.qiShare))
+  )
+    return false
   if (echo.releaseAdjustment === undefined || echo.releaseAdjustment === null) return true
   return isDebuffEchoReleaseAdjustment(echo.releaseAdjustment)
 }

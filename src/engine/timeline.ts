@@ -1541,6 +1541,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     | { kind: "echoRelease"; frame: number; debuffId: string; coverageEnd?: true }
 
   const echoPotByDebuff = new Map<string, number>()
+  const echoQiPotByDebuff = new Map<string, number>()
   const echoOf = (debuffId: string) => {
     const status = statusById.get(debuffId)
     return status && isDebuffStatus(status) ? (status.echo ?? null) : null
@@ -2766,7 +2767,29 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
-  const applyQi = (frame: number, qi: number, kind: QiHitKind): void => {
+  const bankEchoQi = (
+    frame: number,
+    qi: number,
+    kind: QiHitKind,
+    feeds: readonly EchoFeed[],
+  ): void => {
+    if (qi <= 0) return
+    for (const feed of feeds) {
+      const echo = echoOf(feed.debuffId)
+      if (!echo?.qiShare || !ledger.isActiveAt(feed.debuffId, frame)) continue
+      const banked = Math.min(qi * echo.qiShare, qiBar.spendableAt(frame, kind))
+      if (banked > 0)
+        echoQiPotByDebuff.set(feed.debuffId, (echoQiPotByDebuff.get(feed.debuffId) ?? 0) + banked)
+    }
+  }
+
+  const applyQi = (
+    frame: number,
+    qi: number,
+    kind: QiHitKind,
+    echoFeeds: readonly EchoFeed[] = [],
+  ): void => {
+    bankEchoQi(frame, qi, kind, echoFeeds)
     qiBar.apply(frame, qi, kind)
     commitOpenedQiBreaks()
   }
@@ -2926,6 +2949,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               playerQiIndex: PLAYER_QI_DAMAGE_INDEX,
             }),
             "direct",
+            st.echoFeeds,
           )
           buffEngine?.processDamageHitPostQi(engineTimeSec, skill, event.generated)
         }
@@ -3068,6 +3092,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }),
         entry.debuffForTick.dot?.qiHitKind ??
           (entry.debuffForTick.dot?.directHit ? "direct" : "dot"),
+        st.echoFeeds,
       )
       buffEngine?.processDamageHitPostQi(entry.frame / FPS, entry.dotSkill, false, "tick")
       if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
@@ -3131,6 +3156,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           playerQiIndex: PLAYER_QI_DAMAGE_INDEX,
         }),
         mechEvent.qiHitKind ?? "direct",
+        st.echoFeeds,
       )
       if (inFight(mechEvent.frame)) fightDamageSoFar += damage
       settleTally(mechEvent.frame, () => {
@@ -3163,9 +3189,22 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       )
     } else {
       if (event.coverageEnd && ledger.isActiveAt(event.debuffId, event.frame)) continue
-      if (!inFight(event.frame)) continue
       const releasedFrame = event.frame
       const releasedDebuffId = event.debuffId
+      const qiPot = echoQiPotByDebuff.get(releasedDebuffId) ?? 0
+      echoQiPotByDebuff.set(releasedDebuffId, 0)
+      if (qiPot > 0) {
+        const qiAdjustment = echoOf(releasedDebuffId)?.releaseAdjustment
+        applyQi(
+          releasedFrame,
+          qiAdjustment &&
+            qiAdjustment.requiresStatuses.every((id) => ledger.isActiveAt(id, releasedFrame))
+            ? qiPot * qiAdjustment.factor
+            : qiPot,
+          "dot",
+        )
+      }
+      if (!inFight(event.frame)) continue
       settleTally(releasedFrame, () => {
         const pot = echoPotByDebuff.get(releasedDebuffId) ?? 0
         echoPotByDebuff.set(releasedDebuffId, 0)

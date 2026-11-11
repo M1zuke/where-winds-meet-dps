@@ -19,6 +19,7 @@ export const drunkslay = defineDebuff({
   dot: null,
   echo: {
     share: 0.2,
+    qiShare: 0.12,
     breakdownName: "Drunkslay State",
     skillType: "mindMethod",
     releaseAdjustment: { factor: 1.2, requiresStatuses: [DEBUFF.wildstride, DEBUFF.strayhunt] },

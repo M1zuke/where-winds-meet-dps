@@ -104,11 +104,20 @@ import { healSkill as healEvasiveChargeRefundFromRankOne } from "../../src/migra
 import { healSkill as healDragonBreathSlowForm } from "../../src/migrations/customSkills/V108__dragonBreathSlowFormWithoutIntoxicated"
 import { healSkill as healDragonBreathSingleHitFastFrame } from "../../src/migrations/customSkills/V109__dragonBreathSingleHitFastFrame"
 import { healSkill as healDragonBreathSlowFormChosenAtThePress } from "../../src/migrations/customSkills/V110__dragonBreathSlowFormChosenAtThePress"
+import { healSkill as healVolutefitReachesWineboundMystics } from "../../src/migrations/customSkills/V111__volutefitReachesWineboundMystics"
+import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrations/customSkills/V112__bladeVesselRapidSlashSpacing"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
+
+function healVolutefitOnMigratedId(skill: unknown): unknown {
+  if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
+  const { id } = skill as Skill
+  const healed = healVolutefitReachesWineboundMystics({ ...skill, id: migrateMysticId(id) })
+  return { ...(healed as Skill), id }
+}
 
 function healSharedMysticCoefficients(skill: unknown): unknown {
   if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
@@ -225,6 +234,8 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [108, underCurrentId(healDragonBreathSlowForm)],
   [109, healDragonBreathSingleHitFastFrame],
   [110, underCurrentId(healDragonBreathSlowFormChosenAtThePress)],
+  [111, healVolutefitOnMigratedId],
+  [112, healBladeVesselRapidSlashSpacing],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
