@@ -45,6 +45,7 @@ export const fanheavypursuit5Hit = defineSkill({
     BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
     BUFF.swiftGaleAirborneHeavyBoost,
+    BUFF.cleftpeakDeflect,
   ],
   triggersBuffs: [BUFF.pursuitChargedBoost, BUFF.moonShatterSpringLockout],
   castConditions: FIVE_HIT_MOON_SHATTER_SPRING_CONDITIONS,

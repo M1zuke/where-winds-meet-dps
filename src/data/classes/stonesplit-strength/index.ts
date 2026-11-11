@@ -6,7 +6,6 @@ import { rotationsFor } from "../../../definitions/rotations/registry"
 import defaultRotation from "./rotations/tillaDummyRotation"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { ironGuards } from "../../skills/stonesplit-strength/buffs/ironGuards"
-import { cleftpeakDeflect } from "../../skills/stonesplit-strength/buffs/cleftpeakDeflect"
 import { stonesplitStrengthSkillCritDamage } from "../../skills/stonesplit-strength/buffs/skillCritDamage"
 import {
   phalanxbaneBladeAdditionalAttack,
@@ -58,7 +57,6 @@ export const stonesplitStrength = defineClass({
   defaultRotationId: defaultRotation.id,
   classBuffDefs: [
     ironGuards,
-    cleftpeakDeflect,
     stonesplitStrengthSkillCritDamage,
     phalanxbaneBladeAdditionalAttack,
     snowpartingBladeAdditionalAttack,

@@ -49,13 +49,25 @@ describe("Cleftpeak's base ramp is registered as a global gear-set buff", () => 
   })
 })
 
-describe("Cleftpeak's max-stack half stays Stonesplit Strength's own", () => {
-  it("is not listed in GLOBAL_BUFF_DEFS", () => {
-    expect(GLOBAL_BUFF_DEFS.some((module) => module.id === BUFF.cleftpeakDeflect)).toBe(false)
+describe("Cleftpeak's max-stack half is a global gear-set buff scoped by the skills that receive it", () => {
+  it("is listed in GLOBAL_BUFF_DEFS", () => {
+    expect(GLOBAL_BUFF_DEFS.some((module) => module.id === BUFF.cleftpeakDeflect)).toBe(true)
   })
 
-  it("does not reach a class other than Stonesplit Strength", () => {
-    const ids = new Set(buffDefsForClass(OTHER_CLASS).map((module) => module.id))
-    expect(ids.has(BUFF.cleftpeakDeflect)).toBe(false)
+  it("adds 8% at 5 stacks to a hit of a skill that receives it, in any class", () => {
+    const ridged = engine(cleftpeak.siteKey)
+    const receiving = makeSkill(OTHER_CLASS, { name: "probe", receives: [BUFF.cleftpeakDeflect] })
+    for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1, receiving)
+    const effects = ridged.calculateDamageEffects(receiving, 0.5).effects
+    expect(effects.filter((effect) => effect.statKey === "allDamageBoost")).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
+  })
+
+  it("adds nothing to a skill that does not receive it", () => {
+    const ridged = engine(cleftpeak.siteKey)
+    for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1)
+    expect(allDamageBoostFor(ridged, "weapon", 0.5)).toBeCloseTo(0.05, 9)
   })
 })

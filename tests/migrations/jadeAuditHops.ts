@@ -8,18 +8,21 @@ import { healSkill as healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame 
 import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/migrations/customSkills/V123__gourdTossPursuitCutOncePerSecond"
 import { healSkill as healVernalUmbrellaAttuneTags } from "../../src/migrations/customSkills/V133__vernalUmbrellaAttuneTags"
 import { healSkill as healSwiftGaleReachesMoonShatterSpring } from "../../src/migrations/customSkills/V136__swiftGaleReachesMoonShatterSpring"
+import { healSkill as healCleftpeakReachesJadeTaggedHits } from "../../src/migrations/customSkills/V137__cleftpeakReachesJadeTaggedHits"
 import type { Skill } from "../../src/engine/skill"
 
 export const throughJadeAuditHops = (skill: unknown): Skill =>
-  healSwiftGaleReachesMoonShatterSpring(
-    healVernalUmbrellaAttuneTags(
-      healGourdTossPursuitCutOncePerSecond(
-        healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(
-          healJadeSpringThunderAndComboReach(
-            healApricotHeavenRiseSplitAndTiming(
-              healUmbrellaDualTwoBullets(
-                healJadeLaunchBrokenByHigherPriority(
-                  healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+  healCleftpeakReachesJadeTaggedHits(
+    healSwiftGaleReachesMoonShatterSpring(
+      healVernalUmbrellaAttuneTags(
+        healGourdTossPursuitCutOncePerSecond(
+          healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame(
+            healJadeSpringThunderAndComboReach(
+              healApricotHeavenRiseSplitAndTiming(
+                healUmbrellaDualTwoBullets(
+                  healJadeLaunchBrokenByHigherPriority(
+                    healJadeTrajectoryHitsReach(healUmbHeavylightFromThePress(skill)),
+                  ),
                 ),
               ),
             ),
