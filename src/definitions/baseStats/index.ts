@@ -337,7 +337,7 @@ export function getDefaultTalentsForClass(
 ): MartialArtsTalent[] {
   const boosts = CLASS_SKILL_BOOSTS[classId]
   if (!boosts) return []
-  const resolvedStage = artAttackStageAt(classId, breakthrough)
+  const resolvedStage = artAttackStageAt(breakthrough)
   return boosts.map((boost, index) => ({
     id: `default-${classId}-${index}`,
     name: boost.skill,

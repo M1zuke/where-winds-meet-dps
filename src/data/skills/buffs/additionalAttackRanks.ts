@@ -10,16 +10,12 @@ export interface AdditionalAttackRank {
 
 export const ADDITIONAL_ATTACK_FIRST_RANK_BREAKTHROUGH = 18
 
-// In-game martial-art talent values as of 2026-09-11.
+// In-game martial-art talent values as of 2026-11-10.
 export const ADDITIONAL_ATTACK_RANKS: readonly AdditionalAttackRank[] = [
   { breakthrough: 18, flatBonus: 0.0725, coefficientBonus: 0.00725 },
   { breakthrough: 19, flatBonus: 0.15, coefficientBonus: 0.015 },
   { breakthrough: 20, flatBonus: 0.225, coefficientBonus: 0.0225 },
   { breakthrough: 21, flatBonus: 0.3, coefficientBonus: 0.03 },
-]
-
-export const ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION: readonly AdditionalAttackRank[] = [
-  ...ADDITIONAL_ATTACK_RANKS,
   { breakthrough: 22, flatBonus: 0.4, coefficientBonus: 0.04 },
   { breakthrough: 23, flatBonus: 0.5, coefficientBonus: 0.05 },
 ]

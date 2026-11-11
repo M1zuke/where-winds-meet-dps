@@ -137,9 +137,9 @@ describe("Class Buffs column — class ownership and scope decide membership", (
       [
         "bellstrikeUmbraBleedPen: physPen, bellstrikePen +1 per full 100 Max Physical Attack (max 15)",
         "bellstrikeUmbraBleedingDamage: affinityDmg +1.2% per full 100 Max Physical Attack (max 18%)",
-        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough",
-        "strategicSwordAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
-        "heavenquakerSpearAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
+        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.00725 to ×1.05 by breakthrough",
+        "strategicSwordAdditionalAttack: physFixed/attributeFixed +7.25% to +50% by breakthrough",
+        "heavenquakerSpearAdditionalAttack: physFixed/attributeFixed +7.25% to +50% by breakthrough",
       ].sort(),
     )
   })

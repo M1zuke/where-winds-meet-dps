@@ -7,7 +7,7 @@ import styles from "../../src/ui/features/talents/talents-tab/TalentsTab.module.
 import { getDefaultTalentsForClass } from "../../src/definitions/baseStats"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import {
-  ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION,
+  ADDITIONAL_ATTACK_RANKS,
   additionalAttackRankAt,
 } from "../../src/data/skills/buffs/additionalAttackRanks"
 import type { Inputs } from "../../src/engine/types"
@@ -154,7 +154,7 @@ describe("the Additional Attack Up talent card", () => {
   })
 
   it("resolves the six-rank ladder's breakthrough-23 values, ahead of the tier existing on any build", () => {
-    const rank = additionalAttackRankAt(ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION, 23)
+    const rank = additionalAttackRankAt(ADDITIONAL_ATTACK_RANKS, 23)
     expect(rank).toEqual({ breakthrough: 23, flatBonus: 0.5, coefficientBonus: 0.05 })
   })
 

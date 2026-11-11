@@ -1967,7 +1967,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough"
+          "summary": "Bleeding and Blood Burst ×1.00725 to ×1.05 by breakthrough"
         },
         {
           "id": "strategicSwordAdditionalAttack",
@@ -1993,7 +1993,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "heavenquakerSpearAdditionalAttack",
@@ -2019,7 +2019,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -746021,7 +746021,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "snowpartingBladeAdditionalAttack",
@@ -746047,7 +746047,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -748222,7 +748222,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "namelessSpearAdditionalAttack",
@@ -748248,7 +748248,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -750466,7 +750466,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "vernalUmbrellaAdditionalAttack",
@@ -750492,7 +750492,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "windrider",

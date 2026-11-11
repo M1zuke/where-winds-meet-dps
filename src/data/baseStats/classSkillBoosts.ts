@@ -15,6 +15,8 @@ const RESOURCE_SCALE_MAX_BY_BREAKTHROUGH = {
   19: 325,
   20: 365,
   21: 405,
+  22: 432,
+  23: 462,
 }
 const AFFINITY_RATE_UP_BY_BREAKTHROUGH = {
   13: 0.0304,
@@ -24,6 +26,8 @@ const AFFINITY_RATE_UP_BY_BREAKTHROUGH = {
   19: 0.0494,
   20: 0.05548,
   21: 0.06156,
+  22: 0.065664,
+  23: 0.070224,
 }
 const CRITICAL_RATE_UP_BY_BREAKTHROUGH = {
   13: 0.0608,
@@ -33,6 +37,8 @@ const CRITICAL_RATE_UP_BY_BREAKTHROUGH = {
   19: 0.0988,
   20: 0.11096,
   21: 0.12312,
+  22: 0.131328,
+  23: 0.140448,
 }
 const PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH = {
   13: 52.8,
@@ -42,6 +48,8 @@ const PHYSICAL_ATTACK_UP_BY_BREAKTHROUGH = {
   19: 85.8,
   20: 96.36,
   21: 106.92,
+  22: 114.048,
+  23: 121.968,
 }
 const PENETRATION_SCALE_BY_BREAKTHROUGH = {
   13: 0.152,
@@ -51,6 +59,8 @@ const PENETRATION_SCALE_BY_BREAKTHROUGH = {
   19: 0.252,
   20: 0.276,
   21: 0.296,
+  22: 0.3,
+  23: 0.3,
 }
 const ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH = {
   13: 0.076,
@@ -60,6 +70,8 @@ const ATTRIBUTE_DAMAGE_SCALE_BY_BREAKTHROUGH = {
   19: 0.126,
   20: 0.138,
   21: 0.148,
+  22: 0.15,
+  23: 0.15,
 }
 
 const PENETRATION_POINTS_BY_BREAKTHROUGH = {
@@ -70,6 +82,8 @@ const PENETRATION_POINTS_BY_BREAKTHROUGH = {
   19: 25.2,
   20: 27.6,
   21: 29.6,
+  22: 30,
+  23: 30,
 }
 
 function penetrationScaleMaxByBreakthrough(perPoint: number): Readonly<Record<number, number>> {
