@@ -109,6 +109,14 @@ import { healSkill as healBladeVesselRapidSlashSpacing } from "../../src/migrati
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
 import { healSkill as healThroatPierceDeflectGrant } from "../../src/migrations/customSkills/V115__throatPierceDeflectGrant"
+import { healSkill as healJadeLaunchBrokenByHigherPriority } from "../../src/migrations/customSkills/V118__jadeLaunchBrokenByHigherPriority"
+import { healSkill as healJadeTrajectoryHitsReach } from "../../src/migrations/customSkills/V117__jadeTrajectoryHitsReach"
+import { healSkill as healUmbHeavylightFromThePress } from "../../src/migrations/customSkills/V116__umbHeavylightFromThePress"
+import { healSkill as healUmbrellaDualTwoBullets } from "../../src/migrations/customSkills/V119__umbrellaDualTwoBullets"
+import { healSkill as healApricotHeavenRiseSplitAndTiming } from "../../src/migrations/customSkills/V120__apricotHeavenRiseSplitAndTiming"
+import { healSkill as healJadeSpringThunderAndComboReach } from "../../src/migrations/customSkills/V121__jadeSpringThunderAndComboReach"
+import { healSkill as healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "../../src/migrations/customSkills/V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
+import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/migrations/customSkills/V123__gourdTossPursuitCutOncePerSecond"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -242,6 +250,14 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [113, healSplendorWaveCoefficientsExact],
   [114, healSplendorQuickCastCoefficientsExact],
   [115, healThroatPierceDeflectGrant],
+  [116, healUmbHeavylightFromThePress],
+  [117, healJadeTrajectoryHitsReach],
+  [118, healJadeLaunchBrokenByHigherPriority],
+  [119, healUmbrellaDualTwoBullets],
+  [120, healApricotHeavenRiseSplitAndTiming],
+  [121, healJadeSpringThunderAndComboReach],
+  [122, healForsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame],
+  [123, healGourdTossPursuitCutOncePerSecond],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

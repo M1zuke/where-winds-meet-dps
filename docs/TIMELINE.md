@@ -122,7 +122,8 @@ the skill could ever land.
 
 A hit may instead (or in addition) gate on rotation structure rather than
 ledger state, with `requiresNextStepSkillIds`: it occurs only when the
-rotation step immediately following this cast names one of the listed
+rotation step immediately following this cast — a free direct weapon swap
+inserted ahead of it is skipped — names one of the listed
 skills — a cast whose own animation keeps running, and so keeps landing
 hits, only because nothing before that next input interrupted it. Unlike an ordinary condition this is never true for the rotation's own last
 step, and it is meaningless on a `castSkill`-generated cast, which has no
@@ -386,6 +387,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   running window at its own start, ticks included, unless its skill is exempt
   or a DoT tick. The cut lands at the step's own start, ahead of the step's own
   hits, so every read from then on sees the window gone.
+- **A debuff whose source is a summon that only a recall skill ends declares
+  `castLock`** (a tag, the exempt skill ids and the recall skill id): a step
+  whose skill carries the tag is flagged illegal while the window runs, and the
+  recall skill's own hit cuts the window at its frame, ticks included.
 - **A buff with no stat effects is legitimate.** A pure state marker that a hit
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
@@ -1053,8 +1058,9 @@ a refactor.
   class definition; keep resource names and values out of the engine.
 - Gate resource-controlled ticks before their damage or buff triggers. A depleted
   launch must not revive from later refunds. Each new launch starts its own cadence.
-- Distribute declared whole-skill resource gains over authored hits; credit only
-  executed damaging hits, and keep repeat-limited bonuses independent. A gain
+- Distribute declared whole-skill resource gains over a skill's authored damaging
+  hits, or over `hitsPerCast` when summoned skills carry part of the cast; credit
+  only executed damaging hits, and keep repeat-limited bonuses independent. A gain
   limits its repeats with a cooldown that only a gain whose every gate passed
   arms.
 - Decide a pulse's conditional additional impacts once, on the status as it stands
@@ -1062,9 +1068,11 @@ a refactor.
   additional impact does not enhance that pulse.
 - Charge an enhanced pulse's resource cost once, at the pulse, and only for a pulse
   the required status enhanced; never as a continuous drain while that status is up.
-- Recall a running launch at the cast start of any skill carrying the resource's
-  recall tag, unless that skill is the launch itself, a DoT tick or listed as
-  exempt.
+- A running launch ends only by depletion, its lifetime or the resource's own
+  recall skill, whose hit ends it at that hit's frame. A skill carrying the
+  resource's lock tag, unless it is a DoT tick, listed as exempt or the recall
+  skill, is flagged illegal when it starts while the launch runs — and so is
+  the recall skill when none runs; the flag changes nothing in the simulation.
 - Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
   must not grant a hit refund. Clamp balances and use the encounter's phase clock.
 - Declare passive regeneration as a flat per-second rate on the resource, netted

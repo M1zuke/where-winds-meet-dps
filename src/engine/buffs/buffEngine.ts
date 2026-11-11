@@ -1026,6 +1026,12 @@ export class BuffEngine {
   ): void {
     if (module.perHitConsume) this.processPerHitConsume(module, stampTime, tagSet)
     if (!module.stackOnDamage) return
+    if (
+      module.stackOnDamageMinTier !== undefined &&
+      module.requires?.param &&
+      this.paramTier(module.requires.param) < module.stackOnDamageMinTier
+    )
+      return
     if (!this.stackOnDamagePhaseHolds(module, readTime)) return
     if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) return
     if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, stampTime)

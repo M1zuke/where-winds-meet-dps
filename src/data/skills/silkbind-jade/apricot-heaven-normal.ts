@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { meterDelta } from "../../../definitions/skills/triggers"
+import { castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -31,27 +31,29 @@ export const apricotHeavenNormal = defineSkill({
   reachMeters: 3,
   hits: [
     hit(0, {
-      frame: 54,
-      physMultiplier: 0.626038,
-      attributeMultiplier: 0.939057,
-      physFixed: 173.2,
-      attributeFixed: 94.4,
+      // In-game values as of 2026-11-10: the rise lands 54.18 f after the
+      // 14.4 f hold decision.
+      frame: 68.58,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [castSkill({ target: SKILL.apricotHeavenRise })],
     }),
     hit(1, {
-      // Hit frames with only a window (docs/TIMELINE.md, this class's own
-      // evidence): the fall has no known frame of its own, only the window it
-      // lands in from the release — authored at that window's start, 72.00 f
-      // from the press.
-      frame: 72,
+      // In-game values as of 2026-11-10: the earliest release is the moment
+      // the air charge opens, 72 f after the hold decision; the fall's collider
+      // is 27.15 f into the release.
+      frame: 113.55,
       physMultiplier: 1.565095,
       attributeMultiplier: 2.347643,
       physFixed: 433.0,
       attributeFixed: 236.0,
     }),
     hit(2, {
-      // In-game values as of 2026-09-24: -5 more at 1.6 s (96 f) in — a
-      // zero-damage marker, the pattern `legioncrusher.ts` uses.
-      frame: 96,
+      // In-game values as of 2026-11-10: -5 more 1.6 s after the hold
+      // decision — a zero-damage marker, the pattern `legioncrusher.ts` uses.
+      frame: 110.4,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,

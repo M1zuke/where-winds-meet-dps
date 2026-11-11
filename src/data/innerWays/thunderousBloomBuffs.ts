@@ -6,7 +6,7 @@ import { stat } from "../../engine/effects/effect"
 // cast grants 5 Spring Thunder stacks, once per 15s, retained up to 12s; a
 // qualifying hit spends 1 stack for +15% damage on that hit and the next 2s,
 // non-stacking; while stacks live, a qualifying hit on an Exhausted or
-// below-30%-Qi target restores 1 stack, 2s cooldown. The restore tops up the
+// below-30%-Qi target restores 1 stack, 2s cooldown — from rank 6 only. The restore tops up the
 // proc's own 12s window rather than extending it — the 15s/12s cycle is the
 // stated retention cap, not a refreshable duration.
 export const springThunder = defineBuff({
@@ -24,6 +24,7 @@ export const springThunder = defineBuff({
   stackOnDamagePhase: { qiBelow: 0.3 },
   stackOnDamageScoped: true,
   stackOnDamageOnlyWhileActive: true,
+  stackOnDamageMinTier: 6,
   stackOnDamageRateLimit: { count: 1, window: 2 },
   effects: [],
 })

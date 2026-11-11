@@ -8,6 +8,7 @@ import {
   V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming,
   healSkill,
 } from "../../src/migrations/customSkills/V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming"
+import { throughLateJadeAuditHops } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV91File from "./testCustomSkills/v91/store.json"
@@ -51,7 +52,7 @@ describe("custom-skills v91 fixture", () => {
 
 describe("healSkill", () => {
   it.each(TRIGGER_HEALED_IDS)("lands the untouched %s copy's triggers on the built-in", (id) => {
-    const healed = healSkill(clone(skillIn(STORE, id))) as Skill
+    const healed = throughLateJadeAuditHops(healSkill(clone(skillIn(STORE, id)))) as Skill
     expect(triggersOf(healed)).toEqual(triggersOf(builtinOf(id)))
   })
 
@@ -110,7 +111,9 @@ describe("V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming — called dire
     const after = V92__jadeStartlingSpringStacksAndFlurryEnduranceTiming.migrate(clone(STORE))
     expect(after.v).toBe(92)
     for (const id of TRIGGER_HEALED_IDS)
-      expect(triggersOf(skillIn(after, id)), id).toEqual(triggersOf(builtinOf(id)))
+      expect(triggersOf(throughLateJadeAuditHops(skillIn(after, id)) as Skill), id).toEqual(
+        triggersOf(builtinOf(id)),
+      )
     for (const id of RECEIVES_HEALED_IDS)
       expect(receivesOf(skillIn(after, id)), id).toEqual(receivesOf(builtinOf(id)))
     for (const skill of STORE.skills) {

@@ -9,6 +9,7 @@ import { fanqcancel } from "./fanqcancel"
 import { fanspecial } from "./fanspecial"
 import { fanspecialReturn } from "./fanspecial-return"
 import { fanspecialWindriderGrant } from "./fanspecial-windrider-grant"
+import { returnOfSpring } from "./return-of-spring"
 import { umbHeavylight } from "./umb-heavylight"
 import { umbHeavylightHeavyShare } from "./umb-heavylight-heavyshare"
 import { umbdrone12HitTick } from "./umbdrone-12hit"
@@ -26,6 +27,7 @@ import { umblightcharge12 } from "./umblightcharge-12"
 import { umblightchargeLift } from "./umblightcharge-lift"
 import { apricotHeavenNormal } from "./apricot-heaven-normal"
 import { apricotHeavenEnhanced } from "./apricot-heaven-enhanced"
+import { apricotHeavenRise } from "./apricot-heaven-rise"
 import { glowAndFlowStage1 } from "./glow-and-flow-stage-1"
 import { glowAndFlowStage2 } from "./glow-and-flow-stage-2"
 import { bambooBreeze } from "./bamboo-breeze"
@@ -44,6 +46,7 @@ import { deflectCancel } from "./deflect-cancel"
 import { umbrellaDual } from "./umbrella-dual"
 import { fanDual } from "./fan-dual"
 import { umbrellaDash } from "./umbrella-dash"
+import { umbrellaDashBullet } from "./umbrella-dash-bullet"
 import { fanLight } from "./fan-light"
 import { fanLightChain } from "./fan-light-chain"
 import { fanDash } from "./fan-dash"
@@ -62,6 +65,7 @@ export const SKILLS: Skill[] = [
   fanspecial,
   fanspecialReturn,
   fanspecialWindriderGrant,
+  returnOfSpring,
   umbHeavylight,
   umbHeavylightHeavyShare,
   umbdrone12HitTick,
@@ -79,6 +83,7 @@ export const SKILLS: Skill[] = [
   umblightchargeLift,
   apricotHeavenNormal,
   apricotHeavenEnhanced,
+  apricotHeavenRise,
   glowAndFlowStage1,
   glowAndFlowStage2,
   bambooBreeze,
@@ -97,6 +102,7 @@ export const SKILLS: Skill[] = [
   umbrellaDual,
   fanDual,
   umbrellaDash,
+  umbrellaDashBullet,
   fanLight,
   fanLightChain,
   fanDash,

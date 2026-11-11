@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
@@ -14,16 +15,15 @@ export const hiddenSwordHeavyAlt = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.hiddenSwordHeavyAlt,
-  receives: [...VERNAL_UMBRELLA_RECEIVES],
+  receives: [BUFF.thunderousBloom, BUFF.springThunder, ...VERNAL_UMBRELLA_RECEIVES],
   castFrames: 35,
   triggerable: true,
   reachMeters: 3,
   hits: [
     hit(0, {
-      // Hit frames with only a window (this class's own evidence): the
-      // strike has no known frame of its own, only the window from the cast's
-      // start to its earliest next input — authored at that window's start.
-      frame: 0,
+      // In-game values as of 2026-11-10: the collider lands 14.15 f into the
+      // cast.
+      frame: 14.15,
       physMultiplier: 0.913968,
       attributeMultiplier: 1.370952,
       physFixed: 253.2,

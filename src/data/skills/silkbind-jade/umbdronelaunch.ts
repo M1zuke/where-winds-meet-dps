@@ -8,10 +8,9 @@ export const umbdronelaunch = defineSkill({
   ...umbdronelaunch20Hit,
   id: SKILL.umbdronelaunch,
   name: "UmbDroneLaunch",
-  hits: umbdronelaunch20Hit.hits.map((hit) => ({
-    ...hit,
-    triggers: [applyDebuff({ target: DEBUFF.umbdrone })],
-  })),
+  hits: umbdronelaunch20Hit.hits.map((hit, index) =>
+    index === 0 ? { ...hit, triggers: [applyDebuff({ target: DEBUFF.umbdrone })] } : hit,
+  ),
 })
 
 export const umbdroneTick = defineSkill({

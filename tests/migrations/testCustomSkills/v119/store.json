@@ -1,0 +1,230 @@
+{
+  "v": 119,
+  "skills": [
+    {
+      "id": "silkbindJade-apricot-heaven-normal",
+      "classId": "silkbindJade",
+      "name": "Apricot Heaven (Normal Fall)",
+      "breakdownName": "Apricot Heaven",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": ["pursuitChargedBoost", "vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "triggerable": true,
+      "reachMeters": 3,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z",
+      "castFrames": 214,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 54,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 72,
+          "physMultiplier": 1.565095,
+          "attributeMultiplier": 2.347643,
+          "physFixed": 433,
+          "attributeFixed": 236,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 96,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -5,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-apricot-heaven-enhanced",
+      "classId": "silkbindJade",
+      "name": "Apricot Heaven (Enhanced Fall)",
+      "breakdownName": "Apricot Heaven",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": ["pursuitChargedBoost", "vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "triggerable": true,
+      "reachMeters": 3,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z",
+      "castFrames": 304,
+      "meterDrains": [
+        {
+          "meterId": "endurance",
+          "perSecond": 15,
+          "fromFrame": 72,
+          "stopAfterSec": 1.5
+        }
+      ],
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 54,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 96,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -5,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 162,
+          "physMultiplier": 2.504152,
+          "attributeMultiplier": 3.756228,
+          "physFixed": 692.8,
+          "attributeFixed": 377.6,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "UmbQ",
+      "breakdownName": "Apricot Heaven",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": ["pursuitChargedBoost", "vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "triggerable": true,
+      "reachMeters": 3,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z",
+      "castFrames": 87.5,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 59.8,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-apricot",
+      "classId": "silkbindJade",
+      "name": "Apricot copy",
+      "breakdownName": "Apricot Heaven",
+      "tags": ["prop:isCharged", "weapon:Umbrella", "attack:heavy", "attune:umbCharged"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "receives": ["pursuitChargedBoost", "vernalUmbrellaAdditionalAttack"],
+      "meterCosts": [
+        {
+          "meterId": "endurance",
+          "amount": 5
+        }
+      ],
+      "triggerable": true,
+      "reachMeters": 3,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "updatedAt": "2026-09-29T00:00:00.000Z",
+      "castFrames": 214,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 54,
+          "physMultiplier": 0.626038,
+          "attributeMultiplier": 0.939057,
+          "physFixed": 173.2,
+          "attributeFixed": 94.4,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 72,
+          "physMultiplier": 1.565095,
+          "attributeMultiplier": 2.347643,
+          "physFixed": 433,
+          "attributeFixed": 236,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 96,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "endurance",
+              "stacks": -5,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

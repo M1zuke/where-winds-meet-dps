@@ -35,6 +35,7 @@ export const fanlightcharged = defineSkill({
   castTag: CAST.fanLightCharged,
   receives: [
     BUFF.windWall,
+    BUFF.trajectorySkill,
     BUFF.pursuitChargedBoost,
     BUFF.thunderousBloom,
     BUFF.springThunder,
@@ -68,9 +69,9 @@ export const fanlightcharged = defineSkill({
       physFixed: 527,
       attributeFixed: 287,
       extraCritDamage: 0,
-      // In-game values as of 2026-10-15: +10 Endurance once per cast when the
-      // whirlwind hits a non-player, 0.03 s after the hit.
-      triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10, delayFrames: 1.8 })],
+      // In-game values as of 2026-11-10: +10 Endurance once per cast, on the
+      // frame the whirlwind hits a non-player.
+      triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10 })],
       variants: [
         {
           id: "hv-fanlightcharged-hit-0-flying-tornado",

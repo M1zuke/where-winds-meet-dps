@@ -16,7 +16,12 @@ export const hiddenSwordLight5 = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.hiddenSwordLight5,
-  receives: [BUFF.swallowcallLightAttackBoost, ...VERNAL_UMBRELLA_RECEIVES],
+  receives: [
+    BUFF.swallowcallLightAttackBoost,
+    BUFF.thunderousBloom,
+    BUFF.springThunder,
+    ...VERNAL_UMBRELLA_RECEIVES,
+  ],
   castFrames: 52,
   triggerable: true,
   reachMeters: 2.5,

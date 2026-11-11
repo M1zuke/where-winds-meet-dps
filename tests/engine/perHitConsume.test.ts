@@ -177,3 +177,30 @@ describe("stackOnDamage top-up — scoped, phase-gated, rate-limited, expiry-pre
     expect(engine.getHistoricalBuffStacks(POOL, 22.2)).toBe(4)
   })
 })
+
+describe("stackOnDamage top-up — gated by the requiring param's tier", () => {
+  const rankedPool: BuffModule = {
+    ...poolDef,
+    requires: { param: "testRank" },
+    stackOnDamageMinTier: 6,
+  }
+  const engineAtRank = (tier: number) =>
+    buffEngineWith({ testRank: true, testRankTier: tier }, [rankedPool, boostDef], [], PHASED)
+
+  it("restores a stack from the minimum tier", () => {
+    const engine = engineAtRank(6)
+    engine.processSkillCast("cast:martial", 19, { castTime: 1 }, false, [POOL])
+    landDamageHit(engine, 20.1, qualifier)
+    expect(engine.getHistoricalBuffStacks(POOL, 20.1)).toBe(4)
+    landDamageHit(engine, 22.2, qualifier)
+    expect(engine.getHistoricalBuffStacks(POOL, 22.2)).toBe(4)
+  })
+
+  it("restores nothing below the minimum tier", () => {
+    const engine = engineAtRank(5)
+    engine.processSkillCast("cast:martial", 19, { castTime: 1 }, false, [POOL])
+    landDamageHit(engine, 20.1, qualifier)
+    landDamageHit(engine, 22.2, qualifier)
+    expect(engine.getHistoricalBuffStacks(POOL, 22.2)).toBe(3)
+  })
+})

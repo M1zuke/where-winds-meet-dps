@@ -1,0 +1,116 @@
+{
+  "v": 118,
+  "skills": [
+    {
+      "id": "silkbindJade-umbrella-dual",
+      "classId": "silkbindJade",
+      "name": "Umbrella (Dual-Weapon Skill)",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "isWeaponSwap": true,
+      "castFrames": 46,
+      "receives": ["windWall", "trajectorySkill", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 12,
+          "physMultiplier": 0.31677,
+          "attributeMultiplier": 0.475155,
+          "physFixed": 88,
+          "attributeFixed": 48,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 18,
+          "physMultiplier": 0.63354,
+          "attributeMultiplier": 0.95031,
+          "physFixed": 176,
+          "attributeFixed": 96,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-dual",
+      "classId": "silkbindJade",
+      "name": "Fan (Dual-Weapon Skill)",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "isWeaponSwap": true,
+      "castFrames": 51,
+      "receives": ["windWall", "trajectorySkill", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 12,
+          "physMultiplier": 0.31677,
+          "attributeMultiplier": 0.475155,
+          "physFixed": 88,
+          "attributeFixed": 48,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 18,
+          "physMultiplier": 0.63354,
+          "attributeMultiplier": 0.95031,
+          "physFixed": 176,
+          "attributeFixed": 96,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-umbrella-dual",
+      "classId": "silkbindJade",
+      "name": "Umbrella dual copy",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "isWeaponSwap": true,
+      "castFrames": 46,
+      "receives": ["windWall", "trajectorySkill", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-10-06T00:00:00.000Z",
+      "updatedAt": "2026-10-06T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 12,
+          "physMultiplier": 0.31677,
+          "attributeMultiplier": 0.475155,
+          "physFixed": 88,
+          "attributeFixed": 48,
+          "extraCritDamage": 1,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 18,
+          "physMultiplier": 0.63354,
+          "attributeMultiplier": 0.95031,
+          "physFixed": 176,
+          "attributeFixed": 96,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ export interface ResourceGainRule {
   skillIds?: readonly string[]
   cooldownSeconds?: number
   divideAcrossSkillHits?: boolean
+  hitsPerCast?: number
   requiresParam?: string
   minTier?: number
   requiresBuff?: string
@@ -25,8 +26,9 @@ export interface ResourceDef {
   drainPerSecond: number
   regenPerSecond?: number
   enhancedRunCost: number
-  recallTag?: string
-  recallExemptSkillIds?: readonly string[]
+  lockTag?: string
+  lockExemptSkillIds?: readonly string[]
+  recallSkillId?: string
   endRefund: number
   refundDelaySeconds?: number
   refundCooldownSeconds: number

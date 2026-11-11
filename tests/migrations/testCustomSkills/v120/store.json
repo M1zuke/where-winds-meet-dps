@@ -1,0 +1,369 @@
+{
+  "v": 120,
+  "skills": [
+    {
+      "id": "silkbindJade-bamboo-breeze",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-bamboo-breeze",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-light-1",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-light-1",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["swallowcallLightAttackBoost", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-light-2",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-light-2",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["swallowcallLightAttackBoost", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-light-3",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-light-3",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["swallowcallLightAttackBoost", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-light-4",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-light-4",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["swallowcallLightAttackBoost", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-light-5",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-light-5",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["swallowcallLightAttackBoost", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-heavy-1",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-heavy-1",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-heavy-2",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-heavy-2",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-heavy-3",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-heavy-3",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-hidden-sword-heavy-alt",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-hidden-sword-heavy-alt",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbrella-dual",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-umbrella-dual",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["windWall", "trajectorySkill", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fan-dual",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-fan-dual",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["windWall", "trajectorySkill", "inkwellFanAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-umbq",
+      "classId": "silkbindJade",
+      "name": "silkbindJade-umbq",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["combo", "thunderousBloom", "springThunder", "vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-bloom",
+      "classId": "silkbindJade",
+      "name": "sk-user-authored-bloom",
+      "tags": ["weapon:Umbrella"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Umbrella",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 30,
+      "receives": ["vernalUmbrellaAdditionalAttack"],
+      "createdAt": "2026-09-24T00:00:00.000Z",
+      "updatedAt": "2026-09-24T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.19,
+          "attributeMultiplier": 0.28,
+          "physFixed": 50,
+          "attributeFixed": 30,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ]
+    }
+  ]
+}

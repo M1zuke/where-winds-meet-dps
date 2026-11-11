@@ -116,6 +116,14 @@ import { V112__bladeVesselRapidSlashSpacing } from "./V112__bladeVesselRapidSlas
 import { V113__splendorWaveCoefficientsExact } from "./V113__splendorWaveCoefficientsExact"
 import { V114__splendorQuickCastCoefficientsExact } from "./V114__splendorQuickCastCoefficientsExact"
 import { V115__throatPierceDeflectGrant } from "./V115__throatPierceDeflectGrant"
+import { V116__umbHeavylightFromThePress } from "./V116__umbHeavylightFromThePress"
+import { V117__jadeTrajectoryHitsReach } from "./V117__jadeTrajectoryHitsReach"
+import { V118__jadeLaunchBrokenByHigherPriority } from "./V118__jadeLaunchBrokenByHigherPriority"
+import { V119__umbrellaDualTwoBullets } from "./V119__umbrellaDualTwoBullets"
+import { V120__apricotHeavenRiseSplitAndTiming } from "./V120__apricotHeavenRiseSplitAndTiming"
+import { V121__jadeSpringThunderAndComboReach } from "./V121__jadeSpringThunderAndComboReach"
+import { V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame } from "./V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame"
+import { V123__gourdTossPursuitCutOncePerSecond } from "./V123__gourdTossPursuitCutOncePerSecond"
 
 export type {
   CustomSkillMigration,
@@ -300,6 +308,14 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V113__splendorWaveCoefficientsExact,
   V114__splendorQuickCastCoefficientsExact,
   V115__throatPierceDeflectGrant,
+  V116__umbHeavylightFromThePress,
+  V117__jadeTrajectoryHitsReach,
+  V118__jadeLaunchBrokenByHigherPriority,
+  V119__umbrellaDualTwoBullets,
+  V120__apricotHeavenRiseSplitAndTiming,
+  V121__jadeSpringThunderAndComboReach,
+  V122__forsakenFameEnduranceOnTheHitAndHiddenSwordHeavyFrame,
+  V123__gourdTossPursuitCutOncePerSecond,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

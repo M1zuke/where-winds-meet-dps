@@ -118,6 +118,9 @@ export type BuffMeta = BuffGate & {
   // `stackOnDamage` only tops up a live window, preserving its expiry — it
   // never opens or refreshes one.
   stackOnDamageOnlyWhileActive?: boolean
+  // `stackOnDamage` only runs while the def's own `requires` param is at this
+  // tier or above.
+  stackOnDamageMinTier?: number
   // Caps the `stackOnDamage` route alone; `stackRateLimit` still caps the
   // triggered route.
   stackOnDamageRateLimit?: { count: number; window: number }

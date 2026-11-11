@@ -38,7 +38,10 @@ describe("V16__droneStampsAndRecall — called directly", () => {
       expect(debuffIn(after, id).dot?.rearmsToAbsoluteDeadline).toBe(
         builtin(id).dot?.rearmsToAbsoluteDeadline,
       )
-      expect(debuffIn(after, id).recall).toEqual(builtin(id).recall)
+      expect(debuffIn(after, id).recall).toEqual({
+        tag: builtin(id).castLock!.tag,
+        exemptSkillIds: builtin(id).castLock!.exemptSkillIds,
+      })
     }
   })
 

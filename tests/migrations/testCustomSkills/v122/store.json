@@ -1,0 +1,363 @@
+{
+  "v": 122,
+  "skills": [
+    {
+      "id": "silkbindJade-fanheavypursuit-3-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 3-Hit",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 80,
+      "createdAt": "2026-10-15T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 34,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 72,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fanheavypursuit-5-hit",
+      "classId": "silkbindJade",
+      "name": "FanHeavyPursuit 5-Hit",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 80,
+      "createdAt": "2026-10-15T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 33,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 69,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 84,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 112,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silkbindJade-fanspecial",
+      "classId": "silkbindJade",
+      "name": "FanSpecial",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 80,
+      "createdAt": "2026-10-15T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 33,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": []
+        }
+      ]
+    },
+    {
+      "id": "sk-user-authored-pursuit",
+      "classId": "silkbindJade",
+      "name": "Pursuit copy",
+      "tags": ["weapon:Fan"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Fan",
+      "attributeAttack": "Silkbind",
+      "triggerable": true,
+      "castFrames": 80,
+      "createdAt": "2026-10-15T00:00:00.000Z",
+      "updatedAt": "2026-10-15T00:00:00.000Z",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.3,
+          "attributeMultiplier": 0.45,
+          "physFixed": 80,
+          "attributeFixed": 40,
+          "extraCritDamage": 1,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "peaksSpringlessSilenceCharges",
+              "stacks": 60,
+              "condition": null,
+              "conditions": [
+                {
+                  "buffId": "gourdTossPursuitCutWindow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "requiresParam": "gourdToss",
+              "requiresMinTier": 6
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "pursuitChargedBoost",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

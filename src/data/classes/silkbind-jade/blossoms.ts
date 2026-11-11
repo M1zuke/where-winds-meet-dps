@@ -1,6 +1,6 @@
 import { defineResource } from "../../../definitions/resources/resourceDef"
 import { SKILL, DEBUFF } from "../../skills/silkbind-jade/ids"
-import { DRONE_RECALL } from "../../skills/silkbind-jade/droneTick"
+import { DRONE_LOCK } from "../../skills/silkbind-jade/droneTick"
 import { WEAPON } from "../../skills/ids"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 
@@ -35,8 +35,9 @@ export const blossomResource = defineResource({
   maxRunSeconds: BLOSSOMS.maxRunSeconds,
   drainPerSecond: BLOSSOMS.drainPerSecond,
   enhancedRunCost: BLOSSOMS.lingeringBoneRunCost,
-  recallTag: DRONE_RECALL.tag,
-  recallExemptSkillIds: DRONE_RECALL.exemptSkillIds,
+  lockTag: DRONE_LOCK.tag,
+  lockExemptSkillIds: DRONE_LOCK.exemptSkillIds,
+  recallSkillId: DRONE_LOCK.recallSkillId,
   endRefund: BLOSSOMS.endRefund,
   refundDelaySeconds: BLOSSOMS.endRefundDelaySeconds,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,
@@ -84,11 +85,9 @@ export const blossomResource = defineResource({
     {
       id: "umbrellaDashBullet",
       name: "Umbrella - Dash bullet gain",
-      // In-game values as of 2026-10-06: +4 on the bullet hit, paid across
-      // this module's 3 hits.
+      // In-game values as of 2026-10-06: +4 on the bullet hit.
       defaultAmount: 4,
-      skillIds: [SKILL.umbrellaDash],
-      divideAcrossSkillHits: true,
+      skillIds: [SKILL.umbrellaDashBullet],
     },
     {
       id: "chargedHitLift",
@@ -102,8 +101,8 @@ export const blossomResource = defineResource({
       name: "Apricot Heaven gain",
       // In-game values as of 2026-10-06: +5 per hit, 2 hits per cast.
       defaultAmount: 10,
-      skillIds: [SKILL.apricotHeavenNormal, SKILL.apricotHeavenEnhanced],
-      divideAcrossSkillHits: true,
+      skillIds: [SKILL.apricotHeavenNormal, SKILL.apricotHeavenEnhanced, SKILL.apricotHeavenRise],
+      hitsPerCast: 2,
     },
     {
       id: "bambooBreezeHit",

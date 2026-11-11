@@ -4,8 +4,15 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06: a tap releases the first stage only; the
-// melee frame is the one that lands.
+// In-game values as of 2026-11-10: at maximum distance the stage-1 hit is the
+// 80 m/s bullet, launched 17.4 f into the clip that follows the 14.4 f hold
+// decision, not the melee collider; the bullet lives 0.2 s.
+const STAGE_ONE_BULLET = {
+  frame: 31.8,
+  projectile: { speedMetersPerSecond: 80, maxTravelFrames: 12 },
+}
+
+// In-game values as of 2026-10-06: a tap releases the first stage only.
 export const fanLight = defineSkill({
   id: SKILL.fanLight,
   classId: "silkbindJade",
@@ -16,6 +23,8 @@ export const fanLight = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.fanLight,
   receives: [
+    BUFF.windWall,
+    BUFF.trajectorySkill,
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
@@ -26,7 +35,7 @@ export const fanLight = defineSkill({
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 28,
+      ...STAGE_ONE_BULLET,
       physMultiplier: 0.408064,
       attributeMultiplier: 0.612096,
       physFixed: 113,
