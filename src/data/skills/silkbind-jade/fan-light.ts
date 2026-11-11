@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-11-10: at maximum distance the stage-1 hit is the
 // 80 m/s bullet, launched 17.4 f into the clip that follows the 14.4 f hold
@@ -36,10 +37,7 @@ export const fanLight = defineSkill({
   hits: [
     hit(0, {
       ...STAGE_ONE_BULLET,
-      physMultiplier: 0.408064,
-      attributeMultiplier: 0.612096,
-      physFixed: 113,
-      attributeFixed: 61.6,
+      ...levelScaled(LEVEL_ROWS.fanLightHit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

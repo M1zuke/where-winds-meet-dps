@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15.
 export const hiddenSwordLight3 = defineSkill({
@@ -27,24 +28,15 @@ export const hiddenSwordLight3 = defineSkill({
   hits: [
     hit(0, {
       frame: 8,
-      physMultiplier: 0.228492,
-      attributeMultiplier: 0.342738,
-      physFixed: 63.3,
-      attributeFixed: 34.5,
+      ...levelScaled(LEVEL_ROWS.hiddenSwordLight2Hit1),
     }),
     hit(1, {
       frame: 20,
-      physMultiplier: 0.114246,
-      attributeMultiplier: 0.171369,
-      physFixed: 31.65,
-      attributeFixed: 17.25,
+      ...levelScaled(LEVEL_ROWS.hiddenSwordLight3Hit1),
     }),
     hit(2, {
       frame: 34,
-      physMultiplier: 0.114246,
-      attributeMultiplier: 0.171369,
-      physFixed: 31.65,
-      attributeFixed: 17.25,
+      ...levelScaled(LEVEL_ROWS.hiddenSwordLight3Hit1),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

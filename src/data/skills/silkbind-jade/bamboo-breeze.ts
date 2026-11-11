@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Vernal Umbrella's Light Attack Varied Combo: a heavy-attack tap during the
 // recovery of light stage 1 or 2 throws a spinning umbrella for two hits.
@@ -23,20 +24,14 @@ export const bambooBreeze = defineSkill({
   hits: [
     hit(0, {
       frame: 11,
-      physMultiplier: 0.49758,
-      attributeMultiplier: 0.74637,
-      physFixed: 138.0,
-      attributeFixed: 75.0,
+      ...levelScaled(LEVEL_ROWS.bambooBreezeHit0),
     }),
     hit(1, {
       // The second hit is an overlap check, at least 6 f after the first —
       // no exact frame in the data (this class's own evidence); authored at
       // that earliest-possible offset.
       frame: 17,
-      physMultiplier: 0.49758,
-      attributeMultiplier: 0.74637,
-      physFixed: 138.0,
-      attributeFixed: 75.0,
+      ...levelScaled(LEVEL_ROWS.bambooBreezeHit0),
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

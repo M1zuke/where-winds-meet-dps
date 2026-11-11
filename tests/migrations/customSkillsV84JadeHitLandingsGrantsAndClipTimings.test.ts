@@ -18,6 +18,7 @@ import {
   withoutLaunchFollowUpGate,
 } from "./jadeAuditHops"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV83File from "./testCustomSkills/v83/store.json"
 
@@ -60,7 +61,7 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!)
 
 const sortedReceives = (skill: Skill): string[] => [...(skill.receives ?? [])].sort()
 

@@ -11,6 +11,7 @@ import {
 import { healSkill as healJadeHitLandingsGrantsAndClipTimings } from "../../src/migrations/customSkills/V84__jadeHitLandingsGrantsAndClipTimings"
 import { healSkill as healJadeAvailabilityAndRecharge } from "../../src/migrations/customSkills/V85__jadeAvailabilityAndRecharge"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV59File from "./testCustomSkills/v59/store.json"
 
@@ -25,7 +26,9 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const builtinSpringless = (): Skill =>
-  builtinSkillsForClass("silkbindJade").find((skill) => skill.id === SPRINGLESS_ID)!
+  withoutLevelRows(
+    builtinSkillsForClass("silkbindJade").find((skill) => skill.id === SPRINGLESS_ID)!,
+  )
 
 describe("custom-skills v59 fixture", () => {
   it("is v59 and still stores both Springless Silence hits", () => {

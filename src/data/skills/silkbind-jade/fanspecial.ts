@@ -1,4 +1,5 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
+import { LEVEL_ROWS } from "./levelRows"
 import { applyBuff, castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -66,19 +67,8 @@ const windriderOnMarkedTarget = castSkill({
 // In-game values as of 2026-10-06: the cast's small first hit needs the caster
 // at least 2.5 m from the target after the dash, which never happens on a
 // training stake, so only the large hit lands.
-const CAST_TOTAL = {
-  physMultiplier: 1.2798,
-  attributeMultiplier: 1.9197,
-  physFixed: 355,
-  attributeFixed: 193,
-}
-const LANDING_HIT_SHARE = 0.995
-
 const landingHitCoefficients = {
-  physMultiplier: CAST_TOTAL.physMultiplier * LANDING_HIT_SHARE,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier * LANDING_HIT_SHARE,
-  physFixed: CAST_TOTAL.physFixed * LANDING_HIT_SHARE,
-  attributeFixed: CAST_TOTAL.attributeFixed * LANDING_HIT_SHARE,
+  ...levelScaled(LEVEL_ROWS.fanspecialHit0),
   extraCritDamage: 0,
 }
 

@@ -1,13 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const THIRD_OF_ROW = {
-  physMultiplier: 0.301464,
-  attributeMultiplier: 0.452196,
-  physFixed: 83.7,
-  attributeFixed: 45.6,
+  ...levelScaled(LEVEL_ROWS.fanDashHit0),
 }
 
 // In-game values as of 2026-10-06: the second collider hits twice, once in
@@ -30,10 +28,7 @@ export const fanDash = defineSkill({
     hit(2, { frame: 39, ...THIRD_OF_ROW }),
     hit(3, {
       frame: 60,
-      physMultiplier: 0.401952,
-      attributeMultiplier: 0.602928,
-      physFixed: 111.6,
-      attributeFixed: 60.8,
+      ...levelScaled(LEVEL_ROWS.fanDashHit3),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

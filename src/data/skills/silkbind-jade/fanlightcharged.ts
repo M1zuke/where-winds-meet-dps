@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: Flying Tornado shortens the charge level
 // from 0.55 s to 0.36 s (−11.4 f) and the whirlwind flies at 30 m/s instead of
@@ -64,10 +65,7 @@ export const fanlightcharged = defineSkill({
       // shortest hold; it lands after its flight.
       frame: 71.4,
       projectile: WHIRLWIND_PROJECTILE,
-      physMultiplier: 1.9044,
-      attributeMultiplier: 2.8566,
-      physFixed: 527,
-      attributeFixed: 287,
+      ...levelScaled(LEVEL_ROWS.fanlightchargedHit0),
       extraCritDamage: 0,
       // In-game values as of 2026-11-10: +10 Endurance once per cast, on the
       // frame the whirlwind hits a non-player.
@@ -77,10 +75,7 @@ export const fanlightcharged = defineSkill({
           id: "hv-fanlightcharged-hit-0-flying-tornado",
           label: "Flying Tornado",
           conditions: [FLYING_TORNADO_ACTIVE],
-          physMultiplier: 1.9044,
-          attributeMultiplier: 2.8566,
-          physFixed: 527,
-          attributeFixed: 287,
+          ...levelScaled(LEVEL_ROWS.fanlightchargedHit0),
           frame: 60,
           castFrames: 86.4,
           projectile: FLYING_TORNADO_WHIRLWIND_PROJECTILE,

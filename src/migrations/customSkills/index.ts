@@ -131,6 +131,7 @@ import { V127__umbraLevelRows } from "./V127__umbraLevelRows"
 import { V128__splendorLevelRows } from "./V128__splendorLevelRows"
 import { V129__strengthLevelRows } from "./V129__strengthLevelRows"
 import { V130__draughtLevelRows } from "./V130__draughtLevelRows"
+import { V131__jadeLevelRows } from "./V131__jadeLevelRows"
 
 export type {
   CustomSkillMigration,
@@ -330,6 +331,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V128__splendorLevelRows,
   V129__strengthLevelRows,
   V130__draughtLevelRows,
+  V131__jadeLevelRows,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

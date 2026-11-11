@@ -9,6 +9,7 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V94__jadeSpringSorrowChargesAndComboRechargeCut"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV93File from "./testCustomSkills/v93/store.json"
 
@@ -23,7 +24,7 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const builtinOf = (id: string): Skill =>
-  builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!
+  withoutLevelRows(builtinSkillsForClass("silkbindJade").find((skill) => skill.id === id)!)
 
 describe("custom-skills v93 fixture", () => {
   it("is v93 and still skips Spring Sorrow's charge at rank 6 with no recharge cut", () => {

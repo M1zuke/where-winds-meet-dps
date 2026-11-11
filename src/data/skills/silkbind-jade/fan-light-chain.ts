@@ -1,14 +1,12 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const FIRST_STAGE = {
-  physMultiplier: 0.408064,
-  attributeMultiplier: 0.612096,
-  physFixed: 113,
-  attributeFixed: 61.6,
+  ...levelScaled(LEVEL_ROWS.fanLightHit0),
 }
 
 // In-game values as of 2026-11-10: at maximum distance the stage-1 hit is the
@@ -45,18 +43,12 @@ export const fanLightChain = defineSkill({
     hit(0, { ...STAGE_ONE_BULLET, ...FIRST_STAGE }),
     hit(1, {
       frame: 55,
-      physMultiplier: 0.306048,
-      attributeMultiplier: 0.459072,
-      physFixed: 84.75,
-      attributeFixed: 46.2,
+      ...levelScaled(LEVEL_ROWS.fanLightChainHit1),
     }),
     hit(2, { frame: 75, ...FIRST_STAGE }),
     hit(3, {
       frame: 103,
-      physMultiplier: 0.918144,
-      attributeMultiplier: 1.377216,
-      physFixed: 254.25,
-      attributeFixed: 138.6,
+      ...levelScaled(LEVEL_ROWS.fanLightChainHit3),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

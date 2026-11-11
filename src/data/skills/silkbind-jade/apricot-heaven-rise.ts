@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-11-10: the rise is the only hit of Apricot Heaven
 // tagged as a trajectory hit, so the umbrella talent, Jadebreak, Combo, Spring
@@ -32,10 +33,7 @@ export const apricotHeavenRise = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.626038,
-      attributeMultiplier: 0.939057,
-      physFixed: 173.2,
-      attributeFixed: 94.4,
+      ...levelScaled(LEVEL_ROWS.apricotHeavenRiseHit0),
       extraCritDamage: 1,
     }),
   ],
