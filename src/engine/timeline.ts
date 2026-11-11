@@ -103,7 +103,7 @@ import { computeSkillDamage, isMysticHit, type HitOutcome, type RolledHit } from
 import { EXTENSION_STREAM_OFFSET, mechanicSubstream, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { breakthroughFloor, debuffAtLevel, skillAtLevel } from "./levelRows"
-import { levelSelectionFor } from "../definitions/baseStats/breakthroughs"
+import { getBreakthrough, levelSelectionFor } from "../definitions/baseStats/breakthroughs"
 import {
   qiBreakTalentDamageBoostAt,
   swordTrialBossFor,
@@ -139,7 +139,8 @@ import {
   type QiSource,
   type QiTargetBar,
 } from "./qiBar"
-import { QI_TARGETS, qiTargetHpMax } from "../data/baseStats/qiTargets"
+import { effectiveQiTarget } from "../definitions/baseStats/qiTargetDef"
+import { QI_TARGETS } from "../data/baseStats/qiTargets"
 import { PLAYER_QI_DAMAGE_INDEX, QI_BREAK_HP_DAMAGE_BONUS } from "../data/baseStats/qiConstants"
 import { castTagOf, isDodgeContext, skillTagsOf, weaponTagOf, WEAPON_TAG } from "./buffs/tags"
 import {
@@ -264,8 +265,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   // The Qi bar's own target — docs/TIMELINE.md § "Qi bar".
-  const qiTargetId = inputs.qiTarget ?? "swordTrial"
-  const qiTargetDef = QI_TARGETS[qiTargetId]
+  const qiTargetDef = QI_TARGETS[effectiveQiTarget(inputs)]
   const qiBreakExtensionBonusSec = inputs.combatSettings?.breakExtension ? 12 : 0
   const qiTargetBar: QiTargetBar = {
     max: qiTargetDef.max,
@@ -274,7 +274,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     directImmunitySec: qiTargetDef.directImmunitySec,
     takenIndex: qiTargetDef.takenIndex,
   }
-  const qiTargetHpMaxValue = qiTargetHpMax(qiTargetId, inputs.breakthrough)
+  const qiTargetHpMaxValue = getBreakthrough(inputs.breakthrough).targetHp
   const bossQiBreakDamageBoost = inputs.dummyMode
     ? 0
     : qiBreakTalentDamageBoostAt(swordTrialBossFor(inputs), inputs.breakthrough)

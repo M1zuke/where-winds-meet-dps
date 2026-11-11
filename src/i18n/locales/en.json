@@ -2323,7 +2323,7 @@
   "overview.encounterSettings.purewrathScript": "Purewrath Script",
   "overview.encounterSettings.purewrathScriptHint": "All Mystic DMG +4 % per stack, up to 3 stacks; one stack per 120 Vitality spent in combat",
   "overview.encounterSettings.qiTarget": "Qi Bar Target",
-  "overview.encounterSettings.qiTargetHerosRealm": "Hero's Realm Stake",
+  "overview.encounterSettings.qiTargetRetired": "The saved Qi bar target is no longer offered and counts as the Sword Trial Stake",
   "overview.encounterSettings.qiTargetSwordTrial": "Sword Trial Stake",
   "overview.encounterSettings.qiTargetSwordTrialResistanceUp": "Sword Trial Stake (Resistance Up)",
   "overview.encounterSettings.savedLocked": "{option} is saved but not available at BT {bt}",

@@ -2323,7 +2323,7 @@
   "overview.encounterSettings.purewrathScript": "破秽帖",
   "overview.encounterSettings.purewrathScriptHint": "每层全奇术伤害+4%，至多 3 层；战斗中每消耗 120 体力一层",
   "overview.encounterSettings.qiTarget": "真气条目标",
-  "overview.encounterSettings.qiTargetHerosRealm": "侠境木桩",
+  "overview.encounterSettings.qiTargetRetired": "已保存的真气条目标已不再提供，按试剑木桩计算",
   "overview.encounterSettings.qiTargetSwordTrial": "试剑木桩",
   "overview.encounterSettings.qiTargetSwordTrialResistanceUp": "试剑木桩（抗性提升）",
   "overview.encounterSettings.savedLocked": "{option} 已保存，但在 BT {bt} 不可用",

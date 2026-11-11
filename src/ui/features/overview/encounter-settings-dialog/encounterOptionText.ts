@@ -91,7 +91,6 @@ export const OPTION_LABEL_KEYS: Record<string, string> = {
   dragonHeadLowHpMaxBonus: "overview.encounterSettings.dragonHeadLowHpMaxBonus",
   "qiTarget:swordTrial": "overview.encounterSettings.qiTargetSwordTrial",
   "qiTarget:swordTrialResistanceUp": "overview.encounterSettings.qiTargetSwordTrialResistanceUp",
-  "qiTarget:herosRealm": "overview.encounterSettings.qiTargetHerosRealm",
 }
 
 export const OPTION_HINT_KEYS: Record<string, string> = {

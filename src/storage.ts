@@ -48,7 +48,6 @@ import {
   resyncDefaultTalentsForBreakthrough,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
-import { isQiTargetId } from "./definitions/baseStats/qiTargetDef"
 import { DEFAULT_SWORD_TRIAL_BOSS_ID } from "./definitions/baseStats/swordTrialBosses"
 import {
   defaultBreakthrough,
@@ -426,7 +425,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0
   if (typeof next.qiRateAdd !== "number") next.qiRateAdd = 0
   if (typeof next.qiDamageIndexMultiplier !== "number") next.qiDamageIndexMultiplier = 0
-  if (!isQiTargetId(next.qiTarget)) next.qiTarget = "swordTrial"
+  if (typeof next.qiTarget !== "string" || !next.qiTarget) next.qiTarget = "swordTrial"
   if (typeof next.swordTrialBoss !== "string" || !next.swordTrialBoss)
     next.swordTrialBoss = DEFAULT_SWORD_TRIAL_BOSS_ID
   if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
