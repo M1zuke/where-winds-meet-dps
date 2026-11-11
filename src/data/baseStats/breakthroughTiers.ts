@@ -1,12 +1,13 @@
 import { defineBreakthroughTiers } from "../../definitions/baseStats/breakthroughTierDef"
 
-// In-game martial-art level and mystic tier caps as of 2026-11-10.
+// In-game player level, martial-art level and mystic tier caps as of 2026-11-10.
 // In-game season calendar as of 2026-09-17: breakthroughs 18-21 carry their
 // scheduled unlock instant rather than an observed one.
 export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 13,
     artLevel: 90,
+    playerLevel: 90,
     mysticTier: 5,
     targetHp: 5633453,
     gearLevel: 86,
@@ -35,6 +36,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 14,
     artLevel: 95,
+    playerLevel: 95,
     mysticTier: 6,
     targetHp: 7500652,
     gearLevel: 91,
@@ -63,6 +65,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 15,
     artLevel: 95,
+    playerLevel: 95,
     mysticTier: 6,
     targetHp: 7500652,
     gearLevel: 91,
@@ -91,6 +94,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 16,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 9674809,
     gearLevel: 96,
@@ -119,6 +123,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 17,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 9674809,
     gearLevel: 96,
@@ -148,6 +153,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 18,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 12572848,
     gearLevel: 100,
@@ -182,6 +188,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 19,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 12572848,
     gearLevel: 100,
@@ -215,6 +222,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 20,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 14793620,
     gearLevel: 105,
@@ -248,6 +256,7 @@ export const BREAKTHROUGH_TIER_DEFS = defineBreakthroughTiers([
   {
     breakthrough: 21,
     artLevel: 100,
+    playerLevel: 100,
     mysticTier: 6,
     targetHp: 14793620,
     gearLevel: 105,
