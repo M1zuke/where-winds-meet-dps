@@ -84,10 +84,20 @@ describe("reattunementPool — the shared weapon/disc/pendant penetration pool",
     expect(at91.lines.some((line) => line.optionId === "formlessPen")).toBe(true)
   })
 
-  it("leaves unmodelled weight (the four class-specific pen lines) in the level-86 total", () => {
+  it("models every weight of the level-86 pool, the four attribute penetration lines included", () => {
     const pool = reattunementPool("bellstrikeUmbra", "disc", 86)!
     const modelled = pool.lines.reduce((sum, line) => sum + line.weight, 0)
-    expect(pool.totalWeight).toBeGreaterThan(modelled)
+    expect(pool.totalWeight).toBe(modelled)
+    expect(pool.lines.map((line) => line.optionId)).toEqual(
+      expect.arrayContaining(["bellstrikePen", "stonesplitPen", "silkbindPen", "bamboocutPen"]),
+    )
+  })
+
+  it("offers the attribute penetration lines at level 86 only", () => {
+    for (const level of [91, 96, 100, 105] as const) {
+      const pool = reattunementPool("bellstrikeUmbra", "disc", level)!
+      expect(pool.lines.some((line) => line.optionId === "bellstrikePen")).toBe(false)
+    }
   })
 })
 

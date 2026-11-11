@@ -440,17 +440,17 @@ describe("computeReattunement — weighted advisor", () => {
     expect(res86.pityThreshold).toBeNull()
   })
 
-  it("keeps the weight of pool members that carry no engine line in the total", () => {
+  it("weighs every line of the level-86 pool against the total", () => {
     const weapon = weaponPiece({ level: 86, attunement: "physPen", attunementValue: 0.05 })
     const inputs = withPieceInInventory(weapon)
     const res = computeReattunement({ reqId: 1, inputs, pieceId: weapon.id })
     expect(res.reason).toBe("ok")
     const pool = reattunementPool(inputs.classId, "leftWeapon", 86)!
     expect(pool.totalWeight).toBe(600)
-    expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(300)
+    expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(600)
     const drawChances = res.options.map((option) => option.pDraw as number)
     for (const chance of drawChances) expect(typeof chance).toBe("number")
-    expect(drawChances.reduce((sum, chance) => sum + chance, 0)).toBeLessThanOrEqual(300 / 600)
+    expect(drawChances.reduce((sum, chance) => sum + chance, 0)).toBeLessThanOrEqual(1)
   })
 })
 

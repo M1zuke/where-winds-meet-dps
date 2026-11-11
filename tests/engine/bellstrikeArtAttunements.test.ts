@@ -37,7 +37,15 @@ describe("every weapon-art attunement option belongs to one class", () => {
     const splendor = attunementsForClass(SPLENDOR).map((option) => option.id)
     const umbra = attunementsForClass(UMBRA).map((option) => option.id)
     const shared = splendor.filter((id) => umbra.includes(id))
-    expect(shared).toEqual(["physPen", "formlessPen", "physResist"])
+    expect(shared).toEqual([
+      "physPen",
+      "formlessPen",
+      "bellstrikePen",
+      "stonesplitPen",
+      "silkbindPen",
+      "bamboocutPen",
+      "physResist",
+    ])
   })
 })
 

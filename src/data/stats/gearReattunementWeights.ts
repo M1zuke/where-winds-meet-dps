@@ -253,6 +253,7 @@ const CLASS_POOLS: Readonly<Record<string, Readonly<Record<GearLevel, Reattuneme
 
 interface PenShape {
   pen: readonly ReattunementBand[]
+  attribute?: readonly ReattunementBand[]
   formless?: readonly ReattunementBand[]
 }
 
@@ -263,10 +264,14 @@ interface PenImprove {
 
 // Weapon / disc / pendant re-attunement pool, in-game 2026-09-08 — the same
 // pool for every class. `physPen`/`physResist` share one band shape;
-// `formlessPen` is its own line and does not exist at 86. Ranges are stated in
+// `formlessPen` is its own line and does not exist at 86; the four attribute
+// penetration lines exist at 86 only. Ranges are stated in
 // the app's fraction, one hundredth of the in-game percentage-point step.
 const PEN_BANDS: Readonly<Record<GearLevel, PenShape>> = {
-  86: { pen: bands([0.047, 0.066, 60], [0.067, 0.078, 40]) },
+  86: {
+    pen: bands([0.047, 0.066, 60], [0.067, 0.078, 40]),
+    attribute: bands([0.055, 0.077, 60], [0.078, 0.092, 40]),
+  },
   91: {
     pen: bands([0.054, 0.068, 10], [0.069, 0.077, 50], [0.078, 0.083, 30], [0.084, 0.09, 10]),
     formless: bands([0.065, 0.081, 10], [0.082, 0.092, 50], [0.093, 0.099, 30], [0.1, 0.108, 10]),
@@ -305,6 +310,8 @@ const PEN_IMPROVE: Partial<Record<GearLevel, PenImprove>> = {
 }
 
 const PEN_MEMBER_WEIGHT = 150
+const ATTRIBUTE_PEN_MEMBER_WEIGHT = 75
+const ATTRIBUTE_PEN_OPTION_IDS = ["bellstrikePen", "stonesplitPen", "silkbindPen", "bamboocutPen"]
 const PEN_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
   86: 600,
   91: 450,
@@ -330,6 +337,11 @@ function generalPool(level: GearLevel): ReattunementPool {
       improveBands: lineImprove?.pen,
     },
   ]
+  if (shape.attribute) {
+    for (const optionId of ATTRIBUTE_PEN_OPTION_IDS) {
+      lines.push({ optionId, weight: ATTRIBUTE_PEN_MEMBER_WEIGHT, bands: shape.attribute })
+    }
+  }
   if (shape.formless) {
     lines.push({
       optionId: "formlessPen",
