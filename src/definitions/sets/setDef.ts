@@ -5,10 +5,6 @@ import type { PARAM } from "../../data/skills/buffs/ids"
 // A field a set doesn't carry is omitted, never zero-filled: a zero here reads
 // as a bonus deliberately measured at nothing, which is not the same claim.
 export interface SetFormulaBonus {
-  /** `formula.ts`'s `setFalcon` fallback below the AE/AG term. */
-  physBoost?: number
-  /** `formula.ts`'s Bellstrike attack rate fallback when no scheduler supplied one. */
-  bellstrikeAttackPct?: number
   /** `panel.ts buildContext`'s `generalDamageBoost`. */
   generalDamageBoost?: number
 }

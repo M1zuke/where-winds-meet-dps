@@ -77,17 +77,11 @@ describe("physical attack rates share one additive pool", () => {
   })
 })
 
-describe("the Hawkwing fallback without a scheduler", () => {
-  it("raises physical and Bellstrike attack by the same full-stack rate", () => {
+describe("Hawkwing without a scheduler's stacks", () => {
+  it("assumes no stacks, so the preview of a skill shows the damage of a fresh fight", () => {
     const withSet = baseContext({ set: SET_ID.hawkwing })
-    expect(damageOf(physicalRow(), withSet) / damageOf(physicalRow(), baseContext())).toBeCloseTo(
-      1.09,
-      10,
-    )
-    expect(damageOf(attributeRow(), withSet) / damageOf(attributeRow(), baseContext())).toBeCloseTo(
-      1.09,
-      10,
-    )
+    expect(damageOf(physicalRow(), withSet)).toBe(damageOf(physicalRow(), baseContext()))
+    expect(damageOf(attributeRow(), withSet)).toBe(damageOf(attributeRow(), baseContext()))
   })
 })
 

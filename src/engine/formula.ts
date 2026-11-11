@@ -1,5 +1,3 @@
-import { SET_BY_ID } from "../definitions/sets/registry"
-import type { SetFormulaBonus } from "../definitions/sets/setDef"
 import type { DivinecraftElement } from "../data/consumables/divinecraftRefinements"
 import { NO_PHYS_ATTACK, type PhysAttackRange } from "../data/consumables/foods"
 
@@ -136,12 +134,6 @@ export interface FormulaContext {
   attributeFlatMultiplier?: number
 }
 
-function setFormulaBonus(setId: string | null, field: keyof SetFormulaBonus): number {
-  if (!setId) return 0
-  const value = SET_BY_ID[setId]?.formulaBonus?.[field]
-  return typeof value === "number" ? value : 0
-}
-
 export type HitOutcome = "abrasion" | "normal" | "crit" | "affinity"
 
 export interface RolledHit {
@@ -235,9 +227,8 @@ export function computeSkillDamage(
         AFFINITY_RATE_CAP,
       ) + ctx.directAffinityPanel
 
-  const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
-  const setBellstrikeAttackPct =
-    ctx.bellstrikeAttackPctBonus ?? setFormulaBonus(ctx.set, "bellstrikeAttackPct")
+  const setPhysBoost = ctx.hawkwingPhysBonus ?? 0
+  const setBellstrikeAttackPct = ctx.bellstrikeAttackPctBonus ?? 0
   const effectivePhys = effectivePhysRange(
     ctx.smallPhys,
     ctx.largePhys,
