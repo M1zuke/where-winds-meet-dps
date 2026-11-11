@@ -17,7 +17,8 @@ import {
   healSpearheavyStage2Tags,
   healSkill,
 } from "../../src/migrations/customSkills/V24__umbraValueFixes"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "../../src/migrations/customSkills/V41__wolfchasersArtSweepAllEnduranceGain"
@@ -28,6 +29,9 @@ import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../s
 import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
 import { healSkill as healSwordHorizonBurstStacksAtTheBurst } from "../../src/migrations/customSkills/V98__swordHorizonBurstStacksAtTheBurst"
 import storeV23File from "./testCustomSkills/v23/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T

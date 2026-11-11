@@ -11,10 +11,14 @@ import {
 } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import { healSkill as healUmbraCastLengthsAndSweepAllBurstStacks } from "../../src/migrations/customSkills/V82__umbraCastLengthsAndSweepAllBurstStacks"
 import { healSkill as healUmbraGameplayTimings } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV66File from "./testCustomSkills/v66/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
 const STORE = storeV66File as unknown as RawCustomSkillsBlob & { skills: Skill[] }

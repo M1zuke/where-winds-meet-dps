@@ -1,3 +1,4 @@
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { beforeEach, describe, expect, it } from "vitest"
 import { runChain } from "../../src/migrations/chain"
 import {
@@ -374,6 +375,10 @@ describe("every healed skill survives the hydrator too", () => {
     const swordspecial4Hit = loaded.find(
       (candidate) => candidate.id === "bellstrikeUmbra-swordspecial-4-hit",
     )!
-    expectCutLengthHealed("bellstrikeUmbra-swordspecial-4-hit", swordspecial4Hit, 76.96)
+    expectCutLengthHealed(
+      "bellstrikeUmbra-swordspecial-4-hit",
+      withoutLevelRows(swordspecial4Hit),
+      76.96,
+    )
   })
 })

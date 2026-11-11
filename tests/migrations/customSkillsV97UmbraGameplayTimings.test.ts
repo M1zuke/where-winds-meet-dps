@@ -8,9 +8,13 @@ import {
   V97__umbraGameplayTimings,
   healSkill,
 } from "../../src/migrations/customSkills/V97__umbraGameplayTimings"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import type { Skill } from "../../src/engine/skill"
 import storeV96File from "./testCustomSkills/v96/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const STORE = storeV96File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 const EDITED_ID = "bellstrikeUmbra-swordspecial-1-hit"

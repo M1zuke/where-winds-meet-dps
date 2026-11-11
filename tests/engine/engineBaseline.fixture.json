@@ -3803,8 +3803,8 @@
     "digest": "757d8f1510d661332179192ed4234b2b12b3c8baef82d39e99c37ea607ef0dd9"
   },
   "defaults:umbra": {
-    "dps": 12233.47,
-    "totalDamage": 734007.98,
+    "dps": 12029.09,
+    "totalDamage": 721745.63,
     "rotationDuration": 60,
     "warnings": [
       "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 14+ (breakthrough 13).",
@@ -3849,7 +3849,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 13082,
+        "expectedDamage": 12416.71,
         "castCount": 2
       },
       {
@@ -3905,7 +3905,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 8127.58,
+        "expectedDamage": 7712.95,
         "castCount": 1
       },
       {
@@ -3913,7 +3913,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 46102.46,
+        "expectedDamage": 43780.48,
         "castCount": 10
       },
       {
@@ -3937,7 +3937,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 19857.36,
+        "expectedDamage": 18868.09,
         "castCount": 4
       },
       {
@@ -3945,7 +3945,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 23324.67,
+        "expectedDamage": 22150.71,
         "castCount": 5
       },
       {
@@ -3953,7 +3953,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 11677.77,
+        "expectedDamage": 11090.77,
         "castCount": 0
       },
       {
@@ -3961,7 +3961,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 12632.14,
+        "expectedDamage": 12004.65,
         "castCount": 4
       },
       {
@@ -3969,7 +3969,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50555.77,
+        "expectedDamage": 48045.79,
         "castCount": 4
       },
       {
@@ -3985,7 +3985,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 2,
-        "expectedDamage": 8691.69,
+        "expectedDamage": 8256.81,
         "castCount": 1
       },
       {
@@ -3993,7 +3993,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 34459.15,
+        "expectedDamage": 32738.48,
         "castCount": 3
       },
       {
@@ -4001,7 +4001,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 16402.12,
+        "expectedDamage": 15584.92,
         "castCount": 3
       },
       {
@@ -4026,6 +4026,6 @@
       "buffWindows": 126,
       "casts": 97
     },
-    "digest": "731bfda24e83e55cd82cf8ec0ee31fd8551d60b2c725f2443fbbb867ccb8a85a"
+    "digest": "7333ba924c753960d69ffec47c01d9c5681949ff854c3def4539d0c910059fe4"
   }
 }

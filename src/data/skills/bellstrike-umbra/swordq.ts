@@ -1,10 +1,11 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import { SWORDQ_DISPLACEMENT } from "./rootMotion"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordq = defineSkill({
   id: SKILL.swordq,
@@ -28,10 +29,7 @@ export const swordq = defineSkill({
   hits: [
     hit(0, {
       frame: 20,
-      physMultiplier: 0.544068,
-      attributeMultiplier: 0.816102,
-      physFixed: 150.6,
-      attributeFixed: 82,
+      ...levelScaled(LEVEL_ROWS.swordqHit0),
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
   ],

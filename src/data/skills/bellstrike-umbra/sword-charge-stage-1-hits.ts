@@ -1,7 +1,8 @@
-import { hit } from "../../../definitions/skills/skillDef"
+import { hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { DEBUFF } from "./ids"
 import type { SkillHit } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 
 // Every frame below is press-relative: the 31 f minimum hold to reach stage 1
 // (a charge node that starts at 12.6 f plus 0.3 s of charge, rounded up), the
@@ -10,42 +11,27 @@ import type { SkillHit } from "../../../engine/skill"
 export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
   hit(0, {
     frame: 37,
-    physMultiplier: 0.402924,
-    attributeMultiplier: 0.604386,
-    physFixed: 111.6,
-    attributeFixed: 60.75,
+    ...levelScaled(LEVEL_ROWS.swordChargeStage11HitHit0),
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(1, {
     frame: 61,
-    physMultiplier: 0.268616,
-    attributeMultiplier: 0.402924,
-    physFixed: 74.4,
-    attributeFixed: 40.5,
+    ...levelScaled(LEVEL_ROWS.swordChargeStage12HitHit1),
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(2, {
     frame: 71,
-    physMultiplier: 0.268616,
-    attributeMultiplier: 0.402924,
-    physFixed: 74.4,
-    attributeFixed: 40.5,
+    ...levelScaled(LEVEL_ROWS.swordChargeStage12HitHit1),
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(3, {
     frame: 81,
-    physMultiplier: 0.268616,
-    attributeMultiplier: 0.402924,
-    physFixed: 74.4,
-    attributeFixed: 40.5,
+    ...levelScaled(LEVEL_ROWS.swordChargeStage12HitHit1),
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(4, {
     frame: 139,
-    physMultiplier: 0.67154,
-    attributeMultiplier: 1.00731,
-    physFixed: 186,
-    attributeFixed: 101.25,
+    ...levelScaled(LEVEL_ROWS.swordChargeStage15HitHit4),
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
 ]

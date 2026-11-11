@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import { SWORD_HEAVY_3_MOTION } from "./rootMotion"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const swordHeavy3 = defineSkill({
@@ -23,17 +24,11 @@ export const swordHeavy3 = defineSkill({
   hits: [
     hit(0, {
       frame: 14,
-      physMultiplier: 0.479274,
-      attributeMultiplier: 0.718911,
-      physFixed: 132.6,
-      attributeFixed: 72.2,
+      ...levelScaled(LEVEL_ROWS.swordChargeStage1Level0Hit0),
     }),
     hit(1, {
       frame: 48,
-      physMultiplier: 0.718911,
-      attributeMultiplier: 1.0783665,
-      physFixed: 198.9,
-      attributeFixed: 108.3,
+      ...levelScaled(LEVEL_ROWS.swordHeavy3Hit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

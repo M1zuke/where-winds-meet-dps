@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06; cast after a sprint, which is not modelled.
 export const spearDash = defineSkill({
@@ -19,10 +20,7 @@ export const spearDash = defineSkill({
   hits: [
     hit(0, {
       frame: 20,
-      physMultiplier: 0.62878,
-      attributeMultiplier: 0.94317,
-      physFixed: 175,
-      attributeFixed: 95,
+      ...levelScaled(LEVEL_ROWS.spearDashHit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",
