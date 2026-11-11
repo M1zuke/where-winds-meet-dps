@@ -13,4 +13,5 @@ export const SET_ID = {
   etherwrath: "etherwrath",
   swallowcall: "swallowcall",
   swiftGale: "swiftGale",
+  cloudshear: "cloudshear",
 } as const
