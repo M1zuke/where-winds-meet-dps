@@ -104,6 +104,10 @@ import { EXTENSION_STREAM_OFFSET, mechanicSubstream, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { breakthroughFloor, debuffAtLevel, skillAtLevel } from "./levelRows"
 import { levelSelectionFor } from "../definitions/baseStats/breakthroughs"
+import {
+  qiBreakTalentDamageBoostAt,
+  swordTrialBossFor,
+} from "../definitions/baseStats/swordTrialBosses"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import {
@@ -271,6 +275,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     takenIndex: qiTargetDef.takenIndex,
   }
   const qiTargetHpMaxValue = qiTargetHpMax(qiTargetId, inputs.breakthrough)
+  const bossQiBreakDamageBoost = inputs.dummyMode
+    ? 0
+    : qiBreakTalentDamageBoostAt(swordTrialBossFor(inputs), inputs.breakthrough)
 
   const fixedQiBreaks = options?.fixedQiBreaks
   const scriptedQiBar = fixedQiBreaks ? new ScriptedQiBar(fixedQiBreaks, FPS) : null
@@ -1428,6 +1435,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (buffEngine.qiBroken(frame / FPS)) {
         effects.push({ statKey: "independentDamageBoost", amount: QI_BREAK_HP_DAMAGE_BONUS })
         sig += "~qiBreakBoost"
+        if (bossQiBreakDamageBoost > 0) {
+          effects.push({ statKey: "allDamageBoost", amount: bossQiBreakDamageBoost })
+          sig += `~bossQiBreak:${bossQiBreakDamageBoost}`
+        }
       }
       if (combat?.healerBuff) {
         const healerAmount = combat.healerPanaceaFan
