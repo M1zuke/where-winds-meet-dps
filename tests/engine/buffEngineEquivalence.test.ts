@@ -36,7 +36,7 @@ import type { DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
 import { buffEngineWith, exhaustedFrom } from "../helpers/qiBars"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
-import { makeSkill } from "../../src/engine/skill"
+import { makeHit, makeSkill } from "../../src/engine/skill"
 
 const FIXTURE_PATH = join(process.cwd(), "tests/engine/buffEngineEquivalence.fixture.json")
 const REGENERATE = process.env.UPDATE_BUFF_EQUIVALENCE === "1"
@@ -77,6 +77,7 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     rateLimit: module.rateLimit ?? null,
     stackRateLimit: module.stackRateLimit ?? null,
     stacksPerHit: !!module.stacksPerHit,
+    stackOnGrantingHit: !!module.stackOnGrantingHit,
     seedAtStart: !!module.seedAtStart,
     refreshOnAnyCast: !!module.refreshOnAnyCast,
     requiresBuffActive: module.requiresBuffActive ?? null,
@@ -208,6 +209,18 @@ function dynamicDumpFor(classId: string) {
       false,
       [module.id],
     )
+    if (module.stackOnGrantingHit) {
+      const grantingSkill = makeSkill("test", {
+        name: "probe",
+        castTag: `probe:${module.id}`,
+        triggersBuffs: [module.id],
+        hits: [makeHit({ frame: 0, physMultiplier: 1 })],
+      })
+      for (const hitTime of [time, time + RETRIGGER_GAP]) {
+        for (let hitIndex = 0; hitIndex < 3; hitIndex++)
+          engine.processDamageHitPostQi(hitTime, grantingSkill)
+      }
+    }
     time += 2
   }
   const lastTime = time + RETRIGGER_GAP + 5
