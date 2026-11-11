@@ -17,14 +17,14 @@ import {
   gearWordMaxRoll,
   statLineLabel,
 } from "../data/stats/statLines"
-import { statLineKey } from "../i18n/contentKeys"
+import { attunementKey, statLineKey } from "../i18n/contentKeys"
 import {
   AGILITY_PER_POINT,
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
 import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
-import { attunementLabelKey, attunementMax, attunementsForClass } from "./attunements"
+import { attunementMax, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
@@ -183,7 +183,7 @@ function buildAttunementSpecs(inputs: Inputs, level: GearLevel): WordSpec[] {
       return {
         word: opt.id,
         label: opt.label,
-        labelKey: attunementLabelKey(opt, inputs.classId),
+        labelKey: attunementKey(opt.id),
         amount: ceiling,
         unit: "percent" as const,
         apply: (i: Inputs, roll = ceiling) =>

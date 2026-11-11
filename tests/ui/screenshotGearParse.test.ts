@@ -751,3 +751,25 @@ Max Physical Attack +7 3.1
     expect(fields.words[2].confidence).not.toBe("unresolved")
   })
 })
+
+describe("attunement names resolve to the class that owns them", () => {
+  const withLastRow = (row: string) => TRANSCRIPT_A.replace("Physical Penetration +10.7", row)
+
+  it("reads Nameless Sword Martial Art as Splendor's own line", () => {
+    const { piece } = parseGearScreenshot(
+      withLastRow("Nameless Sword Martial Art Skill DMG Boost +4.2%"),
+      { ...inputs, classId: "bellstrikeSplendor" },
+      FALLBACK_SLOT,
+    )
+    expect(piece.attunement).toBe("namelessSwordQ")
+  })
+
+  it("reads Strategic Sword Martial Art as Umbra's own line", () => {
+    const { piece } = parseGearScreenshot(
+      withLastRow("Strategic Sword Martial Art Skill DMG Boost +4.2%"),
+      inputs,
+      FALLBACK_SLOT,
+    )
+    expect(piece.attunement).toBe("swordQ")
+  })
+})

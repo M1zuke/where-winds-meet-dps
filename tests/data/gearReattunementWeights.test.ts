@@ -3,6 +3,7 @@ import { reattunementPool } from "../../src/data/stats/gearReattunementWeights"
 import { reattunementExactMaxChance } from "../../src/engine/reattunement"
 import { GEAR_LEVELS } from "../../src/engine/types"
 import { BAMBOOCUT_DRAUGHT_ATTUNEMENTS } from "../../src/data/classes/bamboocut-draught/attunements"
+import { BELLSTRIKE_SPLENDOR_ATTUNEMENTS } from "../../src/data/classes/bellstrike-splendor/attunements"
 
 const REGISTERED_CLASSES = [
   "bellstrikeSplendor",
@@ -100,5 +101,49 @@ describe("reattunementExactMaxChance — the P(max) anchor", () => {
     const pool = reattunementPool("bellstrikeUmbra", "leftWeapon", 86)!
     const physPen = pool.lines.find((line) => line.optionId === "physPen")!
     expect(reattunementExactMaxChance(physPen)).toBeCloseTo(0.0333, 3)
+  })
+})
+
+describe("reattunementPool — Splendor", () => {
+  it("offers exactly its own attunement lines, covering the whole pool", () => {
+    for (const level of GEAR_LEVELS) {
+      const pool = reattunementPool("bellstrikeSplendor", "helm", level)!
+      expect(pool.totalWeight).toBe(500)
+      expect(pool.lines.map((line) => line.optionId).sort()).toEqual(
+        BELLSTRIKE_SPLENDOR_ATTUNEMENTS.map((option) => option.id).sort(),
+      )
+      expect(pool.lines.reduce((sum, line) => sum + line.weight, 0)).toBe(500)
+    }
+  })
+
+  it("weights the lines per gear level", () => {
+    const weights = (level: (typeof GEAR_LEVELS)[number]) =>
+      Object.fromEntries(
+        reattunementPool("bellstrikeSplendor", "helm", level)!.lines.map((line) => [
+          line.optionId,
+          line.weight,
+        ]),
+      )
+    expect(weights(86)).toEqual({
+      namelessSwordQ: 100,
+      swordCharged: 100,
+      namelessSwordSpecial: 100,
+      namelessSpearCharged: 100,
+      spearSpecial: 100,
+    })
+    expect(weights(91)).toEqual({
+      namelessSwordQ: 100,
+      swordCharged: 160,
+      namelessSwordSpecial: 70,
+      namelessSpearCharged: 100,
+      spearSpecial: 70,
+    })
+    expect(weights(100)).toEqual({
+      namelessSwordQ: 100,
+      swordCharged: 150,
+      namelessSwordSpecial: 80,
+      namelessSpearCharged: 100,
+      spearSpecial: 70,
+    })
   })
 })

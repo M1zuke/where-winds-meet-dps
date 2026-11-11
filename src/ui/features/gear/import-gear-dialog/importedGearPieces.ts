@@ -1,10 +1,6 @@
-import {
-  attunementsFor,
-  attunementLabelKey,
-  attunementMax,
-  attunementMin,
-} from "../../../../engine/attunements"
+import { attunementsFor, attunementMax, attunementMin } from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { attunementKey } from "../../../../i18n/contentKeys"
 import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
@@ -84,7 +80,7 @@ function legalTargets(
       kind: "attunement",
       attunementId: option.id,
       label: option.label,
-      labelKey: attunementLabelKey(option, inputs.classId),
+      labelKey: attunementKey(option.id),
       min: attunementMin(option, level),
       max: attunementMax(option, level),
     }))

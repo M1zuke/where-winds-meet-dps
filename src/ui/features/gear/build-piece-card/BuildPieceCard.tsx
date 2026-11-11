@@ -1,9 +1,14 @@
-import { attunementLabel, attunementLabelKey, getAttunement } from "../../../../engine/attunements"
+import { getAttunement } from "../../../../engine/attunements"
 import type { GearPiece } from "../../../../engine/types"
 import { isWeaponSlot } from "../../../../engine/types"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
-import { graduationBuildKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
+import {
+  attunementKey,
+  graduationBuildKey,
+  rarityKey,
+  statLineKey,
+} from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import { gearSlotLabelKey } from "../shared/gearSlotKeys"
@@ -74,9 +79,7 @@ export function BuildPieceCard({
         ))}
         <div className={`${previewStyles.affix} ${styles.attunement}`}>
           <span className={previewStyles.affixName}>
-            {attunement
-              ? t(attunementLabelKey(attunement, null), attunementLabel(attunement, null))
-              : piece.attunement}
+            {attunement ? t(attunementKey(attunement.id), attunement.label) : piece.attunement}
           </span>
           <span className={previewStyles.affixValue}>{formatGearValue(piece.attunementValue)}</span>
           <span />

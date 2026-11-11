@@ -41,10 +41,10 @@ export const bellstrikeSplendor = defineClass({
     INNER_WAY_ID.evasiveCharge,
   ],
   classSpecificAttunements: [
-    "swordQ",
+    "namelessSwordQ",
     "swordCharged",
-    "swordSpecial",
-    "spearCharged",
+    "namelessSwordSpecial",
+    "namelessSpearCharged",
     "spearSpecial",
   ],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],

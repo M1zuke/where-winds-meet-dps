@@ -4,7 +4,7 @@ import { gearWordPoolForLine, gearWordRelayedToLevel } from "../../../../data/st
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { classDefinition, weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import type { GraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
-import { attunementLabel, attunementLabelKey, attunementsFor } from "../../../../engine/attunements"
+import { attunementsFor } from "../../../../engine/attunements"
 import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
 import { newCustomGraduationBuildId } from "../../../../engine/customGraduationBuild"
 import { GEAR_SET_OPTIONS } from "../../../../engine/setBonuses"
@@ -21,6 +21,7 @@ import { rotationKey, setKey, statLineKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { TextInput } from "../../../components/text-input/TextInput"
+import { attunementComboboxOptions } from "../shared/attunementComboboxOptions"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
 import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import styles from "./CustomGraduationBuildEditor.module.scss"
@@ -112,14 +113,8 @@ export function CustomGraduationBuildEditor({
     ]
   }
 
-  function attunementOptions(slot: GearSlot): ComboboxOption[] {
-    return [
-      { value: "", label: t("common.none") },
-      ...attunementsFor(slot, classId).map((option) => ({
-        value: option.id,
-        label: t(attunementLabelKey(option, classId), attunementLabel(option, classId)),
-      })),
-    ]
+  function attunementOptions(slot: GearSlot, storedId: string): ComboboxOption[] {
+    return attunementComboboxOptions(t, attunementsFor(slot, classId), storedId)
   }
 
   function patch(next: Partial<CustomGraduationBuild>): void {
@@ -294,7 +289,7 @@ export function CustomGraduationBuildEditor({
               <div className={styles.attunementLine}>
                 <Combobox
                   value={entry.attunement}
-                  options={attunementOptions(entry.slot)}
+                  options={attunementOptions(entry.slot, entry.attunement)}
                   onChange={(value) => patchSlot(entry.slot, { attunement: value })}
                   aria-label={`${t(gearSlotLabelKey(entry.slot, classId))} ${t("common.attunement")}`}
                 />

@@ -30,6 +30,7 @@ import { V31__preferredDistanceOnRotation } from "./V31__preferredDistanceOnRota
 import { V32__weaponSlotsByMartialArt } from "./V32__weaponSlotsByMartialArt"
 import { V33__setsOnGearPieces } from "./V33__setsOnGearPieces"
 import { V34__attackFoodIds } from "./V34__attackFoodIds"
+import { V35__splendorAttunementIds } from "./V35__splendorAttunementIds"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -69,6 +70,11 @@ export {
 
 export { moveSetsOntoGearPieces } from "./V33__setsOnGearPieces"
 export { migrateFoodField, resolveStoredBreakthrough } from "./V34__attackFoodIds"
+export {
+  migrateSplendorAttuneTag,
+  migrateSplendorAttunementId,
+  splitSplendorAttunements,
+} from "./V35__splendorAttunementIds"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -101,6 +107,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V32__weaponSlotsByMartialArt,
   V33__setsOnGearPieces,
   V34__attackFoodIds,
+  V35__splendorAttunementIds,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

@@ -121,13 +121,10 @@ const GEAR_WORD_NAME_INDEX: readonly NormalizedNameEntry<GearWordId>[] = GEAR_WO
 // classes other than the one selected — so a correctly-read attunement is
 // never vetoed by a wrong slot guess or a different class being selected.
 const ATTUNEMENT_NAME_INDEX: readonly NormalizedNameEntry<AttunementOption>[] =
-  ATTUNEMENT_OPTIONS.flatMap((option) => [
-    { normalized: normalizeStatName(option.label), value: option },
-    ...Object.values(option.labelByClass ?? {}).map((label) => ({
-      normalized: normalizeStatName(label),
-      value: option,
-    })),
-  ])
+  ATTUNEMENT_OPTIONS.map((option) => ({
+    normalized: normalizeStatName(option.label),
+    value: option,
+  }))
 
 function levenshteinDistance(left: string, right: string): number {
   const distances: number[][] = Array.from({ length: left.length + 1 }, () =>

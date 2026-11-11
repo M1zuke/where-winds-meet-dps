@@ -254,3 +254,20 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(grantsMinPhysCritBoostFor("notAClass")("Sword")).toBe(false)
   })
 })
+
+describe("bellstrikeSplendor — classSpecificAttunements", () => {
+  it("lists its own five lines, none shared with Umbra", () => {
+    const splendor = classDefinition("bellstrikeSplendor")!
+    const umbra = classDefinition("bellstrikeUmbra")!
+    expect(splendor.classSpecificAttunements).toEqual([
+      "namelessSwordQ",
+      "swordCharged",
+      "namelessSwordSpecial",
+      "namelessSpearCharged",
+      "spearSpecial",
+    ])
+    for (const id of splendor.classSpecificAttunements) {
+      expect(umbra.classSpecificAttunements).not.toContain(id)
+    }
+  })
+})

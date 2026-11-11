@@ -45,7 +45,7 @@ export const stormDanceStage2Wushuang = defineSkill({
   // The 4 spin hits this sub-casts carry the Charged attunement tag on their
   // own module (`stormDanceStage1WushuangSpin`); the stage-2 hits below are
   // not on the attunement's own list (in-game values as of 2026-09-24), so
-  // this cast carries no `attune:spearCharged` tag of its own.
+  // this cast carries no `attune:namelessSpearCharged` tag of its own.
   tags: [WEAPON.spear, ATTACK.charge, PROP.isCharged],
   skillType: "weapon",
   weaponOrAttribute: "Spear",

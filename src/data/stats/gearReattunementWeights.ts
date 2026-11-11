@@ -77,11 +77,41 @@ function classPool(
 // Bellstrike - Splendor armour re-attunement pool, in-game 2026-09-08. Every
 // member is modelled — the pool's full weight is covered.
 const SPLENDOR_WEIGHTS: ClassWeights = {
-  86: { swordQ: 100, swordCharged: 100, swordSpecial: 100, spearCharged: 100, spearSpecial: 100 },
-  91: { swordCharged: 160, swordQ: 100, spearCharged: 100, swordSpecial: 70, spearSpecial: 70 },
-  96: { swordCharged: 160, swordQ: 100, spearCharged: 100, swordSpecial: 70, spearSpecial: 70 },
-  100: { swordCharged: 150, swordQ: 100, spearCharged: 100, swordSpecial: 80, spearSpecial: 70 },
-  105: { swordCharged: 150, swordQ: 100, spearCharged: 100, swordSpecial: 80, spearSpecial: 70 },
+  86: {
+    namelessSwordQ: 100,
+    swordCharged: 100,
+    namelessSwordSpecial: 100,
+    namelessSpearCharged: 100,
+    spearSpecial: 100,
+  },
+  91: {
+    swordCharged: 160,
+    namelessSwordQ: 100,
+    namelessSpearCharged: 100,
+    namelessSwordSpecial: 70,
+    spearSpecial: 70,
+  },
+  96: {
+    swordCharged: 160,
+    namelessSwordQ: 100,
+    namelessSpearCharged: 100,
+    namelessSwordSpecial: 70,
+    spearSpecial: 70,
+  },
+  100: {
+    swordCharged: 150,
+    namelessSwordQ: 100,
+    namelessSpearCharged: 100,
+    namelessSwordSpecial: 80,
+    spearSpecial: 70,
+  },
+  105: {
+    swordCharged: 150,
+    namelessSwordQ: 100,
+    namelessSpearCharged: 100,
+    namelessSwordSpecial: 80,
+    spearSpecial: 70,
+  },
 }
 const SPLENDOR_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
   86: 500,

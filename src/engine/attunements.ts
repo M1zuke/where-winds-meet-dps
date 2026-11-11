@@ -1,14 +1,9 @@
-import { attunementKey } from "../i18n/contentKeys"
 import type { GearLevel, GearLevelValues, GearSlot } from "./types"
 import { ATTUNEMENT_OPTIONS as OPTIONS } from "../data/classes/attunementOptions"
 
 export interface AttunementOption {
   id: string
   label: string
-  // Every class wielding the weapon art rolls the same attunement and names it
-  // after its own art, so `label` is the weapon-shaped fallback for a call site
-  // holding no class, and this carries the official name per class.
-  labelByClass?: Readonly<Record<string, string>>
   min: GearLevelValues
   max: GearLevelValues
   slots: readonly GearSlot[]
@@ -25,18 +20,8 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = OPTIONS
 
 export type AttunementId = (typeof OPTIONS)[number]["id"]
 
-export function attunementLabel(option: AttunementOption, classId: string | null): string {
-  return (classId && option.labelByClass?.[classId]) || option.label
-}
-
-export function attunementLabelKey(option: AttunementOption, classId: string | null): string {
-  return attunementKey(option.id, classId && option.labelByClass?.[classId] ? classId : null)
-}
-
 export function attunementsForClass(classId: string): AttunementOption[] {
-  return ATTUNEMENT_OPTIONS.filter((opt) => !opt.classIds || opt.classIds.includes(classId)).map(
-    (opt) => (opt.labelByClass?.[classId] ? { ...opt, label: opt.labelByClass[classId] } : opt),
-  )
+  return ATTUNEMENT_OPTIONS.filter((opt) => !opt.classIds || opt.classIds.includes(classId))
 }
 
 export function attunementsFor(slot: GearSlot, classId: string): AttunementOption[] {
