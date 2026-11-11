@@ -59,7 +59,7 @@ const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS
   "stonesplitStrength-snowpartingcharged-forgetfulness": ["hits"],
   "stonesplitStrength-snowpartingdual": ["hits"],
   "stonesplitStrength-snowpartingdual-prepull": ["hits"],
-  "stonesplitStrength-deflect": ["hits"],
+  "stonesplitStrength-deflect": ["hits", "triggersBuffs"],
   "stonesplitStrength-anxisoldierheng": ["tags", "hits", "receives"],
   "stonesplitStrength-anxisoldiermosweep": ["hits", "receives"],
   "stonesplitStrength-anxisoldiermodown": ["hits", "receives"],

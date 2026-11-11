@@ -169,6 +169,7 @@ export const BUFF = {
   windrider: "windrider",
   fluteDistanceBonus: "fluteDistanceBonus",
   cleftpeakDeflectGrant: "cleftpeakDeflectGrant",
+  throatPierceDeflectGrant: "throatPierceDeflectGrant",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across

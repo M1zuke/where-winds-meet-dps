@@ -34,7 +34,7 @@ function receivedBuffIds(): Set<string> {
 // ungated, and its only effect applies that status.
 // `fluteArrival` is a pure state marker read via `activeAfterBuffEnds`, never
 // received directly. `cleftpeakDeflectGrant` only ever fires `applyBuff`
-// effects onto the two Cleftpeak buffs, so nothing needs to receive it either.
+// effects onto the two Cleftpeak buffs, so nothing needs to receive it either; `throatPierceDeflectGrant` likewise fires one `applyBuff`.
 // `swiftGaleAirborneHeavyBoost` boosts an airborne Heavy Attack, a skill no
 // class in this app models — authored for the set it belongs to, unreachable
 // until one exists. `totalAnnihilationSupremeShield` is a defensive marker
@@ -47,6 +47,7 @@ const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mountainsMightQiImbalance",
   "fluteArrival",
   "cleftpeakDeflectGrant",
+  "throatPierceDeflectGrant",
   "swiftGaleAirborneHeavyBoost",
   "totalAnnihilationSupremeShield",
   "windrider",

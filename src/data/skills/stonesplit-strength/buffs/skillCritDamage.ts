@@ -22,6 +22,7 @@ export const stonesplitStrengthSkillCritDamage = defineClassBuff({
   id: BUFF.stonesplitStrengthSkillCritDamage,
   name: "Stonesplit Strength Skill Critical Damage",
   affectsAll: true,
+  reachesDotTicks: false,
   alwaysActive: true,
   duration: 9999,
   summary: "critDamageBoost +1.4% per full 4% white Critical Rate, cap 21%, Blade Momentum >= 25",

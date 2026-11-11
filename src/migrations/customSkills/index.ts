@@ -115,6 +115,7 @@ import { V111__volutefitReachesWineboundMystics } from "./V111__volutefitReaches
 import { V112__bladeVesselRapidSlashSpacing } from "./V112__bladeVesselRapidSlashSpacing"
 import { V113__splendorWaveCoefficientsExact } from "./V113__splendorWaveCoefficientsExact"
 import { V114__splendorQuickCastCoefficientsExact } from "./V114__splendorQuickCastCoefficientsExact"
+import { V115__throatPierceDeflectGrant } from "./V115__throatPierceDeflectGrant"
 
 export type {
   CustomSkillMigration,
@@ -298,6 +299,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V112__bladeVesselRapidSlashSpacing,
   V113__splendorWaveCoefficientsExact,
   V114__splendorQuickCastCoefficientsExact,
+  V115__throatPierceDeflectGrant,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -1,0 +1,54 @@
+{
+  "v": 114,
+  "skills": [
+    {
+      "id": "stonesplitStrength-deflect",
+      "classId": "stonesplitStrength",
+      "name": "Deflect",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    },
+    {
+      "id": "stonesplitStrength-deflect-cancel",
+      "classId": "stonesplitStrength",
+      "name": "Deflect Cancel",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    },
+    {
+      "id": "stonesplitStrength-deflect-cancel-prepull",
+      "classId": "stonesplitStrength",
+      "name": "Deflect Cancel Prepull",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    },
+    {
+      "id": "bellstrikeUmbra-deflect-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Deflect Cancel",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    },
+    {
+      "id": "bamboocutDraught-deflect-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Deflect Cancel",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    },
+    {
+      "id": "stonesplitStrength-deflect-edited",
+      "classId": "stonesplitStrength",
+      "name": "Deflect",
+      "triggersBuffs": ["cleftpeakDeflectGrant", "forgetfulness"],
+      "hits": []
+    },
+    {
+      "id": "sk-user-authored-deflect",
+      "classId": "stonesplitStrength",
+      "name": "My Deflect",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "hits": []
+    }
+  ]
+}

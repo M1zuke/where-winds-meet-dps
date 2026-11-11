@@ -397,3 +397,97 @@ describe("what lays the two gate buffs", () => {
     expect(fearful.stacks).toBe(1)
   })
 })
+
+describe("direct-hit-only talents and Iron Guards' penetration skip damage-over-time ticks", () => {
+  const tick = () =>
+    makeSkill(CLASS, {
+      name: "Bitter Season tick",
+      castTag: CAST.phalanxSpecial,
+      attributeAttack: "Stonesplit",
+      isDotTick: true,
+    })
+
+  it("Iron Guards keeps its 8% on a tick but pays no penetration", () => {
+    const guarded = engine({ maxPhysAttack: 750 })
+    guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
+    expect(statOf(guarded, tick(), 1, "allDamageBoost")).toBeCloseTo(0.08, 9)
+    expect(statOf(guarded, tick(), 1, "phys.penetration")).toBe(0)
+    expect(statOf(guarded, tick(), 1, "stonesplit.penetration")).toBe(0)
+  })
+
+  it("Throat-Pierced pays nothing on a tick", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    for (let hit = 0; hit < 5; hit++)
+      landDamageHit(
+        pierced,
+        hit * 0.1,
+        builtinSkillsForClass(CLASS).find((candidate) => candidate.id === SKILL.phalanxq)!,
+      )
+    expect(statOf(pierced, tick(), 1, "phys.penetration")).toBe(0)
+    expect(statOf(pierced, tick(), 1, "critDamageBoost")).toBe(0)
+  })
+
+  it("the class critical damage talent does not reach a tick", () => {
+    const talented = engine({ whiteCritRate: 0.6 })
+    talented.attachStatuses({
+      view: {
+        activeIdsAt: () => [],
+        isActiveAt: () => true,
+        stacksAt: () => 25,
+        conditionStacksAt: () => 25,
+        remainingFramesAt: () => undefined,
+        framesSinceLastEnd: () => undefined,
+        framesSinceStacksBelowThreshold: () => undefined,
+        frameStacksLastReachedThreshold: () => undefined,
+        windowsOf: () => [],
+      },
+      fps: 60,
+    })
+    expect(share(talented, tick(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
+  })
+})
+
+describe("Throat-Pierced from a successful Deflect", () => {
+  const bystander = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+  const deflectAt = (target: BuffEngine, time: number) =>
+    target.processSkillCast(CAST.deflect, time, { castTime: 0.25 }, false, [
+      BUFF.cleftpeakDeflectGrant,
+      BUFF.throatPierceDeflectGrant,
+    ])
+
+  it("lays all five stacks at tier 6, paying 2 points and 2% on every direct hit", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(5)
+    expect(statOf(pierced, bystander(), 1, "phys.penetration")).toBeCloseTo(0.1, 9)
+    expect(statOf(pierced, bystander(), 1, "critDamageBoost")).toBeCloseTo(0.1, 9)
+  })
+
+  it("lasts 15 s", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 14)).toBe(true)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
+  })
+
+  it("lays nothing below tier 6", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 5 })
+    deflectAt(pierced, 0)
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(0)
+  })
+
+  it("lays nothing without the inner way slotted", () => {
+    const unslotted = engine()
+    deflectAt(unslotted, 0)
+    expect(unslotted.getHistoricalBuffStacks(BUFF.throatPierced, 1)).toBe(0)
+  })
+
+  it("waits out a 20 s cooldown between two Deflects", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    deflectAt(pierced, 0)
+    deflectAt(pierced, 10)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
+    deflectAt(pierced, 20)
+    expect(pierced.isBuffActiveAtTime(BUFF.throatPierced, 30)).toBe(true)
+  })
+})
