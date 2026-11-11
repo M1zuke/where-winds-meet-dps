@@ -20,7 +20,7 @@ export const deflectCancel = defineSkill({
   // keeps this stationary, non-damaging cast from capping the live distance.
   reachMeters: 100,
   approach: "stationary",
-  triggersBuffs: [BUFF.cleftpeakDeflectGrant, BUFF.throatPierceDeflectGrant],
+  triggersBuffs: [BUFF.throatPierceDeflectGrant],
   hits: [hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0 })],
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-28T00:00:00.000Z",

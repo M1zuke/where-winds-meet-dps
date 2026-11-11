@@ -50,7 +50,6 @@ import { divinecraftHeartPoison } from "./divinecraftHeartPoison"
 import { divinecraftTemperedFire } from "./divinecraftTemperedFire"
 import { divinecraftWater } from "./divinecraftWater"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
-import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
 import { toadVenomQiBonus } from "./toadVenomQiBonus"
 import { ivorybloomFullHpBonus } from "./ivorybloomFullHpBonus"
 import { starweaveMartialBoost } from "./starweaveMartialBoost"
@@ -112,7 +111,6 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   divinecraftFire,
   fluteArrival,
   fluteDistanceBonus,
-  cleftpeakDeflectGrant,
   toadVenomQiBonus,
   ivorybloomFullHpBonus,
   starweaveMartialBoost,

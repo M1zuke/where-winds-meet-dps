@@ -1,0 +1,145 @@
+{
+  "v": 138,
+  "skills": [
+    {
+      "id": "stonesplitStrength-deflect",
+      "classId": "stonesplitStrength",
+      "name": "Deflect",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:deflect",
+      "triggersBuffs": ["cleftpeakDeflectGrant", "throatPierceDeflectGrant"],
+      "castFrames": 15,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "snowbreakSpringAvailable",
+              "stacks": 1,
+              "condition": null,
+              "requiresParam": "frostCladNight"
+            }
+          ],
+          "variants": [
+            {
+              "id": "hv-deflect-hit-0-mo-blade-drawn",
+              "label": "Mo Blade Drawn",
+              "conditions": [
+                {
+                  "buffId": "drawn:Mo Blade",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 0,
+              "attributeMultiplier": 0,
+              "physFixed": 0,
+              "attributeFixed": 0,
+              "castFrames": 18.06
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "receives": []
+    },
+    {
+      "id": "silkbindJade-deflect-cancel",
+      "classId": "silkbindJade",
+      "name": "Deflect Cancel",
+      "tags": [],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "castTag": "cast:deflectCancel",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "castFrames": 12,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "receives": []
+    },
+    {
+      "id": "bamboocutDraught-deflect-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Deflect Cancel",
+      "tags": [],
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:deflectCancel",
+      "triggersBuffs": ["cleftpeakDeflectGrant"],
+      "castFrames": 26,
+      "triggerable": true,
+      "reachMeters": 100,
+      "approach": "stationary",
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.6,
+          "attributeMultiplier": 0,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-06T00:00:00.000Z",
+      "updatedAt": "2026-09-06T00:00:00.000Z",
+      "receives": []
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "stonesplitStrength",
+      "name": "User Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": [],
+      "castFrames": 30,
+      "receives": [],
+      "hits": [
+        {
+          "id": "hit-user-0",
+          "frame": 10,
+          "physMultiplier": 1,
+          "attributeMultiplier": 1,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-11-10T00:00:00.000Z",
+      "updatedAt": "2026-11-10T00:00:00.000Z"
+    }
+  ]
+}

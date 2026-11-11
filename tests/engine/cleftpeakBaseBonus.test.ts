@@ -7,6 +7,8 @@ import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { makeSkill } from "../../src/engine/skill"
 import { cleftpeak } from "../../src/data/sets/cleftpeak"
+import { CLASS_IDS } from "../../src/definitions/classes/registry"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
 const OTHER_CLASS = "bellstrikeUmbra"
 
@@ -69,5 +71,14 @@ describe("Cleftpeak's max-stack half is a global gear-set buff scoped by the ski
     const ridged = engine(cleftpeak.siteKey)
     for (let hit = 0; hit < 5; hit++) landDamageHit(ridged, hit * 0.1)
     expect(allDamageBoostFor(ridged, "weapon", 0.5)).toBeCloseTo(0.05, 9)
+  })
+})
+
+describe("Cleftpeak stacks come from landed damage only, never from casting a deflect", () => {
+  it.each(CLASS_IDS())("%s has no skill that grants a Cleftpeak buff on cast", (classId) => {
+    const granting = builtinSkillsForClass(classId).filter((skill) =>
+      (skill.triggersBuffs ?? []).some((id) => id.startsWith("cleftpeak")),
+    )
+    expect(granting).toEqual([])
   })
 })

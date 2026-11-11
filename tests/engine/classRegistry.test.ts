@@ -172,7 +172,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "divinecraftFire",
       "fluteArrival",
       "fluteDistanceBonus",
-      "cleftpeakDeflectGrant",
       "toadVenomQiBonus",
       "ivorybloomFullHpBonus",
       "starweaveMartialBoost",
