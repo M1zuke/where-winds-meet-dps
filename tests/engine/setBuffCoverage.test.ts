@@ -76,7 +76,7 @@ describe("every Martial Art skill activates Jadeware", () => {
   })
 })
 
-describe("Jadeware pays out both bonuses for the whole window", () => {
+describe("Jadeware pays its Affinity DMG for the whole window and its Direct Affinity against a target below full Qi", () => {
   const engineWithSet = (armorSet: string) =>
     buffEngineWith(
       { classId: "bellstrikeSplendor", armorSet },
@@ -103,20 +103,28 @@ describe("Jadeware pays out both bonuses for the whole window", () => {
     expect(contributionAt(engineWithSet("jadeware"), 25.5)).toBeCloseTo(0.175, 10)
   })
 
-  it("contributes both bonuses well outside any break, once the target has taken any Qi damage", () => {
+  const belowFullQi = {
+    isBroken: () => false,
+    fractionAt: () => 0.5,
+    phaseAt: () => "normal" as const,
+  }
+
+  it("contributes both bonuses outside any break while the target's Qi is below full", () => {
     const engine = buffEngineWith(
       { classId: "bellstrikeSplendor", armorSet: "jadeware", targetMaxHp: 100 },
       buffDefsForClass("bellstrikeSplendor"),
+      [],
+      belowFullQi,
     )
-    expect(contributionAt(engine, 25.5, 1)).toBeCloseTo(0.175, 10)
+    expect(contributionAt(engine, 25.5, 0)).toBeCloseTo(0.175, 10)
   })
 
-  it("contributes nothing outside any break while the target is still at full Qi", () => {
+  it("contributes the Affinity DMG alone while the target's Qi is full, whatever its remaining HP", () => {
     const engine = buffEngineWith(
       { classId: "bellstrikeSplendor", armorSet: "jadeware", targetMaxHp: 100 },
       buffDefsForClass("bellstrikeSplendor"),
     )
-    expect(contributionAt(engine, 25.5, 0)).toBeUndefined()
+    expect(contributionAt(engine, 25.5, 40)).toBeCloseTo(0.1, 10)
   })
 
   it("contributes nothing without the set equipped", () => {

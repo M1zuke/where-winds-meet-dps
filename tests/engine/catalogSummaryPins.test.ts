@@ -56,10 +56,10 @@ function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
 }
 
 describe("catalog summary pins — jadeware", () => {
-  it("Applies row on Sword Martial Q names both unconditional bonuses", () => {
+  it("Applies row on Sword Martial Q names the unconditional bonus and the conditional one", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10% for the whole window, directAffinity +7.5% for the whole window",
+      "affinityDmg +10% for the whole window, directAffinity +7.5% against a target below full Qi or in Qi Imbalance",
     )
   })
 })
