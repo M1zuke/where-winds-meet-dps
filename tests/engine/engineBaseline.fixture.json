@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 71291.13,
-    "totalDamage": 4277467.62,
+    "dps": 71282.56,
+    "totalDamage": 4276953.7,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -21,7 +21,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96090.44,
+        "expectedDamage": 96011.32,
         "castCount": 0
       },
       {
@@ -29,7 +29,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 279631.25,
+        "expectedDamage": 279378.2,
         "castCount": 0
       },
       {
@@ -45,7 +45,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 469535.47,
+        "expectedDamage": 469353.72,
         "castCount": 0
       },
       {
@@ -174,11 +174,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "dea02261fed409f0cad3f159cc36d1ee95d85dc4446f0f676dccfb3fb8c7f030"
+    "digest": "8076ed36e339ba510cfa1407bfffb1d89d7e246027e50cab7d26983122a6173e"
   },
   "anchor:noAttunement": {
-    "dps": 64126.82,
-    "totalDamage": 3847608.92,
+    "dps": 64119.01,
+    "totalDamage": 3847140.47,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -198,7 +198,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96252.04,
+        "expectedDamage": 96172.92,
         "castCount": 0
       },
       {
@@ -206,7 +206,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 228693.85,
+        "expectedDamage": 228486.26,
         "castCount": 0
       },
       {
@@ -222,7 +222,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 469954.22,
+        "expectedDamage": 469772.47,
         "castCount": 0
       },
       {
@@ -351,11 +351,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "8ae091b518f9956e26d59b59ee9918d588917d0ddc0966aba2de4e1746123685"
+    "digest": "1c320f3f87164acce13833c4473b2c1fd0e35e88292f37ce2ff7faa2d06bc507"
   },
   "anchor:dummyOff": {
-    "dps": 71091.72,
-    "totalDamage": 4265503.18,
+    "dps": 71083.15,
+    "totalDamage": 4264989.26,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -375,7 +375,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 103682.3,
+        "expectedDamage": 103603.18,
         "castCount": 0
       },
       {
@@ -383,7 +383,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 298948.6,
+        "expectedDamage": 298695.54,
         "castCount": 0
       },
       {
@@ -399,7 +399,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 501423.41,
+        "expectedDamage": 501241.66,
         "castCount": 0
       },
       {
@@ -528,11 +528,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "6041b925aff140ce04d0037bdcf09c7ae3410a0d9fe8a25a532465fca1addce7"
+    "digest": "b4c2a188f08b758c4b41990b6ab1f155a5a28eae18cef77a990c369e7fdf96b6"
   },
   "anchor:breakthrough17": {
-    "dps": 72525.02,
-    "totalDamage": 4351501.09,
+    "dps": 72516.3,
+    "totalDamage": 4350978,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -552,7 +552,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 97677.9,
+        "expectedDamage": 97597.61,
         "castCount": 0
       },
       {
@@ -560,7 +560,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 284821.53,
+        "expectedDamage": 284563.76,
         "castCount": 0
       },
       {
@@ -576,7 +576,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 478389.77,
+        "expectedDamage": 478204.74,
         "castCount": 0
       },
       {
@@ -705,11 +705,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "ede68183095b42db8c42d3b4130d3868d403990ee319f432ef899050a6511b70"
+    "digest": "fbb322bf2d733793bc3ea528b4c64e2b90f12dfc3ec2d14badb4a55f7e17c33e"
   },
   "anchor:healerBuff": {
-    "dps": 74668.56,
-    "totalDamage": 4480113.65,
+    "dps": 74660,
+    "totalDamage": 4479599.73,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -729,7 +729,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 101205.09,
+        "expectedDamage": 101125.97,
         "castCount": 0
       },
       {
@@ -737,7 +737,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 292190.75,
+        "expectedDamage": 291937.69,
         "castCount": 0
       },
       {
@@ -753,7 +753,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 490933.63,
+        "expectedDamage": 490751.88,
         "castCount": 0
       },
       {
@@ -882,11 +882,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "4d599bf06ee05f52f39594450f9a9014e134c581b426be3e9426d905648cc976"
+    "digest": "b0c2f09075e31934c3175676b7eb664577b0990dbfe5e1ab182d3b30b50a1282"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 71698.01,
-    "totalDamage": 4301880.45,
+    "dps": 71689.44,
+    "totalDamage": 4301366.53,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -906,7 +906,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96252.04,
+        "expectedDamage": 96172.92,
         "castCount": 0
       },
       {
@@ -914,7 +914,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 281127.5,
+        "expectedDamage": 280874.44,
         "castCount": 0
       },
       {
@@ -930,7 +930,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 472646.44,
+        "expectedDamage": 472464.69,
         "castCount": 0
       },
       {
@@ -1059,11 +1059,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "125fd81e61162323931d6d2916cd6daae892155a7c2b1b9e4e6f24a5a07a23c8"
+    "digest": "d8ab1f40379798e834ccaa80ad7a73d22bd39d686b98f094a4e63b5462834183"
   },
   "anchor:voidrotScript": {
-    "dps": 72601.65,
-    "totalDamage": 4356099.24,
+    "dps": 72593.09,
+    "totalDamage": 4355585.32,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1083,7 +1083,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 96252.04,
+        "expectedDamage": 96172.92,
         "castCount": 0
       },
       {
@@ -1091,7 +1091,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 283669.92,
+        "expectedDamage": 283416.87,
         "castCount": 0
       },
       {
@@ -1107,7 +1107,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 477096.75,
+        "expectedDamage": 476915,
         "castCount": 0
       },
       {
@@ -1236,11 +1236,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "ad6a3620f98fdc8c329ffc8b1c3e8ebc8923f6940fbc6fe7db908b7b74cc12f4"
+    "digest": "3f00e31f1e151bf593dc7fb7c4beb205b7da4c1f6cb33d123d953f04750d7035"
   },
   "anchor:breakExtension": {
-    "dps": 72711.22,
-    "totalDamage": 4362673.44,
+    "dps": 72702.66,
+    "totalDamage": 4362159.52,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1260,7 +1260,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 98013.22,
+        "expectedDamage": 97934.11,
         "castCount": 0
       },
       {
@@ -1268,7 +1268,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 284588.29,
+        "expectedDamage": 284335.23,
         "castCount": 0
       },
       {
@@ -1284,7 +1284,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 479214.09,
+        "expectedDamage": 479032.35,
         "castCount": 0
       },
       {
@@ -1413,11 +1413,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "8ccd532d297a4d36a0cdc4f42e00a0e474c843f6bd7cefa45c979e7efef60f9c"
+    "digest": "1814a5b828b6f07f7a5c18f48436dbcef77763479584c301b4ed0f172d37677a"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41609.28,
-    "totalDamage": 2496556.53,
+    "dps": 41601.01,
+    "totalDamage": 2496060.32,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1439,7 +1439,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 89849.19,
+        "expectedDamage": 89771.54,
         "castCount": 0
       },
       {
@@ -1447,7 +1447,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 44,
-        "expectedDamage": 198272.35,
+        "expectedDamage": 198028.82,
         "castCount": 0
       },
       {
@@ -1463,7 +1463,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 225421.48,
+        "expectedDamage": 225246.45,
         "castCount": 0
       },
       {
@@ -1592,11 +1592,11 @@
       "buffWindows": 143,
       "casts": 90
     },
-    "digest": "3f18de261f3ff1b5ab6e6d4e392955b74e2bf18d7fe11f9c6fa88369ead6528a"
+    "digest": "e1b2bf1bff0917d806090074094ed3411a50584fbd685b030e49d11e6a1581db"
   },
   "anchor:noSwordHorizon": {
-    "dps": 37006.75,
-    "totalDamage": 2220405.25,
+    "dps": 36998.48,
+    "totalDamage": 2219909.03,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 5.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1641,7 +1641,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 59,
-        "expectedDamage": 89771.37,
+        "expectedDamage": 89693.71,
         "castCount": 0
       },
       {
@@ -1649,7 +1649,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 46,
-        "expectedDamage": 217012.71,
+        "expectedDamage": 216769.18,
         "castCount": 0
       },
       {
@@ -1665,7 +1665,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 86068.39,
+        "expectedDamage": 85893.35,
         "castCount": 0
       },
       {
@@ -1794,11 +1794,11 @@
       "buffWindows": 122,
       "casts": 90
     },
-    "digest": "a7a58874f26491de99799ca528acb9c272ecc851416d504a575d52288f9d1dff"
+    "digest": "09b273a23f0bcadabd6558d36f9f05f2250a89964466d8e22808ca7dc9bd66d6"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 62875.24,
-    "totalDamage": 3772514.59,
+    "dps": 62867.34,
+    "totalDamage": 3772040.47,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1818,7 +1818,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 92088.53,
+        "expectedDamage": 92012.21,
         "castCount": 0
       },
       {
@@ -1826,7 +1826,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 242121.81,
+        "expectedDamage": 241890.36,
         "castCount": 0
       },
       {
@@ -1842,7 +1842,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 407964.25,
+        "expectedDamage": 407797.89,
         "castCount": 0
       },
       {
@@ -1971,11 +1971,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "e4ead38c31a9cf03e93ac92d370524926f8f1fc00a1460106ed1c2bb400dc2c3"
+    "digest": "a9436153af7df73c538846aba5e92737c0cbaead77721046daf8815009471a4d"
   },
   "anchor:noMoraleChant": {
-    "dps": 65519.46,
-    "totalDamage": 3931167.39,
+    "dps": 65511.17,
+    "totalDamage": 3930670.47,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -1995,7 +1995,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 89080.26,
+        "expectedDamage": 89003.71,
         "castCount": 0
       },
       {
@@ -2003,7 +2003,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 260458.79,
+        "expectedDamage": 260214.09,
         "castCount": 0
       },
       {
@@ -2019,7 +2019,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 437727.96,
+        "expectedDamage": 437552.29,
         "castCount": 0
       },
       {
@@ -2140,11 +2140,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "f63f19c86ab7a3e7b92f491452066225c377c5fdad6383bf123643110573e71c"
+    "digest": "2250a8e351dfe269e331bb1a71ceb2ba3cb4ef896cd7df31bc826552a9d8cbe7"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40853.23,
-    "totalDamage": 2451193.53,
+    "dps": 40910.69,
+    "totalDamage": 2454641.43,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 13.72s would be illegal in the game: needs Endurance ≥ 50 (has 27.34).",
@@ -2169,7 +2169,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 65098.2,
+        "expectedDamage": 65261.94,
         "castCount": 0
       },
       {
@@ -2193,7 +2193,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 54,
-        "expectedDamage": 177239.64,
+        "expectedDamage": 177708.76,
         "castCount": 0
       },
       {
@@ -2217,7 +2217,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 104,
-        "expectedDamage": 305329.14,
+        "expectedDamage": 305869.64,
         "castCount": 0
       },
       {
@@ -2241,7 +2241,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 26,
-        "expectedDamage": 1123102.16,
+        "expectedDamage": 1125376.7,
         "castCount": 0
       },
       {
@@ -2354,7 +2354,7 @@
       "buffWindows": 204,
       "casts": 99
     },
-    "digest": "d717d5884a3d789288bac873e448996639b0e8397fcf293a0be4251d59f9b4ee"
+    "digest": "ebec6e5052046152876047689d1b6c66832444167a9494ef75c110ceb667ed2a"
   },
   "anchor:bitterSeasonT6": {
     "dps": 44145.81,
@@ -2918,8 +2918,8 @@
     "digest": "4dc3ec5a5d9f337f8234408c69f704d8033ba438e4ba199dc952ff7125ad0dd3"
   },
   "anchor:noSet": {
-    "dps": 64054.42,
-    "totalDamage": 3843265.25,
+    "dps": 64044.58,
+    "totalDamage": 3842674.86,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -2939,7 +2939,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87168.32,
+        "expectedDamage": 87096.57,
         "castCount": 0
       },
       {
@@ -2947,7 +2947,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 249757.58,
+        "expectedDamage": 249023.2,
         "castCount": 0
       },
       {
@@ -2963,7 +2963,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 421307.32,
+        "expectedDamage": 421523.06,
         "castCount": 0
       },
       {
@@ -3092,11 +3092,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "64891e367dbcd084572d29301dcba6e6026d49fb89420137e6511aa88840e793"
+    "digest": "f4f8de6c941187a88c6dd6a4d35587ba8cd267fd7e67363207e4d9ffddf23af7"
   },
   "anchor:set-Jadeware": {
-    "dps": 70572.76,
-    "totalDamage": 4234365.83,
+    "dps": 70564.95,
+    "totalDamage": 4233897.22,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3116,7 +3116,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 88762.14,
+        "expectedDamage": 88689.07,
         "castCount": 0
       },
       {
@@ -3124,7 +3124,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 275906.37,
+        "expectedDamage": 275676.56,
         "castCount": 0
       },
       {
@@ -3140,7 +3140,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 464357.62,
+        "expectedDamage": 464191.89,
         "castCount": 0
       },
       {
@@ -3269,11 +3269,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "9bbea11caaf9d6d4788452cd08fcdceb1f3c62893ed0824f2001c894d2fc06fe"
+    "digest": "d3daa61eb7a08ff17357486a7caef695ed4d47305fd4811b7abc63604dbb7b9e"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64559.21,
-    "totalDamage": 3873552.81,
+    "dps": 64551.44,
+    "totalDamage": 3873086.65,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3293,7 +3293,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87168.32,
+        "expectedDamage": 87096.57,
         "castCount": 0
       },
       {
@@ -3301,7 +3301,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 252897.81,
+        "expectedDamage": 252668.69,
         "castCount": 0
       },
       {
@@ -3317,7 +3317,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 426854.68,
+        "expectedDamage": 426689.4,
         "castCount": 0
       },
       {
@@ -3446,11 +3446,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "746adeeca5fe4d23f6d31124c70df00cf463f9f29d1662648e061da90b3e5a82"
+    "digest": "94eb01ddd6faa2e8ccbe6724f367917552b09be78929a50c62f0912f9811c50e"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65376.93,
-    "totalDamage": 3922615.86,
+    "dps": 65369.06,
+    "totalDamage": 3922143.67,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3470,7 +3470,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 87168.32,
+        "expectedDamage": 87096.57,
         "castCount": 0
       },
       {
@@ -3478,7 +3478,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 256744.65,
+        "expectedDamage": 256512.04,
         "castCount": 0
       },
       {
@@ -3494,7 +3494,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 433411.44,
+        "expectedDamage": 433243.62,
         "castCount": 0
       },
       {
@@ -3623,11 +3623,11 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "6f0e568c5b5cfb5b9bff64b61b7b1fa77b719439f3d3c9bdd8640e6314131a7a"
+    "digest": "f8e990d3fc160cff30fb6facc59d4a5a6cafdbe31b0fa7dce0fd7d981af9c651"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 65931.38,
-    "totalDamage": 3955882.52,
+    "dps": 65923.63,
+    "totalDamage": 3955417.61,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 10.48s would be illegal in the game: needs Endurance ≥ 50 (has 47.51).",
@@ -3647,7 +3647,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 91025.51,
+        "expectedDamage": 90952.44,
         "castCount": 0
       },
       {
@@ -3655,7 +3655,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 55,
-        "expectedDamage": 257111.72,
+        "expectedDamage": 256884.09,
         "castCount": 0
       },
       {
@@ -3671,7 +3671,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 433584.42,
+        "expectedDamage": 433420.21,
         "castCount": 0
       },
       {
@@ -3800,14 +3800,14 @@
       "buffWindows": 242,
       "casts": 90
     },
-    "digest": "79eef5995893bed3bf48a8d527f7d3c6293852ba84f42ee7b160c5e0f4f43582"
+    "digest": "340a56aae47eb5cc90fb1056f6bce0eb88df83b1f0ee58afaf0c0f65b470f91a"
   },
   "defaults:umbra": {
     "dps": 12029.09,
     "totalDamage": 721745.63,
     "rotationDuration": 60,
     "warnings": [
-      "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 14+ (breakthrough 13).",
+      "Dragon's Breath: Smolder 2 Hits at 0.75s would be illegal in the game: needs breakthrough 15+ (breakthrough 13).",
       "SwordSpecial 3-Hit at 4.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Zenith Sword [cancel] at 5.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 3-Hit at 9.77s would be illegal in the game: needs Endurance ≥ 50 (has 28.67) and needs the inner way Sword Horizon equipped (not equipped).",
@@ -4026,6 +4026,6 @@
       "buffWindows": 126,
       "casts": 97
     },
-    "digest": "7333ba924c753960d69ffec47c01d9c5681949ff854c3def4539d0c910059fe4"
+    "digest": "39439612c25882aaa95b71a62b6bd4b8a34a2c57dc3832359bc1c227b1dfd6a6"
   }
 }

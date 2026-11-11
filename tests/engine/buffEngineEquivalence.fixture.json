@@ -90,7 +90,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "489202425357213298ab8f0cfa1e70598994209084ec11da1bb8305aa3ec81ae"
+        "digest": "3304522ebfadb2a4b41491a2101e700c2e5ceacdeb26899496ec47ba34e0050d"
       },
       "debuffs": {
         "count": 9,
@@ -123,6 +123,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -155,6 +156,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -192,7 +194,8 @@
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": true,
+          "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -219,6 +222,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -244,6 +248,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -272,6 +277,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -298,6 +304,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -324,6 +331,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -350,6 +358,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -376,6 +385,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -402,6 +412,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -428,6 +439,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -454,6 +466,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -480,6 +493,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -506,6 +520,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -532,6 +547,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -558,6 +574,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -584,6 +601,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -610,6 +628,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -633,6 +652,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -664,6 +684,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -687,6 +708,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -710,6 +732,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "mirage",
@@ -746,6 +769,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -769,6 +793,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -795,6 +820,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -827,6 +853,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -852,6 +879,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -881,6 +909,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -910,6 +939,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -939,6 +969,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -962,6 +993,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -987,6 +1019,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1012,6 +1045,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1037,6 +1071,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1062,6 +1097,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1087,6 +1123,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1112,6 +1149,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1137,6 +1175,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1162,6 +1201,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1187,6 +1227,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1212,6 +1253,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1237,6 +1279,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1262,6 +1305,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1287,6 +1331,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1312,6 +1357,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1337,6 +1383,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1362,6 +1409,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1385,6 +1433,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1410,6 +1459,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1439,6 +1489,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1462,6 +1513,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1487,6 +1539,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1512,6 +1565,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1548,6 +1602,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1573,6 +1628,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1598,6 +1654,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1623,6 +1680,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1648,6 +1706,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1673,6 +1732,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1702,6 +1762,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1727,6 +1788,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1758,6 +1820,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1789,6 +1852,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1820,6 +1884,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1843,6 +1908,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1866,6 +1932,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1891,6 +1958,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1899,7 +1967,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough"
+          "summary": "Bleeding and Blood Burst ×1.00725 to ×1.05 by breakthrough"
         },
         {
           "id": "strategicSwordAdditionalAttack",
@@ -1916,6 +1984,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1924,7 +1993,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "heavenquakerSpearAdditionalAttack",
@@ -1941,6 +2010,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -1949,7 +2019,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -1966,6 +2036,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -15274,10 +15345,6 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -15309,7 +15376,6 @@
             "divinecraftTemperedFire": 0.004,
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
-            "soulShaken": 0.1,
             "wineGu": 0.05
           }
         },
@@ -25708,7 +25774,7 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.4
+              "amount": 0.3
             },
             {
               "statKey": "allDamageBoost",
@@ -25743,7 +25809,7 @@
             "divinecraftTemperedFire": 0.004,
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
-            "soulShaken": 0.4,
+            "soulShaken": 0.3,
             "wineGu": 0.05
           }
         },
@@ -277237,6 +277303,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.12
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -277277,6 +277347,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.12,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -282159,6 +282230,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.12
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -282199,6 +282274,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.12,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -287282,6 +287358,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.12
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -287322,6 +287402,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.12,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -292405,6 +292486,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -292445,6 +292530,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -297528,6 +297614,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -297568,6 +297658,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -302651,6 +302742,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -302691,6 +302786,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -307774,6 +307870,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -307814,6 +307914,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -312897,6 +312998,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -312937,6 +313042,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -318020,6 +318126,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -318060,6 +318170,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -323143,6 +323254,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -323183,6 +323298,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -328266,6 +328382,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -328306,6 +328426,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -333389,6 +333510,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -333429,6 +333554,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -338512,6 +338638,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -338552,6 +338682,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "resistanceResolve": 0.1,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
@@ -343421,6 +343552,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -343461,6 +343596,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -348129,6 +348265,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -348169,6 +348309,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -352832,6 +352973,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -352872,6 +353017,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -357535,6 +357681,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -357575,6 +357725,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -362238,6 +362389,10 @@
             },
             {
               "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
+              "statKey": "allDamageBoost",
               "amount": 0.015
             },
             {
@@ -362278,6 +362433,7 @@
             "divinecraftWater": 0.01,
             "insightScript": 0.15,
             "purewrathScript": 0.08,
+            "pursuitChargedBoost": 0.2,
             "soullinkScript": 0.07,
             "voidskyScript": 0.07,
             "vulnerabilityTeammate": 0.08
@@ -711813,18 +711969,6 @@
             "requires": "insightScript"
           },
           {
-            "id": "soulShaken",
-            "stacks": 1,
-            "maxStacks": 5,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.1
-              }
-            ],
-            "requires": null
-          },
-          {
             "id": "strategicSwordAdditionalAttack",
             "stacks": 1,
             "maxStacks": 1,
@@ -712363,12 +712507,12 @@
           },
           {
             "id": "soulShaken",
-            "stacks": 4,
+            "stacks": 3,
             "maxStacks": 5,
             "effects": [
               {
                 "statKey": "allDamageBoost",
-                "amount": 0.4
+                "amount": 0.3
               }
             ],
             "requires": null
@@ -723944,6 +724088,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 3,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.12
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "rainwhisperShield",
             "stacks": 1,
             "maxStacks": 1,
@@ -724194,6 +724350,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 3,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.12
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -724453,6 +724621,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 3,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.12
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -724708,6 +724888,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -724967,6 +725159,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -725222,6 +725426,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -725481,6 +725697,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -725736,6 +725964,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -725995,6 +726235,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -726243,6 +726495,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -726495,6 +726759,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -726743,6 +727019,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "resistanceResolve",
@@ -726995,6 +727283,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "resistanceResolve",
             "stacks": 1,
             "maxStacks": 1,
@@ -727245,6 +727545,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "soullinkScript",
             "stacks": 2,
             "maxStacks": 3,
@@ -727462,6 +727774,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "soullinkScript",
@@ -727683,6 +728007,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "soullinkScript",
             "stacks": 2,
             "maxStacks": 3,
@@ -727890,6 +728226,18 @@
             "requires": "purewrathScript"
           },
           {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "soullinkScript",
             "stacks": 2,
             "maxStacks": 3,
@@ -728095,6 +728443,18 @@
               }
             ],
             "requires": "purewrathScript"
+          },
+          {
+            "id": "pursuitChargedBoost",
+            "stacks": 5,
+            "maxStacks": 5,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "soullinkScript",
@@ -743595,7 +743955,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "51319cb8ebce5e5e9637893afd1a4a63a5ab4b219064200df1e6c9877321abcb"
+        "digest": "255325a9385dc1d96276e9ab6c4e2f891e728d9d08e1365908225b9628c662f3"
       },
       "debuffs": {
         "count": 7,
@@ -743624,6 +743984,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743649,6 +744010,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743675,6 +744037,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743701,6 +744064,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743727,6 +744091,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743753,6 +744118,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743779,6 +744145,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743805,6 +744172,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743828,6 +744196,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743874,6 +744243,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743900,6 +744270,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743931,6 +744302,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743959,6 +744331,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -743985,6 +744358,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744011,6 +744385,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744037,6 +744412,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744063,6 +744439,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744089,6 +744466,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744115,6 +744493,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744141,6 +744520,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744167,6 +744547,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744193,6 +744574,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744219,6 +744601,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744245,6 +744628,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744271,6 +744655,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744297,6 +744682,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744320,6 +744706,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744351,6 +744738,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744374,6 +744762,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744397,6 +744786,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "mirage",
@@ -744433,6 +744823,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744456,6 +744847,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744482,6 +744874,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744514,6 +744907,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744539,6 +744933,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744568,6 +744963,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744597,6 +744993,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744626,6 +745023,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744649,6 +745047,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744674,6 +745073,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744699,6 +745099,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744724,6 +745125,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744749,6 +745151,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744774,6 +745177,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744799,6 +745203,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744824,6 +745229,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744849,6 +745255,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744874,6 +745281,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744899,6 +745307,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744924,6 +745333,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744949,6 +745359,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744974,6 +745385,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -744999,6 +745411,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745024,6 +745437,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745049,6 +745463,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745072,6 +745487,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745097,6 +745513,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745126,6 +745543,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745149,6 +745567,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745174,6 +745593,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745199,6 +745619,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745235,6 +745656,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745260,6 +745682,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745285,6 +745708,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745310,6 +745734,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745335,6 +745760,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745360,6 +745786,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745389,6 +745816,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745414,6 +745842,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745445,6 +745874,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745476,6 +745906,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745507,6 +745938,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745530,6 +745962,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745553,6 +745986,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745578,6 +746012,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745586,7 +746021,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "snowpartingBladeAdditionalAttack",
@@ -745603,6 +746038,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745611,7 +746047,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -745628,6 +746064,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745641,7 +746078,7 @@
       ]
     },
     "dynamic": {
-      "digest": "e5933d1381b8717dbd394af505f2fa95052c49bff2cd4f5d1dd456375bb6b1fa"
+      "digest": "8e0cf47d4de3e9b63a7bff765c10254f7cf2aedd03e1c11a4f092e18861ee64e"
     }
   },
   "bellstrikeSplendor": {
@@ -745715,7 +746152,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "4e9ac0280954dad66328ec354fbed92092f245f66f00003dbb0334b2b5041243"
+        "digest": "8d8adc7fde6df45250e974ffdd9312cc64109fc9c1c2e05e5e7d221e38ce39a6"
       },
       "debuffs": {
         "count": 7,
@@ -745746,6 +746183,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745772,6 +746210,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745798,6 +746237,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745829,6 +746269,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745861,6 +746302,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745886,6 +746328,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745914,6 +746357,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745940,6 +746384,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745966,6 +746411,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -745992,6 +746438,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746018,6 +746465,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746044,6 +746492,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746070,6 +746519,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746096,6 +746546,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746122,6 +746573,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746148,6 +746600,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746174,6 +746627,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746200,6 +746654,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746226,6 +746681,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746252,6 +746708,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746275,6 +746732,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746306,6 +746764,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746329,6 +746788,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746352,6 +746812,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "mirage",
@@ -746388,6 +746849,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746411,6 +746873,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746437,6 +746900,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746469,6 +746933,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746494,6 +746959,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746523,6 +746989,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746552,6 +747019,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746581,6 +747049,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746604,6 +747073,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746629,6 +747099,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746654,6 +747125,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746679,6 +747151,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746704,6 +747177,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746729,6 +747203,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746754,6 +747229,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746779,6 +747255,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746804,6 +747281,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746829,6 +747307,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746854,6 +747333,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746879,6 +747359,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746904,6 +747385,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746929,6 +747411,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746954,6 +747437,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -746979,6 +747463,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747004,6 +747489,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747027,6 +747513,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747052,6 +747539,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747081,6 +747569,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747104,6 +747593,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747129,6 +747619,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747154,6 +747645,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747190,6 +747682,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747215,6 +747708,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747240,6 +747734,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747265,6 +747760,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747290,6 +747786,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747315,6 +747812,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747344,6 +747842,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747369,6 +747868,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747400,6 +747900,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747431,6 +747932,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747462,6 +747964,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747485,6 +747988,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747508,6 +748012,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747531,6 +748036,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": true,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747554,6 +748060,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747577,6 +748084,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747600,6 +748108,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747623,6 +748132,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747653,6 +748163,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747676,6 +748187,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747701,6 +748213,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747709,7 +748222,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "namelessSpearAdditionalAttack",
@@ -747726,6 +748239,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747734,7 +748248,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         }
       ],
       "group": [
@@ -747751,6 +748265,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747764,7 +748279,7 @@
       ]
     },
     "dynamic": {
-      "digest": "849c20d34b77be4d8916e622020c1162731fdbc4eb3682ed1be82dd55f5e166d"
+      "digest": "ad4be2718a196cb2a3376b8c35f6491b5fb0bd26e6475b3e442ebcfa35300fbf"
     }
   },
   "silkbindJade": {
@@ -747859,7 +748374,7 @@
           "silkbindJade-umbrella-dash-bullet",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "9ca5248f29a069488e2899474d09848dbe3ff1a90f6b84bc6e1874b9aa7a1f94"
+        "digest": "2c7abdffe3baf33158125ba7cb7a55026e5337434288360991c5b8c13c2a201f"
       },
       "debuffs": {
         "count": 13,
@@ -747897,6 +748412,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747929,6 +748445,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747954,6 +748471,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -747986,6 +748504,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "combo",
@@ -748012,6 +748531,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "combo",
@@ -748038,6 +748558,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748063,6 +748584,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "lingeringBone",
@@ -748100,6 +748622,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "lingeringBone",
@@ -748137,6 +748660,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748165,6 +748689,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748190,6 +748715,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748221,6 +748747,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748249,6 +748776,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748275,6 +748803,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748301,6 +748830,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748327,6 +748857,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748353,6 +748884,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748379,6 +748911,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748405,6 +748938,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748431,6 +748965,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748457,6 +748992,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748483,6 +749019,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748509,6 +749046,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748535,6 +749073,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748561,6 +749100,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748587,6 +749127,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748610,6 +749151,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748641,6 +749183,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748664,6 +749207,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748687,6 +749231,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "mirage",
@@ -748723,6 +749268,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748746,6 +749292,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748772,6 +749319,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748804,6 +749352,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748829,6 +749378,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748858,6 +749408,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748887,6 +749438,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748916,6 +749468,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748939,6 +749492,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748964,6 +749518,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -748989,6 +749544,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749014,6 +749570,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749039,6 +749596,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749064,6 +749622,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749089,6 +749648,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749114,6 +749674,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749139,6 +749700,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749164,6 +749726,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749189,6 +749752,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749214,6 +749778,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749239,6 +749804,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749264,6 +749830,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749289,6 +749856,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749314,6 +749882,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749339,6 +749908,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749362,6 +749932,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749387,6 +749958,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749416,6 +749988,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749439,6 +750012,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749464,6 +750038,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749489,6 +750064,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749525,6 +750101,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749550,6 +750127,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749575,6 +750153,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749600,6 +750179,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749625,6 +750205,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749650,6 +750231,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749679,6 +750261,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749704,6 +750287,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749735,6 +750319,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749766,6 +750351,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749797,6 +750383,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749820,6 +750407,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749843,6 +750431,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749868,6 +750457,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749876,7 +750466,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "vernalUmbrellaAdditionalAttack",
@@ -749893,6 +750483,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749901,7 +750492,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+          "summary": "physFixed/attributeFixed +7.25% to +50% by breakthrough"
         },
         {
           "id": "windrider",
@@ -749916,6 +750507,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749939,6 +750531,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749964,6 +750557,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -749977,7 +750571,7 @@
       ]
     },
     "dynamic": {
-      "digest": "374cc785969fdd7e879f8830906364847893dc4e52cafb895278ef0f4a048b4e"
+      "digest": "db01d2b57f197f3023382ca25d8e87c53081e417a43e12d9da1d52376044a941"
     }
   },
   "bamboocutDraught": {
@@ -750065,7 +750659,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "8f26482a076a4feb2afe906f9295aac07e61bf86560915cc4948509ad648f7cd"
+        "digest": "002bdca21b00de0e83cdd0195432886fa2c57617c231d844abacdc1c2b71aba7"
       },
       "debuffs": {
         "count": 10,
@@ -750099,6 +750693,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750127,6 +750722,7 @@
           },
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750152,6 +750748,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750177,6 +750774,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750203,6 +750801,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750229,6 +750828,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750255,6 +750855,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750281,6 +750882,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750307,6 +750909,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750333,6 +750936,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750359,6 +750963,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750385,6 +750990,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750411,6 +751017,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750437,6 +751044,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750463,6 +751071,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750489,6 +751098,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750515,6 +751125,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750541,6 +751152,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750567,6 +751179,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750593,6 +751206,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750619,6 +751233,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750645,6 +751260,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750671,6 +751287,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750694,6 +751311,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750725,6 +751343,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750748,6 +751367,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750771,6 +751391,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": "mirage",
@@ -750807,6 +751428,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750830,6 +751452,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750856,6 +751479,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750888,6 +751512,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750913,6 +751538,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750942,6 +751568,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -750971,6 +751598,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751000,6 +751628,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751023,6 +751652,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751048,6 +751678,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751073,6 +751704,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751098,6 +751730,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751123,6 +751756,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751148,6 +751782,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751173,6 +751808,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751198,6 +751834,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751223,6 +751860,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751248,6 +751886,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751273,6 +751912,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751298,6 +751938,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751323,6 +751964,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751348,6 +751990,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751373,6 +752016,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751398,6 +752042,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751423,6 +752068,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751446,6 +752092,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751471,6 +752118,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751500,6 +752148,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751523,6 +752172,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751548,6 +752198,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751573,6 +752224,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751609,6 +752261,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751634,6 +752287,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751659,6 +752313,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751684,6 +752339,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751709,6 +752365,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751734,6 +752391,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751763,6 +752421,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751788,6 +752447,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751819,6 +752479,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751850,6 +752511,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751881,6 +752543,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751904,6 +752567,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751927,6 +752591,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751952,6 +752617,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -751977,6 +752643,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -752002,6 +752669,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -752025,6 +752693,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -752050,6 +752719,7 @@
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
+          "stackOnGrantingHit": false,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
@@ -752063,7 +752733,7 @@
       ]
     },
     "dynamic": {
-      "digest": "24defeabeed4e1fc8bbe29fd54f088d244b2d62ef06011a1af6e4ef84eefecba"
+      "digest": "b387fce557a01150ff96dd00fb4a693d1a7432e09a469d7a0aaf31411781267e"
     }
   }
 }

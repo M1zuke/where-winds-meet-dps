@@ -111,7 +111,7 @@ function levelRowsOf(skill: Skill): LevelRows[] {
   return found
 }
 
-export function breakthroughFloor(skill: Skill, breakthrough: number): number | null {
+function levelRowsFloor(skill: Skill, breakthrough: number): number | null {
   const scaled = levelRowsOf(skill)
   const selection = levelSelectionFor(breakthrough)
   if (scaled.every((levelRows) => levelRowsCover(levelRows, selection))) return null
@@ -121,4 +121,14 @@ export function breakthroughFloor(skill: Skill, breakthrough: number): number | 
     ),
   )
   return covering ? covering.breakthrough : null
+}
+
+export function breakthroughFloor(skill: Skill, breakthrough: number): number | null {
+  const declared =
+    skill.minBreakthrough !== undefined && breakthrough < skill.minBreakthrough
+      ? skill.minBreakthrough
+      : null
+  const fromLevelRows = levelRowsFloor(skill, breakthrough)
+  if (declared === null) return fromLevelRows
+  return fromLevelRows === null ? declared : Math.max(declared, fromLevelRows)
 }

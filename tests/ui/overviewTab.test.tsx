@@ -144,6 +144,12 @@ describe("the Sword Trial boss choice on the Overview tab", () => {
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ swordTrialBoss: "murongYuan" }))
   })
 
+  it("says a boss without a talent has none instead of showing a zero bonus", () => {
+    renderTab({ breakthrough: 20, swordTrialBoss: "catEmperor" })
+    expect(screen.getByText("No boss talent")).toBeInTheDocument()
+    expect(screen.queryByText("Boss talent +0%")).not.toBeInTheDocument()
+  })
+
   it("disables the boss choice in dummy mode and says the talents are off", () => {
     renderTab({ dummyMode: true })
     expect(screen.getByRole("combobox", { name: "Sword Trial Boss" })).toBeDisabled()

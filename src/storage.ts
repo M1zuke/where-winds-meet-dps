@@ -1132,6 +1132,17 @@ function builtinVitalityCostFor(id: string): number | undefined {
   return builtinVitalityCostById.get(id)
 }
 
+let builtinMinBreakthroughById: Map<string, number> | null = null
+function builtinMinBreakthroughFor(id: string): number | undefined {
+  if (!builtinMinBreakthroughById) {
+    builtinMinBreakthroughById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.minBreakthrough) builtinMinBreakthroughById.set(skill.id, skill.minBreakthrough)
+  }
+  return builtinMinBreakthroughById.get(id)
+}
+
 // `cancelledBy` is authored on the built-in module, never edited in the
 // Skill Editor, the same reasoning as `startLatency` above — a renamed copy
 // of a cancel-form skill keeps its Deflect Cancel.
@@ -1383,6 +1394,7 @@ function hydrateSkill(s: Skill): Skill {
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
     keyframesLeadByRenderFrame: builtinKeyframesLeadFor(id) ?? s.keyframesLeadByRenderFrame,
     vitalityCost: builtinVitalityCostFor(id) ?? s.vitalityCost,
+    minBreakthrough: builtinMinBreakthroughFor(id) ?? s.minBreakthrough,
     cancelledBy:
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),

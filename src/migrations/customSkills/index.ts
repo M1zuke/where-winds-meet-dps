@@ -140,6 +140,7 @@ import { V136__swiftGaleReachesMoonShatterSpring } from "./V136__swiftGaleReache
 import { V137__cleftpeakReachesJadeTaggedHits } from "./V137__cleftpeakReachesJadeTaggedHits"
 import { V138__swallowcallReachesFanLightAttacks } from "./V138__swallowcallReachesFanLightAttacks"
 import { V139__cleftpeakDeflectGrantRemoved } from "./V139__cleftpeakDeflectGrantRemoved"
+import { V140__breakDefenseWithoutArtBonusAttack } from "./V140__breakDefenseWithoutArtBonusAttack"
 
 export type {
   CustomSkillMigration,
@@ -348,6 +349,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V137__cleftpeakReachesJadeTaggedHits,
   V138__swallowcallReachesFanLightAttacks,
   V139__cleftpeakDeflectGrantRemoved,
+  V140__breakDefenseWithoutArtBonusAttack,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

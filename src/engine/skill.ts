@@ -319,6 +319,7 @@ export interface Skill {
   // § "Coefficients". Absent means false.
   keyframesLeadByRenderFrame?: boolean
   vitalityCost?: number
+  minBreakthrough?: number
   createdAt: string
   updatedAt: string
 }
@@ -939,6 +940,13 @@ export function isSkill(x: unknown): x is Skill {
   )
     return false
   if (
+    s.minBreakthrough !== undefined &&
+    (typeof s.minBreakthrough !== "number" ||
+      !Number.isInteger(s.minBreakthrough) ||
+      s.minBreakthrough < 0)
+  )
+    return false
+  if (
     s.cancelledBy !== undefined &&
     s.cancelledBy !== "deflectCancel" &&
     s.cancelledBy !== "nextSkill"
@@ -1012,6 +1020,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     serverWaitsInCast: src.serverWaitsInCast,
     keyframesLeadByRenderFrame: src.keyframesLeadByRenderFrame,
     vitalityCost: src.vitalityCost,
+    minBreakthrough: src.minBreakthrough,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,

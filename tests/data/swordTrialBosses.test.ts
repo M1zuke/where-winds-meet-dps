@@ -29,7 +29,15 @@ const EVERY_BOSS_ID: Record<SwordTrialBossId, true> = {
   bellToller: true,
   rosyFacedSwordsworn: true,
   yeluAbuli: true,
+  catEmperor: true,
+  fivePoisonScorpion: true,
+  cloudclutchSerpent: true,
+  tidewatcher: true,
+  jingniang: true,
+  ironFlower: true,
 }
+
+const FIRST_BREAKTHROUGH_WITHOUT_BOSS_TALENT = 20
 
 describe("Sword Trial bosses", () => {
   it("lists every boss id exactly once", () => {
@@ -38,8 +46,45 @@ describe("Sword Trial bosses", () => {
     expect([...ids].sort()).toEqual(Object.keys(EVERY_BOSS_ID).sort())
   })
 
-  it("gives every boss the same base talent of 0.15", () => {
-    for (const boss of SWORD_TRIAL_BOSS_DEFS) expect(boss.damageBoost).toBe(0.15)
+  it("gives every boss that opens before breakthrough 20 the same base talent of 0.15", () => {
+    for (const boss of SWORD_TRIAL_BOSS_DEFS)
+      if (boss.minBreakthrough < FIRST_BREAKTHROUGH_WITHOUT_BOSS_TALENT)
+        expect(boss.damageBoost).toBe(0.15)
+  })
+
+  it("gives the bosses that open at breakthrough 20 or later no talent at all", () => {
+    const newest = SWORD_TRIAL_BOSS_DEFS.filter(
+      (boss) => boss.minBreakthrough >= FIRST_BREAKTHROUGH_WITHOUT_BOSS_TALENT,
+    )
+    expect(newest.map((boss) => boss.id).sort()).toEqual([
+      "catEmperor",
+      "cloudclutchSerpent",
+      "fivePoisonScorpion",
+      "ironFlower",
+      "jingniang",
+      "tidewatcher",
+    ])
+    for (const boss of newest) {
+      expect(boss.damageBoost).toBe(0)
+      expect(boss.qiBreakDamageBoost).toEqual([])
+    }
+  })
+
+  it("opens each boss at the breakthrough of its lowest-level version", () => {
+    const openedAt = Object.fromEntries(
+      SWORD_TRIAL_BOSS_DEFS.map((boss) => [boss.id, boss.minBreakthrough]),
+    )
+    expect(openedAt).toMatchObject({
+      wolfMaiden: 14,
+      snakeDoctor: 14,
+      earthFiendDeity: 14,
+      namelessGeneral: 14,
+      fengRuzhi: 14,
+      horseTamer: 16,
+      ironheartCentipede: 17,
+      ciAndCuo: 17,
+      lodestarSwordmaster: 18,
+    })
   })
 
   it("orders each Qi break ladder by breakthrough, from the boss's first breakthrough", () => {

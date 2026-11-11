@@ -31,7 +31,14 @@ describe("a mystic art is authored once and belongs to no class", () => {
     const modules = readdirSync(MYSTIC_DIR).filter(
       (entry) =>
         entry.endsWith(".ts") &&
-        !["ids.ts", "index.ts", "debuffs.ts", "poetStrikeHits.ts", "levelRows.ts"].includes(entry),
+        ![
+          "ids.ts",
+          "index.ts",
+          "debuffs.ts",
+          "poetStrikeHits.ts",
+          "levelRows.ts",
+          "branchFormFloor.ts",
+        ].includes(entry),
     )
     expect(modules).toHaveLength(MYSTIC_SKILLS.length)
   })

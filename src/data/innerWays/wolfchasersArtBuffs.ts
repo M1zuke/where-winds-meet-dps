@@ -71,7 +71,7 @@ export function soulShakenBuffDef(): BuffModule {
     },
     duration: 18,
     maxStacks: 5,
-    stacksPerHit: true,
+    stackOnGrantingHit: true,
     summary:
       "+10.0% all/stack; against a Soul-Shaken target, Bleeding's Qi rate +0.4 and Qi index ×3, Blood Burst's Qi rate +0.3",
     effects: (ctx) => {

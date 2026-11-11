@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { WEAPON } from "../../src/data/skills/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
+import { SKILL } from "../../src/data/skills/stonesplit-strength/ids"
 
 const CLASS = "stonesplitStrength"
 
@@ -33,8 +34,10 @@ describe("additional-attack talent — receives wiring, one weapon tag one art b
     }
   })
 
-  it("every Heng Blade-tagged skill lists the Snowparting Blade buff, and no Mo Blade-tagged skill does", () => {
-    for (const candidate of hengBladeSkills) {
+  it("every Heng Blade-tagged skill but Break Defense lists the Snowparting Blade buff, and no Mo Blade-tagged skill does", () => {
+    for (const candidate of hengBladeSkills.filter(
+      (hengBladeSkill) => hengBladeSkill.id !== SKILL.breakDefense,
+    )) {
       expect(candidate.receives ?? [], candidate.id).toContain(
         BUFF.snowpartingBladeAdditionalAttack,
       )
@@ -44,5 +47,11 @@ describe("additional-attack talent — receives wiring, one weapon tag one art b
         BUFF.snowpartingBladeAdditionalAttack,
       )
     }
+  })
+
+  it("Break Defense lists neither art's additional-attack buff", () => {
+    const breakDefense = skills.find((candidate) => candidate.id === SKILL.breakDefense)!
+    expect(breakDefense.receives ?? []).not.toContain(BUFF.snowpartingBladeAdditionalAttack)
+    expect(breakDefense.receives ?? []).not.toContain(BUFF.phalanxbaneBladeAdditionalAttack)
   })
 })

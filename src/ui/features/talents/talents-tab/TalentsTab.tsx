@@ -11,7 +11,6 @@ import { inebriateDamageBoostAt } from "../../../../data/skills/bamboocut-draugh
 import {
   ADDITIONAL_ATTACK_FIRST_RANK_BREAKTHROUGH,
   ADDITIONAL_ATTACK_RANKS,
-  ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION,
   additionalAttackRankAt,
   type AdditionalAttackRank,
 } from "../../../../data/skills/buffs/additionalAttackRanks"
@@ -499,7 +498,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
           lines: [
             {
               kind: "additionalAttack",
-              ladder: ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION,
+              ladder: ADDITIONAL_ATTACK_RANKS,
               coefficientTargetsKey: "talents.effect.coefficientsOfFalconsPursuit",
             },
           ],
@@ -555,9 +554,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
         },
         {
           nameKey: "talents.card.additionalAttackUp",
-          lines: [
-            { kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION },
-          ],
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },

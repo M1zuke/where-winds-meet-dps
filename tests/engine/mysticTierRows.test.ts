@@ -26,21 +26,25 @@ describe("mystic arts read their row at the breakthrough's mystic tier", () => {
     expect(lowered).toMatchObject(LEVEL_ROWS.toadPoisonDot.rows["5"]!)
   })
 
-  it("makes a branch form unavailable at breakthrough 13 and available from 14", () => {
+  it("makes a branch form unavailable below breakthrough 15 and available from 15", () => {
     for (const id of [
       "mystic-dragon-head-plus",
       "mystic-toad-fury",
+      "mystic-toad-fury-hit",
+      "mystic-dragon-fire-smolder-1-hit",
       "mystic-dragon-fire-smolder-2-hits",
+      "mystic-ghostly-afterimage",
     ]) {
       const skill = skillNamed(id)
-      expect(breakthroughFloor(skill, 13), id).toBe(14)
-      expect(breakthroughFloor(skill, 14), id).toBeNull()
+      expect(breakthroughFloor(skill, 13), id).toBe(15)
+      expect(breakthroughFloor(skill, 14), id).toBe(15)
+      expect(breakthroughFloor(skill, 15), id).toBeNull()
     }
   })
 
   it("leaves a mystic art whose rows never change on its single row", () => {
     const afterimage = skillNamed("mystic-ghostly-afterimage")
     expect(afterimage.hits[0]!.levelRows).toBeUndefined()
-    expect(breakthroughFloor(afterimage, 13)).toBeNull()
+    expect(breakthroughFloor(afterimage, 15)).toBeNull()
   })
 })
