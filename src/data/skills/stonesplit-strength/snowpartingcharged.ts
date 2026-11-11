@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
@@ -6,14 +6,12 @@ import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 import { bladeMomentumMeter } from "../../classes/stonesplit-strength/bladeMomentumMeter"
+import { LEVEL_ROWS } from "./levelRows"
 
 const GRAVE_FROST_HIT = meterDelta({ target: bladeMomentumMeter.id, stacks: 3.25 })
 
 const STRIKE = {
-  physMultiplier: 0.489916,
-  attributeMultiplier: 0.734874,
-  physFixed: 135.6,
-  attributeFixed: 73.8,
+  ...levelScaled(LEVEL_ROWS.snowpartingchargedForgetfulnessHit1),
 }
 
 export const snowpartingcharged = defineSkill({
@@ -66,10 +64,7 @@ export const snowpartingcharged = defineSkill({
     }),
     hit(4, {
       frame: 96,
-      physMultiplier: 0.979832,
-      attributeMultiplier: 1.469748,
-      physFixed: 271.2,
-      attributeFixed: 147.6,
+      ...levelScaled(LEVEL_ROWS.snowpartingchargedForgetfulnessHit5),
       triggers: [GRAVE_FROST_HIT],
     }),
   ],

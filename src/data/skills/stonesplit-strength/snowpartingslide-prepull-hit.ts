@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const snowpartingslidePrepullHit = defineSkill({
   id: SKILL.snowpartingslidePrepullHit,
@@ -25,10 +26,7 @@ export const snowpartingslidePrepullHit = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.2338,
-      attributeMultiplier: 1.8507,
-      physFixed: 342,
-      attributeFixed: 186,
+      ...levelScaled(LEVEL_ROWS.snowpartingslidePrepullHitHit0),
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

@@ -1,8 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06.
 export const phalanxchargedS1 = defineSkill({
@@ -37,17 +38,11 @@ export const phalanxchargedS1 = defineSkill({
   hits: [
     hit(0, {
       frame: 48,
-      physMultiplier: 0.397233,
-      attributeMultiplier: 0.59585,
-      physFixed: 110.1,
-      attributeFixed: 60,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS1Hit0),
     }),
     hit(1, {
       frame: 55,
-      physMultiplier: 0.926877,
-      attributeMultiplier: 1.390316,
-      physFixed: 256.9,
-      attributeFixed: 140,
+      ...levelScaled(LEVEL_ROWS.phalanxchargedS1Hit1),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

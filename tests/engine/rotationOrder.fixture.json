@@ -159,8 +159,8 @@
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch": {
-    "dps": 71390.60873027933,
-    "totalDamage": 4283436.52381676,
+    "dps": 71390.60736378837,
+    "totalDamage": 4283436.441827302,
     "damageBySkill": {
       "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77533.63610501599,
@@ -171,7 +171,7 @@
       "Toad[Cancel]": 95779.83681272822,
       "AnxiSoldierMoDown": 152440.16229267843,
       "AnxiSoldierMoJump": 273106.86382449797,
-      "PhalanxCharged-S3[InnerPassion]": 2610080.792786489,
+      "PhalanxCharged-S3[InnerPassion]": 2610080.710797032,
       "Toad Poison (DoT)": 90487.19079444962,
       "Yi River": 55248.051434580324,
       "PhalanxQ": 63228.007103766126,
@@ -185,8 +185,8 @@
     }
   },
   "builtin-stonesplitStrength-windsfromcn-switch-no-toad": {
-    "dps": 73385.77292809762,
-    "totalDamage": 4403146.375685858,
+    "dps": 73385.77147390989,
+    "totalDamage": 4403146.288434593,
     "damageBySkill": {
       "SnowpartingSpecial": 150322.1796305993,
       "Divinecraft - Fire": 77342.28935669601,
@@ -196,7 +196,7 @@
       "AnxiSoldierHeng (Stab)": 61617.86636611986,
       "AnxiSoldierMoDown": 161522.8537901024,
       "AnxiSoldierMoJump": 291143.23803605966,
-      "PhalanxCharged-S3[InnerPassion]": 2782083.675904073,
+      "PhalanxCharged-S3[InnerPassion]": 2782083.5886528087,
       "Yi River": 56126.20366661,
       "SnowpartingDual": 28768.01699616613,
       "SnowpartingVC": 188109.30692843292,

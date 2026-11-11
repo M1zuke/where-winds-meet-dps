@@ -97,8 +97,8 @@ describe("SnowpartingQ-Slash", () => {
 describe("Burning Heart stages 1 and 2", () => {
   it("hit with the stage values", () => {
     expect(hitValues(SKILL.phalanxchargedS1)).toEqual([
-      [48, 0.397233, 0.59585, 110.1, 60],
-      [55, 0.926877, 1.390316, 256.9, 140],
+      [48, 0.397233, 0.5958495, 110.1, 60],
+      [55, 0.926877, 1.3903155, 256.9, 140],
     ])
     expect(hitValues(SKILL.phalanxchargedS2)).toEqual([
       [76, 0, 0, 0, 0],
@@ -310,16 +310,16 @@ describe("Break Defense", () => {
 
 describe("the basic attack and dash modules", () => {
   it("Heng Blade light attack stages carry the stage values", () => {
-    expect(hitValues(SKILL.hengLightAttack1)).toEqual([[17, 0.365684, 0.548525, 101.25, 55.2]])
-    expect(hitValues(SKILL.hengLightAttack2)).toEqual([[16, 0.365684, 0.548525, 101.25, 55.2]])
+    expect(hitValues(SKILL.hengLightAttack1)).toEqual([[17, 0.3656835, 0.54852525, 101.25, 55.2]])
+    expect(hitValues(SKILL.hengLightAttack2)).toEqual([[16, 0.3656835, 0.54852525, 101.25, 55.2]])
     expect(hitValues(SKILL.hengLightAttack3)).toEqual([
-      [19, 0.243789, 0.365684, 67.5, 36.8],
-      [32, 0.243789, 0.365684, 67.5, 36.8],
-      [55, 0.365684, 0.548525, 101.25, 55.2],
+      [19, 0.243789, 0.3656835, 67.5, 36.8],
+      [32, 0.243789, 0.3656835, 67.5, 36.8],
+      [55, 0.3656835, 0.54852525, 101.25, 55.2],
     ])
     expect(hitValues(SKILL.hengLightAttack4)).toEqual([
-      [11, 0.292547, 0.43882, 81, 44.16],
-      [38, 0.560715, 0.841072, 155.25, 84.64],
+      [11, 0.2925468, 0.4388202, 81, 44.16],
+      [38, 0.5607147, 0.84107205, 155.25, 84.64],
     ])
   })
 
@@ -327,10 +327,10 @@ describe("the basic attack and dash modules", () => {
     expect(hitValues(SKILL.hengHeavyAttack1)).toEqual([[21, 0.404708, 0.607062, 112, 61]])
     expect(hitValues(SKILL.hengHeavyAttack2)).toEqual([
       [11, 0.202354, 0.303531, 56, 30.5],
-      [28, 0.303531, 0.455297, 84, 45.75],
+      [28, 0.303531, 0.4552965, 84, 45.75],
     ])
     expect(hitValues(SKILL.hengHeavyAttack3)).toEqual([[18, 0.404708, 0.607062, 112, 61]])
-    expect(hitValues(SKILL.hengHeavyAttack4)).toEqual([[28, 0.708239, 1.062359, 196, 106.75]])
+    expect(hitValues(SKILL.hengHeavyAttack4)).toEqual([[28, 0.708239, 1.0623585, 196, 106.75]])
   })
 
   it("Mo Blade light attack stages carry the stage values, the third at the earlier collider", () => {
