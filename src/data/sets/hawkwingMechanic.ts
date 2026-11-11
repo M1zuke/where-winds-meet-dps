@@ -8,13 +8,6 @@ import {
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 import { FOUR_PIECE_SIZE, setPieceCount } from "../../engine/setPieces"
 
-// The game's own Affinity-outcome roll is `min(affinityRate, 0.4) +
-// directAffinityRate` (`formula.ts`'s `affinityRate`) — the direct-affinity
-// term sits outside the cap, so a build with a base direct-affinity rate
-// (Jadeware, an inner-way line) triggers stacks more often than the capped
-// term alone predicts.
-const AFFINITY_PROC_CAP = 0.4
-
 type State = { tracker: HawkwingTracker }
 
 // A factory rather than a module-level constant so this file need not import
@@ -22,21 +15,24 @@ type State = { tracker: HawkwingTracker }
 export function hawkwingMechanic(setId: string, setName: string): TimelineMechanic<State> {
   return {
     id: "hawkwing",
+    needsAffinityChance: true,
 
     prepare(setup) {
       if (setPieceCount(setup.inputs, setId) < FOUR_PIECE_SIZE) return null
-      const proc =
-        Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
-        setup.inputs.directAffinityRate
-      return { tracker: new HawkwingTracker(proc, setup.rng, setup.collectHistory) }
+      return { tracker: new HawkwingTracker(setup.rng, setup.collectHistory) }
     },
 
     // In-game values as of 2026-10-17: every hit, DoT tick, detonation burst
-    // and summoned hit rolls the affinity chance, and the stack lands after
-    // that event's own damage.
+    // and summoned hit that lands an Affinity outcome adds a stack after that
+    // event's own damage; the chance is that event's own Affinity chance.
     observeEvent(state, event) {
       if (!event.canRollAffinity) return
-      state.tracker.roll(event.timeSec, event.occurrence)
+      state.tracker.roll(
+        event.timeSec,
+        event.occurrence,
+        event.affinityChance,
+        event.rolledAffinity,
+      )
     },
 
     contributeAt(state, frame, _skill, setup) {

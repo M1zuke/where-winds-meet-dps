@@ -41,6 +41,7 @@ function event(
   source: MechanicEventSource,
   timeSec: number,
   canRollAffinity = true,
+  affinityChance = 0.4,
 ): MechanicObservedEvent {
   return {
     source,
@@ -48,7 +49,7 @@ function event(
     occurrence: 1,
     direct: source !== "tick",
     canRollAffinity,
-    affinityChance: 0,
+    affinityChance,
   }
 }
 
@@ -95,6 +96,42 @@ describe("Hawkwing rolls off every scored damage event that can roll Affinity", 
       for (const timeSec of [0.1, 0.2, 0.3])
         mechanic.observeEvent!(state, event(source, timeSec, false), setup, NO_HOST)
     expect(state.tracker.expectedStacksAt(0.5)).toBe(0)
+  })
+})
+
+describe("Hawkwing stacks on the hit's own Affinity chance", () => {
+  it("stacks nothing on a hit with no Affinity chance, whatever the build panel holds", () => {
+    const setup = setupWith({
+      rng: undefined,
+      effectiveRates: { precision: 1, critRate: 0, affinityRate: 1 },
+    })
+    const { mechanic, state } = mechanicAndState(setup)
+    for (const timeSec of [0.1, 0.2, 0.3])
+      mechanic.observeEvent!(state, event("hit", timeSec, true, 0), setup, NO_HOST)
+    expect(state.tracker.expectedStacksAt(0.5)).toBe(0)
+  })
+
+  it("stacks on a hit whose chance a buff, a skill bonus or a forced Affinity raised above the panel", () => {
+    const setup = setupWith({
+      rng: undefined,
+      effectiveRates: { precision: 1, critRate: 0, affinityRate: 0 },
+    })
+    const { mechanic, state } = mechanicAndState(setup)
+    for (const timeSec of [0.1, 0.2, 0.3])
+      mechanic.observeEvent!(state, event("hit", timeSec, true, 1), setup, NO_HOST)
+    expect(state.tracker.expectedStacksAt(0.5)).toBeGreaterThan(0)
+  })
+
+  it("follows the rolled outcome of a run that rolls its hits", () => {
+    const setup = setupWith({ rng: mulberry32(7) })
+    const { mechanic, state } = mechanicAndState(setup)
+    mechanic.observeEvent!(
+      state,
+      { ...event("hit", 0.1, true, 0), rolledAffinity: true },
+      setup,
+      NO_HOST,
+    )
+    expect(state.tracker.expectedStacksAt(0.2)).toBe(1)
   })
 })
 
