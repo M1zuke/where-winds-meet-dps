@@ -745677,7 +745677,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "crit rate +30%, damage +8% — targets below 30% Qi only"
+          "summary": "crit rate +30%, damage +8%, a critical hit deals 5 extra Qi — targets below 30% Qi only"
         },
         {
           "id": "trajectorySkill",

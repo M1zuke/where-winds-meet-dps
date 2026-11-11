@@ -684,6 +684,11 @@ for applying, `receives` for boosting — never by the module itself.
   module's declarative `conditionalFinalCrit` field: use the field when the
   module's own active window already is the whole condition, the effect when
   it needs to read further state to decide.
+- **A module's `effects` may return `critQiDamage(amount, belowQiFraction)`**: a
+  critical hit it reaches deals `amount` flat Qi damage, landing 0.1 s after the hit
+  as a direct Qi hit with no Qi boost applied, while the target's Qi fraction is
+  below `belowQiFraction` **after that hit's own Qi**. Without a rolled outcome the
+  amount is weighted by the hit's crit chance.
 
 ## Event order
 

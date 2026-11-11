@@ -19,6 +19,7 @@ export interface EffectSink {
   ): void
   echo(debuffId: string): void
   finalCritAtLeast(threshold: number, bonusBelowThreshold: number): void
+  critQiDamage(amount: number, belowQiFraction: number): void
 }
 
 export function assertNever(value: never): never {
@@ -53,6 +54,9 @@ export function applyEffect(sink: EffectSink, effect: Effect): void {
       return
     case "finalCritAtLeast":
       sink.finalCritAtLeast(effect.threshold, effect.bonusBelowThreshold)
+      return
+    case "critQiDamage":
+      sink.critQiDamage(effect.amount, effect.belowQiFraction)
       return
     default:
       assertNever(effect)

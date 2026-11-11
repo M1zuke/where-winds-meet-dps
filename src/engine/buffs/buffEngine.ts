@@ -88,6 +88,7 @@ export interface DamageEffectsResult {
   // which def a contribution came from.
   breakdown: Record<string, number>
   echoFeeds: { debuffId: string }[]
+  critQiDamage: { amount: number; belowQiFraction: number }[]
 }
 
 const DEFAULT_DURATION = 15
@@ -625,6 +626,7 @@ export class BuffEngine {
       setStatus: () => {},
       echo: () => {},
       finalCritAtLeast: () => {},
+      critQiDamage: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -1252,6 +1254,7 @@ export class BuffEngine {
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
     const echoFeeds: { debuffId: string }[] = []
+    const critQiDamage: { amount: number; belowQiFraction: number }[] = []
     let currentId = ""
     const deferred: { id: string; module: BuffModule; stacks: number; windowWeight: number }[] = []
 
@@ -1278,6 +1281,9 @@ export class BuffEngine {
       },
       finalCritAtLeast(threshold, bonusBelowThreshold) {
         conditionalFinalCrit = { threshold, bonusBelowThreshold }
+      },
+      critQiDamage(amount, belowQiFraction) {
+        critQiDamage.push({ amount, belowQiFraction })
       },
     }
 
@@ -1365,6 +1371,7 @@ export class BuffEngine {
       artBonuses,
       breakdown,
       echoFeeds,
+      critQiDamage,
     }
   }
 }

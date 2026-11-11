@@ -10,6 +10,7 @@ import {
   echo,
   setStatus,
   finalCritAtLeast,
+  critQiDamage,
   type Effect,
 } from "../../src/engine/effects/effect"
 
@@ -27,6 +28,8 @@ function recordingSink(): { sink: EffectSink; calls: unknown[][] } {
     echo: (debuffId) => calls.push(["echo", debuffId]),
     finalCritAtLeast: (threshold, bonusBelowThreshold) =>
       calls.push(["finalCritAtLeast", threshold, bonusBelowThreshold]),
+    critQiDamage: (amount, belowQiFraction) =>
+      calls.push(["critQiDamage", amount, belowQiFraction]),
   }
   return { sink, calls }
 }
@@ -44,6 +47,7 @@ describe("applyEffect", () => {
     applyEffect(sink, setStatus("someStatus", { stacks: 1, permanent: true }))
     applyEffect(sink, echo("someDebuff"))
     applyEffect(sink, finalCritAtLeast(0.7, 0.15))
+    applyEffect(sink, critQiDamage(5, 0.3))
 
     expect(calls).toEqual([
       ["stat", "allDamageBoost", 0.1],
@@ -55,6 +59,7 @@ describe("applyEffect", () => {
       ["setStatus", "someStatus", 1, true, undefined],
       ["echo", "someDebuff"],
       ["finalCritAtLeast", 0.7, 0.15],
+      ["critQiDamage", 5, 0.3],
     ])
   })
 
@@ -95,6 +100,11 @@ describe("effect constructor helpers", () => {
       kind: "finalCritAtLeast",
       threshold: 0.7,
       bonusBelowThreshold: 0.15,
+    })
+    expect(critQiDamage(5, 0.3)).toEqual({
+      kind: "critQiDamage",
+      amount: 5,
+      belowQiFraction: 0.3,
     })
   })
 })
