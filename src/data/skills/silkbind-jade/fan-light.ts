@@ -31,6 +31,7 @@ export const fanLight = defineSkill({
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
     ...INKWELL_FAN_RECEIVES,
+    BUFF.swallowcallLightAttackBoost,
   ],
   castFrames: 37,
   triggerable: true,

@@ -124,6 +124,7 @@ import { healSkill as healGhostlyAfterimageDodgeContext } from "../../src/migrat
 import { healSkill as healStarweaveReachesStonesplitMartialArts } from "../../src/migrations/customSkills/V135__starweaveReachesStonesplitMartialArts"
 import { healSkill as healSwiftGaleReachesMoonShatterSpring } from "../../src/migrations/customSkills/V136__swiftGaleReachesMoonShatterSpring"
 import { healSkill as healCleftpeakReachesJadeTaggedHits } from "../../src/migrations/customSkills/V137__cleftpeakReachesJadeTaggedHits"
+import { healSkill as healSwallowcallReachesFanLightAttacks } from "../../src/migrations/customSkills/V138__swallowcallReachesFanLightAttacks"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -272,6 +273,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [135, healStarweaveReachesStonesplitMartialArts],
   [136, healSwiftGaleReachesMoonShatterSpring],
   [137, healCleftpeakReachesJadeTaggedHits],
+  [138, healSwallowcallReachesFanLightAttacks],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
