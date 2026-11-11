@@ -2,7 +2,6 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
-import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
 const COOLDOWN_CLEAR = [{ buffId: STATUS.breakDefenseCooldown, op: "eq" as const, stacks: 0 }]
 
@@ -17,7 +16,6 @@ export const breakDefense = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.breakDefense,
-  receives: SNOWPARTING_BLADE_RECEIVES,
   triggersBuffs: [],
   castFrames: 80,
   triggerable: true,
