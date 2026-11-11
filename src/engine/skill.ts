@@ -1,6 +1,6 @@
 import type { computeSkillDamage } from "./formula"
 import type { QiPhase } from "./effects/context"
-import { attuneTagsOf, mysticCategoryOf } from "./buffs/tags"
+import { attuneTagsOf, isDodgeContext, mysticCategoryOf } from "./buffs/tags"
 import { isDisplacement, isSkillApproach, type Displacement, type SkillApproach } from "./distance"
 
 export type { Displacement, SkillApproach } from "./distance"
@@ -988,6 +988,7 @@ export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
     abrasionAvoidRate: skill.neverAbrades ? 1 : undefined,
     guaranteedNormal: skill.guaranteedNormal ? 1 : undefined,
     mysticCategory: mysticCategoryOf(skill) || undefined,
+    dodgeContext: isDodgeContext(skill) || undefined,
     attuneTags: attuneTagsOf(skill).length ? attuneTagsOf(skill) : undefined,
   } as ArtRow
 }

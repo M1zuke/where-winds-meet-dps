@@ -134,6 +134,7 @@ import { V130__draughtLevelRows } from "./V130__draughtLevelRows"
 import { V131__jadeLevelRows } from "./V131__jadeLevelRows"
 import { V132__splendorAttuneTags } from "./V132__splendorAttuneTags"
 import { V133__vernalUmbrellaAttuneTags } from "./V133__vernalUmbrellaAttuneTags"
+import { V134__ghostlyAfterimageDodgeContext } from "./V134__ghostlyAfterimageDodgeContext"
 
 export type {
   CustomSkillMigration,
@@ -336,6 +337,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V131__jadeLevelRows,
   V132__splendorAttuneTags,
   V133__vernalUmbrellaAttuneTags,
+  V134__ghostlyAfterimageDodgeContext,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

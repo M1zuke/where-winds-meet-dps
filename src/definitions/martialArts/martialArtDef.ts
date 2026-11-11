@@ -4,6 +4,8 @@ export interface MartialArtDef {
   id: string
   name: string
   weaponType: WeaponName
+  drawnWeapon: string
+  additionalAttackBuffId: string
   icon?: string
 }
 

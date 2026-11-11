@@ -120,6 +120,7 @@ import { healSkill as healGourdTossPursuitCutOncePerSecond } from "../../src/mig
 import { healSkill as healDragonHeadCastLength } from "../../src/migrations/customSkills/V124__dragonHeadCastLength"
 import { healSkill as healSplendorAttuneTags } from "../../src/migrations/customSkills/V132__splendorAttuneTags"
 import { healSkill as healVernalUmbrellaAttuneTags } from "../../src/migrations/customSkills/V133__vernalUmbrellaAttuneTags"
+import { healSkill as healGhostlyAfterimageDodgeContext } from "../../src/migrations/customSkills/V134__ghostlyAfterimageDodgeContext"
 import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
@@ -264,6 +265,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [124, healDragonHeadCastLength],
   [132, healSplendorAttuneTags],
   [133, healVernalUmbrellaAttuneTags],
+  [134, healGhostlyAfterimageDodgeContext],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

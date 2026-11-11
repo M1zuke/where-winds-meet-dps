@@ -8,6 +8,11 @@ export const TYPE_TAG = "type:"
 export const ROLE_TAG = "role:"
 export const CAST_TAG = "cast:"
 export const BUFF_TAG = "buff:"
+export const DODGE_CONTEXT_TAG = "context:dodge"
+
+export function isDodgeContext(skill: Pick<Skill, "tags">): boolean {
+  return (skill.tags ?? []).includes(DODGE_CONTEXT_TAG)
+}
 
 // Namespaced tags only — never the display name or a bare `skillType` /
 // `weaponOrAttribute` / `attributeAttack` value, so a modifier cannot reach a

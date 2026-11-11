@@ -1,4 +1,5 @@
 import { defineMartialArt } from "../../definitions/martialArts/martialArtDef"
+import { BUFF } from "../skills/buffs/ids"
 import { MARTIAL_ART_ID } from "./ids"
 import icon from "./icons/stonesplit-strength.png"
 
@@ -6,5 +7,7 @@ export const snowpartingBlade = defineMartialArt({
   id: MARTIAL_ART_ID.snowpartingBlade,
   name: "Snowparting Blade",
   weaponType: "Hengdao",
+  drawnWeapon: "Heng Blade",
+  additionalAttackBuffId: BUFF.snowpartingBladeAdditionalAttack,
   icon,
 })
