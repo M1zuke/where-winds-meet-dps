@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { PROP, CAST, WEAPON, ATTACK } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -7,12 +7,10 @@ import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import type { MeterDrain } from "../../../engine/skill"
 import { STORM_DANCE_CLASS_104_HIT_TRIGGERS, STORM_DANCE_FREEZE } from "./stormdance-stage-1"
+import { LEVEL_ROWS } from "./levelRows"
 
 const SPIN_HIT = {
-  physMultiplier: 0.1126455,
-  attributeMultiplier: 0.16896825,
-  physFixed: 31.141,
-  attributeFixed: 16.973,
+  ...levelScaled(LEVEL_ROWS.stormdanceStage2Hit1),
 }
 // In-game values as of 2026-09-24: the stage-2 clip's 11 colliders loop three
 // times inside the 3.1 s hold cap; frames are from the press (stage 2 starts
@@ -77,18 +75,12 @@ export const stormDanceStage2 = defineSkill({
     ),
     hit(SPIN_FRAMES.length + 1, {
       frame: 317,
-      physMultiplier: 1.02405,
-      attributeMultiplier: 1.536075,
-      physFixed: 283.1,
-      attributeFixed: 154.3,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage2Hit34),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
     hit(SPIN_FRAMES.length + 2, {
       frame: 341,
-      physMultiplier: 2.0481,
-      attributeMultiplier: 3.07215,
-      physFixed: 566.2,
-      attributeFixed: 308.6,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage2Hit35),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
   ],

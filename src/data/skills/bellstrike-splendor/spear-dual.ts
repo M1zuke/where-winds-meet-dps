@@ -1,7 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-06: only the first of the clip's two hits
 // lands, at half of the row.
@@ -22,10 +23,7 @@ export const spearDual = defineSkill({
   hits: [
     hit(0, {
       frame: 18,
-      physMultiplier: 0.483,
-      attributeMultiplier: 0.7245,
-      physFixed: 134,
-      attributeFixed: 73,
+      ...levelScaled(LEVEL_ROWS.spearDualHit0),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

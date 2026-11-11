@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -13,6 +13,7 @@ import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 import { WUSHUANG_STANCE_ACTIVE } from "./buffs/wushuangStance"
 import { VAGRANT_SWORD_TIER_1_PROJECTILE } from "./vagrantSwordBolts"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-10-15: under Wushuang Stance the first charge tier
 // is reached 34.4 f after the press, and its clip plays at ×1.5, so the single
@@ -47,10 +48,7 @@ export const swordHeavyChargedTier1Wushuang = defineSkill({
   hits: [
     hit(0, {
       frame: 42.49,
-      physMultiplier: 1.51032,
-      attributeMultiplier: 2.26548,
-      physFixed: 419,
-      attributeFixed: 228,
+      ...levelScaled(LEVEL_ROWS.swordheavychargedTier1Hit0),
       projectile: VAGRANT_SWORD_TIER_1_PROJECTILE,
       triggers: [
         BATTLE_ANTHEM_ENDURANCE_GAIN,

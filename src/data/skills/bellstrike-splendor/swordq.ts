@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -6,6 +6,7 @@ import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 import { energySurgeCutHit } from "./energySurgeCut"
 import { DAUNTING_STRIKE_PROJECTILE } from "./flyingSwordProjectiles"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const swordq = defineSkill({
   id: SKILL.swordq,
@@ -36,10 +37,7 @@ export const swordq = defineSkill({
       // In-game values as of 2026-10-15: the flying sword launches at 17.58 f.
       frame: 17.58,
       projectile: DAUNTING_STRIKE_PROJECTILE,
-      physMultiplier: 1.025314,
-      attributeMultiplier: 1.537971,
-      physFixed: 283.6,
-      attributeFixed: 154.6,
+      ...levelScaled(LEVEL_ROWS.swordqHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     energySurgeCutHit(1, 17.58, 18.58),

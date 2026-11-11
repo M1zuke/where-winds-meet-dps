@@ -19,10 +19,14 @@ import { healSkill as healSplendorRootMotion } from "../../src/migrations/custom
 import { healSkill as healSwordMorphConversion } from "../../src/migrations/customSkills/V105__swordMorphConversionAtTheRelease"
 import { healSkill as healSplendorWaveCoefficientsExact } from "../../src/migrations/customSkills/V113__splendorWaveCoefficientsExact"
 import { healSkill as healSplendorQuickCastCoefficientsExact } from "../../src/migrations/customSkills/V114__splendorQuickCastCoefficientsExact"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass as currentBuiltinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { withoutLevelRows } from "../helpers/withoutLevelRows"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
 import storeV64File from "./testCustomSkills/v64/store.json"
+
+const builtinSkillsForClass = (classId: string) =>
+  currentBuiltinSkillsForClass(classId).map(withoutLevelRows)
 
 const healSplendorCoefficientsExact = (skill: unknown): unknown =>
   healSplendorQuickCastCoefficientsExact(healSplendorWaveCoefficientsExact(skill))
@@ -163,7 +167,7 @@ describe("every healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     for (const id of HEALED_IDS) {
-      const skill = loaded.find((candidate) => candidate.id === id)!
+      const skill = withoutLevelRows(loaded.find((candidate) => candidate.id === id)!)
       expect(skill.hits, id).toEqual(builtinOf(id).hits)
     }
   })

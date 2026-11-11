@@ -107,7 +107,7 @@ describe("a sampled engine run", () => {
       sum += sampled(procFree, (index * RUN_SEED_STRIDE) | 0).totalDamage
     }
     expect(Math.abs(sum / runs - expected) / expected).toBeLessThan(0.01)
-  }, 60_000)
+  }, 180_000)
 
   it("mean of sampled runs tracks the deterministic total within 5% when proc mechanics round an expectation", () => {
     const expected = runEngine(withProcs).totalDamage

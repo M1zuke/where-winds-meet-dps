@@ -1,22 +1,17 @@
 import type { Displacement } from "../../../engine/skill"
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
+import { LEVEL_ROWS } from "./levelRows"
 
 const FIFTEEN_PERCENT_OF_ROW = {
-  physMultiplier: 0.3287865,
-  attributeMultiplier: 0.49317975,
-  physFixed: 91.05,
-  attributeFixed: 49.65,
+  ...levelScaled(LEVEL_ROWS.spearLightAttackHit0),
 }
 
 const TEN_PERCENT_OF_ROW = {
-  physMultiplier: 0.219191,
-  attributeMultiplier: 0.3287865,
-  physFixed: 60.7,
-  attributeFixed: 33.1,
+  ...levelScaled(LEVEL_ROWS.spearLightAttackHit2),
 }
 
 const LIGHT_ATTACK_DISPLACEMENT: Displacement = {
@@ -56,10 +51,7 @@ export const spearLightAttack = defineSkill({
     hit(5, { frame: 116, ...TEN_PERCENT_OF_ROW }),
     hit(6, {
       frame: 133,
-      physMultiplier: 0.5479775,
-      attributeMultiplier: 0.82196625,
-      physFixed: 151.75,
-      attributeFixed: 82.75,
+      ...levelScaled(LEVEL_ROWS.spearLightAttackHit6),
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

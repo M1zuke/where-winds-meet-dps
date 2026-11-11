@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { ATTUNE, PROP, CAST, WEAPON, ATTACK } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -7,6 +7,7 @@ import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import type { MeterDrain, MeterFreeze, SkillHit } from "../../../engine/skill"
+import { LEVEL_ROWS } from "./levelRows"
 
 export const STORM_DANCE_CLASS_104_HIT_TRIGGERS = [
   MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
@@ -14,10 +15,7 @@ export const STORM_DANCE_CLASS_104_HIT_TRIGGERS = [
 ]
 
 export const STORM_DANCE_STAGE_1_SPIN_HIT = {
-  physMultiplier: 0.2504125,
-  attributeMultiplier: 0.37561875,
-  physFixed: 69.375,
-  attributeFixed: 37.75,
+  ...levelScaled(LEVEL_ROWS.stormdanceStage1Hit0),
 }
 const SPIN_HIT = STORM_DANCE_STAGE_1_SPIN_HIT
 // In-game values as of 2026-09-24: the 8 stage-1 spin colliders' frames from
@@ -93,18 +91,12 @@ export const stormDanceStage1 = defineSkill({
     ...STORM_DANCE_STAGE_1_SPIN_HITS,
     hit(SPIN_FRAMES.length, {
       frame: 129,
-      physMultiplier: 0.20033,
-      attributeMultiplier: 0.300495,
-      physFixed: 55.5,
-      attributeFixed: 30.2,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage1Hit8),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
     hit(SPIN_FRAMES.length + 1, {
       frame: 160,
-      physMultiplier: 0.40066,
-      attributeMultiplier: 0.60099,
-      physFixed: 111,
-      attributeFixed: 60.4,
+      ...levelScaled(LEVEL_ROWS.stormdanceStage1Hit9),
       triggers: STORM_DANCE_CLASS_104_HIT_TRIGGERS,
     }),
   ],

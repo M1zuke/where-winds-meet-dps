@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit, levelScaled } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -6,6 +6,7 @@ import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 import { energySurgeCutHit } from "./energySurgeCut"
+import { LEVEL_ROWS } from "./levelRows"
 
 // In-game values as of 2026-09-29: removed at the animation start — this
 // cast only exists while its own window holds.
@@ -47,26 +48,17 @@ export const swordq3rd = defineSkill({
     }),
     hit(1, {
       frame: 18,
-      physMultiplier: 0.7689855,
-      attributeMultiplier: 1.15347825,
-      physFixed: 212.7,
-      attributeFixed: 115.95,
+      ...levelScaled(LEVEL_ROWS.swordq2ndHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(2, {
       frame: 34,
-      physMultiplier: 0.7689855,
-      attributeMultiplier: 1.15347825,
-      physFixed: 212.7,
-      attributeFixed: 115.95,
+      ...levelScaled(LEVEL_ROWS.swordq2ndHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(3, {
       frame: 64,
-      physMultiplier: 1.025314,
-      attributeMultiplier: 1.537971,
-      physFixed: 283.6,
-      attributeFixed: 154.6,
+      ...levelScaled(LEVEL_ROWS.swordqHit0),
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
     hit(4, {
